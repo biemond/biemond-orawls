@@ -12,6 +12,10 @@ created by Edwin Biemond  email biemond at gmail dot com
 Should work for all Linux versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES or OracleLinux 
 
 
+Check the vagrant test case for full working WebLogic 12.1.2 example  
+https://github.com/biemond/biemond-orawls-vagrant  
+
+
 Oracle Big files and alternate download location
 ------------------------------------------------
 Some manifests like weblogic.pp supports an alternative mountpoint for the big oracle setup/install files.  

@@ -19,6 +19,7 @@ else you can use $source => "/mnt" or "puppet:///modules/orawls/" (default) or  
 Orawls WebLogic Features
 ------------------------
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 )
+- creates a standard WebLogic domain
 
 
 Orawls WebLogic Facter
@@ -90,7 +91,7 @@ create user and group
 WebLogic Module Usage
 ---------------------
 
-orawls::weblogic class 
+###orawls::weblogic
 installs WebLogic 10.3.[0-6], 12.1.1 or 12.1.2  
 
 
@@ -152,3 +153,34 @@ common.yaml
      orawls::weblogic::download_dir:         "/data/install"
      orawls::weblogic::source:               "/vagrant"
      orawls::weblogic::log_output:           false
+     
+
+###orawls::domain 
+creates WebLogic a standard WebLogic Domain
+
+    orawls::domain { 'wlsDomain12c':
+      version                    => 1212,  # 1036|1111|1211|1212
+      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
+      middleware_home_dir        => "/opt/oracle/middleware12c",
+      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
+      domain_template            => "standard",
+      domain_name                => "Wls12c",
+      development_mode           => false,
+      adminserver_name           => "AdminServer",
+      adminserver_address        => "localhost",
+      adminserver_port           => 7001,
+      nodemanager_port           => 5556,
+      weblogic_user              => "weblogic",
+      weblogic_password          => "weblogic1",
+      os_user                    => "oracle",
+      os_group                   => "dba",
+      log_dir                    => "/data/logs",
+      download_dir               => "/data/install",
+      log_output                 => true,
+    }                             
+
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+
+ 

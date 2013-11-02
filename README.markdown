@@ -183,4 +183,52 @@ creates WebLogic a standard WebLogic Domain
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
 
 
+###orawls::nodemanager 
+start the nodemanager of a WebLogic Domain or Middleware Home
+
+    orawls::nodemanager{'nodemanager12c':
+      version                    => 1212, # 1036|1111|1211|1212
+      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
+      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
+      nodemanager_port           => 5556,
+      domain_name                => "Wls12c",     
+      os_user                    => "oracle",
+      os_group                   => "dba",
+      log_dir                    => "/data/logs",
+      download_dir               => "/data/install",
+      log_output                 => true,
+      require                    => Orawls::Domain['wlsDomain12c'],
+    }  
+  
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+
+###orawls::control 
+start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain
+
+    orawls::control{'startWLSAdminServer12c':
+      domain_name                => "Wls12c",
+      domain_dir                 => "/opt/oracle/middleware12c/user_projects/domains/Wls12c",
+      server_type                => 'admin',  # admin|managed
+      target                     => 'Server', # Server|Cluster
+      server                     => 'AdminServer',
+      action                     => 'start',
+      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
+      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
+      weblogic_user              => "weblogic",
+      weblogic_password          => "weblogic1",
+      adminserver_address        => 'localhost',
+      adminserver_port           => 7001,
+      nodemanager_port           => 5556,
+      os_user                    => "oracle",
+      os_group                   => "dba",
+      log_dir                    => "/data/logs",
+      download_dir               => "/data/install",
+      log_output                 => true,
+      require                    => Orawls::Nodemanager['nodemanager12c'],
+    }
+
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
  

@@ -1,7 +1,9 @@
 Oracle WebLogic / Fusion Middleware puppet module V2
 ====================================================
 
-optimized for Hiera, refactored and only for Linux
+Got the same option as the wls module but optimized for Hiera, refactored and only for Linux
+
+For full hiera examples, see the usages below this page
 
 created by Edwin Biemond  email biemond at gmail dot com   
 [biemond.blogspot.com](http://biemond.blogspot.com)    
@@ -20,7 +22,8 @@ Orawls WebLogic Features
 ------------------------
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 )
 - creates a standard WebLogic domain
-
+- Startup the nodemanager
+- Start or stop AdminServer, Managed or a Cluster
 
 Orawls WebLogic Facter
 ----------------------
@@ -35,11 +38,16 @@ Contains WebLogic Facter which displays the following
 ### My orawls module Files folder  
 you need to download all the Oracle binaries and agree to the Oracle (Developer) License
 
-WebLogic 11g: wls1036_generic.jar
-WebLogic 12.1.2: wls_121200.jar, fmw_infra_121200.jar  
+WebLogic 11g:
+- wls1036_generic.jar
 
-WebLogic 11g BSU patches: p13573621_1036_Generic.zip or p14736139_1036_Generic.zip  
+WebLogic 11g BSU patches: 
+- p13573621_1036_Generic.zip
+- p14736139_1036_Generic.zip  
 
+WebLogic 12.1.2:
+- wls_121200.jar
+- fmw_infra_121200.jar
 
 WebLogic Operating Settings like User, Group, ULimits and kernel parameters
 ---------------------------------------------------------------------------
@@ -183,6 +191,37 @@ creates WebLogic a standard WebLogic Domain
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
 
 
+    $default = { weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
+                 middleware_home_dir  => "/opt/oracle/middleware12c",
+                 jdk_home_dir         => "/usr/java/jdk1.7.0_45"
+               }
+    $domain_instances = hiera('domain_instances', [])
+    create_resources('orawls::domain',$domain_instances, $default)
+
+
+hiera xxxx.alfa.local
+
+     ---
+     domain_instances:
+       'wlsDomain12c':
+          version:              1212
+          domain_template:      "standard"
+          domain_name:          "Wls12c"
+          development_mode:     false
+          adminserver_name:     "AdminServer"
+          adminserver_address:  "localhost"
+          adminserver_port:     7001
+          nodemanager_port:     5556
+          weblogic_user:        "weblogic"
+          weblogic_password:    "weblogic1"
+          os_user:              "oracle"
+          os_group:             "dba"
+          log_dir:              "/data/logs"
+          download_dir:         "/data/install"
+          log_output:           true
+
+
+
 ###orawls::nodemanager 
 start the nodemanager of a WebLogic Domain or Middleware Home
 
@@ -202,6 +241,26 @@ start the nodemanager of a WebLogic Domain or Middleware Home
   
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+    $default = { weblogic_home_dir => "/opt/oracle/middleware12c/wlserver",
+                 jdk_home_dir      => "/usr/java/jdk1.7.0_45"
+               }
+    $nodemanager_instances = hiera('nodemanager_instances', [])
+    create_resources('orawls::nodemanager',$nodemanager_instances, $default)
+
+hiera xxxx.alfa.local
+
+    ---
+    nodemanager_instances:
+      'nodemanager12c':
+         version:              1212
+         nodemanager_port:     5556
+         domain_name:          "Wls12c"
+         os_user:              "oracle"
+         os_group:             "dba"
+         log_dir:              "/data/logs"
+         download_dir:         "/data/install"
+         log_output:           true
 
 
 ###orawls::control 
@@ -232,3 +291,37 @@ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
  
+    $default = { weblogic_home_dir => "/opt/oracle/middleware12c/wlserver",
+                 jdk_home_dir      => "/usr/java/jdk1.7.0_45"
+               }
+    $control_instances = hiera('control_instances', [])
+    create_resources('orawls::control',$control_instances, $default)
+ 
+ 
+hiera xxxx.alfa.local
+
+    ---
+    orawls::weblogic::jdk_home_dir: "/usr/java/jdk1.7.0_45"
+    orawls::weblogic::log_output:   true
+
+    control_instances:
+      'startWLSAdminServer12c':
+         domain_name:          "Wls12c"
+         domain_dir:           "/opt/oracle/middleware12c/user_projects/domains/Wls12c"
+         server_type:          'admin'
+         target:               'Server'
+         server:               'AdminServer'
+         action:               'start'
+         weblogic_user:        "weblogic"
+         weblogic_password:    "weblogic1"
+         adminserver_address:  'localhost'
+         adminserver_port:     7001
+         nodemanager_port:     5556
+         os_user:              "oracle"
+         os_group:             "dba"
+         log_dir:              "/data/logs"
+         download_dir:         "/data/install"
+         log_output:           true
+
+
+

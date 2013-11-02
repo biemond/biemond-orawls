@@ -12,10 +12,10 @@ module Puppet::Parser::Functions
     if args[1].nil?
       return art_exists
     else
-      wlsversion = args[1].strip
+      wlsversion = args[1]
     end
 
-    if wlsversion == "1212"
+    if wlsversion == 1212
       versionStr = "_1212"
     else
       versionStr = ""   

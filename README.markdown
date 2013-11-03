@@ -1,7 +1,7 @@
 Oracle WebLogic / Fusion Middleware puppet module V2
 ====================================================
 
-Got the same option as the wls module but optimized for Hiera, refactored and only for Linux
+Got the same options as the wls module but optimized for Hiera, totally refactored and only for Linux
 
 For full hiera examples, see the usages below this page
 
@@ -9,10 +9,9 @@ created by Edwin Biemond  email biemond at gmail dot com
 [biemond.blogspot.com](http://biemond.blogspot.com)    
 [Github homepage](https://github.com/biemond/biemond-orawls)  
 
-Should work for all Linux versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES or OracleLinux 
+Should work for all Linux versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES or OracleLinux  
 
-
-Reference 12.1.2 implementation, the vagrant test case for full working WebLogic 12.1.2 example  
+Reference implementation, the vagrant test case for full working WebLogic 12.1.2 example  
 https://github.com/biemond/biemond-orawls-vagrant  
 
 
@@ -120,7 +119,6 @@ hiera.yaml main configuration
 vagrantcentos64.example.com.yaml
 
      ---
-
 
 common.yaml
 
@@ -322,11 +320,11 @@ start the nodemanager of a WebLogic Domain or Middleware Home
 
 or when you set the defaults hiera variables
 
-   orawls::nodemanager{'nodemanager12c':
+    orawls::nodemanager{'nodemanager12c':
       nodemanager_port           => 5556,
       domain_name                => "Wls12c",     
       log_output                 => true,
-    }  
+    }
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
 

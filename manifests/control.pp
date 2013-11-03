@@ -7,8 +7,8 @@
 #  wlsTarget     = Server|Cluster
 #
 define orawls::control (
-  $weblogic_home_dir          = undef,
-  $jdk_home_dir               = undef, # /usr/java/jdk1.7.0_45
+  $weblogic_home_dir          = hiera('wls_weblogic_home_dir', undef),
+  $jdk_home_dir               = hiera('wls_jdk_home_dir', undef), # /usr/java/jdk1.7.0_45
   $domain_name                = undef,
   $domain_dir                 = undef,
   $server_type                = 'admin',  # admin|managed
@@ -18,16 +18,14 @@ define orawls::control (
   $adminserver_port           = 7001,
   $nodemanager_port           = 5556,
   $action                     = 'start', # start|stop
-  $weblogic_user              = "weblogic",
+  $weblogic_user              = hiera('wls_weblogic_user'       , "weblogic"),
   $weblogic_password          = undef,
-  $os_user                    = undef, # oracle
-  $os_group                   = undef, # dba
-  $log_dir                    = undef, # /data/logs
-  $download_dir               = undef, # /data/install
+  $os_user                    = hiera('wls_os_user'             , undef), # oracle
+  $os_group                   = hiera('wls_os_group'            , undef), # dba
+  $download_dir               = hiera('wls_download_dir'        , undef), # /data/install
   $log_output                 = false, # true|false
 )
 {
-
   $javaCommand = "java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
 
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"

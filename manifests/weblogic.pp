@@ -1,11 +1,11 @@
 # == Class: orawls::weblogic
 #
 class orawls::weblogic (
-  $version              = undef, # 1036|1211|1212
+  $version              = 1111,  # 1036|1111|1211|1212
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
-  $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
+  $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
   $os_group             = undef, # dba
   $download_dir         = undef, # /data/install

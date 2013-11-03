@@ -3,17 +3,18 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                = 1111,  # 1036|1111|1211|1212
-  $weblogic_home_dir      = undef,
-  $jdk_home_dir           = undef, # /usr/java/jdk1.7.0_45
+  $version                = hiera('wls_version'             , 1111),  # 1036|1111|1211|1212
+  $weblogic_home_dir      = hiera('wls_weblogic_home_dir'   , undef),
   $nodemanager_port       = 5556,
   $domain_name            = undef,
-  $os_user                = undef, # oracle
-  $os_group               = undef, # dba
-  $log_dir                = undef, # /data/logs
-  $download_dir           = undef, # /data/install
+  $jdk_home_dir           = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
+  $os_user                = hiera('wls_os_user'             , undef), # oracle
+  $os_group               = hiera('wls_os_group'            , undef), # dba
+  $download_dir           = hiera('wls_download_dir'        , undef), # /data/install
+  $log_dir                = hiera('wls_log_dir'             , undef), # /data/logs
   $log_output             = false, # true|false
 )
+
 {
   if ( $version == 1111 or $version == 1036 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"

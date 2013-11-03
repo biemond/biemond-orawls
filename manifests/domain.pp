@@ -3,10 +3,10 @@
 # setup a new weblogic domain
 ##
 define orawls::domain (
-  $version                    = 1111,  # 1036|1111|1211|1212
-  $weblogic_home_dir          = undef, # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = undef, # /opt/oracle/middleware11gR1
-  $jdk_home_dir               = undef, # /usr/java/jdk1.7.0_45
+  $version                    = hiera('wls_version'             , 1111),  # 1036|1111|1211|1212
+  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'   , undef), # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir        = hiera('wls_middleware_home_dir' , undef), # /opt/oracle/middleware11gR1
+  $jdk_home_dir               = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
   $domain_template            = "standard",
   $domain_name                = undef,
   $development_mode           = true,
@@ -14,12 +14,12 @@ define orawls::domain (
   $adminserver_address        = "localhost",
   $adminserver_port           = 7001,
   $nodemanager_port           = 5556,
-  $weblogic_user              = "weblogic",
+  $weblogic_user              = hiera('wls_weblogic_user'       , "weblogic"),
   $weblogic_password          = undef,
-  $os_user                    = undef, # oracle
-  $os_group                   = undef, # dba
-  $log_dir                    = undef, # /data/logs
-  $download_dir               = undef, # /data/install
+  $os_user                    = hiera('wls_os_user'             , undef), # oracle
+  $os_group                   = hiera('wls_os_group'            , undef), # dba
+  $download_dir               = hiera('wls_download_dir'        , undef), # /data/install
+  $log_dir                    = hiera('wls_log_dir'             , undef), # /data/logs
   $log_output                 = false, # true|false
 )
 {
@@ -83,8 +83,8 @@ define orawls::domain (
       $nodemanager_log_dir       = "${domain_dir}/${domain_name}/nodemanager/nodemanager.log"
 
     } else {
-      $adminNodeMgrLogDir = "${log_dir}"
-      $nodeMgrLogDir = "${log_dir}/nodemanager_${domain}.log"
+      $admin_nodemanager_log_dir = $log_dir
+      $nodeMgrLogDir             = "${log_dir}/nodemanager_${domain_name}.log"
 
       # create all log folders
       if !defined(Exec["create ${log_dir} directory"]) {
@@ -96,8 +96,8 @@ define orawls::domain (
         }
       }
 
-      if !defined(File["${log_dir}"]) {
-        file { "${log_dir}":
+      if !defined(File[$log_dir]) {
+        file { $log_dir:
           ensure  => directory,
           recurse => false,
           replace => false,

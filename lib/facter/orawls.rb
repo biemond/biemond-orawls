@@ -1,5 +1,6 @@
-# oracle_middleware_homes.rb
+# orawls.rb
 require 'rexml/document' 
+require 'facter'
 
 
 # read middleware home in the oracle home folder
@@ -217,7 +218,7 @@ def get_domain(name,i,wlsversion)
       k = 0
       root.elements.each("server") do |server| 
         Facter.add("#{prefix}_domain_#{n}_server_#{k}") do
-          setcode do
+         setcode do
             server.elements['name'].text
           end
         end
@@ -708,7 +709,6 @@ end
 
 # all home counter
 Facter.add("ora_mdw_cnt") do
-
   count = 0
   unless mdw11gHomes.nil?
     count = mdw11gHomes.count

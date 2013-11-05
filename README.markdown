@@ -23,7 +23,7 @@ else you can use $source => "/mnt" or "puppet:///modules/orawls/" (default) or  
 
 Orawls WebLogic Features
 ------------------------
-- installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 )
+- installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
 - apply an OPatch on a Middleware home or a Oracle product home
 - creates a standard WebLogic domain
 - Startup the nodemanager
@@ -148,7 +148,8 @@ WebLogic Module Usage
 
 ###orawls::weblogic
 installs WebLogic 10.3.[0-6], 12.1.1 or 12.1.2  
-
+these settings works for wls_121200.jar when you want to install the 12.1.2 FMW infra version  
+use fmw_infra_121200.jar as filename and set fmw_infra parameter to true  
 
     class{'orawls::weblogic':                             
       version              => 1212,                       # 1036|1211|1212

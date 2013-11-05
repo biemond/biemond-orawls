@@ -5,18 +5,27 @@ class orawls::weblogic (
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
+  $fmw_infra            = false, # true|false 12.1.2 option -> plain weblogic or fmw infra
   $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
   $os_group             = undef, # dba
   $download_dir         = undef, # /data/install
   $source               = undef, # puppet:///modules/orawls/ | /mnt | /vagrant
   $log_output           = false, # true|false
-  ) {
+) {
 
   if ($version == 1036 or $version == 1211) {
     $silent_template = "orawls/weblogic_silent_instal.xml.erb"
   } elsif ( $version == 1212) {
+
+    #The oracle home location. This can be an existing Oracle Home or a new Oracle Home
+    if ( $fmw_infra == true ) {
+      $install_type="Fusion Middleware Infrastructure"
+    } else {
+      $install_type="WebLogic Server"
+    }
     $silent_template = "orawls/weblogic_silent_install_1212.xml.erb"
+
   } else  {
     fail('unknown weblogic version parameter')
   }

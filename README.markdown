@@ -24,6 +24,7 @@ else you can use $source => "/mnt" or "puppet:///modules/orawls/" (default) or  
 Orawls WebLogic Features
 ------------------------
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 )
+- apply an OPatch on a Middleware home or a Oracle product home
 - creates a standard WebLogic domain
 - Startup the nodemanager
 - Start or stop AdminServer, Managed or a Cluster
@@ -51,6 +52,9 @@ WebLogic 11g BSU patches:
 WebLogic 12.1.2:
 - wls_121200.jar
 - fmw_infra_121200.jar
+
+WebLogic 12.1.2 OPatch:
+- p16175470_121200_Generic.zip
 
 WebLogic Operating Settings like User, Group, ULimits and kernel parameters
 ---------------------------------------------------------------------------
@@ -213,6 +217,67 @@ common.yaml
     orawls::weblogic::source:               *wls_source
     
 
+###orawls::opatch 
+apply an OPatch on a Middleware home or a Oracle product home
+
+    orawls::opatch {'16175470':
+      oracle_product_home_dir => "/opt/oracle/middleware11gR1",
+      jdk_home_dir            => "/usr/java/jdk1.7.0_45",
+      patchId                 => "16175470",
+      patchFile               => "p16175470_121200_Generic.zip",
+      os_user                 => "oracle",
+      os_group                => "dba",
+      download_dir            => "/data/install",
+      source                  => "/vagrant",
+      log_output              => false,
+    }
+    
+
+or when you set the defaults hiera variables
+
+    orawls::opatch {'16175470':
+      oracle_product_home_dir => "/opt/oracle/middleware11gR1",
+      patchId                 => "16175470",
+      patchFile               => "p16175470_121200_Generic.zip",
+    }
+    
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+
+    $default_params = {}
+    $opatch_instances = hiera('opatch_instances', [])
+    create_resources('orawls::opatch',$opatch_instances, $default_params)
+  
+
+common.yaml
+
+    ---
+    opatch_instances:
+      '16175470':
+         oracle_product_home_dir:  "/opt/oracle/middleware12c"
+         patchId:                  "16175470"
+         patchFile:                "p16175470_121200_Generic.zip"
+         jdk_home_dir              "/usr/java/jdk1.7.0_45"
+         os_user:                  "oracle"
+         os_group:                 "dba"
+         download_dir:             "/data/install"
+         source:                   "/vagrant"
+         log_output:               true
+        
+
+
+or when you set the defaults hiera variables
+
+    ---
+    opatch_instances:
+      '16175470':
+         oracle_product_home_dir:  "/opt/oracle/middleware12c"
+         patchId:                  "16175470"
+         patchFile:                "p16175470_121200_Generic.zip"
+        
+
+
 
 ###orawls::domain 
 creates WebLogic a standard WebLogic Domain
@@ -272,7 +337,6 @@ vagrantcentos64.example.com.yaml
          jdk_home_dir          "/usr/java/jdk1.7.0_45"
          domain_template:      "standard"
          domain_name:          "Wls12c"
-         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
          development_mode:     false
          adminserver_name:     "AdminServer"
          adminserver_address:  "localhost"

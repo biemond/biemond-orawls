@@ -20,12 +20,6 @@ module Puppet::Parser::Functions
 
         unless mdw.nil?
           mdw = mdw.strip.downcase
-          os = lookupvar('operatingsystem')
-          if os == "windows"
-            mdw = mdw.gsub("\\","/")
-            mdwArg = mdwArg.gsub("\\","/")
-          end 
-
           # do we found the right mdw
           if mdw == mdwArg 
             # check patches

@@ -16,7 +16,7 @@ define orawls::nodemanager (
 )
 
 {
-  if ( $version == 1111 or $version == 1036 ) {
+  if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
   } elsif $version == 1212 {
@@ -27,9 +27,9 @@ define orawls::nodemanager (
   }
 
   if $log_dir == undef {
-    $nodeLogDir = "${nodeMgrHome}/nodemanager.log"
+    $nodeMgrLogDir = "${nodeMgrHome}/nodemanager.log"
   } else {
-    $nodeLogDir = "${log_dir}/nodemanager.log"
+    $nodeMgrLogDir = "${log_dir}/nodemanager.log"
   }
 
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
@@ -61,18 +61,19 @@ define orawls::nodemanager (
       group     => $os_group,
       cwd       => $nodeMgrHome,
     }
-  } elsif $version == "1111" {
+  } elsif (  $version == 1111 or $version == 1036 or $version == 1211 ){
     if $log_dir != undef {
       # create all folders
-      exec { "create ${log_dir} directory":
-        command => "mkdir -p ${log_dir}",
-        unless  => "test -d ${log_dir}",
-        user    => 'root',
-        path    => $exec_path,
-        group   => $os_group,
-        cwd     => $nodeMgrHome,
+      if !defined(Exec["create ${log_dir} directory"]) {
+	      exec { "create ${log_dir} directory":
+	        command => "mkdir -p ${log_dir}",
+	        unless  => "test -d ${log_dir}",
+	        user    => 'root',
+	        path    => $exec_path,
+	        group   => $os_group,
+	        cwd     => $nodeMgrHome,
+	      }
       }
-
       if !defined(File["${log_dir}"]) {
         file { "${log_dir}":
           ensure  => directory,
@@ -91,7 +92,7 @@ define orawls::nodemanager (
       path    => "${nodeMgrHome}/nodemanager.properties",
       ensure  => present,
       replace => true,
-      content => template("wls/nodemgr/nodemanager.properties.erb"),
+      content => template("orawls/nodemgr/nodemanager.properties.erb"),
       owner   => $os_user,
       group   => $os_group,
     }

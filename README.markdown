@@ -24,6 +24,7 @@ else you can use $source => "/mnt" or "puppet:///modules/orawls/" (default) or  
 Orawls WebLogic Features
 ------------------------
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
+- apply a BSU patch on a Middleware home ( < 12.1.2 )
 - apply an OPatch on a Middleware home or a Oracle product home
 - creates a standard WebLogic domain
 - Startup the nodemanager
@@ -46,8 +47,7 @@ WebLogic 11g:
 - wls1036_generic.jar
 
 WebLogic 11g BSU patches: 
-- p13573621_1036_Generic.zip
-- p14736139_1036_Generic.zip  
+- p17071663_1036_Generic.zip
 
 WebLogic 12.1.2:
 - wls_121200.jar
@@ -222,7 +222,7 @@ common.yaml
 apply an OPatch on a Middleware home or a Oracle product home
 
     orawls::opatch {'16175470':
-      oracle_product_home_dir => "/opt/oracle/middleware11gR1",
+      oracle_product_home_dir => "/opt/oracle/middleware12c",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
       patchId                 => "16175470",
       patchFile               => "p16175470_121200_Generic.zip",
@@ -237,7 +237,7 @@ apply an OPatch on a Middleware home or a Oracle product home
 or when you set the defaults hiera variables
 
     orawls::opatch {'16175470':
-      oracle_product_home_dir => "/opt/oracle/middleware11gR1",
+      oracle_product_home_dir => "/opt/oracle/middleware12c",
       patchId                 => "16175470",
       patchFile               => "p16175470_121200_Generic.zip",
     }
@@ -278,6 +278,66 @@ or when you set the defaults hiera variables
          patchFile:                "p16175470_121200_Generic.zip"
         
 
+
+###orawls::bsu 
+apply a WebLogic BSU Patch
+
+    orawls::bsu {'BYJ1':
+      middleware_home_dir     => "/opt/oracle/middleware11gR1",
+      weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
+      jdk_home_dir            => "/usr/java/jdk1.7.0_45",
+      patchId                 => "BYJ1",
+      patchFile               => "p17071663_1036_Generic.zip",
+      os_user                 => "oracle",
+      os_group                => "dba",
+      download_dir            => "/data/install",
+      source                  => "/vagrant",
+      log_output              => false,
+    }
+
+
+or when you set the defaults hiera variables
+
+    orawls::bsu {'BYJ1':
+      patchId                 => "BYJ1",
+      patchFile               => "p17071663_1036_Generic.zip",
+      log_output              => false,
+    }
+
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+
+    $default_params = {}
+    $bsu_instances = hiera('bsu_instances', [])
+    create_resources('orawls::bsu',$bsu_instances, $default_params)
+  
+
+common.yaml
+
+    ---
+    bsu_instances:
+      'BYJ1':
+         middleware_home_dir:     "/opt/oracle/middleware11gR1"
+         weblogic_home_dir:       "/opt/oracle/middleware11gR1/wlserver"
+         jdk_home_dir:            "/usr/java/jdk1.7.0_45"
+         patchId:                 "BYJ1"
+         patchFile:               "p17071663_1036_Generic.zip"
+         os_user:                 "oracle"
+         os_group:                "dba"
+         download_dir:            "/data/install"
+         source:                  "/vagrant"
+         log_output:              false
+
+
+or when you set the defaults hiera variables
+
+    ---
+    bsu_instances:
+      'BYJ1':
+         patchId:                 "BYJ1"
+         patchFile:               "p17071663_1036_Generic.zip"
+         log_output:              false
 
 
 ###orawls::domain 

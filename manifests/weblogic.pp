@@ -14,8 +14,8 @@ class orawls::weblogic (
   $log_output           = false, # true|false
 ) {
 
-  if ($version == 1036 or $version == 1211) {
-    $silent_template = "orawls/weblogic_silent_instal.xml.erb"
+  if ($version == 1036 or $version == 1111 or $version == 1211) {
+    $silent_template = "orawls/weblogic_silent_install.xml.erb"
   } elsif ( $version == 1212) {
 
     #The oracle home location. This can be an existing Oracle Home or a new Oracle Home

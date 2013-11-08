@@ -1,0 +1,57 @@
+# create a managed server
+
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'
+                                
+#wlsServerName, javaArguments, machineName, listenAddress, nodeMgrLogDir
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+
+    cmo.createServer(wlsServerName)
+  
+    cd('/Servers/'+wlsServerName)
+    set('Machine',getMBean('/Machines/'+machineName))
+    
+    # address and port
+    set('ListenPort',listenAddress)
+    
+    cd('ServerStart/'+wlsServerName)
+    set('Arguments', javaArguments)
+    
+    cd('/Servers/'+wlsServerName+'/SSL/'+wlsServerName)
+    set('Enabled', 'False')
+    set('HostnameVerificationIgnored', 'True')
+    
+    cd('/Servers/'+wlsServerName+'/Log/'+wlsServerName)
+    set('FileName',nodeMgrLogDir+'/'+wlsServerName+'.log')
+    set('FileCount',10)
+    set('FileMinSize',5000)
+    set('RotationType','byTime')
+    set('FileTimeSpan',24)
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

@@ -1,54 +1,53 @@
 # restart the puppetmaster when changed
 module Puppet::Parser::Functions
   newfunction(:artifact_exists, :type => :rvalue) do |args|
-    
+
     art_exists = false
     if args[0].nil?
       return art_exists
     else
       wlsDomain = args[0].strip.downcase
-    end    
+    end
 
     if args[1].nil?
       return art_exists
     else
       type = args[1].strip.downcase
-    end   
+    end
 
     if args[2].nil?
       return art_exists
     else
       wlsObject = args[2].strip
-    end    
-    
+    end
+
     if ( type == 'resource' or type == 'resource_entry'  )
       if args[3].nil?
         return art_exists
       else
         subType = args[3].strip
-      end 
+      end
       if args[4].nil?
         return art_exists
-       else
-         wlsversion = args[4].strip
-       end
+      else
+        wlsversion = args[4].strip
+      end
     else
       if args[3].nil?
         return art_exists
       else
         wlsversion = args[3].strip
       end
-    end  
-       
+    end
+
     if wlsversion == "1212"
       versionStr = "_1212"
     else
-      versionStr = ""   
+      versionStr = ""
     end
-    
+
     prefix = "ora_mdw"+versionStr
-    
-    
+
     # check the middleware home
     mdw_count = lookupvar(prefix+'_cnt')
     if mdw_count.nil?
@@ -56,9 +55,9 @@ module Puppet::Parser::Functions
     else
       # check the all mdw home
       i = 0
-      while ( i < mdw_count.to_i) 
+      while ( i < mdw_count.to_i)
 
-        if lookupvar(prefix+'_'+i.to_s) != :undefined  
+        if lookupvar(prefix+'_'+i.to_s) != :undefined
           mdw = lookupvar(prefix+'_'+i.to_s)
           mdw = mdw.strip.downcase
 
@@ -69,13 +68,12 @@ module Puppet::Parser::Functions
 
             # lookup up domain
             if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s) != :undefined
-              domain = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s)  
+              domain = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s)
               domain = domain.strip.downcase
 
               # do we found the right domain
-              if domain == wlsDomain 
-                
- 
+              if domain == wlsDomain
+
                 # check jdbc datasources
                 if type == 'jdbc'
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jdbc') != :undefined
@@ -116,8 +114,7 @@ module Puppet::Parser::Functions
                       end
                     end
                   end
-                                    
-                  
+
                 elsif type == 'server_templates'
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_server_templates') != :undefined
                     server_templates =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_server_templates')
@@ -137,19 +134,19 @@ module Puppet::Parser::Functions
                       end
                     end
                   end
-                                  
+
                 elsif type == 'resource'
 
                   adapter = wlsObject.downcase
                   plan = subType.downcase
 
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_eis_'+adapter+'_plan') != :undefined
-                     planValue =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_eis_'+adapter+'_plan')
-                     unless planValue.nil?
-                       if planValue.strip.downcase == plan
-                         return true
-                       end
-                     end  
+                    planValue =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_eis_'+adapter+'_plan')
+                    unless planValue.nil?
+                      if planValue.strip.downcase == plan
+                        return true
+                      end
+                    end
                   end
                 elsif type == 'resource_entry'
                   # ora_mdw_0_domain_0_eis_dbadapter_entries  eis/DB/initial;eis/DB/hr;
@@ -160,10 +157,10 @@ module Puppet::Parser::Functions
                   # adapterPlanDir       => "${osMdwHome}/Oracle_SOA1/soa/connectors" ,
                   # adapterPlan          => 'Plan_DB.xml' ,
                   # adapterEntry         => 'eis/DB/hr',
-                  
+
                   adapter = wlsObject.downcase
                   entry = subType.strip
-                  
+
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_eis_'+adapter+'_entries') != :undefined
                     planEntries = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_eis_'+adapter+'_entries')
                     unless planEntries.nil?
@@ -232,13 +229,13 @@ module Puppet::Parser::Functions
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt') != :undefined
                     jms_count =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
                     unless jms_count.nil?
-  
+
                       l = 0
                       while ( l < jms_count.to_i )
                         jmsobjects =  ""
                         if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_objects') != :undefined
                           jmsobjects =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_objects')
-                        end 
+                        end
                         unless jmsobjects.nil?
                           if jmsobjects.include? wlsObject
                             return true
@@ -246,7 +243,7 @@ module Puppet::Parser::Functions
                         end
                         l += 1
                       end
-                    end  
+                    end
                   end
 
                 elsif type == 'jmssubdeployment'
@@ -254,7 +251,7 @@ module Puppet::Parser::Functions
                     jms_count =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
                     unless jms_count.nil?
 
-                     l = 0
+                      l = 0
                       while ( l < jms_count.to_i )
                         jmssubobjects =  ""
                         jmsmodule     =  ""
@@ -277,9 +274,9 @@ module Puppet::Parser::Functions
 
                         l += 1
                       end
-  
+
                     end
-                  end 
+                  end
 
                 elsif type == 'jmsquota'
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt') != :undefined
@@ -308,19 +305,18 @@ module Puppet::Parser::Functions
                         end
                         l += 1
                       end
-  
+
                     end
-                  end 
+                  end
 
-
-                end # if type               
-              end  # domain_path equal 
-            end # domain not nil           
+                end # if type
+              end  # domain_path equal
+            end # domain not nil
             n += 1
 
           end  # while domain
 
-        end 
+        end
         i += 1
       end # while mdw
 

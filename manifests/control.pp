@@ -59,6 +59,7 @@ define orawls::control (
     path    => "${download_dir}/${title}${script}",
     content => template("orawls/wlst/${script}.erb"),
     ensure  => present,
+    backup  => false,
     replace => true,
     mode    => 0775,
     owner   => $os_user,

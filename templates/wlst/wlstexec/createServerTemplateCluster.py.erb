@@ -1,0 +1,44 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'  
+    
+# server_template_name, server_template_listen_port,dynamic_server_name_arguments
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+
+    print 'Create Server Template';
+    
+    cmo.createServerTemplate(server_template_name);
+    server_template = cmo.lookupServerTemplate(server_template_name);
+    server_template.setListenPort(server_template_listen_port);
+    server_template.getServerStart().setArguments(dynamic_server_name_arguments);
+    server_template.setAcceptBacklog(2000)
+    server_template.setAutoRestart(true)
+    server_template.setRestartMax(10)
+    server_template.setStartupTimeout(600)
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

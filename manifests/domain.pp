@@ -115,6 +115,7 @@ define orawls::domain (
       content => template($templateFile),
       ensure  => present,
       replace => true,
+      backup  => false,
       mode    => 0775,
       owner   => $os_user,
       group   => $os_group,

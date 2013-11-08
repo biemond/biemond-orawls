@@ -1,0 +1,14 @@
+
+wlsUser       = '<%= @weblogic_user %>'
+password      = sys.argv[1] 
+machine       = '<%= @adminserver_address %>'
+portNumber    = '<%= @adminserver_port %>'
+
+domain        = '<%= @domain_name %>'
+user          = '<%= @os_user %>'
+userConfigDir = '<%= @user_config_dir %>'
+
+prefix        = userConfigDir+'/'+user+'-'+domain
+
+connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+storeUserConfig(prefix+'-WebLogicConfig.properties',prefix+'-WebLogicKey.properties')

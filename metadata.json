@@ -1,7 +1,7 @@
 {
   "name": "biemond-orawls",
-  "version": "0.1.3",
-  "summary": "Oracle WebLogic puppet module v2, only for Linux and optimized for Hiera",
+  "version": "0.1.4",
+  "summary": "Oracle WebLogic puppet module v2, only for Linux and optimized for Hiera ( Puppet 3.X )",
   "author": "Edwin Biemond",
   "description": "Linux Oracle WebLogic module optimized for Hiera\n\nbased on the wls module and follow the naming standards and compliant modules of https://github.com/stdmod",
   "dependencies": [],

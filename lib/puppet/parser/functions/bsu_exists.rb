@@ -1,7 +1,7 @@
 # restart the puppetmaster when changed
 module Puppet::Parser::Functions
   newfunction(:bsu_exists, :type => :rvalue) do |args|
-    
+
     art_exists = false
     mdwArg = args[0].strip.downcase
 
@@ -14,14 +14,14 @@ module Puppet::Parser::Functions
 
       # check the all mdw home
       i = 0
-      while ( i < mdw_count.to_i) 
+      while ( i < mdw_count.to_i)
 
         mdw = lookupvar('ora_mdw_'+i.to_s)
 
         unless mdw.nil?
           mdw = mdw.strip.downcase
           # do we found the right mdw
-          if mdw == mdwArg 
+          if mdw == mdwArg
             # check patches
             if lookupvar('ora_mdw_'+i.to_s+'_bsu') != :undefined
               all_bsu =  lookupvar('ora_mdw_'+i.to_s+'_bsu')
@@ -32,7 +32,7 @@ module Puppet::Parser::Functions
               end
             end
           end
-        end 
+        end
         i += 1
       end
     end

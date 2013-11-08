@@ -1,0 +1,49 @@
+# for weblogic 12.1.2 
+
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'
+
+# server_template_name, dynamic_cluster_name, dynamic_nodemanager_match,dynamic_server_name_prefix
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    print 'Create Dynamic Cluster';
+    server_template = cmo.lookupServerTemplate(server_template_name);
+    
+    cluster = cmo.createCluster(dynamic_cluster_name);
+    cluster.setClusterMessagingMode('unicast');
+
+    server_template.setCluster(cluster);
+
+    cluster.getDynamicServers().setServerTemplate(server_template);
+    cluster.getDynamicServers().setMaximumDynamicServerCount(1);
+    cluster.getDynamicServers().setCalculatedMachineNames(true);
+    cluster.getDynamicServers().setMachineNameMatchExpression(dynamic_nodemanager_match);
+    cluster.getDynamicServers().setServerNamePrefix(dynamic_server_name_prefix);
+    cluster.getDynamicServers().setCalculatedListenPorts(true);
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

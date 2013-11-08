@@ -1,0 +1,57 @@
+
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'   
+                                
+#subDeploymentName, jmsModuleName, cfName,cfJNDIName,transacted,timeout
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+print "subDeploymentName: ", subDeploymentName, " jmsModule: ", jmsModuleName, "cfName: ",cfName , "cfJNDIName: ",cfJNDIName
+
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName)
+    cmo.createConnectionFactory(cfName)
+
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/SecurityParams/'+cfName)
+    cmo.setAttachJMSXUserId(false)
+
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/ClientParams/'+cfName)
+    cmo.setClientIdPolicy('Restricted')
+    cmo.setSubscriptionSharingPolicy('Exclusive')
+    cmo.setMessagesMaximum(10)
+
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName)
+    cmo.setJNDIName(cfJNDIName)
+    cmo.setDefaultTargetingEnabled(false)
+    cmo.setSubDeploymentName(subDeploymentName)
+
+    if transacted == "true":
+        cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/TransactionParams/'+cfName)
+        cmo.setXAConnectionFactoryEnabled(true)
+        cmo.setTransactionTimeout( int(timeout) )
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

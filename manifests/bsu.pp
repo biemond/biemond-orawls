@@ -55,10 +55,11 @@ define orawls::bsu (
       file { "${download_dir}/${patchFile}":
         source  => "${mountPoint}/${patchFile}",
         require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
-        ensure => present,
-        mode   => 0775,
-        owner  => $os_user,
-        group  => $os_group,
+        backup  => false,
+        ensure  => present,
+        mode    => 0775,
+        owner   => $os_user,
+        group   => $os_group,
       }
     }
 

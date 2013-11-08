@@ -1,9 +1,9 @@
 # restart the puppetmaster when changed
 module Puppet::Parser::Functions
   newfunction(:wls_exists, :type => :rvalue) do |args|
-    
+
     wls_exists = false
-    
+
     mdwArg = args[0]
 
     # check the middleware home
@@ -13,17 +13,17 @@ module Puppet::Parser::Functions
     else
       # check the all mdw home
       i = 0
-      while ( i < mdw_count.to_i) 
+      while ( i < mdw_count.to_i)
         mdw = lookupvar('ora_mdw_'+i.to_s)
         unless mdw.nil?
           mdw = mdw.strip
           if mdw == mdwArg
             return true
           end
-        end 
+        end
         i += 1
       end
-      
+
       #check for weblogic >= 12.1.2
       if lookupvar('ora_inst_products') != :undefined
         ora = lookupvar('ora_inst_products')
@@ -35,7 +35,7 @@ module Puppet::Parser::Functions
             return true
           end
         end
-      end  
+      end
 
     end
     return wls_exists

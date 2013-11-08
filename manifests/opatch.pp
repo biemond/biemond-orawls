@@ -43,6 +43,7 @@ define orawls::opatch (
       file { "${download_dir}/${patchFile}":
          source => "${mountPoint}/${patchFile}",
          ensure => present,
+         backup  => false,
          mode   => 0775,
          owner  => $os_user,
          group  => $os_group,

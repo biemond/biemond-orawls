@@ -1,0 +1,54 @@
+# for weblogic 12.1.2 we can also target to a cluster
+
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'
+                                
+#storeName, target, targetType, jmsServerName ,storeType
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cmo.createJMSServer(jmsServerName)
+    cd('/Deployments/'+jmsServerName)
+    if storeType == "file":
+        cmo.setPersistentStore(getMBean('/FileStores/'+storeName))
+    else:
+        cmo.setPersistentStore(getMBean('/JDBCStores/'+storeName))
+
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targetType)], ObjectName))
+
+    ## Threshold (values are default)
+    # cmo.setBytesThresholdHigh(-1)
+    # cmo.setBytesThresholdLow(-1)
+    # cmo.setMessagesThresholdHigh(-1)
+    # cmo.setMessagesThresholdLow(-1)
+    ## Quotas (values are default, except MaxMsgSize set to 10MB)
+    # cmo.setBytesMaximum(-1)
+    # cmo.setMessagesMaximum(-1)
+    # cmo.setBlockingSendPolicy('FIFO')
+    cmo.setMaximumMessageSize(10000000)
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

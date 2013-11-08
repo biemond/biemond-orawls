@@ -1,7 +1,7 @@
 # restart the puppetmaster when changed
 module Puppet::Parser::Functions
   newfunction(:domain_exists, :type => :rvalue) do |args|
-    
+
     art_exists = false
     if args[0].nil?
       return art_exists
@@ -18,11 +18,11 @@ module Puppet::Parser::Functions
     if wlsversion == 1212
       versionStr = "_1212"
     else
-      versionStr = ""   
+      versionStr = ""
     end
 
     prefix = "ora_mdw#{versionStr}"
-    
+
     # check the middleware home
     mdw_count = lookupvar(prefix+'_cnt')
     if mdw_count.nil?
@@ -31,7 +31,7 @@ module Puppet::Parser::Functions
     else
       # check the all mdw home
       i = 0
-      while ( i < mdw_count.to_i) 
+      while ( i < mdw_count.to_i)
 
         mdw = lookupvar(prefix+'_'+i.to_s)
 
@@ -47,19 +47,19 @@ module Puppet::Parser::Functions
             domain = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s)
             unless domain.nil?
               domain = domain.strip.downcase
-              
+
               domain_path = mdw + "/user_projects/domains/" + domain
 
               # do we found the right domain
-              if domain_path == mdwArg 
+              if domain_path == mdwArg
                 return true
               end
-            end            
+            end
             n += 1
 
           end
 
-        end 
+        end
         i += 1
       end
 

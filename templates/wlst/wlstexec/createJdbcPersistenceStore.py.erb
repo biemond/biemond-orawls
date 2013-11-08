@@ -1,0 +1,42 @@
+
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'   
+
+       
+#serverTarget, jdbcStoreName, prefix,datasource
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+            
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cmo.createJDBCStore(jdbcStoreName)
+    cd('/JDBCStores/'+jdbcStoreName)
+    cmo.setDataSource(getMBean('/SystemResources/'+datasource))
+    cmo.setPrefixName(prefix)
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+serverTarget+',Type=Server')], ObjectName))
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

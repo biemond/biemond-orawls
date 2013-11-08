@@ -1,0 +1,77 @@
+
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>' 
+                     
+jmsQuota   = ""                     
+                                
+#subDeploymentName, jmsModuleName, jmsName,jmsJNDIName,jmsType,distributed,balancingPolicy,useRedirect,limit,policy,errorObject,jmsQuota
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+
+
+print "subDeploymentName: ", subDeploymentName, " jmsModule: ", jmsModuleName, "Name: ",jmsName , "JNDIName: ",jmsJNDIName
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName)
+     
+    if jmsType == "queue":
+        if distributed == "true":
+            cmo.createUniformDistributedQueue(jmsName)
+            jmsWlsType = '/UniformDistributedQueues/'
+        else:
+            cmo.createQueue(jmsName)
+            jmsWlsType = '/Queues/'
+    if jmsType == "topic":
+        if distributed == "true":
+            cmo.createUniformDistributedTopic(jmsName)
+            jmsWlsType = '/UniformDistributedTopics/'
+        else:
+            cmo.createTopic(jmsName)
+            jmsWlsType = '/Topics/'
+     
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName)
+    cmo.setJNDIName(jmsJNDIName)
+    cmo.setSubDeploymentName(subDeploymentName)
+
+    print "distributed: ",distributed
+    if distributed == "true" and jmsType == "queue":
+      print "distributed"
+      cmo.setLoadBalancingPolicy(balancingPolicy)
+
+    print "redirect: ",useRedirect
+    if useRedirect == "true":
+      print "redirect to ",errorObject
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
+      cmo.setRedeliveryLimit( int(limit) )
+      cmo.setExpirationPolicy(policy)
+      cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/UniformDistributedQueues/'+errorObject))
+
+    if jmsQuota:
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName)
+      cmo.setQuota(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/Quotas/'+jmsQuota ))
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

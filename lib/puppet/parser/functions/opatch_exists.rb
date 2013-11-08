@@ -1,7 +1,7 @@
 # restart the puppetmaster when changed
 module Puppet::Parser::Functions
   newfunction(:opatch_exists, :type => :rvalue) do |args|
-    
+
     patch_exists  = false
     oracleHomeArg = args[0].strip.downcase
     oracleHome    = oracleHomeArg.gsub("/","_").gsub("\\","_").gsub("c:","_c").gsub("d:","_d").gsub("e:","_e")

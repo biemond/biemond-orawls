@@ -5,8 +5,8 @@
 define orawls::nodemanager (
   $version                = hiera('wls_version'             , 1111),  # 1036|1111|1211|1212
   $weblogic_home_dir      = hiera('wls_weblogic_home_dir'   , undef),
-  $nodemanager_port       = 5556,
-  $domain_name            = undef,
+  $nodemanager_port       = hiera('domain_nodemanager_port' , 5556),
+  $domain_name            = hiera('domain_name'             , undef),
   $jdk_home_dir           = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
   $os_user                = hiera('wls_os_user'             , undef), # oracle
   $os_group               = hiera('wls_os_group'            , undef), # dba
@@ -65,14 +65,14 @@ define orawls::nodemanager (
     if $log_dir != undef {
       # create all folders
       if !defined(Exec["create ${log_dir} directory"]) {
-	      exec { "create ${log_dir} directory":
-	        command => "mkdir -p ${log_dir}",
-	        unless  => "test -d ${log_dir}",
-	        user    => 'root',
-	        path    => $exec_path,
-	        group   => $os_group,
-	        cwd     => $nodeMgrHome,
-	      }
+        exec { "create ${log_dir} directory":
+          command => "mkdir -p ${log_dir}",
+          unless  => "test -d ${log_dir}",
+          user    => 'root',
+          path    => $exec_path,
+          group   => $os_group,
+          cwd     => $nodeMgrHome,
+        }
       }
       if !defined(File["${log_dir}"]) {
         file { "${log_dir}":

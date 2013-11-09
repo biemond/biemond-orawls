@@ -83,10 +83,11 @@ class orawls::weblogic (
     file { "${download_dir}/weblogic_silent_install.xml":
       content => template($silent_template),
       ensure  => present,
-      replace => 'yes',
+      replace => true,
       mode    => 0775,
       owner   => $os_user,
       group   => $os_group,
+      backup  => false,
       require => Orawls::Utils::Structure['weblogic structure ${version}'],
     }
 

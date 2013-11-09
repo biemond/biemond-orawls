@@ -3,23 +3,23 @@
 # setup a new weblogic domain
 ##
 define orawls::domain (
-  $version                    = hiera('wls_version'             , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'   , undef), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir' , undef), # /opt/oracle/middleware11gR1
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
+  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
+  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
+  $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $domain_template            = "standard",
-  $domain_name                = undef,
+  $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
-  $adminserver_name           = "AdminServer",
-  $adminserver_address        = "localhost",
-  $adminserver_port           = 7001,
-  $nodemanager_port           = 5556,
-  $weblogic_user              = hiera('wls_weblogic_user'       , "weblogic"),
-  $weblogic_password          = undef,
-  $os_user                    = hiera('wls_os_user'             , undef), # oracle
-  $os_group                   = hiera('wls_os_group'            , undef), # dba
-  $download_dir               = hiera('wls_download_dir'        , undef), # /data/install
-  $log_dir                    = hiera('wls_log_dir'             , undef), # /data/logs
+  $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
+  $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
+  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
+  $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
+  $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
+  $weblogic_password          = hiera('domain_wls_password'       , undef),
+  $os_user                    = hiera('wls_os_user'               , undef), # oracle
+  $os_group                   = hiera('wls_os_group'              , undef), # dba
+  $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
+  $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
 )
 {

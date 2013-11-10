@@ -33,12 +33,12 @@ define orawls::wlstexec (
 
     if $found == undef {
       $continue = true
-      notify { "wls::wlstexec ${title} ${version} continue true cause nill": }
+      notify { "orawls::wlstexec ${title} ${version} continue true cause nill": }
     } else {
       if ($found) {
         $continue = false
       } else {
-        notify { "wls::wlstexec ${title} ${version} continue true cause not exists": }
+        notify { "orawls::wlstexec ${title} ${version} continue true cause not exists": }
         $continue = true
       }
     }

@@ -1,0 +1,206 @@
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>/<%= @domain_name %>'
+DOMAIN='<%= @domain_name %>'
+APP_PATH='<%= @app_dir %>/<%= @domain_name %>'
+
+DEVELOPMENT_MODE=<%= @development_mode %>
+
+WEBLOGIC_VERSION=<%= @version %>
+
+ADMIN_SERVER='<%= @adminserver_name %>'
+ADMIN_USER='<%= @weblogic_user %>'
+ADMIN_PASSWORD='<%= @weblogic_password %>'
+
+JAVA_HOME='<%= @JAVA_HOME %>'
+
+ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+
+ADF_REPOS_DBURL='<%= @reposDbUrl %>'
+ADF_REPOS_DBUSER_PREFIX='<%= @reposPrefix %>'
+ADF_REPOS_DBPASSWORD='<%= @reposPassword %>'
+
+def createBootPropertiesFile(directoryPath,fileName, username, password):
+  adminserverDir = File(directoryPath)
+  bool = adminserverDir.mkdirs()
+  fileNew=open(directoryPath + '/'+fileName, 'w')
+  fileNew.write('username=%s\n' % username)
+  fileNew.write('password=%s\n' % password)
+  fileNew.flush()
+  fileNew.close()
+
+
+
+print('Start...adf domain with template <%= @template %>')
+readTemplate('<%= @template %>')
+
+
+print('Set crossdomain')
+create('base_domain','SecurityConfiguration')
+cd('/SecurityConfiguration/base_domain')
+set('CrossDomainSecurityEnabled',true)
+
+cd('/')
+create('base_domain','Log')
+cd('/Log/base_domain')
+set('FileName','<%= @admin_nodemanager_log_dir %>/'+DOMAIN+'.log')
+set('FileCount',10)
+set('FileMinSize',5000)
+set('RotationType','byTime')
+set('FileTimeSpan',24)
+
+
+
+cd('/')
+create('LocalMachine', '<%= @nodeMgrMachine %>')
+
+
+cd('/Servers/AdminServer')
+# name of adminserver
+set('Name',ADMIN_SERVER )
+
+cd('/Servers/'+ADMIN_SERVER)
+
+set('Machine','LocalMachine')
+
+# address and port
+#set('ListenAddress','<%= @adminListenAdr %>')
+set('ListenPort',<%= @adminserver_port %>)
+
+setOption( "AppDir", APP_PATH )
+
+create(ADMIN_SERVER,'ServerStart')
+cd('ServerStart/'+ADMIN_SERVER)
+set('Arguments', ADM_JAVA_ARGUMENTS)
+set('JavaVendor','Sun')
+set('JavaHome', JAVA_HOME)
+
+cd('/Server/'+ADMIN_SERVER)
+create(ADMIN_SERVER,'SSL')
+cd('SSL/'+ADMIN_SERVER)
+set('Enabled', 'False')
+set('HostNameVerificationIgnored', 'True')
+
+cd('/Server/'+ADMIN_SERVER)
+create(ADMIN_SERVER,'Log')
+cd('/Server/'+ADMIN_SERVER+'/Log/'+ADMIN_SERVER)
+set('FileName','<%= @admin_nodemanager_log_dir %>/'+ADMIN_SERVER+'.log')
+set('FileCount',10)
+set('FileMinSize',5000)
+set('RotationType','byTime')
+set('FileTimeSpan',24)
+
+
+
+
+print('Set password...')
+cd('/')
+cd('Security/base_domain/User/weblogic')
+
+# weblogic user name + password
+set('Name',ADMIN_USER)
+cmo.setPassword(ADMIN_PASSWORD)
+
+# Set domain save options:
+# - ServerStartMode: Set mode to development.
+# - JavaHome: Sets home directory for the JVM used when starting the server.
+
+if DEVELOPMENT_MODE == true:
+  setOption('ServerStartMode', 'dev')
+else:
+  setOption('ServerStartMode', 'prod')
+
+setOption('JavaHome', JAVA_HOME)
+
+print('write domain...')
+# write path + domain name
+writeDomain(DOMAIN_PATH)
+closeTemplate()
+
+createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+
+readDomain(DOMAIN_PATH)
+
+print('set domain password...') 
+cd('/SecurityConfiguration/'+DOMAIN)
+set('CredentialEncrypted',es)
+print('Set nodemanager password')
+set('NodeManagerUsername',ADMIN_USER )
+set('NodeManagerPasswordEncrypted',es )
+
+cd('/')
+
+setOption( "AppDir", APP_PATH )
+
+print 'Adding JRF Template'
+addTemplate('<%= @templateJRF %>')
+print 'Adding EM Template'
+addTemplate('<%= @templateEM %>')
+
+dumpStack();
+
+
+
+if WEBLOGIC_VERSION == "1212":
+
+    print 'Add advanced JAX-WS Template'
+    addTemplate('<%= @templateJaxWS %>')
+    print 'Add JAX-WS SOAP over JMS Template'
+    addTemplate('<%= @templateSoapJms %>')
+
+    print 'Change datasources'
+    print 'Change datasource opss-data-source'
+    cd('/JDBCSystemResource/opss-data-source/JdbcResource/opss-data-source/JDBCDriverParams/NO_NAME_0')
+    set('URL',ADF_REPOS_DBURL)
+    set('PasswordEncrypted',ADF_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',ADF_REPOS_DBUSER_PREFIX+'_OPSS')
+
+    print 'Change datasource opss-audit-viewDS'
+    cd('/JDBCSystemResource/opss-audit-viewDS/JdbcResource/opss-audit-viewDS/JDBCDriverParams/NO_NAME_0')
+    set('URL',ADF_REPOS_DBURL)
+    set('PasswordEncrypted',ADF_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',ADF_REPOS_DBUSER_PREFIX+'_IAU_VIEWER')
+
+    print 'Change datasource opss-audit-DBDS'
+    cd('/JDBCSystemResource/opss-audit-DBDS/JdbcResource/opss-audit-DBDS/JDBCDriverParams/NO_NAME_0')
+    set('URL',ADF_REPOS_DBURL)
+    set('PasswordEncrypted',ADF_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',ADF_REPOS_DBUSER_PREFIX+'_IAU_APPEND')
+
+    print 'Change datasource LocalScvTblDataSource'
+    cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',ADF_REPOS_DBURL)
+    set('PasswordEncrypted',ADF_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',ADF_REPOS_DBUSER_PREFIX+'_STB')
+
+    print 'Add WSMPM Template'
+    addTemplate('<%= @templateWSMPM %>')
+    print 'Change datasource mds-owsm'
+    cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
+    set('URL',ADF_REPOS_DBURL)
+    set('PasswordEncrypted',ADF_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',ADF_REPOS_DBUSER_PREFIX+'_MDS')
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR'
+    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
+    setServerGroups('AdminServer', serverGroup)                      
+
+    print 'end datasources'
+
+dumpStack();
+updateDomain()
+dumpStack();
+
+closeDomain();
+
+
+print('Exiting...')
+exit()

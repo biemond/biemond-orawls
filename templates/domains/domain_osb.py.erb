@@ -1,0 +1,183 @@
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>/<%= @domain_name %>'
+DOMAIN='<%= @domain_name %>'
+APP_PATH='<%= @app_dir %>/<%= @domain_name %>'
+
+DEVELOPMENT_MODE=<%= @development_mode %>
+
+WEBLOGIC_VERSION=<%= @version %>
+
+ADMIN_SERVER='<%= @adminserver_name %>'
+ADMIN_USER='<%= @weblogic_user %>'
+ADMIN_PASSWORD='<%= @weblogic_password %>'
+
+JAVA_HOME='<%= @JAVA_HOME %>'
+
+ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+OSB_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
+
+def createBootPropertiesFile(directoryPath,fileName, username, password):
+  adminserverDir = File(directoryPath)
+  bool = adminserverDir.mkdirs()
+  fileNew=open(directoryPath + '/'+fileName, 'w')
+  fileNew.write('username=%s\n' % username)
+  fileNew.write('password=%s\n' % password)
+  fileNew.flush()
+  fileNew.close()
+
+
+
+print('Start...wls domain with template <%= @template %>')
+readTemplate('<%= @template %>')
+
+print('Set crossdomain')
+create('base_domain','SecurityConfiguration')
+cd('/SecurityConfiguration/base_domain')
+set('CrossDomainSecurityEnabled',true)
+
+
+cd('/')
+print('Set domain log')
+create('base_domain','Log')
+cd('/Log/base_domain')
+set('FileName','<%= @admin_nodemanager_log_dir %>/'+DOMAIN+'.log')
+set('FileCount',10)
+set('FileMinSize',5000)
+set('RotationType','byTime')
+set('FileTimeSpan',24)
+
+
+
+cd('/')
+create('LocalMachine', '<%= @nodeMgrMachine %>')
+
+
+cd('/Servers/AdminServer')
+# name of adminserver
+set('Name',ADMIN_SERVER )
+
+cd('/Servers/'+ADMIN_SERVER)
+set('Machine','LocalMachine')
+
+# address and port
+#set('ListenAddress','<%= @adminListenAdr %>')
+set('ListenPort',<%= @adminserver_port %>)
+
+setOption( "AppDir", APP_PATH )
+
+create(ADMIN_SERVER,'ServerStart')
+cd('ServerStart/'+ADMIN_SERVER)
+set('Arguments', ADM_JAVA_ARGUMENTS)
+set('JavaVendor','Sun')
+set('JavaHome', JAVA_HOME)
+
+cd('/Server/'+ADMIN_SERVER)
+create(ADMIN_SERVER,'SSL')
+cd('SSL/'+ADMIN_SERVER)
+set('Enabled', 'False')
+set('HostNameVerificationIgnored', 'True')
+
+cd('/Server/'+ADMIN_SERVER)
+create(ADMIN_SERVER,'Log')
+cd('/Server/'+ADMIN_SERVER+'/Log/'+ADMIN_SERVER)
+set('FileName','<%= @admin_nodemanager_log_dir %>/'+ADMIN_SERVER+'.log')
+set('FileCount',10)
+set('FileMinSize',5000)
+set('RotationType','byTime')
+set('FileTimeSpan',24)
+
+
+
+print('Set password...')
+cd('/')
+cd('Security/base_domain/User/weblogic')
+
+# weblogic user name + password
+set('Name',ADMIN_USER)
+cmo.setPassword(ADMIN_PASSWORD)
+
+# Set domain save options:
+# - ServerStartMode: Set mode to development.
+# - JavaHome: Sets home directory for the JVM used when starting the server.
+
+if DEVELOPMENT_MODE == true:
+  setOption('ServerStartMode', 'dev')
+else:
+  setOption('ServerStartMode', 'prod')
+
+setOption('JavaHome', JAVA_HOME)
+
+print('write domain...')
+# write path + domain name
+writeDomain(DOMAIN_PATH)
+closeTemplate()
+
+createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+
+readDomain(DOMAIN_PATH)
+
+print('set domain password...') 
+cd('/SecurityConfiguration/'+DOMAIN)
+set('CredentialEncrypted',es)
+print('Set nodemanager password')
+set('NodeManagerUsername',ADMIN_USER )
+set('NodeManagerPasswordEncrypted',es )
+
+cd('/')
+
+setOption( "AppDir", APP_PATH )
+
+print 'Adding EM Template'
+addTemplate('<%= @templateEM %>')
+
+dumpStack();
+
+print('Extend...osb domain with template <%= @templateOSB %>')
+addTemplate('<%= @templateWS %>')
+addTemplate('<%= @templateOSB %>')
+
+dumpStack();
+updateDomain()
+
+closeDomain();
+readDomain(DOMAIN_PATH)
+
+setOption( "AppDir", APP_PATH )
+
+cd('Servers/osb_server1')
+set('Machine','LocalMachine')
+
+create('osb_server1','ServerStart')
+cd('ServerStart/osb_server1')
+set('Arguments', OSB_JAVA_ARGUMENTS)
+set('JavaVendor','Sun')
+set('JavaHome', JAVA_HOME)
+
+
+cd('/Server/osb_server1')
+create('osb_server1','SSL')
+cd('SSL/osb_server1')
+set('Enabled', 'False')
+set('HostNameVerificationIgnored', 'True')
+
+cd('/Server/osb_server1')
+create('osb_server1','Log')
+cd('/Server/osb_server1/Log/osb_server1')
+set('FileName','<%= @osb_nodemanager_log_dir %>/osb_server1.log')
+set('FileCount',10)
+set('FileMinSize',5000)
+set('RotationType','byTime')
+set('FileTimeSpan',24)
+
+dumpStack();
+updateDomain()
+closeDomain()
+
+createBootPropertiesFile(DOMAIN_PATH+'/servers/osb_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+print('Exiting...')
+exit()

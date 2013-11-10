@@ -6,8 +6,8 @@
 define orawls::opatch (
   $oracle_product_home_dir = undef, # /opt/oracle/middleware11gR1
   $jdk_home_dir            = hiera('wls_jdk_home_dir' , undef), # /usr/java/jdk1.7.0_45
-  $patchId                 = undef,
-  $patchFile               = undef,
+  $patch_id                = undef,
+  $patch_file              = undef,
   $os_user                 = hiera('wls_os_user'      , undef), # oracle
   $os_group                = hiera('wls_os_group'     , undef), # dba
   $download_dir            = hiera('wls_download_dir' , undef), # /data/install
@@ -18,7 +18,7 @@ define orawls::opatch (
   $exec_path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
   # check if the opatch already is installed
-  $found = opatch_exists($oracle_product_home_dir, $patchId)
+  $found = opatch_exists($oracle_product_home_dir, $patch_id)
 
   if $found == undef {
     $continue = true
@@ -39,9 +39,9 @@ define orawls::opatch (
     }
 
     # the patch used by the opatch
-    if !defined(File["${download_dir}/${patchFile}"]) {
-      file { "${download_dir}/${patchFile}":
-         source => "${mountPoint}/${patchFile}",
+    if !defined(File["${download_dir}/${patch_file}"]) {
+      file { "${download_dir}/${patch_file}":
+         source => "${mountPoint}/${patch_file}",
          ensure => present,
          backup  => false,
          mode   => 0775,
@@ -52,10 +52,10 @@ define orawls::opatch (
 
     $oPatchCommand = "opatch apply -silent -jre"
 
-    exec { "extract opatch ${patchFile} ${title}":
-      command   => "unzip -n ${download_dir}/${patchFile} -d ${download_dir}",
-      require   => File["${download_dir}/${patchFile}"],
-      creates   => "${download_dir}/${patchId}",
+    exec { "extract opatch ${patch_file} ${title}":
+      command   => "unzip -n ${download_dir}/${patch_file} -d ${download_dir}",
+      require   => File["${download_dir}/${patch_file}"],
+      creates   => "${download_dir}/${patch_id}",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,
@@ -63,8 +63,8 @@ define orawls::opatch (
     }
 
     exec { "exec opatch ux ${title}":
-      command   => "${oracle_product_home_dir}/OPatch/${oPatchCommand} ${jdk_home_dir}/jre -oh ${oracle_product_home_dir} ${download_dir}/${patchId}",
-      require   => Exec["extract opatch ${patchFile} ${title}"],
+      command   => "${oracle_product_home_dir}/OPatch/${oPatchCommand} ${jdk_home_dir}/jre -oh ${oracle_product_home_dir} ${download_dir}/${patch_id}",
+      require   => Exec["extract opatch ${patch_file} ${title}"],
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,

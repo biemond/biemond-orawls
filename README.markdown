@@ -19,6 +19,7 @@ Orawls WebLogic Features
 ------------------------
 
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
+- installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
 - apply a BSU patch on a Middleware home ( < 12.1.2 )
 - apply an OPatch on a Middleware home or a Oracle product home
 - creates a standard WebLogic domain
@@ -29,6 +30,17 @@ Orawls WebLogic Features
 - create Persistence Store
 - create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
 - basically can run every WLST script with the flexible WLST define manifest
+
+
+Domain creation options (Dev or Prod mode)
+------------------------------------------
+all templates creates a WebLogic domain, logs the domain creation output and do a domain pack in the defined download folder  
+
+- domain 'standard'    -> a default WebLogic    
+- domain 'adf'         -> JRF + EM + Coherence (12.1.2) + OWSM (12.1.2) + JAX-WS Advanced + Soap over JMS (12.1.2)   
+- domain 'osb'         -> OSB + JRF + EM + OWSM 
+- domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM 
+- domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM 
 
 
 Linux low on entropy or urandom fix 
@@ -148,10 +160,17 @@ common.yaml
     ---
     # global WebLogic vars
     wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
-    wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
-    wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
-    wls_version:              &wls_version              1212
-    wls_weblogic_user:        "weblogic"
+    wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+    
+    # 12.1.2 settings
+    #wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
+    #wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
+    #wls_version:              &wls_version              1212
+    
+    # 10.3.6 settings
+    wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware11g/wlserver_10.3"
+    wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware11g"
+    wls_version:              &wls_version              1036
     
     # global OS vars
     wls_os_user:              &wls_os_user              "oracle"
@@ -159,8 +178,30 @@ common.yaml
     wls_download_dir:         &wls_download_dir         "/data/install"
     wls_source:               &wls_source               "/vagrant"
     wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/jdk1.7.0_45"
-    wls_log_dir:              "/data/logs"
+    wls_log_dir:              &wls_log_dir              "/data/logs"
     
+    
+    #WebLogic installation variables 
+    orawls::weblogic::version:              *wls_version
+    orawls::weblogic::filename:             "wls1036_generic.jar"
+    
+    # weblogic 12.1.2
+    #orawls::weblogic::filename:             "wls_121200.jar"
+    # or with 12.1.2 FMW infra
+    #orawls::weblogic::filename:             "fmw_infra_121200.jar"
+    #orawls::weblogic::fmw_infra:            true
+    
+    orawls::weblogic::middleware_home_dir:  *wls_middleware_home_dir
+    orawls::weblogic::log_output:           false
+    
+    # hiera default anchors
+    orawls::weblogic::jdk_home_dir:         *wls_jdk_home_dir
+    orawls::weblogic::oracle_base_home_dir: *wls_oracle_base_home_dir
+    orawls::weblogic::os_user:              *wls_os_user
+    orawls::weblogic::os_group:             *wls_os_group
+    orawls::weblogic::download_dir:         *wls_download_dir
+    orawls::weblogic::source:               *wls_source
+        
 
 WebLogic Module Usage
 ---------------------
@@ -203,39 +244,6 @@ vagrantcentos64.example.com.yaml
      orawls::weblogic::log_output:   true
 
 
-common.yaml
-
-    ---
-    # global WebLogic vars
-    wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
-    wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
-    wls_middleware_home_dir:  $wls_middleware_home_dir  "/opt/oracle/middleware12c"
-    wls_version:              &wls_version              1212
-    wls_weblogic_user:        "weblogic"
-    
-    # global OS vars
-    wls_os_user:              &wls_os_user              "oracle"
-    wls_os_group:             &wls_os_group             "dba"
-    wls_download_dir:         &wls_download_dir         "/data/install"
-    wls_source:               &wls_source               "/vagrant"
-    wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/jdk1.7.0_45"
-    wls_log_dir:              "/data/logs"
-    
-    
-    #WebLogic installation variables 
-    orawls::weblogic::version:              *wls_version
-    orawls::weblogic::filename:             "wls_121200.jar"
-    orawls::weblogic::middleware_home_dir:  *wls_middleware_home_dir
-    orawls::weblogic::log_output:           false
-    
-    # hiera default anchors
-    orawls::weblogic::jdk_home_dir:         *wls_jdk_home_dir
-    orawls::weblogic::oracle_base_home_dir: *wls_oracle_base_home_dir
-    orawls::weblogic::os_user:              *wls_os_user
-    orawls::weblogic::os_group:             *wls_os_group
-    orawls::weblogic::download_dir:         *wls_download_dir
-    orawls::weblogic::source:               *wls_source
-    
 
 ###orawls::opatch 
 apply an OPatch on a Middleware home or a Oracle product home
@@ -243,8 +251,8 @@ apply an OPatch on a Middleware home or a Oracle product home
     orawls::opatch {'16175470':
       oracle_product_home_dir => "/opt/oracle/middleware12c",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
-      patchId                 => "16175470",
-      patchFile               => "p16175470_121200_Generic.zip",
+      patch_id                => "16175470",
+      patch_file              => "p16175470_121200_Generic.zip",
       os_user                 => "oracle",
       os_group                => "dba",
       download_dir            => "/data/install",
@@ -257,8 +265,8 @@ or when you set the defaults hiera variables
 
     orawls::opatch {'16175470':
       oracle_product_home_dir => "/opt/oracle/middleware12c",
-      patchId                 => "16175470",
-      patchFile               => "p16175470_121200_Generic.zip",
+      patch_id                => "16175470",
+      patch_file              => "p16175470_121200_Generic.zip",
     }
     
 
@@ -276,8 +284,8 @@ common.yaml
     opatch_instances:
       '16175470':
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
-         patchId:                  "16175470"
-         patchFile:                "p16175470_121200_Generic.zip"
+         patch_id:                 "16175470"
+         patch_file:               "p16175470_121200_Generic.zip"
          jdk_home_dir              "/usr/java/jdk1.7.0_45"
          os_user:                  "oracle"
          os_group:                 "dba"
@@ -293,8 +301,8 @@ or when you set the defaults hiera variables
     opatch_instances:
       '16175470':
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
-         patchId:                  "16175470"
-         patchFile:                "p16175470_121200_Generic.zip"
+         patch_id:                 "16175470"
+         patch_file:               "p16175470_121200_Generic.zip"
         
 
 
@@ -305,8 +313,8 @@ apply a WebLogic BSU Patch
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
       weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
-      patchId                 => "BYJ1",
-      patchFile               => "p17071663_1036_Generic.zip",
+      patch_id                => "BYJ1",
+      patch_file              => "p17071663_1036_Generic.zip",
       os_user                 => "oracle",
       os_group                => "dba",
       download_dir            => "/data/install",
@@ -318,8 +326,8 @@ apply a WebLogic BSU Patch
 or when you set the defaults hiera variables
 
     orawls::bsu {'BYJ1':
-      patchId                 => "BYJ1",
-      patchFile               => "p17071663_1036_Generic.zip",
+      patch_id                => "BYJ1",
+      patch_file              => "p17071663_1036_Generic.zip",
       log_output              => false,
     }
 
@@ -340,8 +348,8 @@ common.yaml
          middleware_home_dir:     "/opt/oracle/middleware11gR1"
          weblogic_home_dir:       "/opt/oracle/middleware11gR1/wlserver"
          jdk_home_dir:            "/usr/java/jdk1.7.0_45"
-         patchId:                 "BYJ1"
-         patchFile:               "p17071663_1036_Generic.zip"
+         patch_id:                "BYJ1"
+         patch_file:              "p17071663_1036_Generic.zip"
          os_user:                 "oracle"
          os_group:                "dba"
          download_dir:            "/data/install"
@@ -354,20 +362,74 @@ or when you set the defaults hiera variables
     ---
     bsu_instances:
       'BYJ1':
-         patchId:                 "BYJ1"
-         patchFile:               "p17071663_1036_Generic.zip"
+         patch_id:                "BYJ1"
+         patch_file:              "p17071663_1036_Generic.zip"
          log_output:              false
 
 
+###orawls::fmw 
+install FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
+
+    orawls::fmw{"osbPS6":
+      middleware_home_dir     => "/opt/oracle/middleware11gR1",
+      weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
+      jdk_home_dir            => "/usr/java/jdk1.7.0_45",
+      oracle_base_home_dir    => "/opt/oracle",
+      fmw_product             => "osb",  # adf|soa|osb|oim|wc|wcc
+      fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
+      os_user                 => "oracle",
+      os_group                => "dba",
+      download_dir            => "/data/install",
+      source                  => "/vagrant",
+      log_output              => false,
+    }
+    
+
+or when you set the defaults hiera variables
+
+    orawls::fmw{"osbPS6":
+      fmw_product             => "osb"  # adf|soa|osb|oim|wc|wcc
+      fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
+      log_output              => false,
+    }
+    
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+
+
+    $default_params = {}
+    $fmw_installations = hiera('fmw_installations', [])
+    create_resources('orawls::fmw',$fmw_installations, $default_params)
+
+
+common.yaml
+
+when you set the defaults hiera variables
+
+    ---
+    # FMW installation on top of WebLogic 10.3.6
+    fmw_installations:
+      'osbPS6':
+        fmw_product:             "osb"
+        fmw_file1:               "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip"
+        log_output:              true
+      'soaPS6':
+        fmw_product:             "soa"
+        fmw_file1:               "ofm_soa_generic_11.1.1.7.0_disk1_1of2.zip"
+        fmw_file2:               "ofm_soa_generic_11.1.1.7.0_disk1_2of2.zip"
+        log_output:              true
+
+
+
 ###orawls::domain 
-creates WebLogic a standard WebLogic Domain
+creates WebLogic a standard | OSB or SOA Suite WebLogic Domain
 
     orawls::domain { 'wlsDomain12c':
       version                    => 1212,  # 1036|1111|1211|1212
       weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
       middleware_home_dir        => "/opt/oracle/middleware12c",
       jdk_home_dir               => "/usr/java/jdk1.7.0_45",
-      domain_template            => "standard",
+      domain_template            => "standard",  #standard|adf|osb|osb_soa|osb_soa_bpm
       domain_name                => "Wls12c",
       development_mode           => false,
       adminserver_name           => "AdminServer",

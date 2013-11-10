@@ -24,7 +24,7 @@ class orawls::weblogic (
     } else {
       $install_type="WebLogic Server"
     }
-    $silent_template = "orawls/weblogic_silent_install_1212.xml.erb"
+    $silent_template = "orawls/weblogic_silent_install_1212.rsp.erb"
 
   } else  {
     fail('unknown weblogic version parameter')

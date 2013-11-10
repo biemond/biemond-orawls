@@ -6,8 +6,8 @@ define orawls::bsu (
   $middleware_home_dir    = hiera('wls_middleware_home_dir' , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir      = hiera('wls_weblogic_home_dir'   , undef),
   $jdk_home_dir           = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
-  $patchId                = undef,
-  $patchFile              = undef,
+  $patch_id               = undef,
+  $patch_file             = undef,
   $os_user                = hiera('wls_os_user'             , undef), # oracle
   $os_group               = hiera('wls_os_group'            , undef), # dba
   $download_dir           = hiera('wls_download_dir'        , undef), # /data/install
@@ -18,7 +18,7 @@ define orawls::bsu (
   $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${jdk_home_dir}/bin"
 
   # check if the bsu already is installed
-  $found = bsu_exists($middleware_home_dir, $patchId)
+  $found = bsu_exists($middleware_home_dir, $patch_id)
 
   if $found == undef {
     $continue = true
@@ -51,9 +51,9 @@ define orawls::bsu (
     }
 
     # the patch used by the bsu
-    if !defined(File["${download_dir}/${patchFile}"]) {
-      file { "${download_dir}/${patchFile}":
-        source  => "${mountPoint}/${patchFile}",
+    if !defined(File["${download_dir}/${patch_file}"]) {
+      file { "${download_dir}/${patch_file}":
+        source  => "${mountPoint}/${patch_file}",
         require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
         backup  => false,
         ensure  => present,
@@ -63,12 +63,12 @@ define orawls::bsu (
       }
     }
 
-    $bsuCommand = "-install -patchlist=${patchId} -prod_dir=${weblogic_home_dir} -verbose"
+    $bsuCommand = "-install -patchlist=${patch_id} -prod_dir=${weblogic_home_dir} -verbose"
 
-    exec { "extract ${patchFile}":
-      command   => "unzip -n ${download_dir}/${patchFile} -d ${middleware_home_dir}/utils/bsu/cache_dir",
-      require   => File["${download_dir}/${patchFile}"],
-      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patchId}.jar",
+    exec { "extract ${patch_file}":
+      command   => "unzip -n ${download_dir}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+      require   => File["${download_dir}/${patch_file}"],
+      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,
@@ -77,7 +77,7 @@ define orawls::bsu (
 
     exec { "exec bsu ux ${title}":
       command     => "${middleware_home_dir}/utils/bsu/bsu.sh ${bsuCommand}",
-      require     => Exec["extract ${patchFile}"],
+      require     => Exec["extract ${patch_file}"],
       cwd         => "${middleware_home_dir}/utils/bsu",
       environment => ["USER=${os_user}", "HOME=/home/${os_user}", "LOGNAME=${os_user}"],
       path        => $exec_path,

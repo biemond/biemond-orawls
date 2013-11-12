@@ -23,6 +23,7 @@ Orawls WebLogic Features
 - apply a BSU patch on a Middleware home ( < 12.1.2 )
 - apply an OPatch on a Middleware home or a Oracle product home
 - creates a standard WebLogic domain
+- copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
 - Startup the nodemanager
 - Start or stop AdminServer, Managed or a Cluster
 - StoreUserConfig for storing WebLogic Credentials and using in WLST
@@ -420,7 +421,6 @@ when you set the defaults hiera variables
         log_output:              true
 
 
-
 ###orawls::domain 
 creates WebLogic a standard | OSB or SOA Suite WebLogic Domain
 
@@ -525,6 +525,38 @@ when you just have one WebLogic domain on a server
          development_mode:     false
          log_output:           *logoutput
     
+
+
+###orawls::copydomain 
+copies a WebLogic domain with SSH, unpack and enroll to a nodemanager
+
+
+Configuration with Hiera ( need to have puppet > 3.0 )    
+
+
+    $default_params = {}
+    $copy_instances = hiera('copy_instances', [])
+    create_resources('orawls::copydomain',$copy_instances, $default_params)
+
+
+when you just have one WebLogic domain on a server
+     
+    --- 
+    # when you have just one domain on a server
+    domain_name:                "Wls1036"
+    domain_adminserver:         "AdminServer"
+    domain_adminserver_address: "localhost"
+    domain_adminserver_port:    7001
+    domain_nodemanager_port:    5556
+    domain_wls_password:        "weblogic1"
+    
+    # copy domains to other nodes
+    copy_instances:
+      'wlsDomain':
+         log_output:              *logoutput
+    
+
+
 
 
 ###orawls::nodemanager 

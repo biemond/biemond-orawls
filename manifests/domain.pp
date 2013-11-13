@@ -256,13 +256,13 @@ define orawls::domain (
     }
 
 
-#    exec { "domain.py ${domain_name} ${title}":
-#      command => "rm -I ${download_dir}/domain_${domain_name}.py",
-#      require => Exec["execwlst ${domain_name} ${title}"],
-#      path    => $exec_path,
-#      user    => $os_user,
-#      group   => $os_group,
-#    }
+    exec { "domain.py ${domain_name} ${title}":
+      command => "rm -I ${download_dir}/domain_${domain_name}.py",
+      require => Exec["execwlst ${domain_name} ${title}"],
+      path    => $exec_path,
+      user    => $os_user,
+      group   => $os_group,
+    }
 
 #    $packCommand = "-domain=${domain_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 

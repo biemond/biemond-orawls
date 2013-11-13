@@ -117,6 +117,7 @@ class orawls::weblogic (
       exec {"install weblogic ${version}":
         command     => "${javaCommand} ${download_dir}/${filename} -mode=silent -silent_xml=${download_dir}/weblogic_silent_install.xml",
         environment => ["JAVA_VENDOR=Sun","JAVA_HOME=${jdk_home_dir}"],
+        timeout     => 0,
         path        => $exec_path,
         user        => $os_user,
         group       => $os_group,

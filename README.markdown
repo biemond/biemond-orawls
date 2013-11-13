@@ -23,10 +23,11 @@ Orawls WebLogic Features
 - apply a BSU patch on a Middleware home ( < 12.1.2 )
 - apply an OPatch on a Middleware home or a Oracle product home
 - creates a standard WebLogic domain
+- pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
-- Startup the nodemanager
-- Start or stop AdminServer, Managed or a Cluster
-- StoreUserConfig for storing WebLogic Credentials and using in WLST
+- startup the nodemanager
+- start or stop AdminServer, Managed or a Cluster
+- storeUserConfig for storing WebLogic Credentials and using in WLST
 - create Machines, Managed Servers, Clusters, Server templates, Dynamic Clusters, Coherence clusters ( all 12.1.2 )
 - create Persistence Store
 - create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
@@ -35,7 +36,7 @@ Orawls WebLogic Features
 
 Domain creation options (Dev or Prod mode)
 ------------------------------------------
-all templates creates a WebLogic domain, logs the domain creation output and do a domain pack in the defined download folder  
+all templates creates a WebLogic domain, logs the domain creation output 
 
 - domain 'standard'    -> a default WebLogic    
 - domain 'adf'         -> JRF + EM + Coherence (12.1.2) + OWSM (12.1.2) + JAX-WS Advanced + Soap over JMS (12.1.2)   
@@ -525,6 +526,19 @@ when you just have one WebLogic domain on a server
          development_mode:     false
          log_output:           *logoutput
     
+
+###orawls::packdomain 
+pack a WebLogic Domain and add this to the download folder
+
+    $default_params = {}
+    $pack_domain_instances = hiera('pack_domain_instances', [])
+    create_resources('orawls::packdomain',$pack_domain_instances, $default_params)
+
+
+    # pack domains
+    pack_domain_instances:
+      'wlsDomain':
+         log_output:               *logoutput
 
 
 ###orawls::copydomain 

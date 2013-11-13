@@ -21,8 +21,8 @@ ADF_REPOS_DBUSER_PREFIX='<%= @reposPrefix %>'
 ADF_REPOS_DBPASSWORD='<%= @reposPassword %>'
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
+  serverDir = File(directoryPath)
+  bool = serverDir.mkdirs()
   fileNew=open(directoryPath + '/'+fileName, 'w')
   fileNew.write('username=%s\n' % username)
   fileNew.write('password=%s\n' % password)

@@ -255,24 +255,25 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    exec { "domain.py ${domain_name} ${title}":
-      command => "rm -I ${download_dir}/domain_${domain_name}.py",
-      require => Exec["execwlst ${domain_name} ${title}"],
-      path    => $exec_path,
-      user    => $os_user,
-      group   => $os_group,
-    }
 
-    $packCommand = "-domain=${domain_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+#    exec { "domain.py ${domain_name} ${title}":
+#      command => "rm -I ${download_dir}/domain_${domain_name}.py",
+#      require => Exec["execwlst ${domain_name} ${title}"],
+#      path    => $exec_path,
+#      user    => $os_user,
+#      group   => $os_group,
+#    }
 
-    exec { "pack domain ${domain_name} ${title}":
-      command => "${weblogic_home_dir}/common/bin/pack.sh ${packCommand}",
-      require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
-      creates => "${download_dir}/domain_${domain_name}.jar",
-      path    => $exec_path,
-      user    => $os_user,
-      group   => $os_group,
-    }
+#    $packCommand = "-domain=${domain_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+
+#    exec { "pack domain ${domain_name} ${title}":
+#      command => "${weblogic_home_dir}/common/bin/pack.sh ${packCommand}",
+#      require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
+#      creates => "${download_dir}/domain_${domain_name}.jar",
+#      path    => $exec_path,
+#      user    => $os_user,
+#      group   => $os_group,
+#    }
 
     $nodeMgrHome = "${domain_dir}/${domain_name}/nodemanager"
     $listenPort   = $nodemanager_port

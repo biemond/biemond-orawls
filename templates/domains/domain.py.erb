@@ -17,8 +17,8 @@ JAVA_HOME='<%= @JAVA_HOME %>'
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
+  serverDir = File(directoryPath)
+  bool = serverDir.mkdirs()
   fileNew=open(directoryPath + '/'+fileName, 'w')
   fileNew.write('username=%s\n' % username)
   fileNew.write('password=%s\n' % password)

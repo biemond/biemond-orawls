@@ -14,6 +14,18 @@ user_key    = '<%= @userKeyFile %>'
 <%= param %>                    
 <% end -%>                      
 
+
+def createBootPropertiesFile(directoryPath,fileName, username, password):
+  serverDir = File(directoryPath)
+  bool = serverDir.mkdirs()
+  fileNew=open(directoryPath + '/'+fileName, 'w')
+  fileNew.write('username=%s\n' % username)
+  fileNew.write('password=%s\n' % password)
+  fileNew.flush()
+  fileNew.close()
+
+
+
 useStoreConfig = '<%= @useStoreConfig %>'
 
 if useStoreConfig != "true":
@@ -26,7 +38,7 @@ startEdit()
 
 try:
     cd('/')
-
+    DOMAIN_PATH = get('RootDirectory')
     cmo.createServer(wlsServerName)
   
     cd('/Servers/'+wlsServerName)
@@ -51,6 +63,9 @@ try:
 
     save()
     activate()          
+
+    createBootPropertiesFile(DOMAIN_PATH+'/servers/'+wlsServerName+'/security','boot.properties',wlsUser,password)
+
 except:
     print "Unexpected error:", sys.exc_info()[0]
     undo('true','y')

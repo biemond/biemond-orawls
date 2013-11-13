@@ -64,7 +64,7 @@ cd('/Servers/'+ADMIN_SERVER)
 set('Machine','LocalMachine')
 
 # address and port
-#set('ListenAddress','<%= @adminListenAdr %>')
+set('ListenAddress','<%= @adminserver_address %>')
 set('ListenPort',<%= @adminserver_port %>)
 
 setOption( "AppDir", APP_PATH )

@@ -29,7 +29,7 @@ try:
     print 'Create Cluster';
     cmo.createCluster(clusterName)
 
-    cd('/Clusters/WebCluster')
+    cd('/Clusters/'+clusterName)
     cmo.setClusterMessagingMode('unicast')
     cmo.setMigrationBasis('consensus')
 

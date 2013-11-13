@@ -56,7 +56,7 @@ cd('/Servers/'+ADMIN_SERVER)
 set('Machine','LocalMachine')
 
 # address and port
-#set('ListenAddress','<%= @adminserver_address %>')
+set('ListenAddress','<%= @adminserver_address %>')
 set('ListenPort',<%= @adminserver_port %>)
 
 create(ADMIN_SERVER,'ServerStart')

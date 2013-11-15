@@ -113,7 +113,7 @@ class orawls::weblogic (
       }
     } else {
 
-      $javaCommand = "java -Xmx1024m -jar"
+      $javaCommand = "java -Xmx512m -jar"
       exec {"install weblogic ${version}":
         command     => "${javaCommand} ${download_dir}/${filename} -mode=silent -silent_xml=${download_dir}/weblogic_silent_install.xml",
         environment => ["JAVA_VENDOR=Sun","JAVA_HOME=${jdk_home_dir}"],

@@ -15,7 +15,8 @@ define orawls::utils::structure (
   $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   Exec {
-    logoutput => $log_output, }
+    logoutput => $log_output,
+  }
 
   # create all folders
   if !defined(Exec["create ${oracle_base_home_dir} directory"]) {

@@ -34,7 +34,6 @@ define orawls::nodemanager (
 
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
   $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-  $JAVA_HOME    = $jdk_home_dir
   $nativeLib    = "linux/x86_64"
 
   Exec {
@@ -86,7 +85,7 @@ define orawls::nodemanager (
       }
     }
 
-    $javaCommand = "java -client -Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${JAVA_HOME} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
+    $javaCommand = "java -client -Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
 
     file { "nodemanager.properties ux ${title}":
       path    => "${nodeMgrHome}/nodemanager.properties",
@@ -101,7 +100,7 @@ define orawls::nodemanager (
       command     => "/usr/bin/nohup ${javaCommand} &",
       environment => [
         "CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-        "JAVA_HOME=${JAVA_HOME}",
+        "JAVA_HOME=${jdk_home_dir}",
         "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${weblogic_home_dir}/server/native/${nativeLib}"],
       unless      => "${checkCommand}",
       path        => $exec_path,

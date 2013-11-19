@@ -29,7 +29,6 @@ define orawls::control (
   $javaCommand = "java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
 
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
-  $JAVA_HOME    = $jdk_home_dir
   $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.Name=${server}' | /bin/grep ${domain_name}"
 
   Exec {
@@ -69,7 +68,7 @@ define orawls::control (
   if $action == 'start' {
     exec { "execwlst ${title}${script} ":
       command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${JAVA_HOME}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
       unless      => $checkCommand,
       require     => File["${download_dir}/${title}${script}"],
       path        => $exec_path,
@@ -80,7 +79,7 @@ define orawls::control (
   } elsif $action == 'stop' {
     exec { "execwlst ${title}${script} ":
       command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${JAVA_HOME}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
       onlyif      => $checkCommand,
       require     => File["${download_dir}/${title}${script}"],
       path        => $exec_path,

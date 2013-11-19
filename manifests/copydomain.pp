@@ -137,7 +137,7 @@ define orawls::copydomain (
     }
 
     exec { "domain.py ${domain_name} ${title}":
-      command => "rm -I ${download_dir}/enroll_domain_${domain_name}.py",
+      command => "rm ${download_dir}/enroll_domain_${domain_name}.py",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,

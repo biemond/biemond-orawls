@@ -82,7 +82,7 @@ define orawls::wlstexec (
 
     # cleanup WLST script
     exec { "rm ${download_dir}/${title}${script}":
-      command   => "rm -I ${download_dir}/${title}${script}",
+      command   => "rm ${download_dir}/${title}${script}",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,

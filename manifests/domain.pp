@@ -131,7 +131,6 @@ define orawls::domain (
     }
 
     $exec_path        = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
-    $JAVA_HOME        = $jdk_home_dir
     $nodeMgrMachine   = "UnixMachine"
 
     Exec {
@@ -230,10 +229,9 @@ define orawls::domain (
       }
     }
 
-
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
-      environment => ["JAVA_HOME=${JAVA_HOME}"],
+      environment => ["JAVA_HOME=${jdk_home_dir}"],
       unless      => "/usr/bin/test -e ${domain_dir}/${domain_name}",
       creates     => "${domain_dir}/${domain_name}",
       require     => [
@@ -257,23 +255,12 @@ define orawls::domain (
 
 
     exec { "domain.py ${domain_name} ${title}":
-      command => "rm -I ${download_dir}/domain_${domain_name}.py",
+      command => "rm ${download_dir}/domain_${domain_name}.py",
       require => Exec["execwlst ${domain_name} ${title}"],
       path    => $exec_path,
       user    => $os_user,
       group   => $os_group,
     }
-
-#    $packCommand = "-domain=${domain_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
-
-#    exec { "pack domain ${domain_name} ${title}":
-#      command => "${weblogic_home_dir}/common/bin/pack.sh ${packCommand}",
-#      require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
-#      creates => "${download_dir}/domain_${domain_name}.jar",
-#      path    => $exec_path,
-#      user    => $os_user,
-#      group   => $os_group,
-#    }
 
     $nodeMgrHome = "${domain_dir}/${domain_name}/nodemanager"
     $listenPort   = $nodemanager_port

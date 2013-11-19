@@ -12,7 +12,7 @@ ADMIN_SERVER='<%= @adminserver_name %>'
 ADMIN_USER='<%= @weblogic_user %>'
 ADMIN_PASSWORD='<%= @weblogic_password %>'
 
-JAVA_HOME='<%= @JAVA_HOME %>'
+JAVA_HOME='<%= @jdk_home_dir %>'
 
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 

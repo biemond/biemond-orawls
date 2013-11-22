@@ -7,6 +7,8 @@ portNumber = '<%= @adminserver_port %>'
 
 user_config = '<%= @userConfigFile %>'
 user_key    = '<%= @userKeyFile %>'   
+        
+subDeploymentName   = ""                     
                                 
 #subDeploymentName, jmsModuleName, cfName,cfJNDIName,transacted,timeout
 <% @params.each do |param| -%>   
@@ -31,18 +33,22 @@ try:
     cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName)
     cmo.createConnectionFactory(cfName)
 
-    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/SecurityParams/'+cfName)
-    cmo.setAttachJMSXUserId(false)
+    #cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/SecurityParams/'+cfName)
+    #cmo.setAttachJMSXUserId(false)
 
-    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/ClientParams/'+cfName)
-    cmo.setClientIdPolicy('Restricted')
-    cmo.setSubscriptionSharingPolicy('Exclusive')
-    cmo.setMessagesMaximum(10)
+    #cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/ClientParams/'+cfName)
+    #cmo.setClientIdPolicy('Restricted')
+    #cmo.setSubscriptionSharingPolicy('Exclusive')
+    #cmo.setMessagesMaximum(10)
 
     cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName)
     cmo.setJNDIName(cfJNDIName)
-    cmo.setDefaultTargetingEnabled(false)
-    cmo.setSubDeploymentName(subDeploymentName)
+
+    if subDeploymentName:
+      cmo.setDefaultTargetingEnabled(false)
+      cmo.setSubDeploymentName(subDeploymentName)
+    else:
+      cmo.setDefaultTargetingEnabled(true)
 
     if transacted == "true":
         cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ConnectionFactories/'+cfName+'/TransactionParams/'+cfName)

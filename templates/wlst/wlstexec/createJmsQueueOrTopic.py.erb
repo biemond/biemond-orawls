@@ -8,7 +8,8 @@ portNumber = '<%= @adminserver_port %>'
 user_config = '<%= @userConfigFile %>'
 user_key    = '<%= @userKeyFile %>' 
                      
-jmsQuota   = ""                     
+jmsQuota            = ""                     
+subDeploymentName   = ""                     
                                 
 #subDeploymentName, jmsModuleName, jmsName,jmsJNDIName,jmsType,distributed,balancingPolicy,useRedirect,limit,policy,errorObject,jmsQuota
 <% @params.each do |param| -%>   
@@ -50,7 +51,9 @@ try:
      
     cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName)
     cmo.setJNDIName(jmsJNDIName)
-    cmo.setSubDeploymentName(subDeploymentName)
+
+    if subDeploymentName:
+      cmo.setSubDeploymentName(subDeploymentName)
 
     print "distributed: ",distributed
     if distributed == "true" and jmsType == "queue":

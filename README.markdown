@@ -32,6 +32,7 @@ Orawls WebLogic Features
 - create Persistence Store
 - create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
 - basically can run every WLST script with the flexible WLST define manifest
+- WLST bulk creation
 
 
 Domain creation options (Dev or Prod mode)
@@ -822,6 +823,8 @@ execute any WLST script you want
 
 here some WLST examples and the matching Hiera configuration
 
+for bulk insert of WebLogic Objects see orawls::utils::wlstbulk
+
 
 full example
 
@@ -1276,5 +1279,144 @@ create JMS objects ( Queue and a Topic ) in a JMS module
             - "errorObject       = 'ErrorQueue'"
     
 
+###orawls::utils::wlstbulk
+execute any WLST script you want( bulk mode )
+
+requirements
+- need puppet version > 3.2 ( make use of iteration and lambda expressions
+- need to set --parser future ( puppet agent )
+
+use hiera_array, this will search for this entry in all hiera data files
+
+example how to call this wlstbulk define
+
+    $allHieraEntries = hiera_array('jms_module_jms_instances')
+    
+    orawls::utils::wlstbulk{ 'jms_module_jms_instances':
+      entries_array => $allHieraEntries,
+    }
+
+
+possible hiera examples ( use hiera_array )
+
+with global parameters and inside with params
+
+    jms_module_instances:
+      - clusterOne:
+         global_parameters:
+            log_output:           *logoutput
+            weblogic_type:        "jmsmodule"
+            script:               'createJmsModule.py'
+            params:
+               - "jmsModuleName    = 'jmsClusterModule'"
+         jmsClusterModule:
+            weblogic_object_name: "jmsClusterModule"
+            params:
+               - "target           = 'WebCluster'"
+               - "targetType       = 'Cluster'"
+
+with global parameters
+
+    managed_servers_instances:
+      - clusterOne:
+         global_parameters:
+            log_output:           *logoutput
+            weblogic_type:        "server"
+            script:               'createServer.py'
+         wlsServer1_node1:
+            weblogic_object_name: "wlsServer1"
+            params:
+               - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
+               - "wlsServerName    = 'wlsServer1'"
+               - "machineName      = 'Node1'"
+               - "listenAddress    = 8001"
+               - "nodeMgrLogDir    = '/data/logs'"
+         wlsServer2_node2:
+            weblogic_object_name: "wlsServer2"
+            params:
+               - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
+               - "wlsServerName    = 'wlsServer2'"
+               - "machineName      = 'Node2'"
+               - "listenAddress    = 8001"
+               - "nodeMgrLogDir    = '/data/logs'"
+
+no global parameters
+
+    cluster_instances:
+      - clusterOne:
+         cluster_web:
+            weblogic_object_name: "WebCluster"
+            log_output:           *logoutput
+            weblogic_type:        "cluster"
+            script:               'createCluster.py'
+            params:
+               - "clusterName      = 'WebCluster'"
+               - "clusterNodes     = 'wlsServer1,wlsServer2'"
+
+with empty global parameters
+
+    jms_servers_instances:
+      - clusterOne:
+         global_parameters:
+         jmsServerNode1:
+            log_output:           *logoutput
+            weblogic_type:        "jmsserver"
+            script:               'createJmsServer.py'
+            weblogic_object_name: "jmsServer1"
+            params:
+               - "target           = 'wlsServer1'"
+               - "jmsServerName    = 'jmsServer1'"
+               - "targetType       = 'Server'"
+         jmsServerNode2:
+            log_output:           *logoutput
+            weblogic_type:        "jmsserver"
+            script:               'createJmsServer.py'
+            weblogic_object_name: "jmsServer2"
+            params:
+               - "target           = 'wlsServer2'"
+               - "jmsServerName    = 'jmsServer2'"
+               - "targetType       = 'Server'"
+
+or inside puppet
+
+    $entries_array = 
+     [{  'ClusterOne' => {
+             'global_parameters' => 
+                {
+                 log_output     => true,
+                 weblogic_type  => "jmsobject",
+                 script         => 'createJmsQueueOrTopic.py',
+                 params         => 
+                   [  "subDeploymentName = 'jmsServers'",
+                      "jmsModuleName     = 'jmsClusterModule'",
+                      "distributed       = 'true'",
+                      "balancingPolicy   = 'Round-Robin'",
+                      "useRedirect       = 'true'",
+                      "limit             = '3'",
+                      "policy            = 'Redirect'",
+                      "errorObject       = 'ErrorQueue'",
+                   ],
+               } ,
+             'createJmsQueueforJmsModule1' => 
+                {
+                  weblogic_object_name  => "Queue1",
+                  params                => 
+                    [ "jmsType           = 'queue'",
+                      "jmsName           = 'Queue1'",
+                      "jmsJNDIName       = 'jms/Queue1'",
+                    ],
+                } ,
+              'createJmsQueueforJmsModule2' => 
+                {
+                  weblogic_object_name  => "Queue2",
+                  params                => 
+                    [ "jmsType           = 'queue'",
+                      "jmsName           = 'Queue2'",
+                      "jmsJNDIName       = 'jms/Queue2'",
+                    ],
+               },
+         },
+     },
+    ]
 
 

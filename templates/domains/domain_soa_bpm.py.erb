@@ -259,5 +259,15 @@ closeDomain()
 createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/bam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
+readDomain(DOMAIN_PATH)
+setOption( "AppDir", APP_PATH )
+
+cd('/Servers/AdminServer')
+set('Machine','LocalMachine')
+
+dumpStack();
+updateDomain()
+closeDomain()
+
 print('Exiting...soa_bpm')
 exit()

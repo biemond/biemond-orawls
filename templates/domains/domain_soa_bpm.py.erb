@@ -1,4 +1,3 @@
-
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>/<%= @domain_name %>'
 DOMAIN='<%= @domain_name %>'
@@ -15,14 +14,15 @@ ADMIN_PASSWORD='<%= @weblogic_password %>'
 JAVA_HOME='<%= @jdk_home_dir %>'
 
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
-OSB_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
+# OSB_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
 SOA_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
 BAM_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @bam_nodemanager_log_dir %>/bam_server1.out -Dweblogic.Stderr=<%= @bam_nodemanager_log_dir %>/bam_server1_err.out'
-
 
 SOA_REPOS_DBURL='<%= @repository_database_url %>'
 SOA_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
 SOA_REPOS_DBPASSWORD='<%= @repository_password %>'
+
+BPM_ENABLED=<%= @bpm %>
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):
   serverDir = File(directoryPath)
@@ -33,8 +33,6 @@ def createBootPropertiesFile(directoryPath,fileName, username, password):
   fileNew.flush()
   fileNew.close()
 
-
-
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
 
@@ -42,7 +40,6 @@ print('Set crossdomain')
 create('base_domain','SecurityConfiguration')
 cd('/SecurityConfiguration/base_domain')
 set('CrossDomainSecurityEnabled',true)
-
 
 cd('/')
 print('Set domain log')
@@ -54,7 +51,6 @@ set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
 
-
 cd('/Servers/AdminServer')
 # name of adminserver
 set('Name',ADMIN_SERVER )
@@ -64,7 +60,6 @@ cd('/Servers/'+ADMIN_SERVER)
 # address and port
 set('ListenAddress','<%= @adminserver_address %>')
 set('ListenPort',<%= @adminserver_port %>)
-
 
 setOption( "AppDir", APP_PATH )
 
@@ -88,7 +83,6 @@ set('FileCount',10)
 set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
-
 
 print('Set password...')
 cd('/')
@@ -138,6 +132,10 @@ addTemplate('<%= @templateJRF %>')
 addTemplate('<%= @templateWSMPM %>')
 addTemplate('<%= @templateSOA %>')
 addTemplate('<%= @templateBAM %>')
+
+if BPM_ENABLED == true:
+  print 'Adding BPM Template'
+  addTemplate('<%= @templateBPM %>')
 
 print 'Adding EM Template'
 addTemplate('<%= @templateEM %>')
@@ -253,8 +251,6 @@ set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
 
-
-
 dumpStack();
 updateDomain()
 closeDomain()
@@ -263,65 +259,5 @@ closeDomain()
 createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/bam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
-
-readDomain(DOMAIN_PATH)
-setOption( "AppDir", APP_PATH )
-print('Extend...osb domain with template <%= @templateOSB %>')
-
-addTemplate('<%= @templateOSB %>')
-
-dumpStack();
-updateDomain()
-
-closeDomain();
-readDomain(DOMAIN_PATH)
-
-
-setOption( "AppDir", APP_PATH )
-
-cd('/Servers/AdminServer')
-set('Machine','LocalMachine')
-
-print 'Change osb_server1'
-cd('/Servers/osb_server1')
-set('Machine','LocalMachine')
-
-create('osb_server1','ServerStart')
-cd('ServerStart/osb_server1')
-set('Arguments', OSB_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/osb_server1')
-create('osb_server1','SSL')
-cd('SSL/osb_server1')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-
-cd('/Server/osb_server1')
-create('osb_server1','Log')
-cd('/Server/osb_server1/Log/osb_server1')
-set('FileName','<%= @osb_nodemanager_log_dir %>/osb_server1.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
-
-cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('DriverName','oracle.jdbc.OracleDriver')
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-
-dumpStack();
-updateDomain()
-closeDomain()
-
-createBootPropertiesFile(DOMAIN_PATH+'/servers/osb_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-
-
-print('Exiting...')
+print('Exiting...soa_bpm')
 exit()

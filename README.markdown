@@ -44,6 +44,8 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'osb'         -> OSB + JRF + EM + OWSM 
 - domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM 
 - domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM 
+- domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM 
+- domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM 
 
 
 Linux low on entropy or urandom fix 
@@ -431,7 +433,7 @@ creates WebLogic a standard | OSB or SOA Suite WebLogic Domain
       weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
       middleware_home_dir        => "/opt/oracle/middleware12c",
       jdk_home_dir               => "/usr/java/jdk1.7.0_45",
-      domain_template            => "standard",  #standard|adf|osb|osb_soa|osb_soa_bpm
+      domain_template            => "standard",  #standard|adf|osb|osb_soa|osb_soa_bpm|soa|soa_bpm
       domain_name                => "Wls12c",
       development_mode           => false,
       adminserver_name           => "AdminServer",

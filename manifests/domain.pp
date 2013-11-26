@@ -7,7 +7,7 @@ define orawls::domain (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|
+  $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
   $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
@@ -21,9 +21,9 @@ define orawls::domain (
   $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
-  $repository_database_url    = undef, # "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
-  $repository_prefix          = undef, # "DEV"
-  $repository_password        = undef,
+  $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $repository_prefix          = hiera('repository_prefix'         , "DEV"),
+  $repository_password        = hiera('repository_password'       , "Welcome01"),
 )
 {
   $domain_dir = "${middleware_home_dir}/user_projects/domains"
@@ -113,17 +113,27 @@ define orawls::domain (
       $templateFile  = "orawls/domains/domain_osb.py.erb"
       $wlstPath      = "${middleware_home_dir}/Oracle_OSB1/common/bin"
 
-    } elsif $domain_template == 'osb_soa' {
-      $templateFile  = "orawls/domains/domain_osb_soa.py.erb"
+    } elsif $domain_template == 'osb_soa' or $domain_template == 'osb_soa_bpm' {
+      $templateFile  = "orawls/domains/domain_osb_soa_bpm.py.erb"
       $wlstPath      = "${middleware_home_dir}/Oracle_SOA1/common/bin"
+      if $domain_template == 'osb_soa' {
+        $bpm           = false
+      } elsif $domain_template == 'osb_soa_bpm'  {
+        $bpm           = true
+      }
+
+    } elsif $domain_template == 'soa' or $domain_template == 'soa_bpm' {
+      $templateFile  = "orawls/domains/domain_soa_bpm.py.erb"
+      $wlstPath      = "${middleware_home_dir}/Oracle_SOA1/common/bin"
+      if $domain_template == 'soa' {
+        $bpm           = false
+      } elsif $domain_template == 'soa_bpm'  {
+        $bpm           = true
+      }
 
     } elsif $domain_template == 'adf' {
       $templateFile  = "orawls/domains/domain_adf.py.erb"
       $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
-
-    } elsif $domain_template == 'osb_soa_bpm' {
-      $templateFile  = "orawls/domains/domain_osb_soa_bpm.py.erb"
-      $wlstPath      = "${middleware_home_dir}/Oracle_SOA1/common/bin"
 
     } else {
       $templateFile   = "orawls/domains/domain.py.erb"

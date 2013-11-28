@@ -1,5 +1,4 @@
 
-
 wlsUser    = '<%= @weblogic_user %>'
 password   = sys.argv[1] 
 machine    = '<%= @adminserver_address %>'
@@ -18,7 +17,7 @@ useStoreConfig = '<%= @useStoreConfig %>'
 if useStoreConfig != "true":
     connect(wlsUser,password,'t3://'+machine+':'+portNumber)
 else:
-    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)
 
 
 print "subName: ", subName, "target: ", target, " targetType: ",targetType, " jmsModule: ", jmsModuleName

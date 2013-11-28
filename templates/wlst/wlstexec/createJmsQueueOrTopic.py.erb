@@ -8,9 +8,15 @@ portNumber = '<%= @adminserver_port %>'
 user_config = '<%= @userConfigFile %>'
 user_key    = '<%= @userKeyFile %>' 
                      
-jmsQuota            = ""                     
-subDeploymentName   = ""                     
+jmsQuota            = ""
+subDeploymentName   = ""
 timeToLive          = ""
+limit               = ""
+deliveryDelay       = ""
+
+useLogRedirect      = "false"
+useRedirect         = "false"
+loggingPolicy       = ""
 
 
 #subDeploymentName, jmsModuleName, jmsName,jmsJNDIName,jmsType,distributed,balancingPolicy,useRedirect,limit,policy,errorObject,jmsQuota,timeToLive
@@ -33,7 +39,6 @@ edit()
 startEdit()
 
 try:
-    cd('/')
     cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName)
      
     if jmsType == "queue":
@@ -62,19 +67,45 @@ try:
       print "distributed"
       cmo.setLoadBalancingPolicy(balancingPolicy)
 
-    print "redirect: ",useRedirect
+    print "error queue redirect: ",useRedirect
     if useRedirect == "true":
       print "redirect to ",errorObject
       cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
-      cmo.setRedeliveryLimit( int(limit) )
+      if limit:
+        print "limit"
+        cmo.setRedeliveryLimit( int(limit) )
+
       cmo.setExpirationPolicy(policy)
-      cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/UniformDistributedQueues/'+errorObject))
+
+      if distributed == "true":
+        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/UniformDistributedQueues/'+errorObject))
+      else:
+        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/Queues/'+errorObject))
+
+    print "logging redirect: ",useLogRedirect
+    if useLogRedirect == "true":
+      print "redirect to log "
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
+      if limit:
+        print "limit"
+        cmo.setRedeliveryLimit( int(limit) )
+
+      cmo.setExpirationPolicy('Log')
+      if loggingPolicy:
+        cmo.setExpirationLoggingPolicy(loggingPolicy)
 
     if timeToLive:
+      print "time To Live"
       cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryParamsOverrides/'+jmsName)
       cmo.setTimeToLive(timeToLive)                                
 
+    if deliveryDelay: 
+      print "RedeliveryDelay"
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryParamsOverrides/'+jmsName)
+      cmo.setRedeliveryDelay( int(deliveryDelay))
+
     if jmsQuota:
+      print "jms Quota"
       cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName)
       cmo.setQuota(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/Quotas/'+jmsQuota ))
 

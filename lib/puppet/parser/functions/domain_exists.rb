@@ -24,8 +24,8 @@ module Puppet::Parser::Functions
     prefix = "ora_mdw#{versionStr}"
 
     # check the middleware home
-    mdw_count = lookupvar(prefix+'_cnt')
-    if mdw_count.nil?
+    mdw_count = lookupWlsVar(prefix+'_cnt')
+    if mdw_count == "empty"
       return art_exists
 
     else
@@ -33,19 +33,19 @@ module Puppet::Parser::Functions
       i = 0
       while ( i < mdw_count.to_i)
 
-        mdw = lookupvar(prefix+'_'+i.to_s)
+        mdw = lookupWlsVar(prefix+'_'+i.to_s)
 
-        unless mdw.nil?
+        unless mdw == "empty"
           mdw = mdw.strip.downcase
 
           # how many domains are there in this mdw home
-          domain_count = lookupvar(prefix+'_'+i.to_s+'_domain_cnt')
+          domain_count = lookupWlsVar(prefix+'_'+i.to_s+'_domain_cnt')
           n = 0
           while ( n < domain_count.to_i )
 
             # lookup up domain
-            domain = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s)
-            unless domain.nil?
+            domain = lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s)
+            unless domain == "empty"
               domain = domain.strip.downcase
 
               domain_path = mdw + "/user_projects/domains/" + domain
@@ -68,4 +68,22 @@ module Puppet::Parser::Functions
     return art_exists
   end
 end
+
+
+def lookupWlsVar(name)
+  #puts "lookup fact "+name
+  if wlsVarExists(name)
+    return lookupvar(name).to_s
+  end
+  return "empty"
+end
+
+
+def wlsVarExists(name)
+  #puts "lookup fact "+name
+  if lookupvar(name) != :undefined
+    return true
+  end
+  return false 
+end   
 

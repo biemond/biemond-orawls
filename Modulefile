@@ -1,5 +1,5 @@
 name    'biemond-orawls'
-version '0.2.1'
+version '0.2.2'
 source 'https://github.com/biemond/biemond-orawls'
 author 'Edwin Biemond'
 license 'Apache 2.0'

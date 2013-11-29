@@ -247,6 +247,7 @@ module Puppet::Parser::Functions
                   end
 
                 elsif type == 'jmssubdeployment'
+                  # this is more complex, this object can exist with this name in multiple jmsmodules
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt') != :undefined
                     jms_count =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
                     unless jms_count.nil?
@@ -261,12 +262,17 @@ module Puppet::Parser::Functions
                         if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')  != :undefined
                           jmsmodule     = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
                         end
-                        if wlsObject.include? jmsmodule
+                        # example "JMSModule1/sub-nonpersistent"
+                        first = "^[^/]+"
+                        last  = "[^/]+$"
+                        subNameString  = wlsObject.match last
+                        moduleString   = wlsObject.match first
+
+                        #puts "trying to find " + subNameString[0] + " for module " + moduleString[0] + " and " +jmsmodule+" with input " + wlsObject
+                        if moduleString[0] == jmsmodule
                           unless jmssubobjects.nil?
-                            pattern = "\/(.*)"
-                            #sub_string = ""
-                            sub_string =wlsObject.match pattern
-                            if jmssubobjects.include? sub_string[1]
+                            if jmssubobjects.include? subNameString[0]
+                              # puts "return quota found "
                               return true
                             end
                           end
@@ -279,10 +285,10 @@ module Puppet::Parser::Functions
                   end
 
                 elsif type == 'jmsquota'
+                  # this is more complex, this object can exist with this name in multiple jmsmodules
                   if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt') != :undefined
                     jms_count2 =  lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
                     unless jms_count2.nil?
-
                       l = 0
                       while ( l < jms_count2.to_i )
                         jmssubobjects2 =  ""
@@ -293,12 +299,17 @@ module Puppet::Parser::Functions
                         if lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')  != :undefined
                           jmsmodule2     = lookupvar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
                         end
-                        if wlsObject.include? jmsmodule2
+                        # example "JMSModule1/Quota-S"
+                        first = "^[^/]+"
+                        last  = "[^/]+$"
+                        quotaString  = wlsObject.match last
+                        moduleString = wlsObject.match first
+
+                        # puts "trying to find " + quotaString[0] + " for module " + moduleString[0] + " and " +jmsmodule2+" with input " + wlsObject
+                        if moduleString[0] == jmsmodule2
                           unless jmssubobjects2.nil?
-                            pattern2 = "\/(.*)"
-                            #sub_string = ""
-                            sub_string2 =wlsObject.match pattern2
-                            if jmssubobjects2.include? sub_string2[1]
+                            if jmssubobjects2.include? quotaString[0]
+                              # puts "return quota found "
                               return true
                             end
                           end
@@ -325,4 +336,3 @@ module Puppet::Parser::Functions
     return art_exists
   end
 end
-

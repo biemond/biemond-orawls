@@ -49,8 +49,8 @@ module Puppet::Parser::Functions
     prefix = "ora_mdw"+versionStr
 
     # check the middleware home
-    mdw_count = lookupvar(prefix+'_cnt')
-    if mdw_count.nil?
+    mdw_count = lookupWlsVar(prefix+'_cnt')
+    if mdw_count  == "empty"
       return art_exists
     else
       # check the all mdw home

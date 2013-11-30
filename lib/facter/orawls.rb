@@ -567,6 +567,18 @@ def get_domain(name,i,wlsversion)
           end
         end
 
+        jmsmoduleForeingServerStr = "" 
+        jmsroot.elements.each("foreign-server") do |fs| 
+          jmsmoduleForeingServerStr +=  fs.attributes["name"] + ";"
+        end
+
+        Facter.add("#{prefix}_domain_#{n}_jmsmodule_#{k}_foreign_servers") do
+          setcode do
+            jmsmoduleForeingServerStr
+          end
+        end
+
+
 
         jmsroot.elements.each("connection-factory") do |cfs| 
           jmsstr +=  cfs.attributes["name"] + ";"
@@ -745,5 +757,3 @@ Facter.add("ora_inst_products") do
     inventory2
   end
 end
-
-

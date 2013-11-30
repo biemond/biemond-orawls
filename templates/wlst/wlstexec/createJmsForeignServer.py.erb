@@ -1,0 +1,61 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'
+
+subDeployment             = ''
+JNDIInitialContextFactory = ''
+JNDIpropertyName          = ''
+connectionURL             = ''
+       
+#jmsModuleName, subDeployment, JNDIInitialContextFactory,JNDIpropertyName,JNDIpropertyValue,name,connectionURL
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+            
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+
+
+edit()
+startEdit()
+
+try:
+    cd('/SystemResources/'+jmsModuleName)
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName)
+    cmo.createForeignServer(name)
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ForeignServers/'+name)
+    if subDeployment:
+      cmo.setSubDeploymentName(subDeployment)
+    else:    
+      cmo.setDefaultTargetingEnabled(true)
+
+    if connectionURL:
+      cmo.setConnectionURL(connectionURL)
+
+    if JNDIInitialContextFactory:
+      cmo.setInitialContextFactory(JNDIInitialContextFactory)
+
+    cmo.unSet('JNDIPropertiesCredentialEncrypted')
+
+    if JNDIpropertyName:
+      cmo.createJNDIProperty(JNDIpropertyName)
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ForeignServers/'+name+'/JNDIProperties/'+JNDIpropertyName)
+      cmo.setValue(JNDIpropertyValue)
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

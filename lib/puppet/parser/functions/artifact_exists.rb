@@ -259,23 +259,54 @@ module Puppet::Parser::Functions
                   #puts 'jmsquota'
                   # this is more complex, this object can exist with this name in multiple jmsmodules
                   if wlsVarExists(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
-                    jms_count2 =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
-                    unless jms_count2 == "empty"
+                    jms_count =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
+                    unless jms_count == "empty"
                       l = 0
-                      while ( l < jms_count2.to_i )
-                        jmssubobjects2 =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_quotas')
-                        jmsmodule2     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
+                      while ( l < jms_count.to_i )
+                        jmssubobjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_quotas')
+                        jmsmodule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
                         # example "JMSModule1/Quota-S"
                         first = "^[^/]+"
                         last  = "[^/]+$"
                         quotaString  = wlsObject.match last
                         moduleString = wlsObject.match first
 
-                        # puts "trying to find " + quotaString[0] + " for module " + moduleString[0] + " and " +jmsmodule2+" with input " + wlsObject
-                        if moduleString[0] == jmsmodule2
-                          unless jmssubobjects2.nil?
-                            if jmssubobjects2.include? quotaString[0]
+                        # puts "trying to find " + quotaString[0] + " for module " + moduleString[0] + " and " +jmsmodule+" with input " + wlsObject
+                        if moduleString[0] == jmsmodule
+                          unless jmssubobjects.nil?
+                            if jmssubobjects.include? quotaString[0]
                               # puts "return quota found "
+                              return true
+                            end
+                          end
+                        end
+                        l += 1
+                      end
+
+                    end
+                  end
+
+                elsif type == 'foreignserver'
+                  #puts 'jmsquota'
+                  # this is more complex, this object can exist with this name in multiple jmsmodules
+                  if wlsVarExists(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
+                    jms_count =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
+                    unless jms_count == "empty"
+                      l = 0
+                      while ( l < jms_count.to_i )
+                        jmssubobjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_foreign_servers')
+                        jmsmodule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
+                        # example "JMSModule1/ForeignServer"
+                        first = "^[^/]+"
+                        last  = "[^/]+$"
+                        foreignServerString  = wlsObject.match last
+                        moduleString         = wlsObject.match first
+
+                        # puts "trying to find " + foreignServerString[0] + " for module " + moduleString[0] + " and " +jmsmodule+" with input " + wlsObject
+                        if moduleString[0] == jmsmodule
+                          unless jmssubobjects.nil?
+                            if jmssubobjects.include? foreignServerString[0]
+                              # puts "return foreign server found "
                               return true
                             end
                           end

@@ -1,0 +1,49 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'
+       
+#jmsModuleName, fsName, fsType,objectName,localJNDI,remoteJNDI
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+            
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ForeignServers/'+fsName)
+    if fsType == "destination":
+        cmo.createForeignDestination(objectName)
+        cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ForeignServers/'+fsName+'/ForeignDestinations/'+objectName)
+        cmo.setLocalJNDIName(localJNDI)
+        cmo.setRemoteJNDIName(remoteJNDI)
+
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ForeignServers/'+fsName)
+
+    if fsType == "cf":
+        cmo.createForeignConnectionFactory(objectName)
+        cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/ForeignServers/'+fsName+'/ForeignConnectionFactories/'+objectName)
+        cmo.setLocalJNDIName(localJNDI)
+        cmo.setRemoteJNDIName(remoteJNDI)
+    
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

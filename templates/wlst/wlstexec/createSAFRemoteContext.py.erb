@@ -1,0 +1,42 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+user_config = '<%= @userConfigFile %>'
+user_key    = '<%= @userKeyFile %>'
+       
+#jmsModuleName, desName, desUsername,desPassword,desUrl
+<% @params.each do |param| -%>   
+<%= param %>                    
+<% end -%>                      
+
+useStoreConfig = '<%= @useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName)
+    cmo.createSAFRemoteContext(desName)
+    
+    cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/SAFRemoteContexts/'+desName+'/SAFLoginContext/'+desName)
+    cmo.setLoginURL(desUrl)
+    if desUsername != "xxxx":
+        cmo.setUsername(desUsername)
+        cmo.setPassword(desPassword)
+    
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')

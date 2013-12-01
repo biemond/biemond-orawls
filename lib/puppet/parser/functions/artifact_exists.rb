@@ -231,18 +231,18 @@ module Puppet::Parser::Functions
 
                       l = 0
                       while ( l < jms_count.to_i )
-                        jmssubobjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_subdeployments')
-                        jmsmodule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
+                        jmsSubObjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_subdeployments')
+                        jmsModule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
                         # example "JMSModule1/sub-nonpersistent"
                         first = "^[^/]+"
                         last  = "[^/]+$"
                         subNameString  = wlsObject.match last
                         moduleString   = wlsObject.match first
 
-                        #puts "trying to find " + subNameString[0] + " for module " + moduleString[0] + " and " +jmsmodule+" with input " + wlsObject
-                        if moduleString[0] == jmsmodule
-                          unless jmssubobjects.nil?
-                            if jmssubobjects.include? subNameString[0]
+                        #puts "trying to find " + subNameString[0] + " for module " + moduleString[0] + " and " +jmsModule+" with input " + wlsObject
+                        if moduleString[0] == jmsModule
+                          unless jmsSubObjects == "empty"
+                            if jmsSubObjects.include? subNameString[0]
                               # puts "return quota found "
                               return true
                             end
@@ -263,18 +263,18 @@ module Puppet::Parser::Functions
                     unless jms_count == "empty"
                       l = 0
                       while ( l < jms_count.to_i )
-                        jmssubobjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_quotas')
-                        jmsmodule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
+                        jmsQuotaObjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_quotas')
+                        jmsModule       =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
                         # example "JMSModule1/Quota-S"
                         first = "^[^/]+"
                         last  = "[^/]+$"
                         quotaString  = wlsObject.match last
                         moduleString = wlsObject.match first
 
-                        # puts "trying to find " + quotaString[0] + " for module " + moduleString[0] + " and " +jmsmodule+" with input " + wlsObject
-                        if moduleString[0] == jmsmodule
-                          unless jmssubobjects.nil?
-                            if jmssubobjects.include? quotaString[0]
+                        # puts "trying to find " + quotaString[0] + " for module " + moduleString[0] + " and " +jmsModule+" with input " + wlsObject
+                        if moduleString[0] == jmsModule
+                          unless jmsQuotaObjects == "empty"
+                            if jmsQuotaObjects.include? quotaString[0]
                               # puts "return quota found "
                               return true
                             end
@@ -287,25 +287,25 @@ module Puppet::Parser::Functions
                   end
 
                 elsif type == 'foreignserver'
-                  #puts 'jmsquota'
+                  #puts 'foreignserver'
                   # this is more complex, this object can exist with this name in multiple jmsmodules
                   if wlsVarExists(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
                     jms_count =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
                     unless jms_count == "empty"
                       l = 0
                       while ( l < jms_count.to_i )
-                        jmssubobjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_foreign_servers')
-                        jmsmodule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
+                        jmsFsObjects  =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_foreign_servers')
+                        jmsModule     =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
                         # example "JMSModule1/ForeignServer"
                         first = "^[^/]+"
                         last  = "[^/]+$"
                         foreignServerString  = wlsObject.match last
                         moduleString         = wlsObject.match first
 
-                        # puts "trying to find " + foreignServerString[0] + " for module " + moduleString[0] + " and " +jmsmodule+" with input " + wlsObject
-                        if moduleString[0] == jmsmodule
-                          unless jmssubobjects.nil?
-                            if jmssubobjects.include? foreignServerString[0]
+                        # puts "trying to find " + foreignServerString[0] + " for module " + moduleString[0] + " and " +jmsModule+" with input " + wlsObject
+                        if moduleString[0] == jmsModule
+                          unless jmsFsObjects == "empty"
+                            if jmsFsObjects.include? foreignServerString[0]
                               # puts "return foreign server found "
                               return true
                             end
@@ -316,6 +316,41 @@ module Puppet::Parser::Functions
 
                     end
                   end
+
+                elsif type == 'foreignserver_object'
+                  #puts 'foreignserver_object'
+                  # this is more complex, this object can exist with this name in multiple jmsmodules
+                  if wlsVarExists(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
+                    jms_count =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_cnt')
+                    unless jms_count == "empty"
+                      l = 0
+                      while ( l < jms_count.to_i )
+                        objects = wlsObject.split('/')
+                        #puts "CF entries: " + objects[0] + "-" + objects[1] + "-" + objects[2]
+                        # example "jmsClusterModule/ForeignServer/TestQueue"
+                        foreignServerObjectString  = objects[2]
+                        # facts are in lowercase
+                        foreignServerString        = objects[1].downcase
+                        moduleString               = objects[0]
+                        #puts "lookup " + prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_foreign_server_'+foreignServerString+'_objects'
+                        jmsFsEntriesObjects =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_foreign_server_'+foreignServerString+'_objects')
+                        jmsModule           =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodule_'+l.to_s+'_name')
+                        #puts "found: " + jmsFsEntriesObjects
+                        #puts "trying to find " + foreignServerString + " for module " + moduleString + " and " +jmsModule+" with input " + wlsObject
+                        if moduleString == jmsModule
+                          unless jmsFsEntriesObjects == "empty"
+                            if jmsFsEntriesObjects.include? foreignServerObjectString
+                              #puts "return foreign server entry found "
+                              return true
+                            end
+                          end
+                        end
+                        l += 1
+                      end
+
+                    end
+                  end
+
 
                 end # if type
               end  # domain_path equal
@@ -339,14 +374,19 @@ def lookupWlsVar(name)
   if wlsVarExists(name)
     return lookupvar(name).to_s
   end
+  #puts "return empty"
   return "empty"
 end
-
 
 def wlsVarExists(name)
   #puts "lookup fact "+name
   if lookupvar(name) != :undefined
-    return true
+    if lookupvar(name).nil?
+      #puts "return false"
+      return false
+    end
+    return true 
   end
+  #puts "not found"
   return false 
 end   

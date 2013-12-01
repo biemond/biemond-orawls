@@ -75,15 +75,19 @@ def lookupWlsVar(name)
   if wlsVarExists(name)
     return lookupvar(name).to_s
   end
+  #puts "return empty"
   return "empty"
 end
-
 
 def wlsVarExists(name)
   #puts "lookup fact "+name
   if lookupvar(name) != :undefined
-    return true
+    if lookupvar(name).nil?
+      #puts "return false"
+      return false
+    end
+    return true 
   end
+  #puts "not found"
   return false 
 end   
-

@@ -568,8 +568,26 @@ def get_domain(name,i,wlsversion)
         end
 
         jmsmoduleForeingServerStr = "" 
-        jmsroot.elements.each("foreign-server") do |fs| 
-          jmsmoduleForeingServerStr +=  fs.attributes["name"] + ";"
+        jmsroot.elements.each("foreign-server") do |fs|
+          fsName = fs.attributes["name"] 
+          jmsmoduleForeingServerStr +=  fsName + ";"
+
+          jmsmoduleForeignServerObjectsStr = "" 
+          fs.elements.each("foreign-destination") do |cf| 
+            jmsmoduleForeignServerObjectsStr +=  cf.attributes["name"] + ";"
+          end 
+          fs.elements.each("foreign-connection-factory") do |dest| 
+            jmsmoduleForeignServerObjectsStr +=  dest.attributes["name"] + ";"
+          end 
+
+          Facter.add("#{prefix}_domain_#{n}_jmsmodule_#{k}_foreign_server_#{fsName}_objects") do
+            setcode do
+              jmsmoduleForeignServerObjectsStr
+            end
+          end
+
+          #puts "#{prefix}_domain_#{n}_jmsmodule_#{k}_foreign_server_#{fsName}_objects"
+          #puts "values "+jmsmoduleForeignServerObjectsStr
         end
 
         Facter.add("#{prefix}_domain_#{n}_jmsmodule_#{k}_foreign_servers") do
@@ -577,6 +595,8 @@ def get_domain(name,i,wlsversion)
             jmsmoduleForeingServerStr
           end
         end
+        #puts "#{prefix}_domain_#{n}_jmsmodule_#{k}_foreign_servers"
+        #puts "values "+jmsmoduleForeingServerStr
 
 
 

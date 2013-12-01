@@ -191,7 +191,7 @@ module Puppet::Parser::Functions
                 elsif type == 'jmsmodule'
                     jmsmodules =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_jmsmodules')
                     unless jmsmodules  == "empty"
-                      if jmsmodules.include? wlsObject
+                      if jmsmodules.include? wlsObject + ";"
                         return true
                       end
                     end

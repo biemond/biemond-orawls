@@ -65,6 +65,11 @@ Some manifests like weblogic.pp supports an alternative mountpoint for the big o
 When not provided it uses the files location of the wls puppet module  
 else you can use $source => "/mnt" or "puppet:///modules/orawls/" (default) or  "puppet:///middleware/" 
 
+Override oracle operating system user
+-------------------------------------
+
+set the following fact override_weblogic_user, like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls
+
 
 Orawls WebLogic Facter
 ----------------------

@@ -2,15 +2,26 @@
 require 'rexml/document' 
 require 'facter'
 
+def get_weblogicUser()
+  weblogicUser = Facter.value('override_weblogic_user')
+  if weblogicUser.nil?
+    puts "weblogic user is oracle"
+  else 
+    puts "weblogic user is " + weblogicUser
+    return weblogicUser
+  end
+  return "oracle"
+end
 
 # read middleware home in the oracle home folder
 def get_homes()
 
   os = Facter.value(:kernel)
-  weblogicUser = "oracle"
 
   if ["Linux"].include?os
-    beafile = "/home/"+weblogicUser+"/bea/beahomelist"
+    beafile = "/home/"+get_weblogicUser()+"/bea/beahomelist"
+  elsif ["SunOS"].include?os
+    beafile = "/export/home/"+get_weblogicUser()+"/bea/beahomelist"  
   else
     return nil 
   end
@@ -31,9 +42,9 @@ end
 def get_bsu_patches(name)
   os = Facter.value(:kernel)
 
-  if ["Linux"].include?os
+  if ["Linux","SunOS"].include?os
    if FileTest.exists?(name+'/utils/bsu/patch-client.jar')
-    output2 = Facter::Util::Resolution.exec("su -l oracle -c \"java -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
+    output2 = Facter::Util::Resolution.exec("su -l "+ get_weblogicUser() + " -c \"java -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
     if output2.nil?
       return "empty"
     end
@@ -58,10 +69,11 @@ end
 def get_opatch_patches(name)
 
     os = Facter.value(:kernel)
-    weblogicUser = "oracle"
 
     if ["Linux"].include?os
-      output3 = Facter::Util::Resolution.exec("su -l "+weblogicUser+" -c \""+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc /etc/oraInst.loc\"")
+      output3 = Facter::Util::Resolution.exec("su -l "+get_weblogicUser()+" -c \""+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc /etc/oraInst.loc\"")
+    elsif ["SunOS"].include?os
+      output3 = Facter::Util::Resolution.exec("su -l "+get_weblogicUser()+" -c \""+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc /var/opt/oraInst.loc\"")
     end
 
     opatches = "Patches;"
@@ -94,6 +106,19 @@ def get_orainst_loc()
     if FileTest.exists?("/etc/oraInst.loc")
       str = ""
       output = File.read("/etc/oraInst.loc")
+      output.split(/\r?\n/).each do |item|
+        if item.match(/^inventory_loc/)
+          str = item[14,50]
+        end
+      end
+      return str
+    else
+      return "NotFound"
+    end
+  elsif ["SunOS"].include?os
+    if FileTest.exists?("/var/opt/oraInst.loc")
+      str = ""
+      output = File.read("/var/opt/oraInst.loc")
       output.split(/\r?\n/).each do |item|
         if item.match(/^inventory_loc/)
           str = item[14,50]
@@ -157,7 +182,7 @@ def get_domain(name,i,wlsversion)
   
   os = Facter.value(:kernel)
 
-  if ["Linux"].include?os
+  if ["Linux","SunOS"].include?os
 
     if FileTest.exists?(name+'/user_projects/domains')
       output2 = Facter::Util::Resolution.exec('/bin/ls '+name+'/user_projects/domains')
@@ -186,7 +211,7 @@ def get_domain(name,i,wlsversion)
 
   output2.split(/\r?\n/).each_with_index do |domain, n|
 
-    if ["Linux"].include?os
+    if ["Linux","SunOS"].include?os
       domainfile = name+'/user_projects/domains/'+domain+'/config/config.xml'
 
     end

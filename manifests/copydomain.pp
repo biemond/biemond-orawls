@@ -23,14 +23,24 @@ define orawls::copydomain (
   $log_output                 = false, # true|false
 )
 {
-  $domains_path_dir = "${middleware_home_dir}/user_projects/domains"
-  $apps_path_dir    = "${middleware_home_dir}/user_projects/applications"
+
+  if $::override_weblogic_domain_folder == undef {
+    $domains_path_dir = "${middleware_home_dir}/user_projects/domains"
+    $apps_path_dir    = "${middleware_home_dir}/user_projects/applications"  
+  } else {
+    $domains_path_dir = "${::override_weblogic_domain_folder}/domains"
+    $apps_path_dir    = "${::override_weblogic_domain_folder}/applications"  
+  }
 
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
   } elsif $version == 1212 {
-    $nodeMgrHome = "${weblogic_home_dir}/../user_projects/domains/${domain_name}/nodemanager"
+    if $::override_weblogic_domain_folder == undef {
+      $nodeMgrHome = "${weblogic_home_dir}/../user_projects/domains/${domain_name}/nodemanager"
+    } else {
+      $nodeMgrHome = "${::override_weblogic_domain_folder}/domains/${domain_name}/nodemanager"
+    }
 
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
@@ -53,42 +63,60 @@ define orawls::copydomain (
   if ($continue) {
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-    # make the default domain folders
-    if !defined(File["${middleware_home_dir}/user_projects"]) {
-      # check oracle install folder
-      file { "${middleware_home_dir}/user_projects":
-        ensure  => directory,
-        recurse => false,
-        replace => false,
-        mode    => 0775,
-        owner   => $os_user,
-        group   => $os_group,
+    if $::override_weblogic_domain_folder == undef {
+      # make the default domain folders
+      if !defined(File["weblogic_domain_folder"]) {
+        # check oracle install folder
+        file { "weblogic_domain_folder":
+          path    => "${middleware_home_dir}/user_projects",
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => 0775,
+          owner   => $os_user,
+          group   => $os_group,
+        }
+      }
+    } else {
+      # make override domain folders
+
+      if !defined(File["weblogic_domain_folder"]) {
+        # check oracle install folder
+        file { "weblogic_domain_folder":
+          path    => $::override_weblogic_domain_folder,
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => 0775,
+          owner   => $os_user,
+          group   => $os_group,
+        }
       }
     }
 
-    if !defined(File["${middleware_home_dir}/user_projects/domains"]) {
+    if !defined(File[$domains_path_dir]) {
       # check oracle install folder
-      file { "${middleware_home_dir}/user_projects/domains":
+      file { $domains_path_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
         mode    => 0775,
         owner   => $os_user,
         group   => $os_group,
-        require => File["${middleware_home_dir}/user_projects"],
+        require => File["weblogic_domain_folder"],
       }
     }
 
-    if !defined(File["${middleware_home_dir}/user_projects/applications"]) {
+    if !defined(File[$apps_path_dir]) {
       # check oracle install folder
-      file { "${middleware_home_dir}/user_projects/applications":
+      file { $apps_path_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
         mode    => 0775,
         owner   => $os_user,
         group   => $os_group,
-        require => File["${middleware_home_dir}/user_projects"],
+        require => File["weblogic_domain_folder"],
       }
     }
 
@@ -109,7 +137,7 @@ define orawls::copydomain (
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
-      require => [File["${middleware_home_dir}/user_projects/domains"],
+      require => [File[$domains_path_dir],
                   Exec["copy domain jar ${domain_name}"]],
     }
 

@@ -30,7 +30,7 @@ define orawls::storeuserconfig (
   }
 
   $javaCommand = "java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
-  $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   exec { "execwlst ${title}storeUserConfig.py":
     command     => "${javaCommand} ${download_dir}/${title}storeUserConfig.py ${weblogic_password}",

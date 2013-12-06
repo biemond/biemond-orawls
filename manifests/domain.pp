@@ -26,11 +26,17 @@ define orawls::domain (
   $repository_password        = hiera('repository_password'       , "Welcome01"),
 )
 {
-  $domain_dir = "${middleware_home_dir}/user_projects/domains"
-  $app_dir    = "${middleware_home_dir}/user_projects/applications"
+
+  if $::override_weblogic_domain_folder == undef {
+    $domain_dir = "${middleware_home_dir}/user_projects/domains"
+    $app_dir    = "${middleware_home_dir}/user_projects/applications"  
+  } else {
+    $domain_dir = "${::override_weblogic_domain_folder}/domains"
+    $app_dir    = "${::override_weblogic_domain_folder}/applications"  
+  }
 
   # check if the domain already exists
-  $found = domain_exists("${domain_dir}/${domain_name}", $version)
+  $found = domain_exists("${domain_dir}/${domain_name}", $version, $domain_dir)
 
   if $found == undef {
     $continue = true
@@ -200,44 +206,63 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    # make the default domain folders
-    if !defined(File["${middleware_home_dir}/user_projects"]) {
-      # check oracle install folder
-      file { "${middleware_home_dir}/user_projects":
-        ensure  => directory,
-        recurse => false,
-        replace => false,
-        mode    => 0775,
-        owner   => $os_user,
-        group   => $os_group,
+    if $::override_weblogic_domain_folder == undef {
+      # make the default domain folders
+      if !defined(File["weblogic_domain_folder"]) {
+        # check oracle install folder
+        file { "weblogic_domain_folder":
+          path    => "${middleware_home_dir}/user_projects",
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => 0775,
+          owner   => $os_user,
+          group   => $os_group,
+        }
+      }
+    } else {
+      # make override domain folders
+
+      if !defined(File["weblogic_domain_folder"]) {
+        # check oracle install folder
+        file { "weblogic_domain_folder":
+          path    => $::override_weblogic_domain_folder,
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => 0775,
+          owner   => $os_user,
+          group   => $os_group,
+        }
       }
     }
 
-    if !defined(File["${middleware_home_dir}/user_projects/domains"]) {
+    if !defined(File[$domain_dir]) {
       # check oracle install folder
-      file { "${middleware_home_dir}/user_projects/domains":
+      file { $domain_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
-        require => File["${middleware_home_dir}/user_projects"],
         mode    => 0775,
         owner   => $os_user,
         group   => $os_group,
+        require => File["weblogic_domain_folder"],
       }
     }
 
-    if !defined(File["${middleware_home_dir}/user_projects/applications"]) {
+    if !defined(File[$app_dir]) {
       # check oracle install folder
-      file { "${middleware_home_dir}/user_projects/applications":
+      file { $app_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
         mode    => 0775,
         owner   => $os_user,
         group   => $os_group,
-        require => File["${middleware_home_dir}/user_projects"],
+        require => File["weblogic_domain_folder"],
       }
     }
+
 
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
@@ -246,8 +271,8 @@ define orawls::domain (
       creates     => "${domain_dir}/${domain_name}",
       require     => [
         File["domain.py ${domain_name} ${title}"],
-        File["${middleware_home_dir}/user_projects/domains"],
-        File["${middleware_home_dir}/user_projects/applications"]],
+        File[$domain_dir],
+        File[$app_dir]],
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,

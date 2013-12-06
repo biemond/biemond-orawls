@@ -13,11 +13,15 @@ define orawls::packdomain (
   $log_output                 = false, # true|false
 )
 {
-  $domain_dir = "${middleware_home_dir}/user_projects/domains"
 
-  $exec_path        = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
+  if $::override_weblogic_domain_folder == undef {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir = "${::override_weblogic_domain_folder}/domains"
+  }
 
-  $packCommand = "-domain=${domain_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+  $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
+  $packCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
   exec { "pack domain ${domain_name} ${title}":
     command   => "${weblogic_home_dir}/common/bin/pack.sh ${packCommand}",

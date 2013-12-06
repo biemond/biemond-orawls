@@ -13,6 +13,17 @@ def get_weblogicUser()
   return "oracle"
 end
 
+def get_domainFolder(mdwHome)
+  domainFolder = Facter.value('override_weblogic_domain_folder')
+  if domainFolder.nil?
+    puts "domain folder is " + mdwHome + "/user_projects"
+  else 
+    puts "domain folder is " + domainFolder
+    return domainFolder
+  end
+  return mdwHome+"/user_projects"
+end
+
 # read middleware home in the oracle home folder
 def get_homes()
 
@@ -184,8 +195,8 @@ def get_domain(name,i,wlsversion)
 
   if ["Linux","SunOS"].include?os
 
-    if FileTest.exists?(name+'/user_projects/domains')
-      output2 = Facter::Util::Resolution.exec('/bin/ls '+name+'/user_projects/domains')
+    if FileTest.exists?( get_domainFolder(name)+'/domains')
+      output2 = Facter::Util::Resolution.exec('/bin/ls '+get_domainFolder(name)+'/domains')
       if output2.nil?
         Facter.add("#{prefix}_domain_cnt") do
           setcode do
@@ -212,7 +223,7 @@ def get_domain(name,i,wlsversion)
   output2.split(/\r?\n/).each_with_index do |domain, n|
 
     if ["Linux","SunOS"].include?os
-      domainfile = name+'/user_projects/domains/'+domain+'/config/config.xml'
+      domainfile = get_domainFolder(name)+'/domains/'+domain+'/config/config.xml'
 
     end
 
@@ -576,7 +587,7 @@ def get_domain(name,i,wlsversion)
 
 
 
-        subfile = File.read( name+'/user_projects/domains/'+domain+"/config/" + jmsresource.elements['descriptor-file-name'].text )
+        subfile = File.read( get_domainFolder(name)+'/domains/'+domain+"/config/" + jmsresource.elements['descriptor-file-name'].text )
         subdoc = REXML::Document.new subfile
 
         jmsroot = subdoc.root

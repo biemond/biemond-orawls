@@ -1,7 +1,7 @@
 Oracle WebLogic / Fusion Middleware puppet module V2
 ====================================================
 
-Got the same options as the wls module but optimized for Hiera, totally refactored and only for Linux
+Got the same options as the wls module but optimized for Hiera, totally refactored and only for Linux and Solaris
 
 For full hiera examples, see the usages below this page
 
@@ -9,10 +9,16 @@ created by Edwin Biemond  email biemond at gmail dot com
 [biemond.blogspot.com](http://biemond.blogspot.com)    
 [Github homepage](https://github.com/biemond/biemond-orawls)  
 
-Should work for all Linux versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES or OracleLinux  
+Should work for all Linux,Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc and x86  
 
-Reference implementation, the vagrant test case for full working WebLogic 12.1.2 example  
+Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant  
+
+Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
+https://github.com/biemond/biemond-orawls-vagrant-solaris  
+
+Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite cluster example  
+https://github.com/biemond/vagrant-soasuite  
 
 
 Orawls WebLogic Features

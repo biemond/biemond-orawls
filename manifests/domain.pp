@@ -29,10 +29,10 @@ define orawls::domain (
 
   if $::override_weblogic_domain_folder == undef {
     $domain_dir = "${middleware_home_dir}/user_projects/domains"
-    $app_dir    = "${middleware_home_dir}/user_projects/applications"  
+    $app_dir    = "${middleware_home_dir}/user_projects/applications"
   } else {
     $domain_dir = "${::override_weblogic_domain_folder}/domains"
-    $app_dir    = "${::override_weblogic_domain_folder}/applications"  
+    $app_dir    = "${::override_weblogic_domain_folder}/applications"
   }
 
   # check if the domain already exists
@@ -280,7 +280,7 @@ define orawls::domain (
     }
 
     exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-      command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+      command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
       onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
       require => Exec["execwlst ${domain_name} ${title}"],
       path    => $exec_path,

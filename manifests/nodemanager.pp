@@ -38,8 +38,18 @@ define orawls::nodemanager (
   }
 
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
-  $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-  $nativeLib    = "linux/x86_64"
+  case $::kernel {
+    Linux: {
+      $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
+      $nativeLib    = "linux/x86_64"
+      $suCommand    = "su -l ${os_user}"
+    }
+    SunOS: {
+      $checkCommand = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.NodeManager'"
+      $nativeLib    = "solaris/x64"
+      $suCommand    = "su - ${os_user}"
+    }
+  }
 
   Exec {
      logoutput => $log_output,
@@ -67,10 +77,10 @@ define orawls::nodemanager (
       command     => "/bin/sleep 20",
       subscribe   => Exec["startNodemanager 1212 ${title}"],
       refreshonly => true,
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      cwd       => $nodeMgrHome,
+      path        => $exec_path,
+      user        => $os_user,
+      group       => $os_group,
+      cwd         => $nodeMgrHome,
     }
   } elsif (  $version == 1111 or $version == 1036 or $version == 1211 ){
     if $log_dir != undef {

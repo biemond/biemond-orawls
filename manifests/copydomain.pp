@@ -1,12 +1,9 @@
 # == Define: orawls::copydomain
 #
-#   copydomain to an other node
+#   copydomain to an other nodes
 ##
-#
-
-
 define orawls::copydomain (
-  $version                    = 1111, # 1036|1111|1211|1212
+  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
@@ -26,10 +23,10 @@ define orawls::copydomain (
 
   if $::override_weblogic_domain_folder == undef {
     $domains_path_dir = "${middleware_home_dir}/user_projects/domains"
-    $apps_path_dir    = "${middleware_home_dir}/user_projects/applications"  
+    $apps_path_dir    = "${middleware_home_dir}/user_projects/applications"
   } else {
     $domains_path_dir = "${::override_weblogic_domain_folder}/domains"
-    $apps_path_dir    = "${::override_weblogic_domain_folder}/applications"  
+    $apps_path_dir    = "${::override_weblogic_domain_folder}/applications"
   }
 
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
@@ -47,7 +44,7 @@ define orawls::copydomain (
   }
 
   # check if the domain already exists
-  $found = domain_exists("${domains_path_dir}/${domain_name}", $version)
+  $found = domain_exists("${domains_path_dir}/${domain_name}", $version, $domains_path_dir)
 
   if $found == undef {
     $continue = true

@@ -24,18 +24,40 @@ def get_domainFolder(mdwHome)
   return mdwHome+"/user_projects"
 end
 
+def get_suCommand()
+  os = Facter.value(:kernel)
+  if "Linux" == os
+    return "su -l "
+  elsif "SunOS" == os
+    return "su - "
+  end
+  return "su -l "
+end
+
+def get_oraInvPath()
+  os = Facter.value(:kernel)
+  if "Linux" == os
+    return "/etc"
+  elsif "SunOS" == os
+    return "/var/opt"
+  end
+  return "/etc"
+end
+
+def get_userHomePath()
+  os = Facter.value(:kernel)
+  if "Linux" == os
+    return "/home"
+  elsif "SunOS" == os
+    return "/export/home"
+  end
+  return "/home"
+end
+
 # read middleware home in the oracle home folder
 def get_homes()
 
-  os = Facter.value(:kernel)
-
-  if ["Linux"].include?os
-    beafile = "/home/"+get_weblogicUser()+"/bea/beahomelist"
-  elsif ["SunOS"].include?os
-    beafile = "/export/home/"+get_weblogicUser()+"/bea/beahomelist"  
-  else
-    return nil 
-  end
+  beafile = get_userHomePath()+"/"+get_weblogicUser()+"/bea/beahomelist"
 
   if FileTest.exists?(beafile)
     output = File.read(beafile)
@@ -55,7 +77,7 @@ def get_bsu_patches(name)
 
   if ["Linux","SunOS"].include?os
    if FileTest.exists?(name+'/utils/bsu/patch-client.jar')
-    output2 = Facter::Util::Resolution.exec("su -l "+ get_weblogicUser() + " -c \"java -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
+    output2 = Facter::Util::Resolution.exec(get_suCommand()+ get_weblogicUser() + " -c \"java -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
     if output2.nil?
       return "empty"
     end
@@ -78,14 +100,9 @@ end
 
 
 def get_opatch_patches(name)
-
-    os = Facter.value(:kernel)
-
-    if ["Linux"].include?os
-      output3 = Facter::Util::Resolution.exec("su -l "+get_weblogicUser()+" -c \""+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc /etc/oraInst.loc\"")
-    elsif ["SunOS"].include?os
-      output3 = Facter::Util::Resolution.exec("su -l "+get_weblogicUser()+" -c \""+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc /var/opt/oraInst.loc\"")
-    end
+    puts "get_opatch_patches with path: "+name
+    #puts "opatch command: "+get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'"
+    output3 = Facter::Util::Resolution.exec(get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'")
 
     opatches = "Patches;"
     if output3.nil?
@@ -100,6 +117,7 @@ def get_opatch_patches(name)
 end  
 
 def get_middleware_1212_Home(name)
+    #puts "vars: "+ get_suCommand()+" "+get_weblogicUser()+" "+get_oraInvPath()+" "+get_userHomePath()
 
     elements = [] 
     name.split(/;/).each_with_index{ |element, index|  
@@ -112,37 +130,23 @@ end
 
 
 def get_orainst_loc()
-  os = Facter.value(:kernel)
-  if ["Linux"].include?os
-    if FileTest.exists?("/etc/oraInst.loc")
-      str = ""
-      output = File.read("/etc/oraInst.loc")
-      output.split(/\r?\n/).each do |item|
-        if item.match(/^inventory_loc/)
-          str = item[14,50]
-        end
+  puts "get_orainst_loc: "+get_oraInvPath()+"/oraInst.loc"
+  if FileTest.exists?(get_oraInvPath()+"/oraInst.loc")
+    str = ""
+    output = File.read(get_oraInvPath()+"/oraInst.loc")
+    output.split(/\r?\n/).each do |item|
+      if item.match(/^inventory_loc/)
+        str = item[14,50]
       end
-      return str
-    else
-      return "NotFound"
     end
-  elsif ["SunOS"].include?os
-    if FileTest.exists?("/var/opt/oraInst.loc")
-      str = ""
-      output = File.read("/var/opt/oraInst.loc")
-      output.split(/\r?\n/).each do |item|
-        if item.match(/^inventory_loc/)
-          str = item[14,50]
-        end
-      end
-      return str
-    else
-      return "NotFound"
-    end
+    return str
+  else
+    return "NotFound"
   end
 end
 
 def get_orainst_products(path)
+  puts "get_orainst_products with path: "+path
   unless path.nil?
     if FileTest.exists?(path+"/ContentsXML/inventory.xml")
       file = File.read( path+"/ContentsXML/inventory.xml" )
@@ -709,7 +713,7 @@ end
 mdw11gHomes = get_homes
 inventory   = get_orainst_loc
 inventory2  = get_orainst_products(inventory)
-mdw12gHomes = get_middleware_1212_Home(inventory2)
+mdw12cHomes = get_middleware_1212_Home(inventory2)
 
 # report all oracle homes / domains
 unless mdw11gHomes.nil?
@@ -738,9 +742,9 @@ unless mdw11gHomes.nil?
 end
 
 # all homes on 1 row
-unless mdw12gHomes.nil?
+unless mdw12cHomes.nil?
   str = ""
-  mdw12gHomes.each do |item|
+  mdw12cHomes.each do |item|
     str += item + ";"
   end 
   Facter.add("ora_mdw_1212_homes") do
@@ -751,8 +755,8 @@ unless mdw12gHomes.nil?
 end
 
 # report all oracle homes / domains
-unless mdw12gHomes.nil?
-  mdw12gHomes.each_with_index do |mdw, i|
+unless mdw12cHomes.nil?
+  mdw12cHomes.each_with_index do |mdw, i|
     Facter.add("ora_mdw_1212_#{i}") do
       setcode do
         mdw
@@ -781,7 +785,6 @@ Facter.add("ora_mdw_cnt") do
   unless mdw11gHomes.nil?
     count = mdw11gHomes.count
   end
-
   setcode do
     count
   end
@@ -790,10 +793,9 @@ end
 # all 12c home counter
 Facter.add("ora_mdw_1212_cnt") do
   count = 0
-  unless mdw12gHomes.nil?
-    count = mdw12gHomes.count
+  unless mdw12cHomes.nil?
+    count = mdw12cHomes.count
   end
-
   setcode do
     count
   end

@@ -56,7 +56,8 @@ module Puppet::Parser::Functions
               domain = domain.strip.downcase
 
               domain_path = domainsHomeDir + "/" + domain
-
+              domain_path = domain_path.strip.downcase
+              
               # do we found the right domain
               if domain_path == mdwArg
                 return true

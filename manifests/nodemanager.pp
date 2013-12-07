@@ -20,7 +20,12 @@ define orawls::nodemanager (
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
   } elsif $version == 1212 {
-    $nodeMgrHome = "${weblogic_home_dir}/../user_projects/domains/${domain_name}/nodemanager"
+
+    if $::override_weblogic_domain_folder == undef {
+      $nodeMgrHome = "${weblogic_home_dir}/../user_projects/domains/${domain_name}/nodemanager"
+    } else {
+      $nodeMgrHome = "${::override_weblogic_domain_folder}/domains/${domain_name}/nodemanager"
+    }
 
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
@@ -42,8 +47,15 @@ define orawls::nodemanager (
 
   # nodemanager is part of the domain creation
   if $version == "1212" {
+
+    if $::override_weblogic_domain_folder == undef {
+      $domainsHome = "${weblogic_home_dir}/../user_projects/domains"
+    } else {
+      $domainsHome = "${::override_weblogic_domain_folder}/domains"
+    }
+
     exec { "startNodemanager 1212 ${title}":
-      command => "nohup ${weblogic_home_dir}/../user_projects/domains/${domain_name}/bin/startNodeManager.sh &",
+      command => "nohup ${domainsHome}/${domain_name}/bin/startNodeManager.sh &",
       unless  => "${checkCommand}",
       path    => $exec_path,
       user    => $os_user,

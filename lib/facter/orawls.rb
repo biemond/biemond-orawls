@@ -54,6 +54,16 @@ def get_userHomePath()
   return "/home"
 end
 
+def get_javaCommand()
+  os = Facter.value(:kernel)
+  if "Linux" == os
+    return "java"
+  elsif "SunOS" == os
+    return "/usr/java -d64"
+  end
+  return "java"
+end
+
 # read middleware home in the oracle home folder
 def get_homes()
 
@@ -77,7 +87,7 @@ def get_bsu_patches(name)
 
   if ["Linux","SunOS"].include?os
    if FileTest.exists?(name+'/utils/bsu/patch-client.jar')
-    output2 = Facter::Util::Resolution.exec(get_suCommand()+ get_weblogicUser() + " -c \"java -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
+    output2 = Facter::Util::Resolution.exec(get_suCommand()+ get_weblogicUser() + " -c \""+get_javaCommand()+" -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
     if output2.nil?
       return "empty"
     end

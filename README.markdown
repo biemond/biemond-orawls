@@ -17,7 +17,7 @@ https://github.com/biemond/biemond-orawls-vagrant
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
-Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite cluster example  
+Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
 https://github.com/biemond/vagrant-soasuite  
 
 

@@ -97,8 +97,8 @@ class orawls::weblogic (
         $java_statement     = "java"
        }
        SunOS: {
-         $oraInstPath        = "/var/opt"
-         $java_statement     = "java -d64"
+         $oraInstPath       = "/var/opt"
+         $java_statement    = "java -d64"
        }
     }
 

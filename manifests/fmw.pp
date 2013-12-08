@@ -21,7 +21,27 @@ define orawls::fmw (
 
   $exec_path     = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
   $oraInventory  = "${oracle_base_home_dir}/oraInventory"
-  $installDir    = "linux64"
+
+  case $::kernel {
+    Linux: {
+      $installDir    = "linux64"
+      $oraInstPath   = "/etc"
+   }
+    SunOS: {
+      case $::architecture {
+        i86pc: {
+          $oraInstPath   = "/var/opt"
+          $installDir    = "intelsolaris"
+        }
+        default: {
+          $oraInstPath   = "/var/opt"
+          $installDir    = "solaris"
+        }
+      }
+    }
+  }
+
+
 
   if      ( $fmw_product == "adf" ) {
      $fmw_silent_response_file = "orawls/fmw_silent_adf.rsp.erb"
@@ -154,8 +174,38 @@ define orawls::fmw (
 
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion "
 
+    if $::kernel == "SunOS" {
+      if $fmw_product == "soa" {
+        exec { "add -d64 oraparam.ini ${title}":
+          command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/fmw.tmp && mv /tmp/fmw.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
+          require   => [File[$last_download_check],
+                        Exec[$last_extract_check]
+                       ],
+          before    => Exec["install ${fmw_product} ${title}"],
+          path      => $exec_path,
+          user      => $os_user,
+          group     => $os_group,
+          logoutput => $log_output,
+        }
+      }
+      if $fmw_product == "osb" {
+
+        exec { "add -d64 oraparam.ini ${title}":
+          command   => "sed -e's/\\[Oracle\\]/\\[Oracle\\]\\\nJRE_MEMORY_OPTIONS=\"-d64\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/fmw.tmp && mv /tmp/fmw.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
+          require   => [File[$last_download_check],
+                        Exec[$last_extract_check],
+                       ],
+          before    => Exec["install ${fmw_product} ${title}"],
+          path      => $exec_path,
+          user      => $os_user,
+          group     => $os_group,
+          logoutput => $log_output,
+        }
+      }
+    }
+
     exec { "install ${fmw_product} ${title}":
-      command   => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
+      command   => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
       creates   => $oracleHome,
       timeout   => 0,
       path      => $exec_path,

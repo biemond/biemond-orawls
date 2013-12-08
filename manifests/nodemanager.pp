@@ -40,14 +40,16 @@ define orawls::nodemanager (
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
   case $::kernel {
     Linux: {
-      $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-      $nativeLib    = "linux/x86_64"
-      $suCommand    = "su -l ${os_user}"
+      $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
+      $nativeLib      = "linux/x86_64"
+      $suCommand      = "su -l ${os_user}"
+      $java_statement = "java"
     }
     SunOS: {
-      $checkCommand = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-      $nativeLib    = "solaris/x64"
-      $suCommand    = "su - ${os_user}"
+      $checkCommand   = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.NodeManager'"
+      $nativeLib      = "solaris/x64"
+      $suCommand      = "su - ${os_user}"
+      $java_statement = "java -d64"
     }
   }
 
@@ -107,7 +109,7 @@ define orawls::nodemanager (
       }
     }
 
-    $javaCommand = "java -client -Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
+    $javaCommand = "${java_statement} -client -Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
 
     file { "nodemanager.properties ux ${title}":
       path    => "${nodeMgrHome}/nodemanager.properties",

@@ -279,15 +279,25 @@ define orawls::domain (
       group       => $os_group,
     }
 
-    exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-      command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-      onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-      require => Exec["execwlst ${domain_name} ${title}"],
-      path    => $exec_path,
-      user    => $os_user,
-      group   => $os_group,
+    if $::kernel == "SunOS" {
+      exec { "setDebugFlagOnFalse ${domain_name} ${title}":
+        command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+        require => Exec["execwlst ${domain_name} ${title}"],
+        path    => $exec_path,
+        user    => $os_user,
+        group   => $os_group,
+      }
+    } else {
+      exec { "setDebugFlagOnFalse ${domain_name} ${title}":
+        command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+        require => Exec["execwlst ${domain_name} ${title}"],
+        path    => $exec_path,
+        user    => $os_user,
+        group   => $os_group,
+      }
     }
-
 
     exec { "domain.py ${domain_name} ${title}":
       command => "rm ${download_dir}/domain_${domain_name}.py",

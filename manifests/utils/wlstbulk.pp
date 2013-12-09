@@ -6,7 +6,7 @@
 #  possible hiera examples ( use hiera_array )
 #
 # with global parameters and inside with params
-# 
+#
 # jms_module_instances:
 #   - clusterOne:
 #      global_parameters:
@@ -86,14 +86,14 @@
 #
 #  or inside puppet
 #
-#   $entries_array = 
+#   $entries_array =
 #    [{  'ClusterOne' => {
-#            'global_parameters' => 
+#            'global_parameters' =>
 #               {
 #                log_output     => true,
 #                weblogic_type  => "jmsobject",
 #                script         => 'createJmsQueueOrTopic.py',
-#                params         => 
+#                params         =>
 #                  [  "subDeploymentName = 'jmsServers'",
 #                     "jmsModuleName     = 'jmsClusterModule'",
 #                     "distributed       = 'true'",
@@ -104,113 +104,118 @@
 #                     "errorObject       = 'ErrorQueue'",
 #                  ],
 #              } ,
-#            'createJmsQueueforJmsModule1' => 
+#            'createJmsQueueforJmsModule1' =>
 #               {
 #                 weblogic_object_name  => "Queue1",
-#                 params                => 
+#                 params                =>
 #                   [ "jmsType           = 'queue'",
 #                     "jmsName           = 'Queue1'",
 #                     "jmsJNDIName       = 'jms/Queue1'",
 #                   ],
 #               } ,
-#             'createJmsQueueforJmsModule2' => 
+#             'createJmsQueueforJmsModule2' =>
 #               {
 #                 weblogic_object_name  => "Queue2",
-#                 params                => 
+#                 params                =>
 #                   [ "jmsType           = 'queue'",
 #                     "jmsName           = 'Queue2'",
 #                     "jmsJNDIName       = 'jms/Queue2'",
 #                   ],
 #              },
-#        },       
+#        },
 #    },
-#   ] 
+#   ]
 #
 #
 #
 
-define orawls::utils::wlstbulk( 
+define orawls::utils::wlstbulk(
     $entries_array = undef,
 ){
 
-     $entries_array.each |$hieraEntry| {  
-      # every hiera entry
-      $hieraEntry.each |$hieraTitle,$hieraEntryValues| {
-        # select global params of the hiera entry
-        # notice $hieraTitle
-        $globals        = $hieraEntryValues.select |$x| {  $x[0] == 'global_parameters'  }
-        # only select params from global params, will merge later
-        if ( $globals['global_parameters'] != undef ) {
-          $params         = $globals['global_parameters'].select |$x| {  $x[0] == 'params'  }
-          # remove params from global params, so we will get all the default params
-          $default_params = $globals['global_parameters'].reject |$x| {  $x[0] == 'params'  }
-        } else {
-          # notice "params is null"
-          $params         = {}
-          $default_params = {}
-        }
-        # get all entries except global params
-        $wlstEntries = $hieraEntryValues.reject |$x| {  $x[0] == 'global_parameters'  }
-        # for every create WLST object
-        $wlstEntries.each |$index5,$value5 | { 
-           # notice "entry $index5"
-
-           $entry_other_params = $value5.reject |$x| {  $x[0] == 'params'  }
-           $entry_params = $value5['params']
-
-           # merge WLST params with global params
-           if $params['params'] == undef {
-             $all_params = $entry_params
-             # notice "no global params"
-           } else {
-             # notice "merge with global params"
-             $all_params = $params['params'] + $entry_params 
-           }
-           # notice "all_params $all_params"
-           # notice "default_params $default_params"
-           
-           if ( $default_params == undef ) {
-              $weblogic_object_name = $entry_other_params['weblogic_object_name']
-              $log_output           = $entry_other_params['log_output']
-              $weblogic_type        = $entry_other_params['weblogic_type']
-              $script               = $entry_other_params['script']
-           } else {
-              if ($entry_other_params['weblogic_object_name'] == undef ) {
-                $weblogic_object_name = $default_params['weblogic_object_name']
-              } else {
-                $weblogic_object_name = $entry_other_params['weblogic_object_name']
-              }
-              if ($entry_other_params['log_output'] == undef ) {
-                $log_output = $default_params['log_output']
-              } else {
-                $log_output = $entry_other_params['log_output']
-              }
-              if ($entry_other_params['weblogic_type'] == undef ) {
-                $weblogic_type = $default_params['weblogic_type']
-              } else {
-                $weblogic_type = $entry_other_params['weblogic_type']
-              }
-              if ($entry_other_params['script'] == undef ) {
-                $script = $default_params['script']
-              } else {
-                $script = $entry_other_params['script']
-              }
-           }
-
-           # create new hash 
-           $createEntry = {  "$index5" => 
-                                 {
-                                    weblogic_object_name  => $weblogic_object_name,
-                                    log_output            => $log_output,
-                                    weblogic_type         => $weblogic_type,
-                                    script                => $script,
-                                    params                => $all_params ,
-                                 }
-                          }
-           # create WLST object , add entry plus default               
-           create_resources('orawls::wlstexec',$createEntry, $default_params)               
-        }
-     }
-  } 
+# uncomment here
+#
+#     $entries_array.each |$hieraEntry| {
+#      # every hiera entry
+#      $hieraEntry.each |$hieraTitle,$hieraEntryValues| {
+#        # select global params of the hiera entry
+#        # notice $hieraTitle
+#        $globals        = $hieraEntryValues.select |$x| {  $x[0] == 'global_parameters'  }
+#        # only select params from global params, will merge later
+#        if ( $globals['global_parameters'] != undef ) {
+#          $params         = $globals['global_parameters'].select |$x| {  $x[0] == 'params'  }
+#          # remove params from global params, so we will get all the default params
+#          $default_params = $globals['global_parameters'].reject |$x| {  $x[0] == 'params'  }
+#        } else {
+#          # notice "params is null"
+#          $params         = {}
+#          $default_params = {}
+#        }
+#        # get all entries except global params
+#        $wlstEntries = $hieraEntryValues.reject |$x| {  $x[0] == 'global_parameters'  }
+#        # for every create WLST object
+#        $wlstEntries.each |$index5,$value5 | {
+#           # notice "entry $index5"
+#
+#           $entry_other_params = $value5.reject |$x| {  $x[0] == 'params'  }
+#           $entry_params = $value5['params']
+#
+#           # merge WLST params with global params
+#           if $params['params'] == undef {
+#             $all_params = $entry_params
+#             # notice "no global params"
+#           } else {
+#             # notice "merge with global params"
+#             $all_params = $params['params'] + $entry_params
+#           }
+#           # notice "all_params $all_params"
+#           # notice "default_params $default_params"
+#
+#           if ( $default_params == undef ) {
+#              $weblogic_object_name = $entry_other_params['weblogic_object_name']
+#              $log_output           = $entry_other_params['log_output']
+#              $weblogic_type        = $entry_other_params['weblogic_type']
+#              $script               = $entry_other_params['script']
+#           } else {
+#              if ($entry_other_params['weblogic_object_name'] == undef ) {
+#                $weblogic_object_name = $default_params['weblogic_object_name']
+#              } else {
+#                $weblogic_object_name = $entry_other_params['weblogic_object_name']
+#              }
+#              if ($entry_other_params['log_output'] == undef ) {
+#                $log_output = $default_params['log_output']
+#              } else {
+#                $log_output = $entry_other_params['log_output']
+#              }
+#              if ($entry_other_params['weblogic_type'] == undef ) {
+#                $weblogic_type = $default_params['weblogic_type']
+#              } else {
+#                $weblogic_type = $entry_other_params['weblogic_type']
+#              }
+#              if ($entry_other_params['script'] == undef ) {
+#                $script = $default_params['script']
+#              } else {
+#                $script = $entry_other_params['script']
+#              }
+#           }
+#
+#           # create new hash
+#           $createEntry = {  "$index5" =>
+#                                 {
+#                                    weblogic_object_name  => $weblogic_object_name,
+#                                    log_output            => $log_output,
+#                                    weblogic_type         => $weblogic_type,
+#                                    script                => $script,
+#                                    params                => $all_params ,
+#                                 }
+#                          }
+#           # create WLST object , add entry plus default
+#           create_resources('orawls::wlstexec',$createEntry, $default_params)
+#        }
+#     }
+#  }
+#
+# till here
+#
 
 }

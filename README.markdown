@@ -18,7 +18,7 @@ Reference Solaris implementation, the vagrant test case for full working WebLogi
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
-https://github.com/biemond/vagrant-soasuite  
+https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
 
 Orawls WebLogic Features
@@ -52,6 +52,13 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM 
 - domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM 
 - domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM 
+
+
+orawls::utils::wlstbulk is for now disabled so you can also use this in puppet Enterprise 3.0  
+requirements
+- needs puppet version > 3.2 ( make use of iteration and lambda expressions )
+- need to set --parser future ( puppet agent )
+- to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
 
 
 Override the default Oracle operating system user
@@ -1303,6 +1310,8 @@ execute any WLST script you want( bulk mode )
 requirements
 - need puppet version > 3.2 ( make use of iteration and lambda expressions
 - need to set --parser future ( puppet agent )
+
+to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
 
 use hiera_array, this will search for this entry in all hiera data files
 

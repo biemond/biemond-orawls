@@ -12,6 +12,7 @@ define orawls::opatch (
   $os_group                = hiera('wls_os_group'     , undef), # dba
   $download_dir            = hiera('wls_download_dir' , undef), # /data/install
   $source                  = hiera('wls_source'       , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
+  $remote_file             = true,  # true|false
   $log_output              = false, # true|false
 )
 {
@@ -38,29 +39,41 @@ define orawls::opatch (
       $mountPoint = $source
     }
 
-    # the patch used by the opatch
-    if !defined(File["${download_dir}/${patch_file}"]) {
-      file { "${download_dir}/${patch_file}":
-         source => "${mountPoint}/${patch_file}",
-         ensure => present,
-         backup  => false,
-         mode   => 0775,
-         owner  => $os_user,
-         group  => $os_group,
+    if $remote_file == true {
+
+      # the patch used by the opatch
+      if !defined(File["${download_dir}/${patch_file}"]) {
+        file { "${download_dir}/${patch_file}":
+           source => "${mountPoint}/${patch_file}",
+           ensure => present,
+           backup  => false,
+           mode   => 0775,
+           owner  => $os_user,
+           group  => $os_group,
+        }
+      }
+
+      exec { "extract opatch ${patch_file} ${title}":
+        command   => "unzip -n ${download_dir}/${patch_file} -d ${download_dir}",
+        require   => File["${download_dir}/${patch_file}"],
+        creates   => "${download_dir}/${patch_id}",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+      }
+    } else {
+      exec { "extract opatch ${patch_file} ${title}":
+        command   => "unzip -n ${source}/${patch_file} -d ${download_dir}",
+        creates   => "${download_dir}/${patch_id}",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
       }
     }
 
     $oPatchCommand = "opatch apply -silent -jre"
-
-    exec { "extract opatch ${patch_file} ${title}":
-      command   => "unzip -n ${download_dir}/${patch_file} -d ${download_dir}",
-      require   => File["${download_dir}/${patch_file}"],
-      creates   => "${download_dir}/${patch_id}",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-    }
 
     exec { "exec opatch ux ${title}":
       command   => "${oracle_product_home_dir}/OPatch/${oPatchCommand} ${jdk_home_dir}/jre -oh ${oracle_product_home_dir} ${download_dir}/${patch_id}",

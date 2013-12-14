@@ -84,10 +84,15 @@ three options
 
 Oracle Big files and alternate download location
 ------------------------------------------------
-Some manifests like weblogic.pp supports an alternative mountpoint for the big oracle setup/install files.  
-When not provided it uses the files location of the wls puppet module  
-else you can use $source => "/mnt" or "puppet:///modules/orawls/" (default) or  "puppet:///middleware/" 
+Some manifests like orawls:weblogic bsu opatch fmw supports an alternative mountpoint for the big oracle setup/install files.  
+When not provided it uses the files folder located in the orawls puppet module  
+else you can use $source =>
+- "/mnt"
+- "/vagrant"
+- "puppet:///modules/orawls/" (default)
+- "puppet:///middleware/"  
 
+when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install 
 
 Orawls WebLogic Facter
 ----------------------

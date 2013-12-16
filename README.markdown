@@ -31,6 +31,7 @@ Orawls WebLogic Features
 - creates a standard WebLogic domain
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
+- SOA Suite ( with BPM ) and BAM Cluster configuration ( convert single soa/bam servers to clusters ) 
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
@@ -846,6 +847,30 @@ when you just have one WebLogic domain on a server
          log_output:           true
          user_config_dir:      '/home/oracle'
 
+
+### orawls::utils::fmwcluster
+convert existing cluster to a soa suite cluster and BPM is optional and also convert BAM to a cluster  
+see this for an example https://github.com/biemond/biemond-orawls-vagrant-solaris-soa  
+you need to create a soa or bam cluster with some managed servers first 
+for the soa suite managed servers make sure to set the coherence arguments parameters  
+
+
+    $default_params = {}
+    $fmw_cluster_instances = hiera('fmw_cluster_instances', $default_params)
+    create_resources('orawls::utils::fmwcluster',$fmw_cluster_instances, $default_params)
+
+hiera configuration
+
+    fmw_cluster_instances:
+      'soaCluster':
+         domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/soa_basedomain"
+         soa_cluster_name:     "SoaCluster"
+         bam_cluster_name:     "BamCluster"
+         log_output:           *logoutput
+         bpm_enabled:          true
+         bam_enabled:          true
+         soa_enabled:          true
+    
 
 
 ###orawls::wlstexec

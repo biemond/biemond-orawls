@@ -23,6 +23,7 @@ SOA_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
 SOA_REPOS_DBPASSWORD='<%= @repository_password %>'
 
 BPM_ENABLED=<%= @bpm %>
+BAM_ENABLED=true
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):
   serverDir = File(directoryPath)
@@ -144,7 +145,10 @@ addTemplate('<%= @templateApplCore %>')
 addTemplate('<%= @templateJRF %>')
 addTemplate('<%= @templateWSMPM %>')
 addTemplate('<%= @templateSOA %>')
-addTemplate('<%= @templateBAM %>')
+
+if BAM_ENABLED == true:
+  print 'Adding BAM Template'
+  addTemplate('<%= @templateBAM %>')
 
 if BPM_ENABLED == true:
   print 'Adding BPM Template'
@@ -198,11 +202,12 @@ set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
 cd('Properties/NO_NAME_0/Property/user')
 set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
 
-cd('/JDBCSystemResource/BAMDataSource/JdbcResource/BAMDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORABAM')
+if BAM_ENABLED == true:
+  cd('/JDBCSystemResource/BAMDataSource/JdbcResource/BAMDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORABAM')
 
 updateDomain()
 closeDomain();
@@ -237,32 +242,32 @@ set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
 
+if BAM_ENABLED == true:
+  print 'Change bam_server1'
+  cd('/Servers/bam_server1')
+  set('Machine','LocalMachine')
 
-print 'Change bam_server1'
-cd('/Servers/bam_server1')
-set('Machine','LocalMachine')
+  create('bam_server1','ServerStart')
+  cd('ServerStart/bam_server1')
+  set('Arguments', BAM_JAVA_ARGUMENTS)
+  set('JavaVendor','Sun')
+  set('JavaHome', JAVA_HOME)
 
-create('bam_server1','ServerStart')
-cd('ServerStart/bam_server1')
-set('Arguments', BAM_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/bam_server1')
-create('bam_server1','SSL')
-cd('SSL/bam_server1')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
+  cd('/Server/bam_server1')
+  create('bam_server1','SSL')
+  cd('SSL/bam_server1')
+  set('Enabled', 'False')
+  set('HostNameVerificationIgnored', 'True')
 
 
-cd('/Server/bam_server1')
-create('bam_server1','Log')
-cd('/Server/bam_server1/Log/bam_server1')
-set('FileName','<%= @bam_nodemanager_log_dir %>/bam_server1.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
+  cd('/Server/bam_server1')
+  create('bam_server1','Log')
+  cd('/Server/bam_server1/Log/bam_server1')
+  set('FileName','<%= @bam_nodemanager_log_dir %>/bam_server1.log')
+  set('FileCount',10)
+  set('FileMinSize',5000)
+  set('RotationType','byTime')
+  set('FileTimeSpan',24)
 
 dumpStack();
 updateDomain()
@@ -270,7 +275,9 @@ closeDomain()
 # end check
 
 createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-createBootPropertiesFile(DOMAIN_PATH+'/servers/bam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+if BAM_ENABLED == true:
+  createBootPropertiesFile(DOMAIN_PATH+'/servers/bam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 readDomain(DOMAIN_PATH)
 setOption( "AppDir", APP_PATH )

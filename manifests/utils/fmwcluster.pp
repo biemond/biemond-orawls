@@ -15,7 +15,11 @@ define orawls::utils::fmwcluster (
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $soa_cluster_name           = undef,
   $bam_cluster_name           = undef,
-  $osb_cluster_name           = undef,
+#  $osb_cluster_name           = undef,
+  $bpm_enabled                = false, # true|false 
+  $bam_enabled                = false, # true|false 
+#  $osb_enabled                = false, # true|false 
+  $soa_enabled                = false, # true|false 
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
@@ -41,6 +45,8 @@ define orawls::utils::fmwcluster (
   }
 
   if ($continue) {
+
+
 
     #shutdown adminserver for offline WLST scripts
     orawls::control{'ShutdownAdminServerForSoa':
@@ -109,36 +115,47 @@ define orawls::utils::fmwcluster (
                      ]
     }
 
-    # execute WLST script
-    exec { "execwlst soa-bpm-createUDD":
-      command     => "${javaCommand} ${download_dir}/soa-bpm-createUDD.py",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-                      "JAVA_HOME=${jdk_home_dir}"],
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      logoutput   => $log_output,
-      require     => [ File["${download_dir}/soa-bpm-createUDD.py"],
-                       Orawls::Control['ShutdownAdminServerForSoa'],
-                       Exec["execwlst assignOsbSoaBpmBamToClusters"],
-                     ]
+    if $soa_enabled == true {
+      # execute WLST script
+      exec { "execwlst soa-bpm-createUDD":
+        command     => "${javaCommand} ${download_dir}/soa-bpm-createUDD.py",
+        environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                        "JAVA_HOME=${jdk_home_dir}"],
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+        logoutput   => $log_output,
+        require     => [ File["${download_dir}/soa-bpm-createUDD.py"],
+                         Orawls::Control['ShutdownAdminServerForSoa'],
+                         Exec["execwlst assignOsbSoaBpmBamToClusters"],
+                       ]
+      }
     }
 
-    # execute WLST script
-    exec { "execwlst soa-createUDD.py":
-      command     => "${javaCommand} ${middleware_home_dir}/Oracle_SOA1/bin/soa-createUDD.py --domain_home ${domain_dir} --bamcluster ${bam_cluster_name} --soacluster ${soa_cluster_name} --create_jms true",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-                      "JAVA_HOME=${jdk_home_dir}"],
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      logoutput   => $log_output,
-      require     => [ Orawls::Control['ShutdownAdminServerForSoa'],
-                       Exec["execwlst assignOsbSoaBpmBamToClusters"],
-                       Exec["execwlst soa-bpm-createUDD"],
-                     ]
+    if $bam_enabled == true and $soa_enabled == true {
+      $action = "--bamcluster ${bam_cluster_name} --soacluster ${soa_cluster_name}"
+    } elsif $bam_enabled == false and $soa_enabled == true  {
+      $action = "--soacluster ${soa_cluster_name}"
+    } else {
+      $action = "--bamcluster ${bam_cluster_name}"
     }
 
+    if $bam_enabled == true or $soa_enabled == true {
+      # execute WLST script
+      exec { "execwlst soa-createUDD.py":
+        command     => "${javaCommand} ${middleware_home_dir}/Oracle_SOA1/bin/soa-createUDD.py --domain_home ${domain_dir} ${action} --create_jms true",
+        environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                        "JAVA_HOME=${jdk_home_dir}"],
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+        logoutput   => $log_output,
+        require     => [ Orawls::Control['ShutdownAdminServerForSoa'],
+                         Exec["execwlst assignOsbSoaBpmBamToClusters"],
+                         Exec["execwlst soa-bpm-createUDD"],
+                       ]
+      }
+    }
 
 
     #startup adminserver for offline WLST scripts
@@ -159,7 +176,7 @@ define orawls::utils::fmwcluster (
       os_user                    => $os_user,
       os_group                   => $os_group,
       download_dir               => $download_dir,
-      require                    => Exec["execwlst soa-createUDD.py"],
+      require                    => Exec["execwlst soa-createUDD.py"],       
     }
   }
 

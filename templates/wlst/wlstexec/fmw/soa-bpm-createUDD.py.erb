@@ -8,6 +8,8 @@ DOMAIN_PATH='<%= @domain_dir %>'
 soacluster = '<%= @soa_cluster_name %>'
 Admin      = '<%= @adminserver_name %>'
 
+bpmEnabled = <%= @bpm_enabled %>
+
 def createJMSServers(cluster, track, currentServerCnt):
     print ' '
     print "Creating JMS Servers for the cluster :- ", cluster
@@ -157,63 +159,63 @@ create('TransactionParams', 'TransactionParams')
 cd('TransactionParams/NO_NAME_0')
 cmo.setXAConnectionFactoryEnabled(true)
 
+if bpmEnabled == true:
+    cd('/')
+    delete('AGJMSModule'    ,'JMSSystemResource')
+    dumpStack()
 
-cd('/')
-delete('AGJMSModule'    ,'JMSSystemResource')
-dumpStack()
+    #delete('AGJMSServer'    ,'JMSServer')
+    createJMSServers(soacluster, 'ag', 1)
 
-#delete('AGJMSServer'    ,'JMSServer')
-createJMSServers(soacluster, 'ag', 1)
+    cd('/')
+    create('AGJMSModuleUDDs','JMSSystemResource')
+         
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs')
+    assign('JMSSystemResource', 'AGJMSModuleUDDs', 'Target', soacluster)
 
-cd('/')
-create('AGJMSModuleUDDs','JMSSystemResource')
-     
-cd('/')
-cd('JMSSystemResource/AGJMSModuleUDDs')
-assign('JMSSystemResource', 'AGJMSModuleUDDs', 'Target', soacluster)
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs')
+    create('AGJMSSubDM', 'SubDeployment')
 
-cd('/')
-cd('JMSSystemResource/AGJMSModuleUDDs')
-create('AGJMSSubDM', 'SubDeployment')
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs/SubDeployments/AGJMSSubDM')
 
-cd('/')
-cd('JMSSystemResource/AGJMSModuleUDDs/SubDeployments/AGJMSSubDM')
+    print ' '
+    print ("*** Listing SOA JMS Servers ***")
+    s = ls('/JMSServers')
+    soaJMSServerStr=''
+    for token in s.split("drw-"):
+        token=token.strip().lstrip().rstrip()
+        if not token.find("AGJMSServer_auto") == -1:
+            soaJMSServerStr = soaJMSServerStr + token +","
+        print token
 
-print ' '
-print ("*** Listing SOA JMS Servers ***")
-s = ls('/JMSServers')
-soaJMSServerStr=''
-for token in s.split("drw-"):
-    token=token.strip().lstrip().rstrip()
-    if not token.find("AGJMSServer_auto") == -1:
-        soaJMSServerStr = soaJMSServerStr + token +","
-    print token
+    soaJMSSrvCnt=string.count(s, 'AGJMSServer_auto')
+    print ' '
+    print "Number of AG JMS Servers := ", soaJMSSrvCnt
+    print ' '
+    print "soaJMSServerStr := ", soaJMSServerStr
+    print ' '
 
-soaJMSSrvCnt=string.count(s, 'AGJMSServer_auto')
-print ' '
-print "Number of AG JMS Servers := ", soaJMSSrvCnt
-print ' '
-print "soaJMSServerStr := ", soaJMSServerStr
-print ' '
+    print ("*** Setting JMS SubModule for SOA JMS Server's target***")
+    assign('JMSSystemResource.SubDeployment', 'AGJMSModuleUDDs.AGJMSSubDM', 'Target', soaJMSServerStr) 
 
-print ("*** Setting JMS SubModule for SOA JMS Server's target***")
-assign('JMSSystemResource.SubDeployment', 'AGJMSModuleUDDs.AGJMSSubDM', 'Target', soaJMSServerStr) 
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs/JmsResource/NO_NAME_0')
 
-cd('/')
-cd('JMSSystemResource/AGJMSModuleUDDs/JmsResource/NO_NAME_0')
+    udd=create('UIBrokerTopic','UniformDistributedTopic')
+    udd.setJNDIName('jms/bpm/UIBrokerTopic')
+    udd.setJMSCreateDestinationIdentifier('jms/bpm/UIBrokerTopic')
+    udd.setSubDeploymentName('AGJMSSubDM')
 
-udd=create('UIBrokerTopic','UniformDistributedTopic')
-udd.setJNDIName('jms/bpm/UIBrokerTopic')
-udd.setJMSCreateDestinationIdentifier('jms/bpm/UIBrokerTopic')
-udd.setSubDeploymentName('AGJMSSubDM')
-
-soacf=create('UIBrokerTopicConnectionFactory','ConnectionFactory')
-soacf.setJNDIName('jms/bpm/UIBrokerTopicConnectionFactory')
-cd('/JMSSystemResource/AGJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/UIBrokerTopicConnectionFactory')
-set('DefaultTargetingEnabled', 'true')
-create('TransactionParams', 'TransactionParams')
-cd('TransactionParams/NO_NAME_0')
-cmo.setXAConnectionFactoryEnabled(true)
+    soacf=create('UIBrokerTopicConnectionFactory','ConnectionFactory')
+    soacf.setJNDIName('jms/bpm/UIBrokerTopicConnectionFactory')
+    cd('/JMSSystemResource/AGJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/UIBrokerTopicConnectionFactory')
+    set('DefaultTargetingEnabled', 'true')
+    create('TransactionParams', 'TransactionParams')
+    cd('TransactionParams/NO_NAME_0')
+    cmo.setXAConnectionFactoryEnabled(true)
 
 cd('/')
 delete('PS6SOAJMSModule','JMSSystemResource')

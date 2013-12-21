@@ -1,5 +1,5 @@
 module Puppet::Parser::Functions
-  newfunction(:soa_exists, :type => :rvalue) do |args|
+  newfunction(:soa_cluster_configured, :type => :rvalue) do |args|
 
     soa_exists = false
 
@@ -32,7 +32,7 @@ module Puppet::Parser::Functions
     # check the middleware home
     mdw_count = lookupWlsVar(prefix+'_cnt')
     if mdw_count  == "empty"
-      return art_exists
+      return soa_exists
     else
       # check the all mdw home
       i = 0

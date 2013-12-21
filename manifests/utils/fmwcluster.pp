@@ -15,10 +15,10 @@ define orawls::utils::fmwcluster (
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $soa_cluster_name           = undef,
   $bam_cluster_name           = undef,
-#  $osb_cluster_name           = undef,
+  $osb_cluster_name           = undef,
   $bpm_enabled                = false, # true|false 
   $bam_enabled                = false, # true|false 
-#  $osb_enabled                = false, # true|false 
+  $osb_enabled                = false, # true|false 
   $soa_enabled                = false, # true|false 
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
@@ -29,24 +29,45 @@ define orawls::utils::fmwcluster (
 )
 {
 
-  # check if the soa is already targeted to the cluster on this weblogic domain
-  $found = soa_exists($domain_name, $soa_cluster_name, $version)
+  if ( $soa_enabled ) {
+    # check if the soa is already targeted to the cluster on this weblogic domain
+    $found = soa_cluster_configured($domain_name, $soa_cluster_name, $version)
 
-  if $found == undef {
-    $continue = false
-    notify { "orawls::utils::fmwcluster ${title} ${version} continue false cause nill": }
-  } else {
-    if ($found) {
+    if $found == undef {
       $continue = false
+      notify { "orawls::utils::fmwcluster ${title} ${version} continue false cause nill": }
     } else {
-      notify { "orawls::utils::fmwcluster ${title} ${version} continue true cause not exists": }
-      $continue = true
+      if ($found) {
+        $continue = false
+      } else {
+        notify { "orawls::utils::fmwcluster ${title} ${version} continue true cause not exists": }
+        $continue = true
+      }
+    }
+  } elsif ( $osb_enabled ) {
+    # check if the osb is already targeted to the cluster on this weblogic domain
+    $found = osb_cluster_configured($domain_name, $osb_cluster_name, $version)
+
+    if $found == undef {
+      $continue = false
+      notify { "orawls::utils::fmwcluster ${title} ${version} continue false cause nill": }
+    } else {
+      if ($found) {
+        $continue = false
+      } else {
+        notify { "orawls::utils::fmwcluster ${title} ${version} continue true cause not exists": }
+        $continue = true
+      }
     }
   }
 
   if ($continue) {
 
-
+    if ( $osb_enabled  and $soa_enabled == false ) {
+      $last_step = "execwlst assignOsbSoaBpmBamToClusters"
+    } elsif ( $soa_enabled == true  ) {
+      $last_step = "execwlst soa-createUDD.py"
+    }
 
     #shutdown adminserver for offline WLST scripts
     orawls::control{'ShutdownAdminServerForSoa':
@@ -176,7 +197,7 @@ define orawls::utils::fmwcluster (
       os_user                    => $os_user,
       os_group                   => $os_group,
       download_dir               => $download_dir,
-      require                    => Exec["execwlst soa-createUDD.py"],       
+      require                    => Exec[$last_step],       
     }
   }
 

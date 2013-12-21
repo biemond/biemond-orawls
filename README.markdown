@@ -849,10 +849,10 @@ when you just have one WebLogic domain on a server
 
 
 ### orawls::utils::fmwcluster
-convert existing cluster to a soa suite cluster and BPM is optional and also convert BAM to a cluster  
+convert existing cluster to a osb or soa suite cluster (BPM is optional) and also convert BAM to a BAM cluster  
 see this for an example https://github.com/biemond/biemond-orawls-vagrant-solaris-soa  
-you need to create a soa or bam cluster with some managed servers first 
-for the soa suite managed servers make sure to set the coherence arguments parameters  
+you need to create a osb, soa or bam cluster with some managed servers first 
+for the osb or soa suite managed servers make sure to set the coherence arguments parameters  
 
 
     $default_params = {}
@@ -866,11 +866,12 @@ hiera configuration
          domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/soa_basedomain"
          soa_cluster_name:     "SoaCluster"
          bam_cluster_name:     "BamCluster"
-         log_output:           *logoutput
+         osb_cluster_name:     "OsbCluster"
+         log_output:           true
          bpm_enabled:          true
          bam_enabled:          true
          soa_enabled:          true
-    
+         osb_enabled:          true
 
 
 ###orawls::wlstexec

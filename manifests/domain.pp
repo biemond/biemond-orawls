@@ -263,7 +263,7 @@ define orawls::domain (
       }
     }
 
-
+    # create domain
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
@@ -280,6 +280,7 @@ define orawls::domain (
     }
 
     if $::kernel == "SunOS" {
+
       exec { "setDebugFlagOnFalse ${domain_name} ${title}":
         command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
         onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
@@ -288,7 +289,22 @@ define orawls::domain (
         user    => $os_user,
         group   => $os_group,
       }
+
+      if ($domain_template == 'osb' or
+          $domain_template == 'osb_soa' or
+          $domain_template == 'osb_soa_bpm'){
+        exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
+          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
+      }
+
     } else {
+
       exec { "setDebugFlagOnFalse ${domain_name} ${title}":
         command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
         onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
@@ -296,6 +312,19 @@ define orawls::domain (
         path    => $exec_path,
         user    => $os_user,
         group   => $os_group,
+      }
+
+      if ($domain_template == 'osb' or
+          $domain_template == 'osb_soa' or
+          $domain_template == 'osb_soa_bpm'){
+        exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
+          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
       }
     }
 

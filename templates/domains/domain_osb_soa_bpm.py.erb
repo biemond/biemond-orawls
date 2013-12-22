@@ -331,6 +331,49 @@ cd('Properties/NO_NAME_0/Property/user')
 set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
 
 
+
+print 'create opss datasource'
+cd('/')
+create('opssDataSource', 'JDBCSystemResource')
+cd('/JDBCSystemResource/opssDataSource')
+if BAM_ENABLED == true:
+  set('Target','AdminServer,osb_server1,soa_server1,bam_server1')
+else:
+  set('Target','AdminServer,osb_server1,soa_server1')
+
+ 
+cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+cmo.setName('opssDataSource')
+ 
+cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+create('myJdbcDataSourceParams','JDBCDataSourceParams')
+cd('JDBCDataSourceParams/NO_NAME_0')
+set('JNDIName', 'jdbc/opssDataSource')
+set('GlobalTransactionsProtocol', 'None')
+ 
+cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+create('myJdbcDriverParams','JDBCDriverParams')
+cd('JDBCDriverParams/NO_NAME_0')
+set('DriverName','oracle.jdbc.OracleDriver')
+set('URL',SOA_REPOS_DBURL)
+set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+set('UseXADataSourceInterface', 'false')
+ 
+create('myProperties','Properties')
+cd('Properties/NO_NAME_0')
+create('user','Property')
+cd('Property')
+cd('user')
+set('Value', SOA_REPOS_DBUSER_PREFIX+'_OPSS')
+ 
+cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+create('myJdbcConnectionPoolParams','JDBCConnectionPoolParams')
+cd('JDBCConnectionPoolParams/NO_NAME_0')
+set('TestTableName','SQL SELECT 1 FROM DUAL')
+
+
+
+
 dumpStack();
 updateDomain()
 closeDomain()

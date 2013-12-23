@@ -10,6 +10,14 @@ Admin      = '<%= @adminserver_name %>'
 
 bpmEnabled = <%= @bpm_enabled %>
 
+def createFileStore(storeName, serverName):
+    create(storeName, 'FileStore')
+    cd('/FileStore/'+storeName)
+    set ('Target', serverName)
+    set ('Directory', storeName)
+    cd('/')
+
+
 def createJMSServers(cluster, track, currentServerCnt):
     print ' '
     print "Creating JMS Servers for the cluster :- ", cluster
@@ -38,10 +46,16 @@ def createJMSServers(cluster, track, currentServerCnt):
 
                 if track == 'bpm':
                     jmsServerName = 'BPMJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'BPMJMSServerFileStore_auto_'+str(serverCnt)
                 elif track == 'ag':
                     jmsServerName = 'AGJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'AGJMSServerFileStore_auto_'+str(serverCnt)
                 elif track == 'ps6soa':
                     jmsServerName = 'PS6SOAJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'PS6SOAJMSServerFileStore_auto_'+str(serverCnt)
+
+                createFileStore(fileStoreName, token)
+                print "Created File Store :- ", fileStoreName
 
                 create(jmsServerName, 'JMSServer')
                 print "Created JMS Server :- ", jmsServerName
@@ -49,6 +63,9 @@ def createJMSServers(cluster, track, currentServerCnt):
                 assign('JMSServer', jmsServerName, 'Target', token)
                 print jmsServerName, " assigned to server :- ", token 
                 print ' '
+                cd('/JMSServer/'+jmsServerName)
+                set ('PersistentStore', fileStoreName)
+
                 serverCnt = serverCnt + 1
 
 

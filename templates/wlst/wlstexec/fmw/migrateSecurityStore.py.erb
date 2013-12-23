@@ -1,0 +1,12 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+opss_datasource = '<%= @repository_prefix %>_OPSS'
+DOMAIN_PATH='<%= @domain_dir %>/<%= @domain_name %>'
+
+connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+
+reassociateSecurityStore(domain=DOMAIN_PATH, servertype="DB_ORACLE",datasourcename=opss_datasource, jpsroot="cn=jpsTestNode", join="false")

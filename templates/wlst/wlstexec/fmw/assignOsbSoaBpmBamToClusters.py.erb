@@ -19,9 +19,12 @@ BamAdmin       = '<%= @bam_cluster_name %>,<%= @adminserver_name %>'
 OsbAdmin       = '<%= @osb_cluster_name %>,<%= @adminserver_name %>'
 Admin          = '<%= @adminserver_name %>'
 
-if bamEnabled == true and soaEnabled == true and osbEnabled == true:
+if   bamEnabled == true and soaEnabled == true and osbEnabled == true:
     All            = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @bam_cluster_name %>,<%= @adminserver_name %>'
     Adapters       = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
+elif bamEnabled == true and soaEnabled == true and osbEnabled == false:
+    All            = '<%= @soa_cluster_name %>,<%= @bam_cluster_name %>,<%= @adminserver_name %>'
+    Adapters       = '<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 elif bamEnabled == false and soaEnabled == true and osbEnabled == true:
     All            = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
     Adapters       = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
@@ -52,8 +55,8 @@ if bamEnabled == true:
 
 if osbEnabled == true:
     delete('osb_server1'            , 'Server')
-    delete('wlsbJMSServer'          , 'JMSServer')
-    delete('WseeJmsServer'          , 'JMSServer')
+#    delete('wlsbJMSServer'          , 'JMSServer')
+#    delete('WseeJmsServer'          , 'JMSServer')
 
 unassign('StartupClass'           ,'*', 'Target' , All)
 unassign('ShutdownClass'          ,'*', 'Target' , All)

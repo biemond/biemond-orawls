@@ -31,7 +31,7 @@ Orawls WebLogic Features
 - creates a standard WebLogic domain
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
-- SOA Suite ( with BPM ) and BAM Cluster configuration ( convert single soa/bam servers to clusters ) 
+- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters ) 
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST

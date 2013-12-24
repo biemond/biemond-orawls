@@ -60,6 +60,19 @@ def createJMSServers(cluster, track, currentServerCnt):
                 cd('/JMSServer/'+jmsServerName)
                 set ('PersistentStore', fileStoreName)
 
+                if track == 'wsee':
+                    safAgent     = 'ReliableWseeSAFAgent_auto_'+str(serverCnt)
+                    safFileStore = 'ReliableWseeSAFAgentFileStore_auto_'+str(serverCnt)
+          
+                    cd('/')
+                    create(safAgent, 'SAFAgent')
+                    createFileStore(safFileStore, token)
+                    cd('/SAFAgent/'+safAgent)
+                    set ('Target'     , token)
+                    set ('Store'      , safFileStore)
+                    set ('ServiceType','Both')
+                    
+    
                 serverCnt = serverCnt + 1
 
 
@@ -254,10 +267,10 @@ assign('JMSSystemResource', 'WseeJmsModuleUDDs', 'Target', osbcluster)
 
 cd('/')
 cd('JMSSystemResource/WseeJmsModuleUDDs')
-create('wseeJMSServer', 'SubDeployment')
+create('BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer', 'SubDeployment')
 
 cd('/')
-cd('JMSSystemResource/WseeJmsModuleUDDs/SubDeployments/wseeJMSServer')
+cd('JMSSystemResource/WseeJmsModuleUDDs/SubDeployments/BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer')
 
 print ' '
 print ("*** Listing OSB JMS Servers ***")
@@ -277,12 +290,37 @@ print "osbJMSServerStr := ", osbJMSServerStr
 print ' '
 
 print ("*** Setting JMS SubModule for OSB JMS Server's target***")
-assign('JMSSystemResource.SubDeployment', 'WseeJmsModuleUDDs.wseeJMSServer', 'Target', osbJMSServerStr) 
+assign('JMSSystemResource.SubDeployment', 'WseeJmsModuleUDDs.BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer', 'Target', osbJMSServerStr) 
 
 cd('/')
 cd('JMSSystemResource/WseeJmsModuleUDDs/JmsResource/NO_NAME_0')
 
+udd=create('WseeCallbackQueue','UniformDistributedQueue')
+udd.setJNDIName('weblogic.wsee.DefaultCallbackQueue')
+udd.setJMSCreateDestinationIdentifier('weblogic.wsee.DefaultCallbackQueue')
+udd.setSubDeploymentName('BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer')
+cd ('UniformDistributedQueue')
+cd ('WseeCallbackQueue')
+#dpo = create('dpoName','DeliveryParamsOverrides')
+#dpo.setRedeliveryDelay(15*60*1000)
+dfp = create('dfpName', 'DeliveryFailureParams')
+dfp.setRedeliveryLimit(2)
+dfp.setExpirationPolicy('Discard')
 
+cd('/')
+cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+
+udd=create('WseeMessageQueue','UniformDistributedQueue')
+udd.setJNDIName('weblogic.wsee.DefaultQueue')
+udd.setJMSCreateDestinationIdentifier('weblogic.wsee.DefaultQueue')
+udd.setSubDeploymentName('BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer')
+cd ('UniformDistributedQueue')
+cd ('WseeMessageQueue')
+#dpo = create('dpoName','DeliveryParamsOverrides')
+#dpo.setRedeliveryDelay(15*60*1000)
+dfp = create('dfpName', 'DeliveryFailureParams')
+dfp.setRedeliveryLimit(2)
+dfp.setExpirationPolicy('Discard')
 
 
 dumpStack()

@@ -87,6 +87,18 @@ cd('/')
 cd('JMSSystemResource/jmsResourcesUDDs')
 assign('JMSSystemResource', 'jmsResourcesUDDs', 'Target', osbcluster)
 
+cd('/')
+cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+
+udd=create('dist_QueueIn_auto'                                 ,'DistributedQueue')
+udd=create('dist_wli.reporting.jmsprovider.queue_auto'         ,'DistributedQueue')
+udd=create('dist_wli.reporting.jmsprovider_error.queue_auto'   ,'DistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.email_auto','DistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.file_auto' ,'DistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.ftp_auto'  ,'DistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.sftp_auto' ,'DistributedQueue')
+
+
 print ' '
 print ("*** Listing OSB JMS Servers ***")
 s = ls('/JMSServers')
@@ -121,6 +133,11 @@ for token in s.split("drw-"):
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Discard')
 
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_QueueIn_auto')
+        aaa = create(queue1,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_QueueIn_auto/DistributedQueueMember/' + queue1)
+        set('Weight',1)
+
         cd('/')
         cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
@@ -128,6 +145,10 @@ for token in s.split("drw-"):
         uddErr=create(errorQueue,'Queue')
         uddErr.setJNDIName(errorQueue)
         uddErr.setSubDeploymentName(subDeploymentStr)
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wli.reporting.jmsprovider_error.queue_auto')
+        aaa = create(errorQueue,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wli.reporting.jmsprovider_error.queue_auto/DistributedQueueMember/' + errorQueue)
+        set('Weight',1)
 
         cd('/')
         cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
@@ -142,6 +163,10 @@ for token in s.split("drw-"):
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Redirect')
         dfp.setErrorDestination(uddErr)
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wli.reporting.jmsprovider.queue_auto')
+        aaa = create(reportingQueue,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wli.reporting.jmsprovider.queue_auto/DistributedQueueMember/' + reportingQueue)
+        set('Weight',1)
 
         cd('/')
         cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
@@ -155,6 +180,11 @@ for token in s.split("drw-"):
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Discard')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.email_auto')
+        aaa = create(emailQueue,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.email_auto/DistributedQueueMember/' + emailQueue)
+        set('Weight',1)
+
 
         cd('/')
         cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
@@ -168,6 +198,10 @@ for token in s.split("drw-"):
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Discard')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.file_auto')
+        aaa = create(fileQueue,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.file_auto/DistributedQueueMember/' + fileQueue)
+        set('Weight',1)
 
         cd('/')
         cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
@@ -181,6 +215,10 @@ for token in s.split("drw-"):
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Discard')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.ftp_auto')
+        aaa = create(ftpQueue,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.ftp_auto/DistributedQueueMember/' + ftpQueue)
+        set('Weight',1)
 
         cd('/')
         cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
@@ -194,6 +232,10 @@ for token in s.split("drw-"):
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Discard')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.sftp_auto')
+        aaa = create(sftpQueue,'DistributedQueueMember')
+        cd('/JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0/DistributedQueue/dist_wlsb.internal.transport.task.queue.sftp_auto/DistributedQueueMember/' + sftpQueue)
+        set('Weight',1)
 
         serverCnt = serverCnt + 1
 
@@ -239,13 +281,6 @@ cmo.setXAConnectionFactoryEnabled(true)
 cd('/')
 cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
-udd=create('dist_QueueIn_auto','UniformDistributedQueue')
-udd=create('dist_wli.reporting.jmsprovider.queue_auto','UniformDistributedQueue')
-udd=create('dist_wli.reporting.jmsprovider_error.queue_auto','UniformDistributedQueue')
-udd=create('dist_wlsb.internal.transport.task.queue.email_auto','UniformDistributedQueue')
-udd=create('dist_wlsb.internal.transport.task.queue.file_auto','UniformDistributedQueue')
-udd=create('dist_wlsb.internal.transport.task.queue.ftp_auto','UniformDistributedQueue')
-udd=create('dist_wlsb.internal.transport.task.queue.sftp_auto','UniformDistributedQueue')
 
 
 cd('/')

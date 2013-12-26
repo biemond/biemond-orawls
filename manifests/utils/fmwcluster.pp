@@ -241,6 +241,34 @@ define orawls::utils::fmwcluster (
       log_output                 => $log_output,
       require                    => Exec[$last_step],       
     }
+
+      # the py script used by the wlst
+      file { "${download_dir}/changeWorkmanagers.py":
+        content => template("orawls/wlst/wlstexec/fmw/changeWorkmanagers.py.erb"),
+        ensure  => present,
+        backup  => false,
+        replace => true,
+        mode    => 0775,
+        owner   => $os_user,
+        group   => $os_group,
+      }
+
+      # execute WLST script
+      exec { "execwlst changeWorkmanagers.py":
+        command     => "${javaCommand} ${download_dir}/changeWorkmanagers.py ${weblogic_password}",
+        environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                        "JAVA_HOME=${jdk_home_dir}"],
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+        logoutput   => $log_output,
+        require     => [ File["${download_dir}/changeWorkmanagers.py"],
+                         Orawls::Control['StartupAdminServerForSoa'],
+                       ]
+      }
+
+
+
   }
 
 }

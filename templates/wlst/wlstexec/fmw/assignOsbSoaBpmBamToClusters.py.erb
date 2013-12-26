@@ -100,7 +100,7 @@ assign('AppDeployment', 'OracleBamAdapter'           , 'Target', Adapters)
 assign('AppDeployment', 'SocketAdapter'              , 'Target', Adapters)
 
 if soaEnabled == true:
-    assign('AppDeployment', 'UMSAdapter'                 , 'Target', Adapters)
+    assign('AppDeployment', 'UMSAdapter' , 'Target', Adapters)
 
 
 # apps
@@ -126,7 +126,6 @@ if bpmEnabled == true:
     assign('AppDeployment', 'SimpleApprovalTaskFlow'     , 'Target', SOAClusterName)
 
 if bamEnabled == true:
-    assign('AppDeployment', 'oracle-bam#11.1.1'          , 'Target', BAMClusterName)
     assign('AppDeployment', 'usermessagingdriver-email'  , 'Target', SoaBam)
     assign('AppDeployment', 'usermessagingserver'        , 'Target', SoaBam)
     assign('AppDeployment', 'wsm-pm'                     , 'Target', SoaBam)
@@ -134,6 +133,18 @@ elif soaEnabled == true:
     assign('AppDeployment', 'usermessagingdriver-email'  , 'Target', SOAClusterName)
     assign('AppDeployment', 'usermessagingserver'        , 'Target', SOAClusterName)
     assign('AppDeployment', 'wsm-pm'                     , 'Target', SOAClusterName)
+
+# advanced target
+if bamEnabled == true:
+    assign('AppDeployment',              'oracle-bam#11.1.1'                                     , 'Target', BAMClusterName)
+    assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.*'                                   , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1./oracle/bam'                        , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-adc-ejb.jar'             , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-ems-ejb.jar'             , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-eventengine-ejb.jar'     , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-reportcache-ejb.jar'     , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-statuslistener-ejb.jar'  , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.sdpmessagingclient-ejb.jar'         , 'Target', BAMServer1Name)
 
 if osbEnabled == true:
     assign('AppDeployment', 'ALDSP Transport Provider'                  , 'Target', OsbAdmin)

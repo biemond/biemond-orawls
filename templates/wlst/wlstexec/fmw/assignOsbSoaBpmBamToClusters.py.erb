@@ -136,8 +136,8 @@ elif soaEnabled == true:
 
 # advanced target
 if bamEnabled == true:
-    assign('AppDeployment',              'oracle-bam#11.1.1'                                     , 'Target', BAMClusterName)
-    assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.*'                                   , 'Target', BAMServer1Name)
+    assign('AppDeployment',              'oracle-bam#11.1.1'                                     , 'Target', BAMServer1Name)
+    #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.*'                                   , 'Target', BAMServer1Name)
     #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1./oracle/bam'                        , 'Target', BAMServer1Name)
     #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-adc-ejb.jar'             , 'Target', BAMServer1Name)
     #assign('AppDeployment.SubDeployment','oracle-bam#11.1.1.oracle-bam-ems-ejb.jar'             , 'Target', BAMServer1Name)

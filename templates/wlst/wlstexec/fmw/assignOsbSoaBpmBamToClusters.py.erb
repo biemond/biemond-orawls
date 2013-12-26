@@ -19,6 +19,21 @@ BamAdmin       = '<%= @bam_cluster_name %>,<%= @adminserver_name %>'
 OsbAdmin       = '<%= @osb_cluster_name %>,<%= @adminserver_name %>'
 Admin          = '<%= @adminserver_name %>'
 
+
+def getFirstClusterServer(cluster):
+    s = ls('/Server')
+    clustername = " "
+    for token in s.split("drw-"):
+        token=token.strip().lstrip().rstrip()
+        path="/Server/"+token
+        cd(path)
+        if not token == 'AdminServer' and not token == '':
+            clustername = get('Cluster')
+            searchClusterStr = cluster+":"
+            clusterNameStr = str(clustername)
+            if not clusterNameStr.find(searchClusterStr) == -1:
+                return token    
+
 if   bamEnabled == true and soaEnabled == true and osbEnabled == true:
     All            = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @bam_cluster_name %>,<%= @adminserver_name %>'
     Adapters       = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
@@ -41,6 +56,14 @@ elif bamEnabled == false and soaEnabled == false and osbEnabled == false:
 
 readDomain(DOMAIN_PATH)
 
+if osbEnabled == true:
+    OSBServer1Name = getFirstClusterServer(OSBClusterName)
+
+if bamEnabled == true:
+    BAMServer1Name = getFirstClusterServer(BAMClusterName)
+
+cd('/')
+
 if soaEnabled == true:
     delete('soa_server1'            , 'Server')
     delete('SOAJMSModule'           , 'JMSSystemResource')
@@ -55,8 +78,6 @@ if bamEnabled == true:
 
 if osbEnabled == true:
     delete('osb_server1'            , 'Server')
-#    delete('wlsbJMSServer'          , 'JMSServer')
-#    delete('WseeJmsServer'          , 'JMSServer')
 
 unassign('StartupClass'           ,'*', 'Target' , All)
 unassign('ShutdownClass'          ,'*', 'Target' , All)
@@ -116,9 +137,7 @@ elif soaEnabled == true:
 
 if osbEnabled == true:
     assign('AppDeployment', 'ALDSP Transport Provider'                  , 'Target', OsbAdmin)
-    assign('AppDeployment', 'ALSB Cluster Singleton Marker Application' , 'Target', OSBClusterName)
     assign('AppDeployment', 'ALSB Coherence Cache Provider'             , 'Target', OSBClusterName)
-    assign('AppDeployment', 'ALSB Domain Singleton Marker Application'  , 'Target', OSBClusterName)
     assign('AppDeployment', 'ALSB Framework Starter Application'        , 'Target', OsbAdmin)
     assign('AppDeployment', 'ALSB Logging'                              , 'Target', OsbAdmin)
     assign('AppDeployment', 'ALSB Publish'                              , 'Target', OsbAdmin)
@@ -131,23 +150,35 @@ if osbEnabled == true:
     assign('AppDeployment', 'ALSB WSIL'                                 , 'Target', OSBClusterName)
     assign('AppDeployment', 'BPEL 10g Transport Provider'               , 'Target', OsbAdmin)
     assign('AppDeployment', 'EJB Transport Provider'                    , 'Target', OsbAdmin)
-    assign('AppDeployment', 'Email Transport Provider'                  , 'Target', OsbAdmin)
-    assign('AppDeployment', 'File Transport Provider'                   , 'Target', OsbAdmin)
     assign('AppDeployment', 'FLOW Transport Provider'                   , 'Target', OsbAdmin)
-    assign('AppDeployment', 'Ftp Transport Provider'                    , 'Target', OsbAdmin)
     assign('AppDeployment', 'JCA Transport Provider'                    , 'Target', OsbAdmin)
     assign('AppDeployment', 'JEJB Transport Provider'                   , 'Target', OsbAdmin)
     assign('AppDeployment', 'JMS Reporting Provider'                    , 'Target', OsbAdmin)
-    assign('AppDeployment', 'Message Reporting Purger'                  , 'Target', OSBClusterName)
     assign('AppDeployment', 'MQ Transport Provider'                     , 'Target', OsbAdmin)
     assign('AppDeployment', 'SB Transport Provider'                     , 'Target', OsbAdmin)
     assign('AppDeployment', 'ServiceBus_Console'                        , 'Target', Admin)
-    assign('AppDeployment', 'SFTP Transport Provider'                   , 'Target', OsbAdmin)
     assign('AppDeployment', 'SOA-DIRECT Transport Provider'             , 'Target', OsbAdmin)
     assign('AppDeployment', 'Tuxedo Transport Provider'                 , 'Target', OsbAdmin)
     assign('AppDeployment', 'WS Transport Async Applcation'             , 'Target', OSBClusterName)
     assign('AppDeployment', 'WS Transport Provider'                     , 'Target', OsbAdmin)
     assign('AppDeployment', 'XBus Kernel'                               , 'Target', OsbAdmin)
+
+# target to first osb server of the cluster
+if osbEnabled == true:
+    assign('AppDeployment', 'ALSB Cluster Singleton Marker Application' , 'Target', OSBServer1Name)
+    assign('AppDeployment', 'ALSB Domain Singleton Marker Application'  , 'Target', OSBServer1Name)
+    assign('AppDeployment', 'Message Reporting Purger'                  , 'Target', OSBServer1Name)
+
+# target sub deployments to the the cluster
+if osbEnabled == true:
+    assign('AppDeployment', 'Email Transport Provider'                                  , 'Target', OsbAdmin)
+    assign('AppDeployment.SubDeployment', 'Email Transport Provider.emailtransport.jar' , 'Target', OSBClusterName)
+    assign('AppDeployment', 'File Transport Provider'                                   , 'Target', OsbAdmin)
+    assign('AppDeployment.SubDeployment', 'File Transport Provider.filepoll.jar'        , 'Target', OSBClusterName)
+    assign('AppDeployment', 'Ftp Transport Provider'                                    , 'Target', OsbAdmin)
+    assign('AppDeployment.SubDeployment', 'Ftp Transport Provider.ftp_transport.jar'    , 'Target', OSBClusterName)
+    assign('AppDeployment', 'SFTP Transport Provider'                                   , 'Target', OsbAdmin)
+    assign('AppDeployment.SubDeployment', 'SFTP Transport Provider.sftp_transport.jar'  , 'Target', OSBClusterName)
 
 
 assign('Library', 'emai'                                   , 'Target', Admin)

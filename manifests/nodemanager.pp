@@ -6,6 +6,7 @@ define orawls::nodemanager (
   $version                = hiera('wls_version'             , 1111),  # 1036|1111|1211|1212
   $weblogic_home_dir      = hiera('wls_weblogic_home_dir'   , undef),
   $nodemanager_port       = hiera('domain_nodemanager_port' , 5556),
+  $nodemanager_address    = undef,
   $domain_name            = hiera('domain_name'             , undef),
   $jdk_home_dir           = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
   $os_user                = hiera('wls_os_user'             , undef), # oracle

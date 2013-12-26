@@ -8,8 +8,10 @@ portNumber = '<%= @adminserver_port %>'
 
 user_config = '<%= @userConfigFile %>'
 user_key    = '<%= @userKeyFile %>'
-                                
-#wlsServerName, javaArguments, machineName, listenAddress, nodeMgrLogDir
+
+listenAddress = ''
+
+#wlsServerName, javaArguments, machineName, listenAddress,listenPort, nodeMgrLogDir
 <% @params.each do |param| -%>   
 <%= param %>                    
 <% end -%>                      
@@ -45,7 +47,10 @@ try:
     set('Machine',getMBean('/Machines/'+machineName))
     
     # address and port
-    set('ListenPort',listenAddress)
+    if listenAddress:
+      set('ListenAddress',listenAddress)
+    
+    set('ListenPort',listenPort)
     
     cd('ServerStart/'+wlsServerName)
     set('Arguments', javaArguments)

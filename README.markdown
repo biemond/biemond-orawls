@@ -1103,7 +1103,7 @@ Create 2 managed servers and assign them to the machines
             - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
             - "wlsServerName    = 'wlsServer1'"
             - "machineName      = 'Node1'"
-            - "listenAddress    = 9201"
+            - "listenPort       = 9201"
             - "nodeMgrLogDir    = '/data/logs'"
       'wlsServer2_node2':
          log_output:           *logoutput
@@ -1114,7 +1114,7 @@ Create 2 managed servers and assign them to the machines
             - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
             - "wlsServerName    = 'wlsServer2'"
             - "machineName      = 'Node2'"
-            - "listenAddress    = 9201"
+            - "listenPort       = 9201"
             - "nodeMgrLogDir    = '/data/logs'"
     
 

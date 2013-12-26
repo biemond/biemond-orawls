@@ -42,11 +42,11 @@ def createJMSServers(cluster, track, currentServerCnt):
                 cd('/')
 
                 if track == 'osb':
-                    jmsServerName = 'jmsResources_auto_'+str(serverCnt)
-                    fileStoreName = 'jmsResourcesFileStore_auto_'+str(serverCnt)
+                    jmsServerName = 'wlsbJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'FileStore_auto_'+str(serverCnt)
                 elif track == 'wsee':
-                    jmsServerName = 'WseeJmsModule_auto_'+str(serverCnt)
-                    fileStoreName = 'WseeJmsModuleFileStore_auto_'+str(serverCnt)
+                    jmsServerName = 'WseeJmsServer_auto_'+str(serverCnt)
+                    fileStoreName = 'WseeFileStore_auto_'+str(serverCnt)
 
                 createFileStore(fileStoreName, token)
                 print "Created File Store :- ", fileStoreName
@@ -62,14 +62,12 @@ def createJMSServers(cluster, track, currentServerCnt):
 
                 if track == 'wsee':
                     safAgent     = 'ReliableWseeSAFAgent_auto_'+str(serverCnt)
-                    safFileStore = 'ReliableWseeSAFAgentFileStore_auto_'+str(serverCnt)
-          
+                    
                     cd('/')
                     create(safAgent, 'SAFAgent')
-                    createFileStore(safFileStore, token)
                     cd('/SAFAgent/'+safAgent)
                     set ('Target'     , token)
-                    set ('Store'      , safFileStore)
+                    set ('Store'      , fileStoreName)
                     set ('ServiceType','Both')
                     
     
@@ -89,137 +87,126 @@ cd('/')
 cd('JMSSystemResource/jmsResourcesUDDs')
 assign('JMSSystemResource', 'jmsResourcesUDDs', 'Target', osbcluster)
 
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs')
-create('wlsbJMSServer', 'SubDeployment')
-
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/SubDeployments/wlsbJMSServer')
-
 print ' '
 print ("*** Listing OSB JMS Servers ***")
 s = ls('/JMSServers')
 osbJMSServerStr=''
+serverCnt =  1
 for token in s.split("drw-"):
     token=token.strip().lstrip().rstrip()
-    if not token.find("jmsResources_auto") == -1:
-        osbJMSServerStr = osbJMSServerStr + token +","
-    print token
+    if not token.find("wlsbJMSServer_auto") == -1:
+        print token
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs')
+        subDeploymentStr = 'wlsbJMSServer'+str(serverCnt)+'_sub'
+        create(subDeploymentStr, 'SubDeployment')
 
-osbJMSSrvCnt=string.count(s, 'jmsResources_auto')
-print ' '
-print "Number of OSB JMS Servers := ", osbJMSSrvCnt
-print ' '
-print "osbJMSServerStr := ", osbJMSServerStr
-print ' '
-
-print ("*** Setting JMS SubModule for OSB JMS Server's target***")
-assign('JMSSystemResource.SubDeployment', 'jmsResourcesUDDs.wlsbJMSServer', 'Target', osbJMSServerStr) 
-
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
-
-udd=create('QueueIn','UniformDistributedQueue')
-udd.setJNDIName('QueueIn')
-udd.setJMSCreateDestinationIdentifier('QueueIn')
-udd.setSubDeploymentName('wlsbJMSServer')
-
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
-
-uddErr=create('wli.reporting.jmsprovider_error.queue','UniformDistributedQueue')
-uddErr.setJNDIName('wli.reporting.jmsprovider_error.queue')
-uddErr.setJMSCreateDestinationIdentifier('wli.reporting.jmsprovider_error.queue')
-uddErr.setSubDeploymentName('wlsbJMSServer')
-
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
-
-udd=create('wli.reporting.jmsprovider.queue','UniformDistributedQueue')
-udd.setJNDIName('wli.reporting.jmsprovider.queue')
-udd.setJMSCreateDestinationIdentifier('wli.reporting.jmsprovider.queue')
-udd.setSubDeploymentName('wlsbJMSServer')
-cd ('UniformDistributedQueue')
-cd ('wli.reporting.jmsprovider.queue')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Redirect')
-dfp.setErrorDestination(uddErr)
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/SubDeployments/'+subDeploymentStr)
+        assign('JMSSystemResource.SubDeployment', 'jmsResourcesUDDs.'+subDeploymentStr, 'Target', token) 
 
 
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
-udd=create('wli.reporting.purge.queue','UniformDistributedQueue')
-udd.setJNDIName('wli.reporting.purge.queue')
-udd.setJMSCreateDestinationIdentifier('wli.reporting.purge.queue')
-udd.setSubDeploymentName('wlsbJMSServer')
-cd ('UniformDistributedQueue')
-cd ('wli.reporting.purge.queue')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Discard')
+        queue1 = 'QueueIn_auto_'+str(serverCnt)
+        udd=create(queue1,'Queue')
+        udd.setJNDIName(queue1)
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (queue1)
+        #dpo = create('dpoName','DeliveryParamsOverrides')
+        #dpo.setRedeliveryDelay(15*60*1000)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
 
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
-udd=create('wlsb.internal.transport.task.queue.email','UniformDistributedQueue')
-udd.setJNDIName('wlsb.internal.transport.task.queue.email')
-udd.setJMSCreateDestinationIdentifier('wlsb.internal.transport.task.queue.email')
-udd.setSubDeploymentName('wlsbJMSServer')
-cd ('UniformDistributedQueue')
-cd ('wlsb.internal.transport.task.queue.email')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Discard')
+        errorQueue = 'wli.reporting.jmsprovider_error.queue_auto_'+str(serverCnt)
+        uddErr=create(errorQueue,'Queue')
+        uddErr.setJNDIName(errorQueue)
+        uddErr.setSubDeploymentName(subDeploymentStr)
 
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
+        reportingQueue = 'wli.reporting.jmsprovider.queue_auto_'+str(serverCnt)
+        udd=create(reportingQueue,'Queue')
+        udd.setJNDIName(reportingQueue)
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (reportingQueue)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Redirect')
+        dfp.setErrorDestination(uddErr)
 
-udd=create('wlsb.internal.transport.task.queue.file','UniformDistributedQueue')
-udd.setJNDIName('wlsb.internal.transport.task.queue.file')
-udd.setJMSCreateDestinationIdentifier('wlsb.internal.transport.task.queue.file')
-udd.setSubDeploymentName('wlsbJMSServer')
-cd ('UniformDistributedQueue')
-cd ('wlsb.internal.transport.task.queue.file')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Discard')
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
-cd('/')
-cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+        emailQueue = 'wlsb.internal.transport.task.queue.email_auto_'+str(serverCnt)
+        udd=create(emailQueue,'Queue')
+        udd.setJNDIName(emailQueue)
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (emailQueue)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
 
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
-udd=create('wlsb.internal.transport.task.queue.ftp','UniformDistributedQueue')
-udd.setJNDIName('wlsb.internal.transport.task.queue.ftp')
-udd.setJMSCreateDestinationIdentifier('wlsb.internal.transport.task.queue.ftp')
-udd.setSubDeploymentName('wlsbJMSServer')
-cd ('UniformDistributedQueue')
-cd ('wlsb.internal.transport.task.queue.ftp')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Discard')
+        fileQueue = 'wlsb.internal.transport.task.queue.file_auto_'+str(serverCnt)
+        udd=create(fileQueue,'Queue')
+        udd.setJNDIName(fileQueue)
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (fileQueue)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
+
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+
+        ftpQueue = 'wlsb.internal.transport.task.queue.ftp_auto_'+str(serverCnt)
+        udd=create(ftpQueue,'Queue')
+        udd.setJNDIName(ftpQueue)
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (ftpQueue)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
+
+        cd('/')
+        cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+
+        sftpQueue = 'wlsb.internal.transport.task.queue.sftp_auto_'+str(serverCnt)
+        udd=create(sftpQueue,'Queue')
+        udd.setJNDIName(sftpQueue)
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (sftpQueue)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
+
+        serverCnt = serverCnt + 1
+
 
 cd('/')
 cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
-udd=create('wlsb.internal.transport.task.queue.sftp','UniformDistributedQueue')
-udd.setJNDIName('wlsb.internal.transport.task.queue.sftp')
-udd.setJMSCreateDestinationIdentifier('wlsb.internal.transport.task.queue.sftp')
-udd.setSubDeploymentName('wlsbJMSServer')
-cd ('UniformDistributedQueue')
-cd ('wlsb.internal.transport.task.queue.sftp')
+purgeQueue = 'wli.reporting.purge.queue'
+udd=create(purgeQueue,'Queue')
+udd.setJNDIName(purgeQueue)
+udd.setSubDeploymentName('wlsbJMSServer1_sub')
+cd ('Queue')
+cd (purgeQueue)
 #dpo = create('dpoName','DeliveryParamsOverrides')
 #dpo.setRedeliveryDelay(15*60*1000)
 dfp = create('dfpName', 'DeliveryFailureParams')
@@ -249,10 +236,20 @@ create('TransactionParams', 'TransactionParams')
 cd('TransactionParams/NO_NAME_0')
 cmo.setXAConnectionFactoryEnabled(true)
 
+cd('/')
+cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
+
+udd=create('dist_QueueIn_auto','UniformDistributedQueue')
+udd=create('dist_wli.reporting.jmsprovider.queue_auto','UniformDistributedQueue')
+udd=create('dist_wli.reporting.jmsprovider_error.queue_auto','UniformDistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.email_auto','UniformDistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.file_auto','UniformDistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.ftp_auto','UniformDistributedQueue')
+udd=create('dist_wlsb.internal.transport.task.queue.sftp_auto','UniformDistributedQueue')
 
 
 cd('/')
-delete('WseeJmsModule'   ,'JMSSystemResource')
+delete('WseeJmsModule'       ,'JMSSystemResource')
 delete('ReliableWseeSAFAgent', 'SAFAgent')
 
 
@@ -265,62 +262,57 @@ cd('/')
 cd('JMSSystemResource/WseeJmsModuleUDDs')
 assign('JMSSystemResource', 'WseeJmsModuleUDDs', 'Target', osbcluster)
 
-cd('/')
-cd('JMSSystemResource/WseeJmsModuleUDDs')
-create('BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer', 'SubDeployment')
-
-cd('/')
-cd('JMSSystemResource/WseeJmsModuleUDDs/SubDeployments/BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer')
 
 print ' '
 print ("*** Listing OSB JMS Servers ***")
 s = ls('/JMSServers')
 osbJMSServerStr=''
+serverCnt =  1
 for token in s.split("drw-"):
     token=token.strip().lstrip().rstrip()
-    if not token.find("WseeJmsModule_auto") == -1:
-        osbJMSServerStr = osbJMSServerStr + token +","
-    print token
+    if not token.find("WseeJmsServer_auto") == -1:
+        print token
+        cd('/')
+        cd('JMSSystemResource/WseeJmsModuleUDDs')
+        subDeploymentStr = 'WseeJmsServer_auto_'+str(serverCnt)+'-Sub'
+        create(subDeploymentStr, 'SubDeployment')
 
-osbJMSSrvCnt=string.count(s, 'WseeJmsModule_auto')
-print ' '
-print "Number of OSB JMS Servers := ", osbJMSSrvCnt
-print ' '
-print "osbJMSServerStr := ", osbJMSServerStr
-print ' '
+        cd('/')
+        cd('JMSSystemResource/WseeJmsModuleUDDs/SubDeployments/'+subDeploymentStr)
+        assign('JMSSystemResource.SubDeployment', 'WseeJmsModuleUDDs.'+subDeploymentStr, 'Target', token) 
 
-print ("*** Setting JMS SubModule for OSB JMS Server's target***")
-assign('JMSSystemResource.SubDeployment', 'WseeJmsModuleUDDs.BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer', 'Target', osbJMSServerStr) 
 
-cd('/')
-cd('JMSSystemResource/WseeJmsModuleUDDs/JmsResource/NO_NAME_0')
+        cd('/')
+        cd('JMSSystemResource/WseeJmsModuleUDDs/JmsResource/NO_NAME_0')
 
-udd=create('WseeCallbackQueue','UniformDistributedQueue')
-udd.setJNDIName('weblogic.wsee.DefaultCallbackQueue')
-udd.setJMSCreateDestinationIdentifier('weblogic.wsee.DefaultCallbackQueue')
-udd.setSubDeploymentName('BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer')
-cd ('UniformDistributedQueue')
-cd ('WseeCallbackQueue')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Discard')
+        callBackQueue = 'DefaultCallbackQueue-WseeJmsServer_auto_'+str(serverCnt)
+        udd=create(callBackQueue,'Queue')
+        udd.setJNDIName('weblogic.wsee.DefaultCallbackQueue-WseeJmsServer_auto_'+str(serverCnt))
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (callBackQueue)
+        #dpo = create('dpoName','DeliveryParamsOverrides')
+        #dpo.setRedeliveryDelay(15*60*1000)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
 
-cd('/')
-cd('JMSSystemResource/WseeJmsModuleUDDs/JmsResource/NO_NAME_0')
 
-udd=create('WseeMessageQueue','UniformDistributedQueue')
-udd.setJNDIName('weblogic.wsee.DefaultQueue')
-udd.setJMSCreateDestinationIdentifier('weblogic.wsee.DefaultQueue')
-udd.setSubDeploymentName('BEA_JMS_MODULE_SUBDEPLOYMENT_WSEEJMSServer')
-cd ('UniformDistributedQueue')
-cd ('WseeMessageQueue')
-#dpo = create('dpoName','DeliveryParamsOverrides')
-#dpo.setRedeliveryDelay(15*60*1000)
-dfp = create('dfpName', 'DeliveryFailureParams')
-dfp.setRedeliveryLimit(2)
-dfp.setExpirationPolicy('Discard')
+        cd('/')
+        cd('JMSSystemResource/WseeJmsModuleUDDs/JmsResource/NO_NAME_0')
+        wseeQueue = 'DefaultQueue-WseeJmsServer_auto_'+str(serverCnt)
+        udd=create(wseeQueue,'Queue')
+        udd.setJNDIName('weblogic.wsee.DefaultQueue-WseeJmsServer_auto_'+str(serverCnt))
+        udd.setSubDeploymentName(subDeploymentStr)
+        cd ('Queue')
+        cd (wseeQueue)
+        #dpo = create('dpoName','DeliveryParamsOverrides')
+        #dpo.setRedeliveryDelay(15*60*1000)
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Discard')
+
+        serverCnt = serverCnt + 1
 
 
 dumpStack()

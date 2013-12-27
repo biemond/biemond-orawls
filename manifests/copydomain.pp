@@ -17,6 +17,7 @@ define orawls::copydomain (
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
   $os_group                   = hiera('wls_os_group'              , undef), # dba
   $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
+  $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
 )
 {
@@ -59,6 +60,30 @@ define orawls::copydomain (
 
   if ($continue) {
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
+
+    if $log_dir != undef {
+
+      # create all log folders
+      if !defined(Exec["create ${log_dir} directory"]) {
+        exec { "create ${log_dir} directory":
+          command => "mkdir -p ${log_dir}",
+          unless  => "test -d ${log_dir}",
+          user    => 'root',
+          path    => $exec_path,
+        }
+      }
+      if !defined(File[$log_dir]) {
+        file { $log_dir:
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          require => Exec["create ${log_dir} directory"],
+          mode    => 0775,
+          owner   => $os_user,
+          group   => $os_group,
+        }
+      }
+    }
 
     if $::override_weblogic_domain_folder == undef {
       # make the default domain folders

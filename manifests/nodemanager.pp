@@ -35,7 +35,28 @@ define orawls::nodemanager (
   if $log_dir == undef {
     $nodeMgrLogDir = "${nodeMgrHome}/nodemanager.log"
   } else {
-    $nodeMgrLogDir = "${log_dir}/nodemanager.log"
+      # create all folders
+      if !defined(Exec["create ${log_dir} directory"]) {
+        exec { "create ${log_dir} directory":
+          command => "mkdir -p ${log_dir}",
+          unless  => "test -d ${log_dir}",
+          user    => 'root',
+          path    => $exec_path,
+          group   => $os_group,
+          cwd     => $nodeMgrHome,
+        }
+      }
+      if !defined(File["${log_dir}"]) {
+        file { "${log_dir}":
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          owner => $os_user,
+          group => $os_group,
+          require => Exec["create ${log_dir} directory"],
+        }
+      }
+      $nodeMgrLogDir = "${log_dir}/nodemanager.log"
   }
 
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
@@ -86,29 +107,7 @@ define orawls::nodemanager (
       cwd         => $nodeMgrHome,
     }
   } elsif (  $version == 1111 or $version == 1036 or $version == 1211 ){
-    if $log_dir != undef {
-      # create all folders
-      if !defined(Exec["create ${log_dir} directory"]) {
-        exec { "create ${log_dir} directory":
-          command => "mkdir -p ${log_dir}",
-          unless  => "test -d ${log_dir}",
-          user    => 'root',
-          path    => $exec_path,
-          group   => $os_group,
-          cwd     => $nodeMgrHome,
-        }
-      }
-      if !defined(File["${log_dir}"]) {
-        file { "${log_dir}":
-          ensure  => directory,
-          recurse => false,
-          replace => false,
-          owner => $os_user,
-          group => $os_group,
-          require => Exec["create ${log_dir} directory"],
-        }
-      }
-    }
+
 
     $javaCommand = "${java_statement} -client -Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
 

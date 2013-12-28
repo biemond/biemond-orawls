@@ -31,6 +31,7 @@ define orawls::nodemanager (
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
   }
+  $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   if $log_dir == undef {
     $nodeMgrLogDir = "${nodeMgrHome}/nodemanager.log"
@@ -59,7 +60,6 @@ define orawls::nodemanager (
       $nodeMgrLogDir = "${log_dir}/nodemanager.log"
   }
 
-  $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
   case $::kernel {
     Linux: {
       $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"

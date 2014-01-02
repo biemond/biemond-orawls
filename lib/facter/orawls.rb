@@ -110,7 +110,7 @@ end
 
 
 def get_opatch_patches(name)
-    puts "get_opatch_patches with path: "+name
+    #puts "get_opatch_patches with path: "+name
     #puts "opatch command: "+get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'"
     output3 = Facter::Util::Resolution.exec(get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'")
 
@@ -140,7 +140,7 @@ end
 
 
 def get_orainst_loc()
-  puts "get_orainst_loc: "+get_oraInvPath()+"/oraInst.loc"
+  #puts "get_orainst_loc: "+get_oraInvPath()+"/oraInst.loc"
   if FileTest.exists?(get_oraInvPath()+"/oraInst.loc")
     str = ""
     output = File.read(get_oraInvPath()+"/oraInst.loc")
@@ -156,7 +156,7 @@ def get_orainst_loc()
 end
 
 def get_orainst_products(path)
-  puts "get_orainst_products with path: "+path
+  #puts "get_orainst_products with path: "+path
   unless path.nil?
     if FileTest.exists?(path+"/ContentsXML/inventory.xml")
       file = File.read( path+"/ContentsXML/inventory.xml" )

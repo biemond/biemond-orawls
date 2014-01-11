@@ -221,7 +221,8 @@ cd('/')
 cd('Machine/LocalMachine')
 create('LocalMachine','NodeManager')
 cd('NodeManager/LocalMachine')
-set('ListenAddress','<%= @adminListenAdr %>')
+set('ListenAddress','<%= @adminserver_address %>')
+
 
 print 'Change AdminServer'
 cd('/Servers/'+ADMIN_SERVER)
@@ -231,7 +232,7 @@ print 'Change soa_server1'
 setOption( "AppDir", APP_PATH )
 cd('/Servers/soa_server1')
 set('Machine','LocalMachine')
-set('ListenAddress','<%= @adminListenAdr %>')
+set('ListenAddress','<%= @adminserver_address %>')
 
 create('soa_server1','ServerStart')
 cd('ServerStart/soa_server1')
@@ -259,7 +260,7 @@ if BAM_ENABLED == true:
   print 'Change bam_server1'
   cd('/Servers/bam_server1')
   set('Machine','LocalMachine')
-  set('ListenAddress','<%= @adminListenAdr %>')
+  set('ListenAddress','<%= @adminserver_address %>')
 
   create('bam_server1','ServerStart')
   cd('ServerStart/bam_server1')

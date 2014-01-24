@@ -11,7 +11,8 @@ class orawls::weblogic (
   $os_group             = undef, # dba
   $download_dir         = undef, # /data/install
   $source               = undef, # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file          = true,                                       # true|false
+  $remote_file          = true,  # true|false
+  $javaParameters       = '',    # '-Dspace.detection=false'
   $log_output           = false, # true|false
 ) {
 
@@ -98,11 +99,11 @@ class orawls::weblogic (
     case $::kernel {
       Linux: {
         $oraInstPath        = "/etc"
-        $java_statement     = "java"
+        $java_statement     = "java ${javaParameters}"
        }
        SunOS: {
          $oraInstPath       = "/var/opt"
-         $java_statement    = "java -d64"
+         $java_statement    = "java -d64 ${javaParameters}"
        }
     }
 

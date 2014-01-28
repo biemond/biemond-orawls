@@ -39,7 +39,7 @@ try:
     cluster.getDynamicServers().setCalculatedMachineNames(true);
     cluster.getDynamicServers().setMachineNameMatchExpression(dynamic_nodemanager_match);
     cluster.getDynamicServers().setServerNamePrefix(dynamic_server_name_prefix);
-    cluster.getDynamicServers().setCalculatedListenPorts(true);
+    #cluster.getDynamicServers().setCalculatedListenPorts(true);
 
     save()
     activate()          

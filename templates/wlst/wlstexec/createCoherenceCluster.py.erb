@@ -31,7 +31,7 @@ try:
     coherence_cluster = cmo.createCoherenceClusterSystemResource(coherence_cluster_name);
     coherence_cluster_resource = coherence_cluster.getCoherenceClusterResource();
     coherence_cluster_params = coherence_cluster_resource.getCoherenceClusterParams();
-    coherence_cluster_params.setUnicastListenAddress(unicast_address);
+    #coherence_cluster_params.setUnicastListenAddress(unicast_address);
     coherence_cluster_params.setUnicastListenPort(unicast_port);
     coherence_cluster_params.setUnicastPortAutoAdjust(true);
     coherence_cluster_params.setMulticastListenAddress(multicast_address);

@@ -55,8 +55,14 @@ set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
 
+
+print('Create machine LocalMachine with type <%= @nodeMgrMachine %>')
 cd('/')
-create('LocalMachine', '<%= @nodeMgrMachine %>')
+create('LocalMachine','<%= @nodeMgrMachine %>')
+cd('<%= @nodeMgrMachine %>/LocalMachine')
+create('LocalMachine','NodeManager')
+cd('NodeManager/LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
 
 
 cd('/Servers/AdminServer')

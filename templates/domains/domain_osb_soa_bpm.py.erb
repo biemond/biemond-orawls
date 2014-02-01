@@ -219,6 +219,7 @@ print 'Change soa_server1'
 setOption( "AppDir", APP_PATH )
 cd('/Servers/soa_server1')
 set('Machine','LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
 
 create('soa_server1','ServerStart')
 cd('ServerStart/soa_server1')
@@ -246,6 +247,7 @@ if BAM_ENABLED == true:
   print 'Change bam_server1'
   cd('/Servers/bam_server1')
   set('Machine','LocalMachine')
+  set('ListenAddress','<%= @adminserver_address %>')
 
   create('bam_server1','ServerStart')
   cd('ServerStart/bam_server1')
@@ -294,12 +296,25 @@ readDomain(DOMAIN_PATH)
 
 setOption( "AppDir", APP_PATH )
 
-cd('/Servers/AdminServer')
+
+print('change the default machine LocalMachine with type Machine')
+cd('/')
+cd('Machine/LocalMachine')
+create('LocalMachine','NodeManager')
+cd('NodeManager/LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
+
+
+print 'Change AdminServer'
+cd('/Servers/'+ADMIN_SERVER)
 set('Machine','LocalMachine')
+
 
 print 'Change osb_server1'
 cd('/Servers/osb_server1')
 set('Machine','LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
+
 
 create('osb_server1','ServerStart')
 cd('ServerStart/osb_server1')
@@ -370,9 +385,6 @@ cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
 create('myJdbcConnectionPoolParams','JDBCConnectionPoolParams')
 cd('JDBCConnectionPoolParams/NO_NAME_0')
 set('TestTableName','SQL SELECT 1 FROM DUAL')
-
-
-
 
 dumpStack();
 updateDomain()

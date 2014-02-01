@@ -58,10 +58,13 @@ set('RotationType','byTime')
 set('FileTimeSpan',24)
 
 
-
+print('Create machine LocalMachine with type <%= @nodeMgrMachine %>')
 cd('/')
-create('LocalMachine', '<%= @nodeMgrMachine %>')
-
+create('LocalMachine','<%= @nodeMgrMachine %>')
+cd('<%= @nodeMgrMachine %>/LocalMachine')
+create('LocalMachine','NodeManager')
+cd('NodeManager/LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
 
 cd('/Servers/AdminServer')
 # name of adminserver
@@ -161,6 +164,8 @@ setOption( "AppDir", APP_PATH )
 
 cd('Servers/osb_server1')
 set('Machine','LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
+
 
 create('osb_server1','ServerStart')
 cd('ServerStart/osb_server1')

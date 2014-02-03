@@ -1,0 +1,33 @@
+Application deployment and activation notes:
+manual app install:
+uploaded file through deployments menu option.  Selected servers,cluster,et al
+/opt/oracle/middleware11g/wlserver_10.3/common/bin/wlst.sh
+http://middlewaremagic.com/weblogic/?p=303
+http://weblogicserveradministration.blogspot.com/2010/10/quick-deployment-using-
+
+wlst.html
+
+connect( 'weblogic', 'weblogic1', 't3://10.104.80.134:7001', 
+
+adminServerName='AdminServer' )
+deploy('shoppingcart', 'c:/shoppingcart.war', targets='AdminServer')
+startApplication('shoppingcart')
+disconnect()
+exit()
+
+or :
+
+edit()
+startEdit()
+deploy(appName=line1,path=appName, targets=target)
+save()
+activate()
+
+1. take the above deploy recursively script
+2. define hiera.yaml for apps to be added
+3. make erb to use as template
+4. loop through hierarchy
+4.1. copy files to / opt/ oracle/ middleware11g/ user_projects/ domains/ Wls1036/ 
+
+servers/ AdminServer/ upload
+4.2. activate per script

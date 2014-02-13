@@ -14,7 +14,12 @@ ADMIN_PASSWORD='<%= @weblogic_password %>'
 
 JAVA_HOME='<%= @jdk_home_dir %>'
 
+<% if @adminserver_java_arguments %>
+ADM_JAVA_ARGUMENTS=<%= @adminserver_java_arguments %>
+<% else %>
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
 OSB_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):

@@ -1,6 +1,7 @@
 puppet 3.12 enterprise with orawls puppet module
 ================================================
-# example of wls 10.3.6 cluster on puppet enterprise 3.12
+
+example of wls 10.3.6 cluster on puppet enterprise 3.12
 
 3 servers 
 - adminwls.alfa.local

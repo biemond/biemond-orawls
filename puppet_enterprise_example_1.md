@@ -112,7 +112,7 @@ adminwls.alfa.local.yaml
         host_aliases:      'nodewls2'
       'localhost':
         ip:                "127.0.0.1"
-        host_aliases:      cat 'localhost.localdomain,localhost4,localhost4.localdomain4'
+        host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
     
     
     # when you have just one domain on a server
@@ -269,7 +269,7 @@ nodewls1.alfa.local.yaml
         host_aliases:      'nodewls2'
       'localhost':
         ip:                "127.0.0.1"
-        host_aliases:      cat 'localhost.localdomain,localhost4,localhost4.localdomain4'
+        host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
     
     # when you have just one domain on a server
     domain_name:                "Wls1036"
@@ -321,7 +321,7 @@ nodewls2.alfa.local.yaml
         host_aliases:      'nodewls2'
       'localhost':
         ip:                "127.0.0.1"
-        host_aliases:      cat 'localhost.localdomain,localhost4,localhost4.localdomain4'
+        host_aliases:      'localhost.localdomain,localhost4,localhost4.localdomain4'
     
     # when you have just one domain on a server
     domain_name:                "Wls1036"

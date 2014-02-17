@@ -11,6 +11,9 @@ created by Edwin Biemond  email biemond at gmail dot com
 
 Should work for all Linux,Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc and x86  
 
+Example of Puppet 3.12 enterprise test case for full working WebLogic 10.3.6 cluster example  
+https://github.com/biemond/biemond-orawls/blob/master/puppet_enterprise_example_1.md 
+
 Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant  
 

@@ -1,0 +1,40 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+m = ls('/SAFAgents')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;target;targettype;persistentstore;persistentstoretype;servicetype"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/SAFAgents/'+token)
+
+        serviceType = get('ServiceType')
+
+        n = ls('/SAFAgents/'+token+'/Targets')
+        target     = ''
+        targetType = ''
+
+        for token2 in n.split("dr--"):
+             token2=token2.strip().lstrip().rstrip()
+             if not token2 == '':
+                target     = token2
+                cd('/SAFAgents/'+token+'/Targets/'+token2)
+                targetType = get('Type')
+
+        l = ls('/SAFAgents/'+token+'/Store')
+
+        persistentStore     = ''
+        persistentStoreType = ''
+        for token3 in l.split("drw-"):
+            token3=token3.strip().lstrip().rstrip()
+            if not token3 == '':
+               persistentStore = token3
+               cd('/SAFAgents/'+token+'/Store/'+token3)
+               persistentStoreType = get('Type')
+
+        print >>f, token+";"+target+";"+targetType+";"+persistentStore+";"+persistentStoreType+";"+serviceType
+
+disconnect()
+exit()

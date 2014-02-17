@@ -1,11 +1,17 @@
 Oracle WebLogic / Fusion Middleware puppet module V2
 ====================================================
 
-Got the same options as the wls module but optimized for Hiera, totally refactored and only for Linux and Solaris
+Got the same options as the wls module but 
+- optimized for Hiera
+- totally refactored
+- only for Linux and Solaris
+- wls_machine, wls_server, wls_cluster type/provider instead of wlstexec scripts
+
+Many thanks to Bert Hajee (hajee) for his contribution, help and the easy_type module
 
 For full hiera examples, see the usages below this page
 
-created by Edwin Biemond  email biemond at gmail dot com   
+created by Edwin Biemond email biemond at gmail dot com   
 [biemond.blogspot.com](http://biemond.blogspot.com)    
 [Github homepage](https://github.com/biemond/biemond-orawls)  
 
@@ -23,6 +29,7 @@ https://github.com/biemond/biemond-orawls-vagrant-solaris
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
 https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
+Dependency with hajee/easy_type >= 0.5.0
 
 Orawls WebLogic Features
 ------------------------
@@ -38,6 +45,18 @@ Orawls WebLogic Features
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
+
+Wls type and providers ( ensurable, create,modify,destroy ) + puppet resource
+-----------------------------------------------------------------------------
+
+- wls_setting, set the default wls parameters for the other types and used by resource
+- wls_machine
+- wls_server
+- wls_cluster
+
+Wls scripts
+-----------
+
 - create Machines, Managed Servers, Clusters, Server templates, Dynamic Clusters, Coherence clusters ( all 12.1.2 )
 - create Persistence Store
 - create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
@@ -60,7 +79,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 
 orawls::utils::wlstbulk is for now disabled so you can also use this in puppet Enterprise 3.0  
 requirements
-- needs puppet version > 3.2 ( make use of iteration and lambda expressions )
+- needs puppet version > 3.4 ( make use of iteration and lambda expressions )
 - need to set --parser future ( puppet agent )
 - to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
 
@@ -875,6 +894,58 @@ hiera configuration
          bam_enabled:          true
          soa_enabled:          true
          osb_enabled:          true
+
+
+
+###wls_setting, required for wls type/providers
+
+      wls_setting { 'default':
+        user               => 'oracle',
+        weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
+        connect_url        => "t3://localhost:7001",
+        weblogic_user      => 'weblogic',
+        weblogic_password  => 'weblogic1',
+      }
+
+###wls_machine
+
+or use puppet resource wls_machine
+
+      wls_machine { 'test2':
+        ensure        => 'present',
+        listenaddress => '10.10.10.10',
+        listenport    => '5556',
+        machinetype   => 'UnixMachine',
+        nmtype        => 'SSL',
+      }
+
+
+###wls_server
+
+or use puppet resource wls_server
+
+      wls_server { 'wlsServer3':
+        ensure                         => 'present',
+        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
+        listenaddress                  => '10.10.10.100',
+        listenport                     => '8002',
+        logfilename                    => '/data/logs/wlsServer3.log',
+        machine                        => 'Node1',
+        sslenabled                     => '0',
+        sslhostnameverificationignored => '1',
+        ssllistenport                  => '7002',
+      }
+
+###wls_cluster
+
+or use puppet resource wls_cluster
+
+      wls_cluster { 'WebCluster':
+        ensure         => 'present',
+        messagingmode  => 'unicast',
+        migrationbasis => 'consensus',
+        servers        => 'wlsServer3,wlsServer4',
+      }
 
 
 ###orawls::wlstexec

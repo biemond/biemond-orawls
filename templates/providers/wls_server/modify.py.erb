@@ -1,0 +1,63 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name          = '<%= name %>'
+arguments     = '<%= arguments %>'
+machineName   = '<%= machine %>'
+logFilename   = '<%= logfilename %>'
+listenAddress = '<%= listenaddress %>'
+listenPort    = <%= listenport %>
+sslEnabled    = <%= sslenabled %>
+sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
+sslListenPort = <%= ssllistenport %>
+
+edit()
+startEdit()
+
+try:
+
+    cd('/Servers/'+name)
+    set('Machine',getMBean('/Machines/'+machineName))
+    
+    if listenAddress:
+        set('ListenAddress',listenAddress)
+
+    set('ListenPort', listenPort)
+
+    if arguments:    
+        cd('ServerStart/'+name)
+        set('Arguments', arguments)
+    
+    cd('/Servers/'+name+'/SSL/'+name)
+
+    if sslEnabled == 1:
+        set('Enabled', 'True')
+    else:
+        set('Enabled', 'False')    
+
+    if sslHostnameVerificationIgnored == 1:
+        set('HostnameVerificationIgnored', 'True')
+    else:
+        set('HostnameVerificationIgnored', 'False')    
+
+    set('ListenPort', sslListenPort)
+    
+    if logFilename:
+        cd('/Servers/'+name+'/Log/'+name)
+        set('FileName', logFilename)
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

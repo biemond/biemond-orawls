@@ -1,0 +1,40 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name                 = '<%= name %>'
+clusterNodesTargets  = String('<%= servers %>').split(",")
+messagingmode        = '<%= messagingmode %>'
+migrationbasis       = '<%= migrationbasis %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    print 'Create Cluster';
+    cmo.createCluster(name)
+
+    cd('/Clusters/'+name)
+    cmo.setClusterMessagingMode(messagingmode)
+    cmo.setMigrationBasis(migrationbasis)
+
+    for node in clusterNodesTargets:
+      cd('/Servers/'+node)
+      cmo.setCluster(getMBean('/Clusters/'+name))
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

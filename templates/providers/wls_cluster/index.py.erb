@@ -1,0 +1,25 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+m = ls('/Clusters')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;servers;messagingmode;migrationbasis"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/Clusters/'+token)
+
+        n = ls('/Clusters/'+token+'/Servers')
+        servers = []
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if token2:
+               servers.append(token2)
+
+
+        print >>f, token+";"+','.join(servers)+";"+get('ClusterMessagingMode')+";"+get('MigrationBasis')
+f.close()
+
+disconnect()
+exit()

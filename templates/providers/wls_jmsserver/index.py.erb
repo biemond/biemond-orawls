@@ -1,0 +1,37 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+m = ls('/JMSServers')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;target;targettype;persistentstore;persistentstoretype"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/JMSServers/'+token)
+
+        n = ls('/JMSServers/'+token+'/Targets')
+        target = ''
+
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+               target = token2
+               cd('/JMSServers/'+token+'/Targets/'+token2)
+               targetType = get('Type')
+
+        l = ls('/JMSServers/'+token+'/PersistentStore')
+
+        persistentStore     = ''
+        persistentStoreType = ''
+        for token3 in l.split("drw-"):
+            token3=token3.strip().lstrip().rstrip()
+            if not token3 == '':
+               persistentStore = token3
+               cd('/JMSServers/'+token+'/PersistentStore/'+token3)
+               persistentStoreType = get('Type')
+
+        print >>f, token+";"+target+";"+targetType+";"+persistentStore+";"+persistentStoreType
+
+disconnect()
+exit()

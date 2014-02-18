@@ -5,9 +5,7 @@ Got the same options as the wls module but
 - optimized for Hiera
 - totally refactored
 - only for Linux and Solaris
-- wls_machine, wls_server, wls_cluster type/provider instead of wlstexec scripts
 
-Many thanks to Bert Hajee (hajee) for his contribution, help and the easy_type module
 
 For full hiera examples, see the usages below this page
 
@@ -46,14 +44,6 @@ Orawls WebLogic Features
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
 
-Wls type and providers ( ensurable, create,modify,destroy ) + puppet resource
------------------------------------------------------------------------------
-
-- wls_setting, set the default wls parameters for the other types and used by resource
-- wls_machine
-- wls_server
-- wls_cluster
-
 Wls scripts
 -----------
 
@@ -79,7 +69,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 
 orawls::utils::wlstbulk is for now disabled so you can also use this in puppet Enterprise 3.0  
 requirements
-- needs puppet version > 3.4 ( make use of iteration and lambda expressions )
+- needs puppet version >= 3.4 ( make use of iteration and lambda expressions )
 - need to set --parser future ( puppet agent )
 - to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
 
@@ -896,56 +886,6 @@ hiera configuration
          osb_enabled:          true
 
 
-
-###wls_setting, required for wls type/providers
-
-      wls_setting { 'default':
-        user               => 'oracle',
-        weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
-        connect_url        => "t3://localhost:7001",
-        weblogic_user      => 'weblogic',
-        weblogic_password  => 'weblogic1',
-      }
-
-###wls_machine
-
-or use puppet resource wls_machine
-
-      wls_machine { 'test2':
-        ensure        => 'present',
-        listenaddress => '10.10.10.10',
-        listenport    => '5556',
-        machinetype   => 'UnixMachine',
-        nmtype        => 'SSL',
-      }
-
-
-###wls_server
-
-or use puppet resource wls_server
-
-      wls_server { 'wlsServer3':
-        ensure                         => 'present',
-        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
-        listenaddress                  => '10.10.10.100',
-        listenport                     => '8002',
-        logfilename                    => '/data/logs/wlsServer3.log',
-        machine                        => 'Node1',
-        sslenabled                     => '0',
-        sslhostnameverificationignored => '1',
-        ssllistenport                  => '7002',
-      }
-
-###wls_cluster
-
-or use puppet resource wls_cluster
-
-      wls_cluster { 'WebCluster':
-        ensure         => 'present',
-        messagingmode  => 'unicast',
-        migrationbasis => 'consensus',
-        servers        => 'wlsServer3,wlsServer4',
-      }
 
 
 ###orawls::wlstexec

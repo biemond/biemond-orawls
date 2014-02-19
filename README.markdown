@@ -467,7 +467,9 @@ when you set the defaults hiera variables
 
 
 ###orawls::domain 
-creates WebLogic a standard | OSB or SOA Suite WebLogic Domain
+creates WebLogic a standard | OSB or SOA Suite WebLogic Domain  
+
+optional override the default server arguments in the domain.py template with java_arguments parameter  
 
     orawls::domain { 'wlsDomain12c':
       version                    => 1212,  # 1036|1111|1211|1212
@@ -481,6 +483,7 @@ creates WebLogic a standard | OSB or SOA Suite WebLogic Domain
       adminserver_address        => "localhost",
       adminserver_port           => 7001,
       nodemanager_port           => 5556,
+      java_arguments             => { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."},
       weblogic_user              => "weblogic",
       weblogic_password          => "weblogic1",
       os_user                    => "oracle",
@@ -535,6 +538,9 @@ vagrantcentos64.example.com.yaml
          os_group:             "dba"
          log_dir:              "/data/logs"
          download_dir:         "/data/install"
+         java_arguments:      
+            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m" 
+            OSB:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
          log_output:           true
 
 or when you set the defaults hiera variables
@@ -550,6 +556,8 @@ or when you set the defaults hiera variables
          adminserver_port:     7001
          nodemanager_port:     5556
          weblogic_password:    "weblogic1"
+         java_arguments:      
+            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m" 
          log_output:           true
     
 when you just have one WebLogic domain on a server
@@ -562,6 +570,7 @@ when you just have one WebLogic domain on a server
     domain_adminserver_port:    7001
     domain_nodemanager_port:    5556
     domain_wls_password:        "weblogic1"
+    
     
     # create a standard domain
     domain_instances:

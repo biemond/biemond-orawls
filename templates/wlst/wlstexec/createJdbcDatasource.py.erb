@@ -56,7 +56,11 @@ try:
       cmo.setName(dsName)
 
       cd('/JDBCSystemResources/' + dsName + '/JDBCResource/' + dsName + '/JDBCDataSourceParams/' + dsName )
-      set('JNDINames',jarray.array([String('jdbc/' + dsName )], String))
+      if dsJNDIName: 
+        set('JNDINames', jarray.array([String(dsJNDIName)], String))
+      else: 
+        #default to 'jdbc/' + dsName 
+        set('JNDINames',jarray.array([String('jdbc/' + dsName )], String))
 
       cd('/JDBCSystemResources/' + dsName + '/JDBCResource/' + dsName + '/JDBCDriverParams/' + dsName )
       cmo.setUrl(dsURL)
@@ -86,7 +90,7 @@ try:
 
       if globalTransactionsProtocol != "xxxx":
           cd('/JDBCSystemResources/' + dsName + '/JDBCResource/' + dsName + '/JDBCDataSourceParams/' + dsName)
-          cmo.setGlobalTransactionsProtocol('None')
+          cmo.setGlobalTransactionsProtocol(globalTransactionsProtocol)
 
       cd('/SystemResources/' + dsName )
       targetList = []

@@ -14,11 +14,7 @@ ADMIN_PASSWORD='<%= @weblogic_password %>'
 
 JAVA_HOME='<%= @jdk_home_dir %>'
 
-<% if @adminserver_java_arguments %>
-ADM_JAVA_ARGUMENTS=<%= @adminserver_java_arguments %>
-<% else %>
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
-<% end %>
 
 ADF_REPOS_DBURL='<%= @reposDbUrl %>'
 ADF_REPOS_DBUSER_PREFIX='<%= @reposPrefix %>'

@@ -1,0 +1,37 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+machineName    = '<%= name %>'
+machineDnsName = '<%= listenaddress %>'
+portNumber     =  <%= listenport %>
+machineType    = '<%= machinetype %>'
+nmType         = '<%= nmtype %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if machineType == 'UnixMachine':
+      cmo.createUnixMachine(machineName)
+    else:
+      cmo.createMachine(machineName)
+
+    cd('/Machines/'+machineName+'/NodeManager/'+machineName)
+    cmo.setNMType(nmType)
+    cmo.setListenAddress(machineDnsName)
+    cmo.setListenPort(portNumber)
+
+    save()
+    activate()          
+
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()

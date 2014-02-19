@@ -1,11 +1,15 @@
 Oracle WebLogic / Fusion Middleware puppet module V2
 ====================================================
 
-Got the same options as the wls module but optimized for Hiera, totally refactored and only for Linux and Solaris
+Got the same options as the wls module but 
+- optimized for Hiera
+- totally refactored
+- only for Linux and Solaris
+
 
 For full hiera examples, see the usages below this page
 
-created by Edwin Biemond  email biemond at gmail dot com   
+created by Edwin Biemond email biemond at gmail dot com   
 [biemond.blogspot.com](http://biemond.blogspot.com)    
 [Github homepage](https://github.com/biemond/biemond-orawls)  
 
@@ -23,6 +27,7 @@ https://github.com/biemond/biemond-orawls-vagrant-solaris
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
 https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
+Dependency with hajee/easy_type >= 0.5.0
 
 Orawls WebLogic Features
 ------------------------
@@ -38,6 +43,10 @@ Orawls WebLogic Features
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
+
+Wls scripts
+-----------
+
 - create Machines, Managed Servers, Clusters, Server templates, Dynamic Clusters, Coherence clusters ( all 12.1.2 )
 - create Persistence Store
 - create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
@@ -60,7 +69,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 
 orawls::utils::wlstbulk is for now disabled so you can also use this in puppet Enterprise 3.0  
 requirements
-- needs puppet version > 3.2 ( make use of iteration and lambda expressions )
+- needs puppet version >= 3.4 ( make use of iteration and lambda expressions )
 - need to set --parser future ( puppet agent )
 - to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
 
@@ -875,6 +884,8 @@ hiera configuration
          bam_enabled:          true
          soa_enabled:          true
          osb_enabled:          true
+
+
 
 
 ###orawls::wlstexec

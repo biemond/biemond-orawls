@@ -11,15 +11,19 @@ user_key    = '<%= @userKeyFile %>'
 jmsQuota            = ""
 subDeploymentName   = ""
 timeToLive          = ""
+timeToDeliver       = ""
 limit               = ""
 deliveryDelay       = ""
 
 useLogRedirect      = "false"
 useRedirect         = "false"
+errorObject         = ""
 loggingPolicy       = ""
+policy              = ""
 
 
-#subDeploymentName, jmsModuleName, jmsName,jmsJNDIName,jmsType,distributed,balancingPolicy,useRedirect,limit,policy,errorObject,jmsQuota,timeToLive
+#subDeploymentName, jmsModuleName, jmsName,jmsJNDIName,jmsType,distributed,balancingPolicy,useRedirect,limit,policy,errorObject,jmsQuota,timeToLive, ,timeToDeliver
+
 <% @params.each do |param| -%>   
 <%= param %>                    
 <% end -%>                      
@@ -57,10 +61,10 @@ try:
             jmsWlsType = '/Topics/'
      
     cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName)
-    cmo.setJNDIName(jmsJNDIName)
+    set('JNDIName',jmsJNDIName) 
 
     if subDeploymentName:
-      cmo.setSubDeploymentName(subDeploymentName)
+      set('SubDeploymentName',subDeploymentName)
 
     print "distributed: ",distributed
     if distributed == "true" and jmsType == "queue":
@@ -69,18 +73,23 @@ try:
 
     print "error queue redirect: ",useRedirect
     if useRedirect == "true":
-      print "redirect to ",errorObject
-      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
+      if errorObject:
+        print "redirect to ",errorObject
+      else:
+        print "redirect to self"
+        cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
       if limit:
         print "limit"
-        cmo.setRedeliveryLimit( int(limit) )
-
-      cmo.setExpirationPolicy(policy)
-
-      if distributed == "true":
-        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/UniformDistributedQueues/'+errorObject))
-      else:
-        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/Queues/'+errorObject))
+        cmo.setRedeliveryLimit( int(limit) )  
+      if policy:
+        print "policy"
+        cmo.setExpirationPolicy(policy)
+    
+      if errorObject:
+        if distributed == "true":
+          cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/UniformDistributedQueues/'+errorObject))
+        else:
+          cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+'/Queues/'+errorObject))
 
     print "logging redirect: ",useLogRedirect
     if useLogRedirect == "true":
@@ -97,7 +106,14 @@ try:
     if timeToLive:
       print "time To Live"
       cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryParamsOverrides/'+jmsName)
-      cmo.setTimeToLive(timeToLive)                                
+      #TimeToLive is an int MBean attribute
+      cmo.setTimeToLive( int(timeToLive))   
+
+    if timeToDeliver:
+      print "time To Deliver"
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryParamsOverrides/'+jmsName)
+      #TimeToDeliver is a string MBean attribute
+      cmo.setTimeToDeliver(timeToDeliver)                             
 
     if deliveryDelay: 
       print "RedeliveryDelay"

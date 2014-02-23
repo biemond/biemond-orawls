@@ -15,7 +15,7 @@ created by Edwin Biemond email biemond at gmail dot com
 
 Should work for all Linux,Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc and x86  
 
-Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
+Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
 - oradb (oracle database 11.2.0.4 )
 - adminwls with nodewls1 & nodewls2 (cluster 10.3.6 with JMS)
 - adminwls2 ( adminserver 10.3.6  with JMS)

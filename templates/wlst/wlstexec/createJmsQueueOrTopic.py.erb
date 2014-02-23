@@ -77,7 +77,9 @@ try:
         print "redirect to ",errorObject
       else:
         print "redirect to self"
-        cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
+
+      cd('/JMSSystemResources/'+jmsModuleName+'/JMSResource/'+jmsModuleName+jmsWlsType+jmsName+'/DeliveryFailureParams/'+jmsName)
+
       if limit:
         print "limit"
         cmo.setRedeliveryLimit( int(limit) )  
@@ -131,3 +133,4 @@ except:
     print "Unexpected error:", sys.exc_info()[0]
     undo('true','y')
     stopEdit('y')
+    raise

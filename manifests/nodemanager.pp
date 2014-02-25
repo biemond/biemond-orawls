@@ -3,17 +3,18 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                = hiera('wls_version'             , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir      = hiera('wls_weblogic_home_dir'   , undef),
-  $nodemanager_port       = hiera('domain_nodemanager_port' , 5556),
-  $nodemanager_address    = undef,
-  $domain_name            = hiera('domain_name'             , undef),
-  $jdk_home_dir           = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
-  $os_user                = hiera('wls_os_user'             , undef), # oracle
-  $os_group               = hiera('wls_os_group'            , undef), # dba
-  $download_dir           = hiera('wls_download_dir'        , undef), # /data/install
-  $log_dir                = hiera('wls_log_dir'             , undef), # /data/logs
-  $log_output             = false, # true|false
+  $version                   = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
+  $weblogic_home_dir         = hiera('wls_weblogic_home_dir'     , undef),
+  $nodemanager_port          = hiera('domain_nodemanager_port'   , 5556),
+  $nodemanager_address       = undef,
+  $nodemanager_java_mem_args = hiera('nodemanager_java_mem_args' , '-Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m'),
+  $domain_name               = hiera('domain_name'               , undef),
+  $jdk_home_dir              = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $os_user                   = hiera('wls_os_user'               , undef), # oracle
+  $os_group                  = hiera('wls_os_group'              , undef), # dba
+  $download_dir              = hiera('wls_download_dir'          , undef), # /data/install
+  $log_dir                   = hiera('wls_log_dir'               , undef), # /data/logs
+  $log_output                = false, # true|false
 )
 
 {
@@ -109,7 +110,7 @@ define orawls::nodemanager (
   } elsif (  $version == 1111 or $version == 1036 or $version == 1211 ){
 
 
-    $javaCommand = "${java_statement} -client -Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
+    $javaCommand = "${java_statement} -client ${$nodemanager_java_mem_args} -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
 
     file { "nodemanager.properties ux ${title}":
       path    => "${nodeMgrHome}/nodemanager.properties",

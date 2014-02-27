@@ -1,6 +1,5 @@
 require 'tempfile'
 require 'fileutils'
-require 'csv'
 require 'utils/settings'
 #begin
 #  require 'ruby-debug'
@@ -33,7 +32,7 @@ module Utils
       tmpFile.close
       FileUtils.chmod(0555, tmpFile.path)
       csv_string = execute_wlst( script , tmpFile , parameters)
-      convert_csv_data_to_hash(csv_string, [], :column_delimeter => ";")
+      convert_csv_data_to_hash(csv_string, [], :col_sep => ";")
     end
 
 

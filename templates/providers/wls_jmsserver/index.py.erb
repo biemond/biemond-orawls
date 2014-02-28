@@ -1,5 +1,9 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
+def quote(text):
+	return "\"" + text.replace("\"", "\"\"") + "\""
+
+
 m = ls('/JMSServers')
 
 f = open("/tmp/wlstScript.out", "w")
@@ -31,7 +35,7 @@ for token in m.split("dr--"):
                cd('/JMSServers/'+token+'/PersistentStore/'+token3)
                persistentStoreType = get('Type')
 
-        print >>f, token+";"+target+";"+targetType+";"+persistentStore+";"+persistentStoreType
+        print >>f, quote(token)+";"+quote(target)+";"+quote(targetType)+";"+quote(persistentStore)+";"+quote(persistentStoreType)
 
 disconnect()
 exit()

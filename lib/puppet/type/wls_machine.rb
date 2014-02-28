@@ -58,6 +58,5 @@ module Puppet
       self[:nmtype]
     end
 
-
   end
 end

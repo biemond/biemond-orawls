@@ -7,9 +7,9 @@ Puppet::Type.type(:wls_setting).provide(:yaml) do
 
   mk_resource_methods
 
-	def flush
-		merge_configuration
-		write_yaml	
+  def flush
+	merge_configuration
+	write_yaml	
   end
 
 private

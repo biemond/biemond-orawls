@@ -38,7 +38,7 @@ for token in m.split("dr--"):
             if token2:
                machine = token2
 
-        print >>f, token+";"+quote(listenAddress)+";"+listenPort+";"+sslListenPort+";"+sslEnabled+";"+quote(sslHostnameVerificationIgnored)+";"+quote(machine)+";"+quote(logfilename)+";"+quote(classpath)+";"+quote(arguments)
+        print >>f, quote(token)+";"+quote(listenAddress)+";"+listenPort+";"+sslListenPort+";"+sslEnabled+";"+quote(sslHostnameVerificationIgnored)+";"+quote(machine)+";"+quote(logfilename)+";"+quote(classpath)+";"+quote(arguments)
 f.close()
 
 disconnect()

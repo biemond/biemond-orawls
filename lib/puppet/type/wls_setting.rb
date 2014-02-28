@@ -36,7 +36,6 @@ module Puppet
       Pathname.new(DEFAULT_FILE).expand_path
     end
 
-
     def self.read_from_yaml
       if File.exists?(config_file)
         open(config_file){|f| YAML.load(f)}

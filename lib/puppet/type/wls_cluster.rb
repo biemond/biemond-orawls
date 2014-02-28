@@ -41,7 +41,6 @@ module Puppet
 
   private 
 
-
     def servers
       self[:servers]
     end
@@ -53,7 +52,6 @@ module Puppet
     def messagingmode
       self[:messagingmode]
     end
-
 
   end
 end

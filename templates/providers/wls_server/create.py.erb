@@ -1,6 +1,7 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
 name          = '<%= name %>'
+classpath     = '<%= classpath %>'
 arguments     = '<%= arguments %>'
 machineName   = '<%= machine %>'
 logFilename   = '<%= logfilename %>'
@@ -37,9 +38,11 @@ try:
 
     set('ListenPort', listenPort)
 
+    if classpath:    
+        set('ServerStart/'+name+'/ClassPath', classpath)
+
     if arguments:    
-        cd('ServerStart/'+name)
-        set('Arguments', arguments)
+        set('ServerStart/'+name+'/Arguments', arguments)
     
     cd('/Servers/'+name+'/SSL/'+name)
 

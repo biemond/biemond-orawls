@@ -40,6 +40,7 @@ module Puppet
     property  :listenaddress
     property  :listenport
     property  :machine
+    property  :classpath
     property  :arguments
     property  :logfilename
     property  :sslhostnameverificationignored
@@ -64,6 +65,10 @@ module Puppet
 
     def machine
       self[:machine]
+    end
+
+    def classpath
+      self[:classpath]
     end
 
     def arguments

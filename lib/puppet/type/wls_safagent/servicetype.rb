@@ -1,4 +1,4 @@
-newproperty(:servertype) do
+newproperty(:servicetype) do
   include EasyType
 
 
@@ -7,7 +7,7 @@ newproperty(:servertype) do
 
 
   to_translate_to_resource do | raw_resource|
-    raw_resource['servertype']
+    raw_resource['servicetype']
   end
 
 

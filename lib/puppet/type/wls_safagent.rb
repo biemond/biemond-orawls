@@ -44,10 +44,6 @@ module Puppet
 
   private 
 
-    def name
-      self[:name]
-    end
-
     def servicetype
       self[:servicetype]
     end

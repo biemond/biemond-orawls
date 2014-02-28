@@ -38,6 +38,7 @@ for token in m.split("dr--"):
                persistentStoreType = get('Type')
 
         print >>f, quote(token)+";"+quote(target)+";"+quote(targetType)+";"+quote(persistentStore)+";"+quote(persistentStoreType)+";"+quote(serviceType)
+f.close()
 
 disconnect()
 exit()

@@ -43,10 +43,6 @@ module Puppet
 
   private 
 
-    def name
-      self[:name]
-    end
-
     def persistentstore
       self[:persistentstore]
     end

@@ -1,0 +1,39 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name                 = '<%= name %>'
+target               = '<%= target %>'
+targettype           = '<%= targettype %>'
+persistentstore      = '<%= persistentstore %>'
+persistentstoretype  = '<%= persistentstoretype %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cmo.createJMSServer(name)
+    cd('/Deployments/'+name)
+
+    if persistentstoretype == "file":
+      cmo.setPersistentStore(getMBean('/FileStores/'+persistentstore))
+    elif persistentstoretype == "jdbc":
+      cmo.setPersistentStore(getMBean('/JDBCStores/'+persistentstore))
+
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+
+    save()
+    activate()          
+
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

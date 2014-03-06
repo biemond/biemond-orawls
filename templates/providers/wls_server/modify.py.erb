@@ -11,6 +11,18 @@ sslEnabled    = <%= sslenabled %>
 sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
 sslListenPort = <%= ssllistenport %>
 
+def format(value):
+    if (value):
+    	return value
+    else:
+    	return None
+
+def formatBoolean(value):
+    if value == 1:
+        return 'True'
+    else:
+        return 'False'    
+        
 edit()
 startEdit()
 
@@ -19,34 +31,23 @@ try:
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
     
-    if listenAddress:
-        set('ListenAddress',listenAddress)
+    set('ListenAddress', format(listenAddress))
 
-    set('ListenPort', listenPort)
+    set('ListenPort', format(listenPort))
 
-    if classpath:    
-        set('ServerStart/'+name+'/ClassPath', classpath)
+    set('ServerStart/'+name+'/ClassPath', format(classpath))
 
-    if arguments:    
-        set('ServerStart/'+name+'/Arguments', arguments)
+    set('ServerStart/'+name+'/Arguments', format(arguments))
     
     cd('/Servers/'+name+'/SSL/'+name)
 
-    if sslEnabled == 1:
-        set('Enabled', 'True')
-    else:
-        set('Enabled', 'False')    
+    set('Enabled', formatBoolean(sslEnabled))
 
-    if sslHostnameVerificationIgnored == 1:
-        set('HostnameVerificationIgnored', 'True')
-    else:
-        set('HostnameVerificationIgnored', 'False')    
+    set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
 
     set('ListenPort', sslListenPort)
     
-    if logFilename:
-        cd('/Servers/'+name+'/Log/'+name)
-        set('FileName', logFilename)
+    set('/Servers/'+name+'/Log/'+name+'/FileName', format(logFilename))
 
     save()
     activate()          

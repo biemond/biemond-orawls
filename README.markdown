@@ -1,19 +1,21 @@
 Oracle WebLogic / Fusion Middleware puppet module V2
 ====================================================
 
-Got the same options as the wls module but 
-- optimized for Hiera
-- totally refactored
-- only for Linux and Solaris
-
-
-For full hiera examples, see the usages below this page
-
 created by Edwin Biemond email biemond at gmail dot com   
 [biemond.blogspot.com](http://biemond.blogspot.com)    
 [Github homepage](https://github.com/biemond/biemond-orawls)  
 
+Got the same options as the wls module but 
+- types & providers instead of wlstexec scripts like wls_machine, wls_server, wls_cluster, wls_jmsserver, wls_safagent
+- optimized for Hiera
+- totally refactored
+- only for Linux and Solaris
+
+Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_type module  
+
 Should work for all Linux,Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc and x86  
+
+For full hiera examples, see the usages below  
 
 Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
 - oradb (oracle database 11.2.0.4 )
@@ -33,7 +35,7 @@ https://github.com/biemond/biemond-orawls-vagrant-solaris
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
 https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
-Dependency with hajee/easy_type >= 0.5.0
+Dependency with hajee/easy_type >= 0.5.1
 
 Orawls WebLogic Features
 ------------------------
@@ -49,6 +51,16 @@ Orawls WebLogic Features
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
+
+Wls type and providers ( ensurable, create,modify,destroy ) + puppet resource
+-----------------------------------------------------------------------------
+
+- wls_setting, set the default wls parameters for the other types and used by resource
+- wls_machine
+- wls_server
+- wls_cluster
+- wls_jmsserver
+- wls_safagent
 
 Wls scripts
 -----------
@@ -901,6 +913,79 @@ hiera configuration
          osb_enabled:          true
 
 
+
+###wls_setting, required for wls type/providers
+
+      wls_setting { 'default':
+        user               => 'oracle',
+        weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
+        connect_url        => "t3://localhost:7001",
+        weblogic_user      => 'weblogic',
+        weblogic_password  => 'weblogic1',
+      }
+
+###wls_machine
+
+or use puppet resource wls_machine
+
+      wls_machine { 'test2':
+        ensure        => 'present',
+        listenaddress => '10.10.10.10',
+        listenport    => '5556',
+        machinetype   => 'UnixMachine',
+        nmtype        => 'SSL',
+      }
+
+
+###wls_server
+
+or use puppet resource wls_server
+
+      wls_server { 'wlsServer3':
+        ensure                         => 'present',
+        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
+        listenaddress                  => '10.10.10.100',
+        listenport                     => '8002',
+        logfilename                    => '/data/logs/wlsServer3.log',
+        machine                        => 'Node1',
+        sslenabled                     => '0',
+        sslhostnameverificationignored => '1',
+        ssllistenport                  => '7002',
+      }
+
+###wls_cluster
+
+or use puppet resource wls_cluster
+
+      wls_cluster { 'WebCluster':
+        ensure         => 'present',
+        messagingmode  => 'unicast',
+        migrationbasis => 'consensus',
+        servers        => 'wlsServer3,wlsServer4',
+      }
+
+###wls_safagent
+
+or use puppet resource wls_safagent
+
+
+      wls_safagent { 'jmsSAFAgent1':
+        ensure      => 'present',
+        servicetype => 'Sending-only',
+        target      => 'wlsServer1',
+        targettype  => 'Server',
+      }
+
+###wls_jmsserver
+
+or use puppet resource wls_jmsserver
+
+
+      wls_jmsserver { 'jmsServer1':
+        ensure     => 'present',
+        target     => 'wlsServer1',
+        targettype => 'Server',
+      }
 
 
 ###orawls::wlstexec

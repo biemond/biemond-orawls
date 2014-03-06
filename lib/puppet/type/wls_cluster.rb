@@ -16,22 +16,22 @@ module Puppet
     set_command(:wlst)
   
     to_get_raw_resources do
-      wlst template('providers/wls_cluster/index.py', binding)
+      wlst template('puppet:///modules/orawls/providers/wls_cluster/index.py.erb', binding)
     end
 
     on_create do
       Puppet.info "create #{name} "
-      template('providers/wls_cluster/create.py', binding)
+      template('puppet:///modules/orawls/providers/wls_cluster/create.py.erb', binding)
     end
 
     on_modify do
       Puppet.info "modify #{name} "
-      template('providers/wls_cluster/modify.py', binding)
+      template('puppet:///modules/orawls/providers/wls_cluster/modify.py.erb', binding)
     end
 
     on_destroy do
       Puppet.info "destroy #{name} "
-      template('providers/wls_cluster/destroy.py', binding)
+      template('puppet:///modules/orawls/providers/wls_cluster/destroy.py.erb', binding)
     end
 
     parameter :name

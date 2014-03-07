@@ -1,8 +1,10 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
 def quote(text):
-	return "\"" + text.replace("\"", "\"\"") + "\""
-
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
 
 m = ls('/Machines')
 
@@ -15,7 +17,8 @@ for token in m.split("dr--"):
         cd('/Machines/'+token)
         type = get('Type')
         cd('NodeManager/'+token)
-        print >>f, quote(token)+";"+quote(type)+";"+quote(get('NMType'))+";"+quote(get('ListenAddress'))+";"+str(get('ListenPort'))
+
+        print >>f, ";".join(map(quote, [token,type,get('NMType'),get('ListenAddress'),str(get('ListenPort'))]))
 
 f.close()
 

@@ -1,0 +1,33 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+m = ls('/SystemResources')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;target;targettype"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/SystemResources/'+token)
+
+        n = ls('/SystemResources/'+token+'/Targets')
+        target     = ''
+        targetType = ''
+
+        for token2 in n.split("dr--"):
+             token2=token2.strip().lstrip().rstrip()
+             if not token2 == '':
+                target     = token2
+                cd('/SystemResources/'+token+'/Targets/'+token2)
+                targetType = get('Type')
+
+        print >>f, ";".join(map(quote, [token,target,targetType]))
+
+disconnect()
+exit()

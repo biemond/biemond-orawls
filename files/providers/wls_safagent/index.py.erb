@@ -1,7 +1,10 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
 def quote(text):
-	return "\"" + text.replace("\"", "\"\"") + "\""
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
 
 m = ls('/SAFAgents')
 
@@ -37,7 +40,7 @@ for token in m.split("dr--"):
                cd('/SAFAgents/'+token+'/Store/'+token3)
                persistentStoreType = get('Type')
 
-        print >>f, quote(token)+";"+quote(target)+";"+quote(targetType)+";"+quote(persistentStore)+";"+quote(persistentStoreType)+";"+quote(serviceType)
+        print >>f, ";".join(map(quote, [token,target,targetType,persistentStore,persistentStoreType,serviceType]))
 f.close()
 
 disconnect()

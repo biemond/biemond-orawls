@@ -7,6 +7,7 @@ define orawls::domain (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $domains_dir                = hiera('wls_domains_dir'           , undef),
   $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
@@ -27,15 +28,8 @@ define orawls::domain (
   $repository_password        = hiera('repository_password'       , "Welcome01"),
 )
 {
-
-  if $::override_weblogic_domain_folder == undef {
-    $domain_dir = "${middleware_home_dir}/user_projects/domains"
-    $app_dir    = "${middleware_home_dir}/user_projects/applications"
-  } else {
-    $domain_dir = "${::override_weblogic_domain_folder}/domains"
-    $app_dir    = "${::override_weblogic_domain_folder}/applications"
-  }
-
+  $domain_dir = $domains_dir  # DAVID: I would like to change this variable name, but it is currently used in many places here and in templates. TODO...
+  
   # check if the domain already exists
   $found = domain_exists("${domain_dir}/${domain_name}", $version, $domain_dir)
 
@@ -207,37 +201,6 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    if $::override_weblogic_domain_folder == undef {
-      # make the default domain folders
-      if !defined(File["weblogic_domain_folder"]) {
-        # check oracle install folder
-        file { "weblogic_domain_folder":
-          path    => "${middleware_home_dir}/user_projects",
-          ensure  => directory,
-          recurse => false,
-          replace => false,
-          mode    => 0775,
-          owner   => $os_user,
-          group   => $os_group,
-        }
-      }
-    } else {
-      # make override domain folders
-
-      if !defined(File["weblogic_domain_folder"]) {
-        # check oracle install folder
-        file { "weblogic_domain_folder":
-          path    => $::override_weblogic_domain_folder,
-          ensure  => directory,
-          recurse => false,
-          replace => false,
-          mode    => 0775,
-          owner   => $os_user,
-          group   => $os_group,
-        }
-      }
-    }
-
     if !defined(File[$domain_dir]) {
       # check oracle install folder
       file { $domain_dir:
@@ -247,20 +210,6 @@ define orawls::domain (
         mode    => 0775,
         owner   => $os_user,
         group   => $os_group,
-        require => File["weblogic_domain_folder"],
-      }
-    }
-
-    if !defined(File[$app_dir]) {
-      # check oracle install folder
-      file { $app_dir:
-        ensure  => directory,
-        recurse => false,
-        replace => false,
-        mode    => 0775,
-        owner   => $os_user,
-        group   => $os_group,
-        require => File["weblogic_domain_folder"],
       }
     }
 
@@ -272,8 +221,7 @@ define orawls::domain (
       creates     => "${domain_dir}/${domain_name}",
       require     => [
         File["domain.py ${domain_name} ${title}"],
-        File[$domain_dir],
-        File[$app_dir]],
+        File[$domain_dir]],
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,

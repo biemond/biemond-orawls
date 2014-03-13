@@ -28,10 +28,10 @@ define orawls::domain (
   $repository_password        = hiera('repository_password'       , "Welcome01"),
 )
 {
-  $domain_dir = $domains_dir  # DAVID: I would like to change this variable name, but it is currently used in many places here and in templates. TODO...
+  $domain_dir = "${domains_dir}/${name}"
   
   # check if the domain already exists
-  $found = domain_exists("${domain_dir}/${domain_name}", $version, $domain_dir)
+  $found = domain_exists($domain_dir, $version, $domains_dir)
 
   if $found == undef {
     $continue = true
@@ -39,7 +39,7 @@ define orawls::domain (
     if ($found) {
       $continue = false
     } else {
-      notify { "orawls::domain ${title} ${domain_dir}/${domain_name} ${version} does not exists": }
+      notify { "orawls::domain ${title} ${domain_dir} ${version} does not exists": }
       $continue = true
     }
   }
@@ -149,12 +149,12 @@ define orawls::domain (
     }
 
     if $log_dir == undef {
-      $admin_nodemanager_log_dir = "${domain_dir}/${domain_name}/servers/${adminserver_name}/logs"
-      $nodemanager_log_dir       = "${domain_dir}/${domain_name}/nodemanager/nodemanager.log"
+      $admin_nodemanager_log_dir = "${domain_dir}/servers/${adminserver_name}/logs"
+      $nodemanager_log_dir       = "${domain_dir}/nodemanager/nodemanager.log"
 
-      $osb_nodemanager_log_dir   = "${domain_dir}/${domain_name}/servers/osb_server1/logs"
-      $soa_nodemanager_log_dir   = "${domain_dir}/${domain_name}/servers/soa_server1/logs"
-      $bam_nodemanager_log_dir   = "${domain_dir}/${domain_name}/servers/bam_server1/logs"
+      $osb_nodemanager_log_dir   = "${domain_dir}/servers/osb_server1/logs"
+      $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"
+      $bam_nodemanager_log_dir   = "${domain_dir}/servers/bam_server1/logs"
 
 
     } else {
@@ -201,9 +201,9 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    if !defined(File[$domain_dir]) {
+    if !defined(File[$domains_dir]) {
       # check oracle install folder
-      file { $domain_dir:
+      file { $domains_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
@@ -217,11 +217,11 @@ define orawls::domain (
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
-      unless      => "/usr/bin/test -e ${domain_dir}/${domain_name}",
-      creates     => "${domain_dir}/${domain_name}",
+      unless      => "/usr/bin/test -e ${domain_dir}",
+      creates     => "${domain_dir}",
       require     => [
         File["domain.py ${domain_name} ${title}"],
-        File[$domain_dir]],
+        File[$domains_dir]],
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,
@@ -236,8 +236,8 @@ define orawls::domain (
           $domain_template == 'osb_soa_bpm'){
 
 	      exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-	        command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-	        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+	        command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/bin/setDomainEnv.sh",
+	        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
 	        require => Exec["execwlst ${domain_name} ${title}"],
 	        path    => $exec_path,
 	        user    => $os_user,
@@ -245,8 +245,8 @@ define orawls::domain (
 	      }
 
         exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
           require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
           path    => $exec_path,
           user    => $os_user,
@@ -262,8 +262,8 @@ define orawls::domain (
           $domain_template == 'osb_soa_bpm'){
 
 	      exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-	        command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-	        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+	        command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+	        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
 	        require => Exec["execwlst ${domain_name} ${title}"],
 	        path    => $exec_path,
 	        user    => $os_user,
@@ -271,8 +271,8 @@ define orawls::domain (
 	      }
 
         exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
           require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
           path    => $exec_path,
           user    => $os_user,
@@ -289,7 +289,7 @@ define orawls::domain (
       group   => $os_group,
     }
 
-    $nodeMgrHome = "${domain_dir}/${domain_name}/nodemanager"
+    $nodeMgrHome = "${domain_dir}/nodemanager"
     $listenPort   = $nodemanager_port
 
     # set our 12.1.2 nodemanager properties

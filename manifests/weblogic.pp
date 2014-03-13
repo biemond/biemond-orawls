@@ -5,6 +5,7 @@ class orawls::weblogic (
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
+  $domains_dir          = undef, # /opt/oracle/domains
   $fmw_infra            = false, # true|false 12.1.2 option -> plain weblogic or fmw infra
   $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
@@ -63,6 +64,7 @@ class orawls::weblogic (
     orawls::utils::structure{"weblogic structure ${version}":
       oracle_base_home_dir => $oracle_base_home_dir,
       ora_inventory_dir    => $ora_inventory_dir,
+      domains_dir          => $domains_dir,
       os_user              => $os_user,
       os_group             => $os_group,
       download_dir         => $download_dir,

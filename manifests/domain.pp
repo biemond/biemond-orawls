@@ -8,6 +8,7 @@ define orawls::domain (
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $domains_dir                = hiera('wls_domains_dir'           , undef),
+  $apps_dir                   = hiera('wls_apps_dir'              , undef),
   $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
@@ -211,6 +212,21 @@ define orawls::domain (
         owner   => $os_user,
         group   => $os_group,
       }
+    }
+
+    if $apps_dir != undef {
+      if !defined(File[$apps_dir]) {
+        # check oracle install folder
+        file { $app_dir:
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => 0775,
+          owner   => $os_user,
+          group   => $os_group,
+        }
+      }
+      File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
     # create domain

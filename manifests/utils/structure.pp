@@ -8,6 +8,7 @@ define orawls::utils::structure (
   $oracle_base_home_dir = undef,
   $ora_inventory_dir    = undef,
   $domains_dir          = undef,
+  $apps_dir             = undef,
   $os_user              = undef,
   $os_group             = undef,
   $download_dir         = undef,
@@ -47,6 +48,16 @@ define orawls::utils::structure (
     }
   }
 
+  if $apps_dir != undef {
+    if !defined(Exec["create ${apps_dir} directory"]) {
+      exec { "create ${apps_dir} directory":
+        command => "mkdir -p ${apps_dir}",
+        unless  => "test -d ${apps_dir}",
+        user    => 'root',
+        path    => $exec_path,
+      }
+    }
+  }
 
   # also set permissions on downloadDir
   if !defined(File[$download_dir]) {
@@ -98,6 +109,21 @@ define orawls::utils::structure (
       owner   => $os_user,
       group   => $os_group,
       require => Exec["create ${domains_dir} directory"],
+    }
+  }
+
+  if $apps_dir != undef {
+    # also set permissions on apps_dir
+    if !defined(File[$apps_dir]) {
+      file { $apps_dir:
+        ensure  => directory,
+        recurse => false,
+        replace => false,
+        mode    => 0775,
+        owner   => $os_user,
+        group   => $os_group,
+        require => Exec["create ${apps_dir} directory"],
+      }
     }
   }
 }

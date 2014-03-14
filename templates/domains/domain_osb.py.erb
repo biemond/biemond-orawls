@@ -2,7 +2,9 @@
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
 DOMAIN='<%= @domain_name %>'
-APP_PATH='<%= @app_dir %>/<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
 
 DEVELOPMENT_MODE=<%= @development_mode %>
 
@@ -86,7 +88,9 @@ set('Machine','LocalMachine')
 set('ListenAddress','<%= @adminserver_address %>')
 set('ListenPort',<%= @adminserver_port %>)
 
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 
 create(ADMIN_SERVER,'ServerStart')
 cd('ServerStart/'+ADMIN_SERVER)
@@ -152,7 +156,9 @@ set('NodeManagerPasswordEncrypted',es )
 
 cd('/')
 
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 
 print 'Adding EM Template'
 addTemplate('<%= @templateEM %>')
@@ -169,7 +175,9 @@ updateDomain()
 closeDomain();
 readDomain(DOMAIN_PATH)
 
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 
 cd('Servers/osb_server1')
 set('Machine','LocalMachine')

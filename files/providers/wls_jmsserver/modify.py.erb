@@ -14,9 +14,9 @@ try:
     cd('/')
     cd('/Deployments/'+name)
 
-    if persistentstoretype == "file":
+    if persistentstoretype == "FileStore":
       cmo.setPersistentStore(getMBean('/FileStores/'+persistentstore))
-    elif persistentstoretype == "jdbc":
+    elif persistentstoretype == "JDBCStore":
       cmo.setPersistentStore(getMBean('/JDBCStores/'+persistentstore))
 
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))

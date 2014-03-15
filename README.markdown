@@ -1074,7 +1074,7 @@ in hiera
           targettype:          'Server'
           servicetype:         'Sending-only'
           persistentstore:     'jmsFileSAFAgent1'
-          persistentstoretype: 'file'
+          persistentstoretype: 'FileStore'
     'jmsSAFAgent2':
           ensure:              'present'
           target:              'wlsServer2'
@@ -1115,7 +1115,7 @@ in hiera
          target:              'wlsServer1'
          targettype:          'Server'
          persistentstore:     'jmsFile1'
-         persistentstoretype: 'file'
+         persistentstoretype: 'FileStore'
        jmsServer2:
          ensure:              'present'
          target:              'wlsServer2'

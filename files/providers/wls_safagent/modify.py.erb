@@ -15,9 +15,9 @@ try:
     cd('/')
     cd('/SAFAgents/'+name)
 
-    if persistentstoretype == "file":
+    if persistentstoretype == "FileStore":
       cmo.setStore(getMBean('/FileStores/'+persistentstore))
-    elif persistentstoretype == "jdbc":
+    elif persistentstoretype == "JDBCStore":
       cmo.setStore(getMBean('/JDBCStores/'+persistentstore))
 
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))

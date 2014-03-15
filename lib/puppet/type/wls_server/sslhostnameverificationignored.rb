@@ -1,6 +1,5 @@
 newproperty(:sslhostnameverificationignored) do
   include EasyType
-  include EasyType::Validators::Name
 
   desc "The ssl hostname verification ignored enabled on the server"
   newvalues(1, 0)

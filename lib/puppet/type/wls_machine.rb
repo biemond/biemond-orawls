@@ -1,3 +1,6 @@
+require 'pathname'
+$:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
+$:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
@@ -16,6 +19,7 @@ module Puppet
     set_command(:wlst)
   
     to_get_raw_resources do
+      Puppet.info "index #{name} "
       wlst template('puppet:///modules/orawls/providers/wls_machine/index.py.erb', binding)
     end
 
@@ -33,6 +37,8 @@ module Puppet
       Puppet.info "destroy #{name} "
       template('puppet:///modules/orawls/providers/wls_machine/destroy.py.erb', binding)
     end
+
+    include_file 'puppet/type/wls_setting/setting'
 
     parameter :name
     property  :machinetype

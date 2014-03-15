@@ -1,22 +1,25 @@
-Oracle WebLogic / Fusion Middleware puppet module V2
-====================================================
+#Oracle WebLogic / Fusion Middleware puppet module V2
 
 created by Edwin Biemond email biemond at gmail dot com   
 [biemond.blogspot.com](http://biemond.blogspot.com)    
 [Github homepage](https://github.com/biemond/biemond-orawls)  
 
-Got the same options as the wls module but 
-- types & providers instead of wlstexec scripts like wls_machine, wls_server, wls_cluster, wls_jmsserver, wls_safagent
+Got the same options as the wls module but with 
+- types & providers instead of wlstexec scripts ( detect changes )
 - optimized for Hiera
 - totally refactored
 - only for Linux and Solaris
 
 Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_type module  
 
-Should work for all Linux,Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc and x86  
+Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc or x86  
 
-For full hiera examples, see the usages below  
+Dependency with hajee/easy_type >= 0.6.2
 
+##Complete examples
+see the following usages below  
+
+###Puppetmaster (vagrant box)
 Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
 - oradb (oracle database 11.2.0.4 )
 - adminwls with nodewls1 & nodewls2 (cluster 10.3.6 with JMS)
@@ -25,6 +28,7 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - adminwls4 ( adminserver 10.3.6 + osb PS6 + soa suite PS6 ( with bpm & bam ))
 - adminwls5 ( adminserver 10.3.6 + osb PS6 )
 
+###Masterless (vagrant box)
 
 Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant  
@@ -35,10 +39,7 @@ https://github.com/biemond/biemond-orawls-vagrant-solaris
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
 https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
-Dependency with hajee/easy_type >= 0.5.1
-
-Orawls WebLogic Features
-------------------------
+##Orawls WebLogic Features
 
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
 - installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
@@ -52,28 +53,26 @@ Orawls WebLogic Features
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
 
-Wls type and providers ( ensurable, create,modify,destroy ) + puppet resource
------------------------------------------------------------------------------
+##Wls types and providers ( ensurable, create,modify,destroy ) + puppet resource
 
-- wls_setting, set the default wls parameters for the other types and used by resource
+- wls_setting, set the default wls parameters for the other types and also used by puppet resource
 - wls_machine
 - wls_server
 - wls_cluster
+- wls_datasource
+- wls_file_persistence_store
 - wls_jmsserver
 - wls_safagent
-
-Wls scripts
------------
-
-- create Machines, Managed Servers, Clusters, Server templates, Dynamic Clusters, Coherence clusters ( all 12.1.2 )
-- create Persistence Store
-- create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
-- basically can run every WLST script with the flexible WLST define manifest
-- WLST bulk creation
+- wls_jms_module
+- wls_jms_quota
+- wls_jms_subdeployment
+- wls_jms_queue
+- wls_jms_topic
+- wls_jms_connection_factory
 
 
-Domain creation options (Dev or Prod mode)
-------------------------------------------
+##Domain creation options (Dev or Prod mode)
+
 all templates creates a WebLogic domain, logs the domain creation output 
 
 - domain 'standard'    -> a default WebLogic    
@@ -84,26 +83,27 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM 
 - domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM 
 
+## Orawls WebLogic Facter
 
-orawls::utils::wlstbulk is for now disabled so you can also use this in puppet Enterprise 3.0  
-requirements
-- needs puppet version >= 3.4 ( make use of iteration and lambda expressions )
-- need to set --parser future ( puppet agent )
-- to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
+Contains WebLogic Facter which displays the following
+- Middleware homes
+- Oracle Software
+- BSU & OPatch patches
+- Domain configuration ( everything of a WebLogic Domain like deployments, datasource, JMS, SAF)
 
 
-Override the default Oracle operating system user
--------------------------------------------------
+##Override the default Oracle operating system user
+
 default this orawls module uses oracle as weblogic install user  
 you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls  
 
-Override the default Weblogic domains folder like user_projects 
----------------------------------------------------------------
+##Override the default Weblogic domains folder like user_projects 
+
 set the following fact 'override_weblogic_domain_folder',  override_weblogic_domain_folder = /opt/oracle/wlsdomains or set FACTER_override_weblogic_domain_folder=/opt/oracle/wlsdomains  
 
 
-Linux low on entropy or urandom fix 
------------------------------------
+## Linux low on entropy or urandom fix 
+
 can cause certain operations to be very slow. Encryption operations need entropy to ensure randomness. Entropy is generated by the OS when you use the keyboard, the mouse or the disk.
 
 If an encryption operation is missing entropy it will wait until enough is generated.
@@ -113,8 +113,8 @@ three options
 -  set java.security in JDK ( jre/lib/security in my jdk7 module )  
 -  set -Djava.security.egd=file:/dev/./urandom param 
 
-Oracle Big files and alternate download location
-------------------------------------------------
+## Oracle binaries files and alternate download location
+
 Some manifests like orawls:weblogic bsu opatch fmw supports an alternative mountpoint for the big oracle setup/install files.  
 When not provided it uses the files folder located in the orawls puppet module  
 else you can use $source =>
@@ -125,17 +125,7 @@ else you can use $source =>
 
 when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install 
 
-Orawls WebLogic Facter
-----------------------
-
-Contains WebLogic Facter which displays the following
-- Middleware homes
-- Oracle Software
-- BSU & OPatch patches
-- Domain configuration ( everything of a WebLogic Domain like deployments, datasource, JMS, SAF)
-
-
-### My orawls module Files folder  
+### orawls module Files folder  
 you need to download all the Oracle binaries and agree to the Oracle (Developer) License
 
 WebLogic 11g:
@@ -151,8 +141,9 @@ WebLogic 12.1.2:
 WebLogic 12.1.2 OPatch:
 - p16175470_121200_Generic.zip
 
-WebLogic Operating Settings like User, Group, ULimits and kernel parameters
----------------------------------------------------------------------------
+##WebLogic requirements
+
+Operating System settings like User, Group, ULimits and kernel parameters requirements
 
 install the following module to set the kernel parameters  
 puppet module install fiddyspence-sysctl  
@@ -178,7 +169,7 @@ puppet module install erwbgy-limits
        use_hiera => false,}
 
 
-create user and group
+create a WebLogic user and group
 
 
     group { 'dba' :
@@ -198,8 +189,7 @@ create user and group
     }
 
 
-Necessary Hiera setup for global vars and Facter
-------------------------------------------------
+##Necessary Hiera setup for global vars and Facter
 
 if you don't want to provide the same parameters in all the defines and classes 
 
@@ -267,8 +257,7 @@ common.yaml
     orawls::weblogic::source:               *wls_source
         
 
-WebLogic Module Usage
----------------------
+##WebLogic Module Usage
 
 ###orawls::weblogic
 installs WebLogic 10.3.[0-6], 12.1.1 or 12.1.2  
@@ -641,9 +630,6 @@ when you just have one WebLogic domain on a server
          log_output:              *logoutput
     
 
-
-
-
 ###orawls::nodemanager 
 start the nodemanager of a WebLogic Domain or Middleware Home
 
@@ -913,6 +899,7 @@ hiera configuration
          osb_enabled:          true
 
 
+##Types and providers
 
 ###wls_setting, required for wls type/providers
 
@@ -926,6 +913,8 @@ hiera configuration
 
 ###wls_machine
 
+it needs wls_setting  
+
 or use puppet resource wls_machine
 
       wls_machine { 'test2':
@@ -936,8 +925,26 @@ or use puppet resource wls_machine
         nmtype        => 'SSL',
       }
 
+in hiera
+
+    machines_instances:
+      'Node1':
+        ensure:         'present'
+        listenaddress:  '10.10.10.100'
+        listenport:     '5556'
+        machinetype:    'UnixMachine'
+        nmtype:         'SSL'
+      'Node2':
+        ensure:         'present'
+        listenaddress:  '10.10.10.200'
+        listenport:     '5556'
+        machinetype:    'UnixMachine'
+        nmtype:         'SSL'
+
 
 ###wls_server
+
+needs wls_setting  
 
 or use puppet resource wls_server
 
@@ -953,7 +960,24 @@ or use puppet resource wls_server
         ssllistenport                  => '7002',
       }
 
+in hiera
+
+    server_instances:
+      'wlsServer1':
+         ensure:                         'present'
+         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+         listenaddress:                  '10.10.10.100'
+         listenport:                     '8001'
+         logfilename:                    '/data/logs/wlsServer1.log'
+         machine:                        'Node1'
+         sslenabled:                     '1'
+         ssllistenport:                  '8201'
+         sslhostnameverificationignored: '1'
+ 
+
 ###wls_cluster
+
+needs wls_setting  
 
 or use puppet resource wls_cluster
 
@@ -964,631 +988,488 @@ or use puppet resource wls_cluster
         servers        => 'wlsServer3,wlsServer4',
       }
 
+in hiera
+
+     cluster_instances:
+      'WebCluster':
+        ensure:         'present'
+        messagingmode:  'unicast'
+        migrationbasis: 'consensus'
+        servers:        'wlsServer1,wlsServer2'
+
+###wls_file_persistence_store
+
+needs wls_setting  
+
+or use puppet resource wls_file_persistence_store
+
+    wls_file_persistence_store { 'jmsFile1':
+      ensure     => 'present',
+      directory  => 'persistence1',
+      target     => 'wlsServer1',
+      targettype => 'Server',
+    }
+    wls_file_persistence_store { 'jmsFile2':
+      ensure     => 'present',
+      directory  => 'persistence2',
+      target     => 'wlsServer2',
+      targettype => 'Server',
+    }
+    wls_file_persistence_store { 'jmsFileSAFAgent1':
+      ensure     => 'present',
+      directory  => 'persistenceSaf1',
+      target     => 'wlsServer1',
+      targettype => 'Server',
+    }
+
+in hiera
+
+    file_persistence_store_instances:
+      'jmsFile1':
+        ensure:         'present'
+        directory:      'persistence1'
+        target:         'wlsServer1'
+        targettype:     'Server'
+      'jmsFile2':
+        ensure:         'present'
+        directory:      'persistence2'
+        target:         'wlsServer2'
+        targettype:     'Server'
+      'jmsFileSAFAgent1':
+        ensure:         'present'
+        directory:      'persistenceSaf1'
+        target:         'wlsServer1'
+        targettype:     'Server'
+
+
 ###wls_safagent
+
+needs wls_setting  
 
 or use puppet resource wls_safagent
 
 
-      wls_safagent { 'jmsSAFAgent1':
-        ensure      => 'present',
-        servicetype => 'Sending-only',
-        target      => 'wlsServer1',
-        targettype  => 'Server',
-      }
+    wls_safagent { 'jmsSAFAgent1':
+      ensure              => 'present',
+      persistentstore     => 'jmsFileSAFAgent1',
+      persistentstoretype => 'FileStore',
+      servicetype         => 'Sending-only',
+      target              => 'wlsServer1',
+      targettype          => 'Server',
+    }
+
+    wls_safagent { 'jmsSAFAgent2':
+      ensure      => 'present',
+      servicetype => 'Both',
+      target      => 'wlsServer2',
+      targettype  => 'Server',
+    }
+
+in hiera
+
+    safagent_instances:
+    'jmsSAFAgent1':
+          ensure:              'present'
+          target:              'wlsServer1'
+          targettype:          'Server'
+          servicetype:         'Sending-only'
+          persistentstore:     'jmsFileSAFAgent1'
+          persistentstoretype: 'file'
+    'jmsSAFAgent2':
+          ensure:              'present'
+          target:              'wlsServer2'
+          targettype:          'Server'
+          servicetype:         'Both'
+
 
 ###wls_jmsserver
 
+needs wls_setting  
+
 or use puppet resource wls_jmsserver
 
+    wls_jmsserver { 'jmsServer1':
+      ensure              => 'present',
+      persistentstore     => 'jmsFile1',
+      persistentstoretype => 'FileStore',
+      target              => 'wlsServer1',
+      targettype          => 'Server',
+    }
+    wls_jmsserver { 'jmsServer2':
+      ensure     => 'present',
+      target     => 'wlsServer2',
+      targettype => 'Server',
+    }
+    wls_jmsserver { 'jmsServer3':
+      ensure     => 'present',
+      target     => 'wlsServer3',
+      targettype => 'Server',
+    }
 
-      wls_jmsserver { 'jmsServer1':
-        ensure     => 'present',
-        target     => 'wlsServer1',
-        targettype => 'Server',
-      }
 
+in hiera
+
+    jmsserver_instances:
+       jmsServer1:
+         ensure:              'present'
+         target:              'wlsServer1'
+         targettype:          'Server'
+         persistentstore:     'jmsFile1'
+         persistentstoretype: 'file'
+       jmsServer2:
+         ensure:              'present'
+         target:              'wlsServer2'
+         targettype:          'Server'
+
+
+###wls_datasource
+
+needs wls_setting  
+
+or use puppet resource wls_datasource
+
+    wls_datasource { 'hrDS':
+      ensure                     => 'present',
+      drivername                 => 'oracle.jdbc.xa.client.OracleXADataSource',
+      extraproperties            => 'SendStreamAsBlob,oracle.net.CONNECT_TIMEOUT',
+      extrapropertiesvalues      => 'true,10000',
+      globaltransactionsprotocol => 'TwoPhaseCommit',
+      initialcapacity            => '1',
+      jndinames                  => 'jdbc/hrDS',
+      maxcapacity                => '15',
+      target                     => 'WebCluster,WebCluster2',
+      targettype                 => 'Cluster,Cluster',
+      testtablename              => 'SQL SELECT 1 FROM DUAL',
+      url                        => 'jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com',
+      user                       => 'hr',
+      usexa                      => '1',
+    }
+    wls_datasource { 'jmsDS':
+      ensure                     => 'present',
+      drivername                 => 'com.mysql.jdbc.Driver',
+      globaltransactionsprotocol => 'None',
+      initialcapacity            => '1',
+      jndinames                  => 'jmsDS',
+      maxcapacity                => '15',
+      target                     => 'WebCluster',
+      targettype                 => 'Cluster',
+      testtablename              => 'SQL SELECT 1',
+      url                        => 'jdbc:mysql://10.10.10.10:3306/jms',
+      user                       => 'jms',
+      usexa                      => '1',
+    }
+
+in hiera
+
+    datasource_instances:
+        'hrDS':
+          ensure:                      'present'
+          drivername:                  'oracle.jdbc.xa.client.OracleXADataSource'
+          extraproperties:             'SendStreamAsBlob,oracle.net.CONNECT_TIMEOUT'
+          extrapropertiesvalues:       'true,10000'
+          globaltransactionsprotocol:  'TwoPhaseCommit'
+          initialcapacity:             '1'
+          jndinames:                   'jdbc/hrDS'
+          maxcapacity:                 '15'
+          target:                      'WebCluster,WebCluster2'
+          targettype:                  'Cluster,Cluster'
+          testtablename:               'SQL SELECT 1 FROM DUAL'
+          url:                         "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
+          user:                        'hr'
+          usexa:                       '1'
+        'jmsDS':
+          ensure:                      'present'
+          drivername:                  'com.mysql.jdbc.Driver'
+          globaltransactionsprotocol:  'None'
+          initialcapacity:             '1'
+          jndinames:                   'jmsDS'
+          maxcapacity:                 '15'
+          target:                      'WebCluster'
+          targettype:                  'Cluster'
+          testtablename:               'SQL SELECT 1'
+          url:                         'jdbc:mysql://10.10.10.10:3306/jms'
+          user:                        'jms'
+          usexa:                       '1'
+
+
+###wls_jms_module
+
+needs wls_setting  
+
+or use puppet resource wls_jms_module
+
+    wls_jms_module { 'jmsClusterModule':
+      ensure     => 'present',
+      target     => 'WebCluster',
+      targettype => 'Cluster',
+    }
+
+in hiera
+
+    jms_module_instances:
+       jmsClusterModule:
+         ensure:      'present'
+         target:      'WebCluster'
+         targettype:  'Cluster'
+
+
+###wls_connection_factory
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_connection_factory
+
+    wls_jms_connection_factory { 'jmsClusterModule:cf':
+      ensure             => 'present',
+      defaulttargeting   => '0',
+      jndiname           => 'jms/cf',
+      subdeployment      => 'wlsServers',
+      transactiontimeout => '3600',
+      xaenabled          => '0',
+    }
+    wls_jms_connection_factory { 'jmsClusterModule:cf2':
+      ensure             => 'present',
+      defaulttargeting   => '1',
+      jndiname           => 'jms/cf2',
+      subdeployment      => 'cf2',
+      transactiontimeout => '3600',
+      xaenabled          => '1',
+    }
+
+in hiera
+
+    jms_connection_factory_instances:
+      'jmsClusterModule:cf':
+          ensure:             'present'
+          jmsmodule:          'jmsClusterModule'
+          defaulttargeting:   '0'
+          jndiname:           'jms/cf'
+          subdeployment:      'wlsServers'
+          transactiontimeout: '3600'
+          xaenabled:          '0'
+      'jmsClusterModule:cf2':
+          ensure:             'present'
+          jmsmodule:          'jmsClusterModule'
+          defaulttargeting:   '1'
+          jndiname:           'jms/cf2'
+          transactiontimeout: '3600'
+          xaenabled:          '1'
+
+###wls_jms_queue
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_jms_queue
+
+    wls_jms_queue { 'jmsClusterModule:ErrorQueue':
+      ensure           => 'present',
+      defaulttargeting => '0',
+      distributed      => '1',
+      expirationpolicy => 'Discard',
+      jndiname         => 'jms/ErrorQueue',
+      redeliverydelay  => '-1',
+      redeliverylimit  => '-1',
+      subdeployment    => 'jmsServers',
+      timetodeliver    => '-1',
+      timetolive       => '-1',
+    }
+    wls_jms_queue { 'jmsClusterModule:Queue1':
+      ensure           => 'present',
+      defaulttargeting => '0',
+      distributed      => '1',
+      errordestination => 'ErrorQueue',
+      expirationpolicy => 'Redirect',
+      jndiname         => 'jms/Queue1',
+      redeliverydelay  => '2000',
+      redeliverylimit  => '3',
+      subdeployment    => 'jmsServers',
+      timetodeliver    => '-1',
+      timetolive       => '300000',
+    }
+    wls_jms_queue { 'jmsClusterModule:Queue2':
+      ensure                  => 'present',
+      defaulttargeting        => '0',
+      distributed             => '1',
+      expirationloggingpolicy => '%header%%properties%',
+      expirationpolicy        => 'Log',
+      jndiname                => 'jms/Queue2',
+      redeliverydelay         => '2000',
+      redeliverylimit         => '3',
+      subdeployment           => 'jmsServers',
+      timetodeliver           => '-1',
+      timetolive              => '300000',
+    }
+
+in hiera
+
+    jms_queue_instances:
+       'jmsClusterModule:ErrorQueue':
+         ensure:                   'present'
+         distributed:              '1'
+         expirationpolicy:         'Discard'
+         jndiname:                 'jms/ErrorQueue'
+         redeliverydelay:          '-1'
+         redeliverylimit:          '-1'
+         subdeployment:            'jmsServers'
+         defaulttargeting:         '0'
+         timetodeliver:            '-1'
+         timetolive:               '-1'
+       'jmsClusterModule:Queue1':
+         ensure:                   'present'
+         distributed:              '1'
+         errordestination:         'ErrorQueue'
+         expirationpolicy:         'Redirect'
+         jndiname:                 'jms/Queue1'
+         redeliverydelay:          '2000'
+         redeliverylimit:          '3'
+         subdeployment:            'jmsServers'
+         defaulttargeting:         '0'
+         timetodeliver:            '-1'
+         timetolive:               '300000'
+       'jmsClusterModule:Queue2':
+         ensure:                   'present'
+         distributed:              '1'
+         expirationloggingpolicy:  '%header%%properties%'
+         expirationpolicy:         'Log'
+         jndiname:                 'jms/Queue2'
+         redeliverydelay:          '2000'
+         redeliverylimit:          '3'
+         subdeployment:            'jmsServers'
+         defaulttargeting:         '0'
+         timetodeliver:            '-1'
+         timetolive:               '300000'
+
+
+###wls_jms_topic
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_jms_topic
+
+    wls_jms_topic { 'jmsClusterModule:Topic1':
+      ensure           => 'present',
+      defaulttargeting => '0',
+      distributed      => '1',
+      expirationpolicy => 'Discard',
+      jndiname         => 'jms/Topic1',
+      redeliverydelay  => '2000',
+      redeliverylimit  => '2',
+      subdeployment    => 'jmsServers',
+      timetodeliver    => '-1',
+      timetolive       => '300000',
+    }
+
+in hiera
+
+    jms_topic_instances:
+       'jmsClusterModule:Topic1':
+         ensure:            'present'
+         defaulttargeting:  '0'
+         distributed:       '1'
+         expirationpolicy:  'Discard'
+         jndiname:          'jms/Topic1'
+         redeliverydelay:   '2000'
+         redeliverylimit:   '2'
+         subdeployment:     'jmsServers'
+         timetodeliver:     '-1'
+         timetolive:        '300000'
+
+
+
+###wls_jms_quota
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_jms_quota
+
+    wls_jms_quota { 'jmsClusterModule:QuotaBig':
+      ensure          => 'present',
+      bytesmaximum    => '9223372036854775807',
+      messagesmaximum => '9223372036854775807',
+      policy          => 'FIFO',
+      shared          => '1',
+    }
+    wls_jms_quota { 'jmsClusterModule:QuotaLow':
+      ensure          => 'present',
+      bytesmaximum    => '20000000000',
+      messagesmaximum => '9223372036854775807',
+      policy          => 'FIFO',
+      shared          => '0',
+    }
+    
+
+in hiera
+
+    jms_quota_instances:
+       'jmsClusterModule:QuotaBig':
+          ensure:           'present'
+          bytesmaximum:     '9223372036854775807'
+          messagesmaximum:  '9223372036854775807'
+          policy:           'FIFO'
+          shared:           '1'
+       'jmsClusterModule:QuotaLow':
+          ensure:           'present'
+          bytesmaximum:     '20000000000'
+          messagesmaximum:  '9223372036854775807'
+          policy:           'FIFO'
+          shared:           '0'
+
+
+###wls_jms_subdeployment
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_jms_subdeployment
+
+    wls_jms_subdeployment { 'jmsClusterModule:jmsServers':
+      ensure     => 'present',
+      target     => 'jmsServer1,jmsServer2',
+      targettype => 'JMSServer,JMSServer',
+    }
+    wls_jms_subdeployment { 'jmsClusterModule:wlsServers':
+      ensure     => 'present',
+      target     => 'WebCluster',
+      targettype => 'Cluster',
+    }
+
+in hiera
+
+    jms_subdeployment_instances:
+       'jmsClusterModule:jmsServers':
+          ensure:     'present'
+          target:     'jmsServer1,jmsServer2'
+          targettype: 'JMSServer,JMSServer'
+       'jmsClusterModule:wlsServers':
+          ensure:     'present'
+          target:     'WebCluster'
+          targettype: 'Cluster'
+    
+
+
+## WLST execution
 
 ###orawls::wlstexec
 execute any WLST script you want 
 
-here some WLST examples and the matching Hiera configuration
+- create Machines, Managed Servers, Clusters, Server templates, Dynamic Clusters, Coherence clusters ( all 12.1.2 )
+- create Persistence Store
+- create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
+- basically can run every WLST script with the flexible WLST define manifest
+- WLST bulk creation
 
-for bulk insert of WebLogic Objects see orawls::utils::wlstbulk
-
-
-full example
-
-    orawls::wlstexec{'createMachine_node1':
-      version                    => 1111, 
-      domain_name                => "Wls12c",
-      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
-      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
-      weblogic_user              => "weblogic",
-      weblogic_password          => "weblogic1",
-      adminserver_address        => 'localhost',
-      adminserver_port           => 7001,
-      os_user                    => "oracle",
-      os_group                   => "dba",
-      download_dir               => "/data/install",
-      log_output                 => true,
-      script                     => 'createMachine.py',
-      weblogic_type              => "machine",
-      weblogic_object_name       => "Node1",
-      params                     => ["machineName      = 'Node1'",
-                                     "machineDnsName   = 'node1.alfa.local'",
-                                    ],
-    }
-
-
-or when you want to work with hiera
-
-
-class file with create_resources utility 
-
-    node 'vagrantcentos64' {
-      
-      include machines,managed_servers,clusters
-      include jms_servers,file_persistences,jms_modules,jms_module_subdeployments
-      include jms_module_quotas,jms_module_cfs,jms_module_objects_errors,jms_module_objects
-    
-      Class['machines'] ->
-        Class['managed_servers'] ->
-          Class['clusters'] ->
-            Class['file_persistences'] ->
-              Class['jms_servers'] ->
-                Class['jms_modules'] ->
-                  Class['jms_module_subdeployments'] ->
-                    Class['jms_module_quotas'] ->
-                      Class['jms_module_cfs'] ->
-                        Class['jms_module_objects_errors'] ->
-                          Class['jms_module_objects']
-    }
-    
-
-    class machines{
-    
-      notify { 'class machines':} 
-      $default_params = {}
-      $machines_instances = hiera('machines_instances', [])
-      create_resources('orawls::wlstexec',$machines_instances, $default_params)
-    }
-    
-    class managed_servers{
-    
-      notify { 'class managed_servers':} 
-      $default_params = {}
-      $managed_servers_instances = hiera('managed_servers_instances', [])
-      create_resources('orawls::wlstexec',$managed_servers_instances, $default_params)
-    }
-    
-    class clusters{
-    
-      notify { 'class clusters':} 
-      $default_params = {}
-      $cluster_instances = hiera('cluster_instances', [])
-      create_resources('orawls::wlstexec',$cluster_instances, $default_params)
-    }
-    
-    class file_persistences {
-    
-      notify { 'class file_persistences':} 
-      $default_params = {}
-      $file_persistence_instances = hiera('file_persistence_instances', [])
-      create_resources('orawls::wlstexec',$file_persistence_instances, $default_params)
-    
-    }
-    
-    class jms_servers{
-    
-      notify { 'class jms_servers':} 
-      $default_params = {}
-      $jms_servers_instances = hiera('jms_servers_instances', [])
-      create_resources('orawls::wlstexec',$jms_servers_instances, $default_params)
-    
-    }
-    
-    class jms_modules{
-    
-      notify { 'class jms_modules':} 
-      $default_params = {}
-      $jms_module_instances = hiera('jms_module_instances', [])
-      create_resources('orawls::wlstexec',$jms_module_instances, $default_params)
-    
-    }
-    
-    class jms_module_subdeployments{
-    
-      notify { 'class jms_module_subdeployments':} 
-      $default_params = {}
-      $jms_module_subdeployments_instances = hiera('jms_module_subdeployments_instances', [])
-      create_resources('orawls::wlstexec',$jms_module_subdeployments_instances, $default_params)
-    
-    }
-    class jms_module_quotas{
-    
-      notify { 'class jms_module_quotas':} 
-      $default_params = {}
-      $jms_module_quotas_instances = hiera('jms_module_quotas_instances', [])
-      create_resources('orawls::wlstexec',$jms_module_quotas_instances, $default_params)
-    
-    }
-    
-    class jms_module_cfs{
-    
-      notify { 'class jms_module_cfs':} 
-      $default_params = {}
-      $jms_module_cf_instances = hiera('jms_module_cf_instances', [])  
-      create_resources('orawls::wlstexec',$jms_module_cf_instances, $default_params)
-    }
-    
-    class jms_module_objects_errors{
-    
-      notify { 'class jms_module_objects_errors':} 
-      $default_params = {}
-      $jms_module_jms_errors_instances = hiera('jms_module_jms_errors_instances', [])
-      create_resources('orawls::wlstexec',$jms_module_jms_errors_instances, $default_params)
-    }
-    
-    class jms_module_objects{
-    
-      notify { 'class jms_module_objects':} 
-      $default_params = {}
-      $jms_module_jms_instances = hiera('jms_module_jms_instances', [])
-      create_resources('orawls::wlstexec',$jms_module_jms_instances, $default_params)
-    }
-    
-
-Hiera configuration
-
-here we have some options, when you just have one domain you don't need to provide all the domain parameters 
-
-default parameters
-
-    logoutput:                     &logoutput                     true
-
-
-when you have just one WebLogic domain on a server
-
-    #when you have just one domain on a server
-    domain_name:                "Wls1036"
-    domain_adminserver:         "AdminServer"
-    domain_adminserver_address: "localhost"
-    domain_adminserver_port:    7001
-    domain_nodemanager_port:    5556
-    
-    # provide the password or the user config and key file
-    #domain_wls_password:        "weblogic1"
-    domain_user_config_file:    "/home/oracle/oracle-Wls1036-WebLogicConfig.properties"
-    domain_user_key_file:       "/home/oracle/oracle-Wls1036-WebLogicKey.properties"
-    
- 
-when you have more than one domain on a server and you need to provide these parameters to wlstexec define
-
-    # when you have more than one domain on a server
-    domain_1_wls_password:        &domain_1_wls_password         "weblogic1"
-    domain_1_name:                &domain_1_name                 "Wls1036"
-    domain_1_adminserver:         &domain_1_adminserver          "AdminServer"
-    domain_1_adminserver_address: &domain_1_adminserver_address  "localhost"
-    domain_1_adminserver_port:    &domain_1_adminserver_port     7001
-    domain_1_nodemanager_port:    &domain_1_nodemanager_port     5556
-    
-
-
-Create 2 machines
-
-
-    machines_instances:
-      'createMachine_node1':
-         domain_name:          *domain_1_name
-         adminserver_address:  *domain_1_adminserver_address
-         adminserver_port:     *domain_1_adminserver_port
-         weblogic_password:    *domain_1_wls_password
-         log_output:           *logoutput
-         weblogic_type:        "machine"
-         weblogic_object_name: "Node1"
-         script:               'createMachine.py'
-         params:
-            - "machineName      = 'Node1'"
-            - "machineDnsName   = 'node1.alfa.local'"
-      'createMachine_node2':
-         log_output:           *logoutput
-         weblogic_type:        "machine"
-         weblogic_object_name: "Node2"
-         script:               'createMachine.py'
-         params:
-            - "machineName      = 'Node2'"
-            - "machineDnsName   = 'node2.alfa.local'"
-
-    
-Create 2 managed servers and assign them to the machines
-
-
-    managed_servers_instances:
-      'wlsServer1_node1':
-         domain_name:          *domain_1_name
-         adminserver_address:  *domain_1_adminserver_address
-         adminserver_port:     *domain_1_adminserver_port
-         weblogic_password:    *domain_1_wls_password
-         log_output:           *logoutput
-         weblogic_type:        "server"
-         weblogic_object_name: "wlsServer1"
-         script:               'createServer.py'
-         params:
-            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
-            - "wlsServerName    = 'wlsServer1'"
-            - "machineName      = 'Node1'"
-            - "listenPort       = 9201"
-            - "nodeMgrLogDir    = '/data/logs'"
-      'wlsServer2_node2':
-         log_output:           *logoutput
-         weblogic_type:        "server"
-         weblogic_object_name: "wlsServer2"
-         script:               'createServer.py'
-         params:
-            - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
-            - "wlsServerName    = 'wlsServer2'"
-            - "machineName      = 'Node2'"
-            - "listenPort       = 9201"
-            - "nodeMgrLogDir    = '/data/logs'"
-    
-
-Create cluster and assign the managed servers
-
-
-    cluster_instances:
-      'cluster_web':
-         log_output:           *logoutput
-         weblogic_type:        "cluster"
-         weblogic_object_name: "WebCluster"
-         script:               'createCluster.py'
-         params:
-            - "clusterName      = 'WebCluster'"
-            - "clusterNodes     = 'wlsServer1,wlsServer2'"
-    
-
-Create File Persistence locations for the JMS  servers
-
-
-    file_persistence_instances:
-      'filePersistenceNode1':
-         log_output:           *logoutput
-         weblogic_type:        "filestore"
-         weblogic_object_name: "jmsFilePersistenceNode1"
-         script:               'createFilePersistenceStore.py'
-         params:
-            - "fileStoreName    = 'jmsFilePersistenceNode1'"
-            - "target           = 'wlsServer1'"
-            - "targetType       = 'Server'"
-      'filePersistenceNode2':
-         log_output:           *logoutput
-         weblogic_type:        "filestore"
-         weblogic_object_name: "jmsFilePersistenceNode2"
-         script:               'createFilePersistenceStore.py'
-         params:
-            - "fileStoreName    = 'jmsFilePersistenceNode2'"
-            - "target           = 'wlsServer2'"
-            - "targetType       = 'Server'"
-
-    
-Create JMS servers with a Server & File persistence reference
-
-
-    jms_servers_instances:
-      'jmsServerNode1':
-         log_output:           *logoutput
-         weblogic_type:        "jmsserver"
-         weblogic_object_name: "jmsServer1"
-         script:               'createJmsServer.py'
-         params:
-            - "storeName        = 'jmsFilePersistenceNode1'"
-            - "target           = 'wlsServer1'"
-            - "targetType       = 'Server'"
-            - "storeType        = 'file'"
-            - "jmsServerName    = 'jmsServer1'"
-      'jmsServerNode2':
-         log_output:           *logoutput
-         weblogic_type:        "jmsserver"
-         weblogic_object_name: "jmsServer2"
-         script:               'createJmsServer.py'
-         params:
-            - "storeName        = 'jmsFilePersistenceNode2'"
-            - "target           = 'wlsServer2'"
-            - "targetType       = 'Server'"
-            - "storeType        = 'file'"
-            - "jmsServerName    = 'jmsServer2'"
-    
-
-Create JMS module for a cluster 
-
-
-    jms_module_instances:
-      'jmsClusterModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsmodule"
-         weblogic_object_name: "jmsClusterModule"
-         script:               'createJmsModule.py'
-         params:
-            - "target           = 'WebCluster'"
-            - "targetType       = 'Cluster'"
-            - "jmsModuleName    = 'jmsClusterModule'"
-    
-
-Create JMS subdeployment for the jms module ( targets Clusters and all the JMS servers )
-
-
-    jms_module_subdeployments_instances:
-      'SubDeploymentWLSforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmssubdeployment"
-         weblogic_object_name: "jmsClusterModule/wlsServers"
-         script:               'createJmsSubDeployment.py'
-         params:
-            - "target           = 'WebCluster'"
-            - "targetType       = 'Cluster'"
-            - "subName          = 'wlsServers'"
-            - "jmsModuleName    = 'jmsClusterModule'"
-      'SubDeploymentJMSforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmssubdeployment"
-         weblogic_object_name: "jmsClusterModule/jmsServers"
-         script:               'createJmsSubDeployment.py'
-         params:
-            - "target           = 'jmsServer1,jmsServer2'"
-            - "targetType       = 'JMSServer'"
-            - "subName          = 'jmsServers'"
-            - "jmsModuleName    = 'jmsClusterModule'"
-    
-    
-Create JMS quotas for the jms module 
-
-
-    jms_module_quotas_instances:
-      'QuotaBigforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsquota"
-         weblogic_object_name: "jmsClusterModule/QuotaBig"
-         script:               'createJmsQuota.py'
-         params:
-            - "jmsQuotaName     = 'QuotaBig'"
-            - "bytesMaximum     = 9223372036854775807"
-            - "messagesMaximum  = 9223372036854775807"
-            - "jmsModuleName    = 'jmsClusterModule'"
-            - "shared           = false"
-            - "policy           = 'FIFO'"
-      'QuotaLowforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsquota"
-         weblogic_object_name: "jmsClusterModule/QuotaLow"
-         script:               'createJmsQuota.py'
-         params:
-            - "jmsQuotaName     = 'QuotaLow'"
-            - "bytesMaximum     = 10000000000"
-            - "messagesMaximum  = 10000"
-            - "jmsModuleName    = 'jmsClusterModule'"
-            - "shared           = false"
-            - "policy           = 'FIFO'"
-    
-
-Create JMS connection factory in a JMS module  
-
-
-    jms_module_cf_instances:
-      'createJmsConnectionFactoryforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsobject"
-         weblogic_object_name: "cf"
-         script:               'createJmsConnectionFactory.py'
-         params:
-            - "subDeploymentName = 'wlsServers'"
-            - "jmsModuleName     = 'jmsClusterModule'"
-            - "cfName            = 'cf'"
-            - "cfJNDIName        = 'jms/cf'"
-            - "transacted        = 'false'"
-            - "timeout           = 'xxxx'"
-
-
-create Error JMS object for JMS redirect of Queue and Topics
-
-    
-    jms_module_jms_errors_instances:
-      'createJmsErrorQueueforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsobject"
-         weblogic_object_name: "ErrorQueue"
-         script:               'createJmsQueueOrTopic.py'
-         params:
-            - "subDeploymentName = 'jmsServers'"
-            - "jmsModuleName     = 'jmsClusterModule'"
-            - "jmsName           = 'ErrorQueue'"
-            - "jmsJNDIName       = 'jms/ErrorQueue'"
-            - "jmsType           = 'queue'"
-            - "distributed       = 'true'"
-            - "balancingPolicy   = 'Round-Robin'"
-            - "useRedirect       = 'false'"
-            - "limit             = 'xxxxx'"
-            - "policy            = 'xxxxx'"
-            - "errorObject       = 'xxxxx'"
-    
-
-create JMS objects ( Queue and a Topic ) in a JMS module  
-
-    jms_module_jms_instances:
-      'createJmsQueueforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsobject"
-         weblogic_object_name: "Queue1"
-         script:               'createJmsQueueOrTopic.py'
-         params:
-            - "subDeploymentName = 'jmsServers'"
-            - "jmsModuleName     = 'jmsClusterModule'"
-            - "jmsName           = 'Queue1'"
-            - "jmsJNDIName       = 'jms/Queue1'"
-            - "jmsType           = 'queue'"
-            - "distributed       = 'true'"
-            - "balancingPolicy   = 'Round-Robin'"
-            - "useRedirect       = 'true'"
-            - "limit             = '3'"
-            - "policy            = 'Redirect'"
-            - "errorObject       = 'ErrorQueue'"
-      'createJmsTopicforJmsModule':
-         log_output:           *logoutput
-         weblogic_type:        "jmsobject"
-         weblogic_object_name: "Topic1"
-         script:               'createJmsQueueOrTopic.py'
-         params:
-            - "subDeploymentName = 'jmsServers'"
-            - "jmsModuleName     = 'jmsClusterModule'"
-            - "jmsName           = 'Topic1'"
-            - "jmsJNDIName       = 'jms/Topic1'"
-            - "jmsType           = 'topic'"
-            - "distributed       = 'true'"
-            - "balancingPolicy   = 'Round-Robin'"
-            - "useRedirect       = 'true'"
-            - "limit             = '3'"
-            - "policy            = 'Redirect'"
-            - "errorObject       = 'ErrorQueue'"
-    
+See the vagrant boxes for all the working examples
 
 ###orawls::utils::wlstbulk
 execute any WLST script you want( bulk mode )
 
+orawls::utils::wlstbulk is disabled by default so you can also use this in puppet Enterprise > 3.0  
 requirements
-- need puppet version > 3.2 ( make use of iteration and lambda expressions
+- needs puppet version >= 3.4 ( make use of iteration and lambda expressions )
 - need to set --parser future ( puppet agent )
-
-to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
+- to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
 
 use hiera_array, this will search for this entry in all hiera data files
 
-example how to call this wlstbulk define
-
-    $allHieraEntries = hiera_array('jms_module_jms_instances')
-    
-    orawls::utils::wlstbulk{ 'jms_module_jms_instances':
-      entries_array => $allHieraEntries,
-    }
-
-
-possible hiera examples ( use hiera_array )
-
-with global parameters and inside with params
-
-    jms_module_instances:
-      - clusterOne:
-         global_parameters:
-            log_output:           *logoutput
-            weblogic_type:        "jmsmodule"
-            script:               'createJmsModule.py'
-            params:
-               - "jmsModuleName    = 'jmsClusterModule'"
-         jmsClusterModule:
-            weblogic_object_name: "jmsClusterModule"
-            params:
-               - "target           = 'WebCluster'"
-               - "targetType       = 'Cluster'"
-
-with global parameters
-
-    managed_servers_instances:
-      - clusterOne:
-         global_parameters:
-            log_output:           *logoutput
-            weblogic_type:        "server"
-            script:               'createServer.py'
-         wlsServer1_node1:
-            weblogic_object_name: "wlsServer1"
-            params:
-               - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'"
-               - "wlsServerName    = 'wlsServer1'"
-               - "machineName      = 'Node1'"
-               - "listenAddress    = 8001"
-               - "nodeMgrLogDir    = '/data/logs'"
-         wlsServer2_node2:
-            weblogic_object_name: "wlsServer2"
-            params:
-               - "javaArguments    = '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer2.out -Dweblogic.Stderr=/data/logs/wlsServer2_err.out'"
-               - "wlsServerName    = 'wlsServer2'"
-               - "machineName      = 'Node2'"
-               - "listenAddress    = 8001"
-               - "nodeMgrLogDir    = '/data/logs'"
-
-no global parameters
-
-    cluster_instances:
-      - clusterOne:
-         cluster_web:
-            weblogic_object_name: "WebCluster"
-            log_output:           *logoutput
-            weblogic_type:        "cluster"
-            script:               'createCluster.py'
-            params:
-               - "clusterName      = 'WebCluster'"
-               - "clusterNodes     = 'wlsServer1,wlsServer2'"
-
-with empty global parameters
-
-    jms_servers_instances:
-      - clusterOne:
-         global_parameters:
-         jmsServerNode1:
-            log_output:           *logoutput
-            weblogic_type:        "jmsserver"
-            script:               'createJmsServer.py'
-            weblogic_object_name: "jmsServer1"
-            params:
-               - "target           = 'wlsServer1'"
-               - "jmsServerName    = 'jmsServer1'"
-               - "targetType       = 'Server'"
-         jmsServerNode2:
-            log_output:           *logoutput
-            weblogic_type:        "jmsserver"
-            script:               'createJmsServer.py'
-            weblogic_object_name: "jmsServer2"
-            params:
-               - "target           = 'wlsServer2'"
-               - "jmsServerName    = 'jmsServer2'"
-               - "targetType       = 'Server'"
-
-or inside puppet
-
-    $entries_array = 
-     [{  'ClusterOne' => {
-             'global_parameters' => 
-                {
-                 log_output     => true,
-                 weblogic_type  => "jmsobject",
-                 script         => 'createJmsQueueOrTopic.py',
-                 params         => 
-                   [  "subDeploymentName = 'jmsServers'",
-                      "jmsModuleName     = 'jmsClusterModule'",
-                      "distributed       = 'true'",
-                      "balancingPolicy   = 'Round-Robin'",
-                      "useRedirect       = 'true'",
-                      "limit             = '3'",
-                      "policy            = 'Redirect'",
-                      "errorObject       = 'ErrorQueue'",
-                   ],
-               } ,
-             'createJmsQueueforJmsModule1' => 
-                {
-                  weblogic_object_name  => "Queue1",
-                  params                => 
-                    [ "jmsType           = 'queue'",
-                      "jmsName           = 'Queue1'",
-                      "jmsJNDIName       = 'jms/Queue1'",
-                    ],
-                } ,
-              'createJmsQueueforJmsModule2' => 
-                {
-                  weblogic_object_name  => "Queue2",
-                  params                => 
-                    [ "jmsType           = 'queue'",
-                      "jmsName           = 'Queue2'",
-                      "jmsJNDIName       = 'jms/Queue2'",
-                    ],
-               },
-         },
-     },
-    ]
+See the vagrant boxes for all the working examples
 
 

@@ -2,7 +2,7 @@ newproperty(:listenaddress) do
   include EasyType
 
   desc "The listenaddress of the server"
-  defaultto 'localhost'
+  defaultto ''
 
 
   to_translate_to_resource do | raw_resource|

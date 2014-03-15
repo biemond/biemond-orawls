@@ -1,0 +1,99 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name                     = '<%= name %>'
+jmsmodule                = '<%= jmsmodule %>'
+distributed              = '<%= distributed %>'
+jndiname                 = '<%= jndiname %>'
+subdeployment            = '<%= subdeployment %>'
+balancingpolicy          = '<%= balancingpolicy %>'
+quota                    = '<%= quota %>'
+defaulttargeting         = '<%= defaulttargeting %>'
+redeliverylimit          = '<%= redeliverylimit %>'
+expirationpolicy         = '<%= expirationpolicy %>'
+errordestination         = '<%= errordestination %>'
+expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
+timetolive               = '<%= timetolive %>'
+timetodeliver            = '<%= timetodeliver %>'
+redeliverydelay          = '<%= redeliverydelay %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+     
+    if distributed == "1":
+        cmo.createUniformDistributedQueue(name)
+        jmsWlsType = '/UniformDistributedQueues/'
+    else:
+        cmo.createQueue(name)
+        jmsWlsType = '/Queues/'
+     
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
+    set('JNDIName',jndiname) 
+
+    if subdeployment:
+      set('SubDeploymentName',subdeployment)
+
+    print "distributed: ",distributed
+    if distributed == "true":
+      print "distributed"
+      cmo.setLoadBalancingPolicy(balancingpolicy)
+
+    if expirationpolicy :
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
+      cmo.setExpirationPolicy(expirationpolicy)
+
+    if redeliverylimit:
+      print "limit"
+      cmo.setRedeliveryLimit( int(redeliverylimit) )  
+
+    if errordestination:
+      if distributed == "1":
+        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/UniformDistributedQueues/'+errordestination))
+      else:
+        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Queues/'+errordestination))
+
+    if expirationloggingpolicy:
+      cmo.setExpirationLoggingPolicy(expirationloggingpolicy)
+
+    if timetolive:
+      print "time To Live"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+      #TimeToLive is an int MBean attribute
+      cmo.setTimeToLive( int(timetolive))   
+
+    if timetodeliver:
+      print "time To Deliver"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+      #TimeToDeliver is a string MBean attribute
+      cmo.setTimeToDeliver(timetodeliver)                             
+
+    if redeliverydelay: 
+      print "RedeliveryDelay"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+      cmo.setRedeliveryDelay( int(redeliverydelay))
+
+    if quota:
+      print "jms Quota"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
+      cmo.setQuota(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Quotas/'+quota ))
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

@@ -28,6 +28,7 @@ module Puppet
   private
 
     def self.resources_from_yaml
+      Puppet.info "0 read_from_yaml "
       @configuration = read_from_yaml
       normalize(@configuration)
     end

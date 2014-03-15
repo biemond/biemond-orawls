@@ -1,3 +1,6 @@
+require 'pathname'
+$:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
+$:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
@@ -16,6 +19,7 @@ module Puppet
     set_command(:wlst)
   
     to_get_raw_resources do
+      Puppet.info "index #{name} "
       wlst template('puppet:///modules/orawls/providers/wls_server/index.py.erb', binding)
     end
 
@@ -47,20 +51,20 @@ module Puppet
 
   private 
 
-    def listenaddress
-      self[:listenaddress]
-    end
-
-    def listenport
-      self[:listenport]
-    end
-
     def ssllistenport
       self[:ssllistenport]
     end
 
     def sslenabled
       self[:sslenabled]
+    end
+
+    def listenaddress
+      self[:listenaddress]
+    end
+
+    def listenport
+      self[:listenport]
     end
 
     def machine

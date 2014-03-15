@@ -1,0 +1,39 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name               = '<%= name %>'
+jmsmodule          = '<%= jmsmodule %>'
+target             = '<%= target %>'
+targettype         = '<%= targettype %>'
+
+edit()
+startEdit()
+
+try:
+
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
+
+    cd('/')
+    cd('/SystemResources/'+jmsmodule+'/SubDeployments/'+name)
+
+    targetList = []
+    for i in range(len(targets)):
+       targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
+       set('Targets',jarray.array(targetList, ObjectName))
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

@@ -1,0 +1,30 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name           = '<%= name %>'
+directory      = '<%= directory %>'
+target         = '<%= target %>'
+targettype     = '<%= targettype %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cd('/FileStores/'+name)
+    cmo.setDirectory(directory)
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+
+    save()
+    activate()          
+
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()

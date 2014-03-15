@@ -1,0 +1,50 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name               = '<%= name %>'
+jmsmodule          = '<%= jmsmodule %>'
+jndiname           = '<%= jndiname %>'
+subdeployment      = '<%= subdeployment %>'
+defaulttargeting   = '<%= defaulttargeting %>'
+xaenabled          = '<%= xaenabled %>'
+transactiontimeout = '<%= transactiontimeout %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name)
+    cmo.setJNDIName(jndiname)
+
+    if subdeployment:
+      cmo.setDefaultTargetingEnabled(false)
+      cmo.setSubDeploymentName(subdeployment)
+    else:
+      cmo.setDefaultTargetingEnabled(true)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/TransactionParams/'+name)
+    if xaenabled == '1':
+      cmo.setXAConnectionFactoryEnabled(true)
+    else:
+      cmo.setXAConnectionFactoryEnabled(false)   
+
+    if transactiontimeout:
+      cmo.setTransactionTimeout( int(transactiontimeout) )
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

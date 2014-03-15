@@ -1,6 +1,5 @@
 newproperty(:sslenabled) do
   include EasyType
-  include EasyType::Validators::Name
 
   desc "The ssl enabled on the server"
   newvalues(1, 0)

@@ -23,9 +23,7 @@ module Utils
     def wlst( content, parameters = {})
            
       script = "wlstScript"
-
       Puppet.info "Executing: #{script}"
-
             
       tmpFile = Tempfile.new([ script, '.py' ])
       tmpFile.write(content)
@@ -40,6 +38,10 @@ module Utils
 
       def config_file
         Pathname.new(DEFAULT_FILE).expand_path
+      end
+
+      def environment
+        'default'  || 'default'
       end
 
       def operatingSystemUser

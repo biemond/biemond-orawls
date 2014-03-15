@@ -1,0 +1,92 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name                       = '<%= name %>'
+target                     = '<%= target %>'
+targettype                 = '<%= targettype %>'
+drivername                 = '<%= drivername %>'
+jndinames                  = '<%= jndinames %>'
+url                        = '<%= url %>'
+usexa                      = '<%= usexa %>'
+user                       = '<%= user %>'
+testtablename              = '<%= testtablename %>'
+globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
+extraproperties            = '<%= extraproperties %>'
+extrapropertiesvalues      = '<%= extrapropertiesvalues %>'
+maxcapacity                = '<%= maxcapacity %>'
+initialcapacity            = '<%= initialcapacity %>'
+
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name)
+    cmo.setName(name)
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
+    set('JNDINames', jarray.array([String(jndinames)], String))
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
+    cmo.setUrl(url)
+    cmo.setDriverName( drivername )
+    if usexa == '1':
+      cmo.setUseXaDataSourceInterface(true)
+    else:
+      cmo.setUseXaDataSourceInterface(false)  
+    #cmo.setPassword(dsPassword)
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
+    set('MaxCapacity', int(maxcapacity))
+    set('InitialCapacity', int(initialcapacity))
+
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
+    cmo.setTestTableName(testtablename)
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
+    cmo.createProperty('user')
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/user')
+    cmo.setValue(user)
+
+    if extraproperties:
+      if extrapropertiesvalues:
+          properties=String(extraproperties).split(",")
+          values=String(extrapropertiesvalues).split(",")
+
+          i = 0
+          for property in properties:
+              cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
+              cmo.createProperty(property)
+              cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/'+property)
+              cmo.setValue(values[i])
+              i = i + 1
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
+    cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)
+
+    cd('/SystemResources/' + name )
+
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
+    targetList = []
+    for i in range(len(targets)):
+       targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
+       set('Targets',jarray.array(targetList, ObjectName))
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()

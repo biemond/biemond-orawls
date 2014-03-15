@@ -16,7 +16,7 @@ private
 
 	def merge_configuration
 		# Always write defaults because we cannot support more then one setting
-		resource.class.configuration.merge!({ 'default' => settings_for_resource})
+		resource.class.configuration.merge!({ "#{name}"  => settings_for_resource})
 	end
 
 	def settings_for_resource

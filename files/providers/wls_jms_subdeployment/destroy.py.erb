@@ -1,0 +1,28 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>','<%= weblogicConnectUrl %>')
+
+name               = '<%= name %>'
+jmsmodule          = '<%= jmsmodule %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/SystemResources/'+jmsmodule)
+    cmo.destroySubDeployment(getMBean('/SystemResources/'+jmsmodule+'/SubDeployments/'+name))
+
+    save()
+    activate()
+
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()

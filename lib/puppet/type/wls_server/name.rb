@@ -1,8 +1,7 @@
 newparam(:name) do
   include EasyType
-  include EasyType::Validators::Name
 
-  desc "The machine name"
+  desc "The server name"
 
   isnamevar
 

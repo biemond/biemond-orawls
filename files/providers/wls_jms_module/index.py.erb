@@ -6,7 +6,7 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/SystemResources')
+m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;target;targettype"
@@ -14,20 +14,19 @@ for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
         print '___'+token+'___'
-        cd('/SystemResources/'+token)
+        cd('/JMSSystemResources/'+token)
 
-        n = ls('/SystemResources/'+token+'/Targets')
-        target     = ''
-        targetType = ''
-
+        n = ls('/JMSSystemResources/'+token+'/Targets')
+        target     = []
+        targetType = []
         for token2 in n.split("dr--"):
-             token2=token2.strip().lstrip().rstrip()
-             if not token2 == '':
-                target     = token2
-                cd('/SystemResources/'+token+'/Targets/'+token2)
-                targetType = get('Type')
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+               target.append(token2)
+               cd('/JMSSystemResources/'+token+'/Targets/'+token2)
+               targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [token,target,targetType]))
+        print >>f, ";".join(map(quote, [token,','.join(target),','.join(targetType)]))
 
 disconnect()
 exit()

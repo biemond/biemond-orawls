@@ -42,7 +42,13 @@ module Puppet
           /^(.*):(.*)$/,
           [
             [ :jmsmodule, identity ],
-            [ :name     , identity ]
+            [ :name, identity ]
+          ]
+        ],
+        [
+          /^([^=]+)$/,
+          [
+            [ :name, identity ]
           ]
         ]
       ]
@@ -54,10 +60,6 @@ module Puppet
     property  :targettype
 
   private 
-
-    def name
-       self[:name]
-    end
 
     def jmsmodule
        self[:jmsmodule]

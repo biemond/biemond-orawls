@@ -68,7 +68,7 @@ try:
     cd('/')
     DOMAIN_PATH = get('RootDirectory')
 
-#    createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',wlsUser,password)
+    createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties','<%= weblogicUser %>','<%= weblogicPassword %>')
     # still required cause of easy_type module
     f = open("/tmp/wlstScript.out", "w")
     f.close()

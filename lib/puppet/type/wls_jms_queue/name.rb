@@ -7,7 +7,7 @@ newparam(:name) do
   isnamevar
 
   to_translate_to_resource do | raw_resource|
-    raw_resource['name']
+    raw_resource['name'].split(':')[1]
   end
 
 end

@@ -1,0 +1,79 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+def topic(token,token2,location,distributed):
+    cd(location)
+    jndiname      = get('JNDIName') 
+    subdeployment = get('SubDeploymentName')
+
+    if distributed == 1:
+      balancingPolicy  = get('LoadBalancingPolicy')
+    else:
+      balancingPolicy  = ''  
+
+    quotaMbean       = get('Quota')
+    if quotaMbean:
+       path = getPath(quotaMbean)
+       cd("/"+path) 
+       quota  = get('Name')
+       cd(location)
+    else:
+       quota = ''
+
+    defaultTargeting = str(get('DefaultTargetingEnabled'))  
+
+    cd(location+'/DeliveryFailureParams/'+token2)
+    redeliveryLimit         = get('RedeliveryLimit')
+    expirationPolicy        = get('ExpirationPolicy')  
+    expirationLoggingPolicy = get('ExpirationLoggingPolicy')
+
+    errorDestinationMBean   = get('ErrorDestination')
+    if errorDestinationMBean:
+       path = getPath(errorDestinationMBean)
+       cd("/"+path) 
+       errorDestination  = get('Name')
+    else:
+       errorDestination = ''
+
+    cd(location+'/DeliveryParamsOverrides/'+token2)
+    timeToLive      = get('TimeToLive')   
+    timeToDeliver   = get('TimeToDeliver')                             
+    redeliveryDelay = get('RedeliveryDelay')
+
+    print >>f, ";".join(map(quote, [token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay]))
+
+
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay"
+
+m = ls('/JMSSystemResources')
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('UniformDistributedTopics')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                topic(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/UniformDistributedTopics/'+token2,'1')
+
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+        n = ls('Topics')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                topic(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Topics/'+token2,'0')
+
+        
+f.close()
+
+disconnect()
+exit()

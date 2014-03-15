@@ -1,0 +1,32 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>','<%= weblogicConnectUrl %>')
+
+name         = '<%= name %>'
+jmsmodule    = '<%= jmsmodule %>'
+distributed  = '<%= distributed %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if distributed == '1':
+      cmo.destroyUniformDistributedQueue(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/UniformDistributedQueues/'+name))
+    else:
+      cmo.destroyQueue(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Queues/'+name))
+
+    save()
+    activate()
+
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()

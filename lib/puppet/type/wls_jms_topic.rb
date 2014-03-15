@@ -35,14 +35,99 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_jms_topic/destroy.py.erb', binding)
     end
 
+    def self.title_patterns
+      identity = lambda {|x| x}
+      [
+        [
+          /^(.*):(.*)$/,
+          [
+            [ :jmsmodule, identity ],
+            [ :name, identity ]
+          ]
+        ],
+        [
+          /^([^=]+)$/,
+          [
+            [ :name, identity ]
+          ]
+        ]
+      ]
+    end
+
     parameter :name
-    property  :jmsmodule
+    parameter :jmsmodule
+    property  :distributed
+    property  :jndiname
+    property  :subdeployment
+    property  :balancingpolicy
+    property  :quota
+    property  :defaulttargeting
+    property  :errordestination
+    property  :expirationloggingpolicy
+    property  :redeliverylimit
+    property  :expirationpolicy
+    property  :redeliverydelay
+    property  :timetodeliver
+    property  :timetolive
 
   private 
 
     def jmsmodule
-      self[:jmsmodule]
+       self[:jmsmodule]
     end
+
+    def distributed
+       self[:distributed]
+    end
+
+    def jndiname
+       self[:jndiname]
+    end
+
+    def subdeployment
+       self[:subdeployment]
+    end
+
+    def defaulttargeting
+       self[:defaulttargeting]
+    end
+
+    def balancingpolicy
+       self[:balancingpolicy]
+    end
+
+    def quota
+       self[:quota]
+    end
+
+    def errordestination
+       self[:errordestination]
+    end
+
+    def expirationloggingpolicy
+       self[:expirationloggingpolicy]
+    end
+
+    def redeliverylimit
+       self[:redeliverylimit]
+    end
+
+    def expirationpolicy
+       self[:expirationpolicy]
+    end
+
+    def redeliverydelay
+       self[:redeliverydelay]
+    end
+
+    def timetodeliver
+       self[:timetodeliver]
+    end
+
+    def timetolive
+       self[:timetolive]
+    end
+
 
   end
 end

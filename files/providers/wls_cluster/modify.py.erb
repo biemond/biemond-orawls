@@ -10,7 +10,10 @@ startEdit()
 
 try:
 
-    cd('/')
+    cmo = cd('/')
+    cl  = cmo.lookupCluster(name)
+    editService.getConfigurationManager().removeReferencesToBean(cl)
+
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
     cmo.setMigrationBasis(migrationbasis)

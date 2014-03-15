@@ -1,0 +1,31 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name          = '<%= name %>'
+target        = '<%= target %>'
+targetType    = '<%= targettype %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/SystemResources/'+name)
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targetType)], ObjectName))
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

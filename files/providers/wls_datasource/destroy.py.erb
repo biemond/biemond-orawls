@@ -1,0 +1,28 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name    = '<%= name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cmo.destroyJDBCSystemResource(getMBean('/SystemResources/'+name))
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

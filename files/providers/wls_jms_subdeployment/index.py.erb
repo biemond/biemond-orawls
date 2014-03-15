@@ -6,35 +6,32 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/SystemResources')
+m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype"
+print >>f, "name;jmsmodule;target;targettype"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
         print '_jmsmodule_'+token+'___'
-        cd('/SystemResources/'+token)
+        cd('/JMSSystemResources/'+token)
 
         n = ls('SubDeployments')
         for token2 in n.split("dr--"):
             token2=token2.strip().lstrip().rstrip()
             if not token2 == '':
-                cd('/SystemResources/'+token+'/SubDeployments/'+token2)
 
-                m = ls('Targets')
-                target     = ''
-                targetType = ''
-
+                m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets')
+                target     = []
+                targetType = []
                 for token3 in m.split("dr--"):
-                     token3=token3.strip().lstrip().rstrip()
-                     if not token3 == '':
-                        target     = token3
-                        cd('/Targets/'+token3)
-                        targetType = get('Type')
+                    token3=token3.strip().lstrip().rstrip()
+                    if not token3 == '':
+                       target.append(token3)
+                       cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
+                       targetType.append(get('Type'))
 
-
-                print >>f, ";".join(map(quote, [token+":"+token2,target,targetType]))
+                print >>f, ";".join(map(quote, [token+":"+token2,token,','.join(target),','.join(targetType)]))
         
 f.close()
 

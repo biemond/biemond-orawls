@@ -15,7 +15,7 @@ module Settings
   end
 
   def settings
-    configuration['default']
+    configuration[ environment ]
   end
 
   def read_from_yaml

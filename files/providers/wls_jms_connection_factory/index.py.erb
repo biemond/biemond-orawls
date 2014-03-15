@@ -1,0 +1,33 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+m = ls('/JMSSystemResources')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;jmsmodule;jndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+               cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2)
+               jndiname           = get('JNDIName') 
+               subdeployment      = get('SubDeploymentName')
+               defaultTargeting   = str(get('DefaultTargetingEnabled')) 
+               cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/TransactionParams/'+token2)
+               xaEnabled          = str(get('XAConnectionFactoryEnabled'))
+               transactionTimeout = get('TransactionTimeout')
+               
+               print >>f, ";".join(map(quote, [token+":"+token2,token,jndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout]))
+        
+f.close()
+
+disconnect()
+exit()

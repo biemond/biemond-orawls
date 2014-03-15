@@ -70,10 +70,12 @@ try:
 
     targets     = String(target).split(",")
     targettypes = String(targettype).split(",")
-    targetList = []
+    targetList  = []
     for i in range(len(targets)):
-       targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-       set('Targets',jarray.array(targetList, ObjectName))
+      print "target "+targets[i] + " " + targettypes[i]
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
+    
+    set('Targets',jarray.array(targetList, ObjectName))
 
     save()
     activate()          

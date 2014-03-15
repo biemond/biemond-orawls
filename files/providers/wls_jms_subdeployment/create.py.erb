@@ -10,18 +10,19 @@ startEdit()
 
 try:
 
-    targets     = String(target).split(",")
-    targettypes = String(targettype).split(",")
 
     cd('/')
     cd('/SystemResources/'+jmsmodule)
     cmo.createSubDeployment(name)
     cd('/SystemResources/'+jmsmodule+'/SubDeployments/'+name)
 
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
     targetList = []
     for i in range(len(targets)):
        targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-       set('Targets',jarray.array(targetList, ObjectName))
+    
+    set('Targets',jarray.array(targetList, ObjectName))
 
     save()
     activate()          

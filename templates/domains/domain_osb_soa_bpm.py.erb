@@ -1,7 +1,9 @@
 WLHOME='<%= @weblogic_home_dir %>'
-DOMAIN_PATH='<%= @domain_dir %>/<%= @domain_name %>'
+DOMAIN_PATH='<%= @domain_dir %>'
 DOMAIN='<%= @domain_name %>'
-APP_PATH='<%= @app_dir %>/<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
 
 DEVELOPMENT_MODE=<%= @development_mode %>
 
@@ -93,7 +95,9 @@ cd('/Servers/'+ADMIN_SERVER)
 set('ListenAddress','<%= @adminserver_address %>')
 set('ListenPort',<%= @adminserver_port %>)
 
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 
 create(ADMIN_SERVER,'ServerStart')
 cd('ServerStart/'+ADMIN_SERVER)
@@ -157,7 +161,9 @@ set('NodeManagerPasswordEncrypted',es )
 
 cd('/')
 
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 
 print 'Adding SOA Template'
 addTemplate('<%= @templateApplCore %>')
@@ -235,7 +241,9 @@ closeDomain();
 readDomain(DOMAIN_PATH)
 
 print 'Change soa_server1'
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 cd('/Servers/soa_server1')
 set('Machine','LocalMachine')
 set('ListenAddress','<%= @adminserver_address %>')
@@ -301,7 +309,9 @@ if BAM_ENABLED == true:
   createBootPropertiesFile(DOMAIN_PATH+'/servers/bam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 readDomain(DOMAIN_PATH)
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 print('Extend...osb domain with template <%= @templateOSB %>')
 
 addTemplate('<%= @templateOSB %>')
@@ -313,7 +323,9 @@ closeDomain();
 readDomain(DOMAIN_PATH)
 
 
+<% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
+<% end %>
 
 
 print('change the default machine LocalMachine with type Machine')

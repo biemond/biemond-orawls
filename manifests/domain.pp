@@ -37,7 +37,7 @@ define orawls::domain (
   }
 
   # check if the domain already exists
-  $found = domain_exists("${domain_dir}/${domain_name}", $version, $domain_dir)
+  $found = domain_exists("${domain_dir}/${domain_name}")
 
   if $found == undef {
     $continue = true

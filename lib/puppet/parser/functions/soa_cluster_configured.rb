@@ -6,7 +6,7 @@ module Puppet::Parser::Functions
     if args[0].nil?
       return soa_exists
     else
-      wlsDomain = args[0].strip.downcase
+      fullDomainPath = args[0].strip.downcase
     end
 
     if args[1].nil?
@@ -15,71 +15,38 @@ module Puppet::Parser::Functions
       target = args[1].strip.downcase
     end
 
-    if args[2].nil?
-      return soa_exists
-    else
-      wlsversion = args[2]
-    end
-
-    if wlsversion == 1212
-      versionStr = "_1212"
-    else
-      versionStr = ""
-    end
-
-    prefix = "ora_mdw"+versionStr
+    prefix = "ora_mdw_domain"
 
     # check the middleware home
-    mdw_count = lookupWlsVar(prefix+'_cnt')
-    if mdw_count  == "empty"
-      return soa_exists
+    domain_count = lookupWlsVar(prefix+'_cnt')
+    if domain_count == "empty"
+      return art_exists
     else
-      # check the all mdw home
-      i = 0
-      while ( i < mdw_count.to_i)
+      n = 0
+      while ( n < domain_count.to_i )
 
-        if wlsVarExists(prefix+'_'+i.to_s)
-          
-          mdw = lookupWlsVar(prefix+'_'+i.to_s)
-          mdw = mdw.strip.downcase
-
-          # how many domains are there in this mdw home
-          domain_count = lookupWlsVar(prefix+'_'+i.to_s+'_domain_cnt')
-          n = 0
-          while ( n < domain_count.to_i )
-
-            # lookup up domain
-            if wlsVarExists(prefix+'_'+i.to_s+'_domain_'+n.to_s)
-              domain = lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s)
-              domain = domain.strip.downcase
-
-              # do we found the right domain
-              if domain == wlsDomain
-                soa =  lookupWlsVar(prefix+'_'+i.to_s+'_domain_'+n.to_s+'_soa')
-                unless soa == "empty"
-                  soa = soa.strip.downcase   
-                  if soa.include? target
-                    return true
-                  end
-                end
-
-              end  # domain_path equal
-            end # domain not nil
-            n += 1
-
-          end  # while domain
-
+        # lookup up domain
+        domain = lookupWlsVar(prefix+'_'+n.to_s)
+        unless domain == "empty"
+          domain = domain.strip.downcase
+          # do we found the right domain
+          if domain == fullDomainPath
+            soa =  lookupWlsVar(prefix+'_'+n.to_s+'_soa')
+            unless soa == "empty"
+              soa = soa.strip.downcase   
+              if soa.include? target
+                return true
+              end
+            end
+          end
         end
-        i += 1
-      end # while mdw
-
-    end # mdw count
+        n += 1
+      end
+    end
 
     return soa_exists
   end
 end
-
-
 
 def lookupWlsVar(name)
   #puts "lookup fact "+name

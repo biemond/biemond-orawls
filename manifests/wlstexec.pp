@@ -9,6 +9,7 @@ define orawls::wlstexec (
   $weblogic_object_name       = undef,
   $script                     = undef,
   $params                     = undef,
+  $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
@@ -24,12 +25,21 @@ define orawls::wlstexec (
 )
 {
 
+  if $::override_weblogic_domain_folder == undef {
+    $domain_dir = "${middleware_home_dir}/user_projects/domains"
+    $app_dir    = "${middleware_home_dir}/user_projects/applications"
+  } else {
+    $domain_dir = "${::override_weblogic_domain_folder}/domains"
+    $app_dir    = "${::override_weblogic_domain_folder}/applications"
+  }
+
+
   # if these params are empty always continue
   if $domain_name == undef or $weblogic_type == undef or $weblogic_object_name == undef {
     $continue = true
   } else {
     # check if the object already exists on the weblogic domain
-    $found = artifact_exists($domain_name, $weblogic_type, $weblogic_object_name, $version)
+    $found = artifact_exists("${domain_dir}/${domain_name}", $weblogic_type, $weblogic_object_name)
 
     if $found == undef {
       $continue = true

@@ -734,13 +734,6 @@ def get_domain(domain_path,n)
 
 
   end 
-
-  Facter.add("#{prefix}_domain_cnt") do
-    setcode do
-      l
-    end
-  end
- 
 end
 
 

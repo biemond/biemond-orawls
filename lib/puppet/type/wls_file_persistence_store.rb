@@ -19,17 +19,17 @@ module Puppet
       wlst template('puppet:///modules/orawls/providers/wls_file_persistence_store/index.py.erb', binding)
     end
 
-    on_create do
+    on_create  do | command_builder |
       Puppet.info "create #{name} "
       template('puppet:///modules/orawls/providers/wls_file_persistence_store/create.py.erb', binding)
     end
 
-    on_modify do
+    on_modify  do | command_builder |
       Puppet.info "modify #{name} "
       template('puppet:///modules/orawls/providers/wls_file_persistence_store/modify.py.erb', binding)
     end
 
-    on_destroy do
+    on_destroy  do | command_builder |
       Puppet.info "destroy #{name} "
       template('puppet:///modules/orawls/providers/wls_file_persistence_store/destroy.py.erb', binding)
     end

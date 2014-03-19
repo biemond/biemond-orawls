@@ -20,17 +20,17 @@ module Puppet
       wlst template('puppet:///modules/orawls/providers/wls_jms_connection_factory/index.py.erb', binding)
     end
 
-    on_create do
+    on_create  do | command_builder |
       Puppet.info "create #{name} "
       template('puppet:///modules/orawls/providers/wls_jms_connection_factory/create.py.erb', binding)
     end
 
-    on_modify do
+    on_modify  do | command_builder |
       Puppet.info "modify #{name} "
       template('puppet:///modules/orawls/providers/wls_jms_connection_factory/modify.py.erb', binding)
     end
 
-    on_destroy do
+    on_destroy  do | command_builder |
       Puppet.info "destroy #{name} "
       template('puppet:///modules/orawls/providers/wls_jms_connection_factory/destroy.py.erb', binding)
     end

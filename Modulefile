@@ -1,5 +1,5 @@
 name    'biemond-orawls'
-version '0.9.0'
+version '0.9.1'
 source 'https://github.com/biemond/biemond-orawls'
 author 'Edwin Biemond'
 license 'Apache 2.0'
@@ -13,4 +13,4 @@ based on the wls module and follow the naming standards and compliant modules of
 project_page ''
 
 ## Add dependencies, if any:
-dependency 'hajee/easy_type', '0.6.3'
+dependency 'hajee/easy_type', '>=0.6.3'

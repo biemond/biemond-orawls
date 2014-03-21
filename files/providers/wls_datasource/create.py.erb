@@ -1,6 +1,7 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
 name                       = '<%= name %>'
+password                   = '<%= password %>'
 target                     = '<%= target %>'
 targettype                 = '<%= targettype %>'
 drivername                 = '<%= drivername %>'
@@ -36,7 +37,7 @@ try:
       cmo.setUseXaDataSourceInterface(true)
     else:
       cmo.setUseXaDataSourceInterface(false)  
-    #cmo.setPassword(dsPassword)
+    cmo.setPassword(password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity', int(maxcapacity))

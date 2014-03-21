@@ -36,6 +36,7 @@ module Puppet
     end
 
     parameter :name
+    parameter :password
     property  :target
     property  :targettype
     property  :jndinames
@@ -54,6 +55,10 @@ module Puppet
 
     def target
       self[:target]
+    end
+
+    def password
+      self[:password]
     end
 
     def targettype

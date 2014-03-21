@@ -71,12 +71,12 @@ define orawls::wlstexec (
 
     # download the WLST script used by the WLST
     file { "${download_dir}/${title}${script}":
+      ensure  => present,
       path    => "${download_dir}/${title}${script}",
       content => template("orawls/wlst/wlstexec/${script}.erb"),
-      ensure  => present,
       backup  => false,
       replace => true,
-      mode    => 0555,
+      mode    => '0555',
       owner   => $os_user,
       group   => $os_group,
     }

@@ -65,12 +65,12 @@ define orawls::control (
 
   # the py script used by the wlst
   file { "${download_dir}/${title}${script}":
+    ensure  => present,
     path    => "${download_dir}/${title}${script}",
     content => template("orawls/wlst/${script}.erb"),
-    ensure  => present,
     backup  => false,
     replace => true,
-    mode    => 0775,
+    mode    => '0775',
     owner   => $os_user,
     group   => $os_group,
   }

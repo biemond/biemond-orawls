@@ -188,7 +188,7 @@ define orawls::domain (
           recurse => false,
           replace => false,
           require => Exec["create ${log_dir} directory"],
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -197,12 +197,12 @@ define orawls::domain (
 
     # the domain.py used by the wlst
     file { "domain.py ${domain_name} ${title}":
+      ensure  => present,
       path    => "${download_dir}/domain_${domain_name}.py",
       content => template($templateFile),
-      ensure  => present,
       replace => true,
       backup  => false,
-      mode    => 0775,
+      mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
     }
@@ -212,11 +212,11 @@ define orawls::domain (
       if !defined(File["weblogic_domain_folder"]) {
         # check oracle install folder
         file { "weblogic_domain_folder":
-          path    => "${middleware_home_dir}/user_projects",
           ensure  => directory,
+          path    => "${middleware_home_dir}/user_projects",
           recurse => false,
           replace => false,
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -227,11 +227,11 @@ define orawls::domain (
       if !defined(File["weblogic_domain_folder"]) {
         # check oracle install folder
         file { "weblogic_domain_folder":
-          path    => $::override_weblogic_domain_folder,
           ensure  => directory,
+          path    => $::override_weblogic_domain_folder,
           recurse => false,
           replace => false,
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -244,7 +244,7 @@ define orawls::domain (
         ensure  => directory,
         recurse => false,
         replace => false,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
         require => File["weblogic_domain_folder"],
@@ -257,7 +257,7 @@ define orawls::domain (
         ensure  => directory,
         recurse => false,
         replace => false,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
         require => File["weblogic_domain_folder"],
@@ -270,10 +270,9 @@ define orawls::domain (
       environment => ["JAVA_HOME=${jdk_home_dir}"],
       unless      => "/usr/bin/test -e ${domain_dir}/${domain_name}",
       creates     => "${domain_dir}/${domain_name}",
-      require     => [
-        File["domain.py ${domain_name} ${title}"],
-        File[$domain_dir],
-        File[$app_dir]],
+      require     => [File["domain.py ${domain_name} ${title}"],
+                      File[$domain_dir],
+                      File[$app_dir]],
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,
@@ -282,19 +281,18 @@ define orawls::domain (
 
     if $::kernel == "SunOS" {
 
-
       if ($domain_template == 'osb' or
           $domain_template == 'osb_soa' or
           $domain_template == 'osb_soa_bpm'){
 
-	      exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-	        command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-	        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-	        require => Exec["execwlst ${domain_name} ${title}"],
-	        path    => $exec_path,
-	        user    => $os_user,
-	        group   => $os_group,
-	      }
+        exec { "setDebugFlagOnFalse ${domain_name} ${title}":
+          command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          require => Exec["execwlst ${domain_name} ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
 
         exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
           command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
@@ -313,14 +311,14 @@ define orawls::domain (
           $domain_template == 'osb_soa' or
           $domain_template == 'osb_soa_bpm'){
 
-	      exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-	        command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
-	        onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-	        require => Exec["execwlst ${domain_name} ${title}"],
-	        path    => $exec_path,
-	        user    => $os_user,
-	        group   => $os_group,
-	      }
+        exec { "setDebugFlagOnFalse ${domain_name} ${title}":
+          command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/${domain_name}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          require => Exec["execwlst ${domain_name} ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
 
         exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
           command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/${domain_name}/bin/setDomainEnv.sh",
@@ -347,12 +345,12 @@ define orawls::domain (
     # set our 12.1.2 nodemanager properties
     if ($version == 1212) {
       file { "nodemanager.properties ux 1212 ${title}":
-        path    => "${nodeMgrHome}/nodemanager.properties",
         ensure  => present,
+        path    => "${nodeMgrHome}/nodemanager.properties",
         replace => true,
         content => template("orawls/nodemgr/nodemanager.properties_1212.erb"),
         require => Exec["execwlst ${domain_name} ${title}"],
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
       }

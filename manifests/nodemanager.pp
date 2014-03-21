@@ -53,8 +53,8 @@ define orawls::nodemanager (
           ensure  => directory,
           recurse => false,
           replace => false,
-          owner => $os_user,
-          group => $os_group,
+          owner   => $os_user,
+          group   => $os_group,
           require => Exec["create ${log_dir} directory"],
         }
       }
@@ -113,8 +113,8 @@ define orawls::nodemanager (
     $javaCommand = "${java_statement} -client ${$nodemanager_java_mem_args} -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
 
     file { "nodemanager.properties ux ${title}":
-      path    => "${nodeMgrHome}/nodemanager.properties",
       ensure  => present,
+      path    => "${nodeMgrHome}/nodemanager.properties",
       replace => true,
       content => template("orawls/nodemgr/nodemanager.properties.erb"),
       owner   => $os_user,
@@ -123,10 +123,9 @@ define orawls::nodemanager (
 
     exec { "execwlst ux nodemanager ${title}":
       command     => "/usr/bin/nohup ${javaCommand} &",
-      environment => [
-        "CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-        "JAVA_HOME=${jdk_home_dir}",
-        "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${weblogic_home_dir}/server/native/${nativeLib}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                      "JAVA_HOME=${jdk_home_dir}",
+                      "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${weblogic_home_dir}/server/native/${nativeLib}"],
       unless      => "${checkCommand}",
       path        => $exec_path,
       user        => $os_user,

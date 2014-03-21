@@ -28,9 +28,9 @@ class orawls::urandomfix () {
       }
 
       service { "start rngd service":
+        ensure  => true,
         name    => "rngd",
         enable  => true,
-        ensure  => true,
         require => Exec["set urandom /etc/sysconfig/rngd"],
       }
 
@@ -43,7 +43,7 @@ class orawls::urandomfix () {
       }
 
     }
-    Ubuntu, Debian, SLES        : {
+    Ubuntu, Debian, SLES: {
       exec { "set urandom /etc/default/rng-tools":
         command => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
         unless  => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",
@@ -53,9 +53,9 @@ class orawls::urandomfix () {
       }
 
       service { "start rng-tools service":
+        ensure  => true,
         name    => "rng-tools",
         enable  => true,
-        ensure  => true,
         require => Exec["set urandom /etc/default/rng-tools"],
       }
     }

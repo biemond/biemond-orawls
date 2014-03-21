@@ -78,7 +78,7 @@ define orawls::copydomain (
           recurse => false,
           replace => false,
           require => Exec["create ${log_dir} directory"],
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -90,11 +90,11 @@ define orawls::copydomain (
       if !defined(File["weblogic_domain_folder"]) {
         # check oracle install folder
         file { "weblogic_domain_folder":
-          path    => "${middleware_home_dir}/user_projects",
           ensure  => directory,
+          path    => "${middleware_home_dir}/user_projects",
           recurse => false,
           replace => false,
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -105,11 +105,11 @@ define orawls::copydomain (
       if !defined(File["weblogic_domain_folder"]) {
         # check oracle install folder
         file { "weblogic_domain_folder":
-          path    => $::override_weblogic_domain_folder,
           ensure  => directory,
+          path    => $::override_weblogic_domain_folder,
           recurse => false,
           replace => false,
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -122,7 +122,7 @@ define orawls::copydomain (
         ensure  => directory,
         recurse => false,
         replace => false,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
         require => File["weblogic_domain_folder"],
@@ -135,7 +135,7 @@ define orawls::copydomain (
         ensure  => directory,
         recurse => false,
         replace => false,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
         require => File["weblogic_domain_folder"],
@@ -144,7 +144,7 @@ define orawls::copydomain (
 
     # copy domain from the adminserver to the this node ( with scp and without passwords )
     exec { "copy domain jar ${domain_name}":
-      command => "scp -oStrictHostKeyChecking=no -oCheckHostIP=no ${os_user}@${adminserver_address}:${download_dir}/domain_${domain_name}.jar ${download_dir}/domain_${domain_name}.jar",
+      command   => "scp -oStrictHostKeyChecking=no -oCheckHostIP=no ${os_user}@${adminserver_address}:${download_dir}/domain_${domain_name}.jar ${download_dir}/domain_${domain_name}.jar",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,
@@ -154,13 +154,13 @@ define orawls::copydomain (
     $unPackCommand = "-domain=${domains_path_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -app_dir=${apps_path_dir} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
     exec { "unpack ${domain_name}":
-      command => "${weblogic_home_dir}/common/bin/unpack.sh ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
+      command   => "${weblogic_home_dir}/common/bin/unpack.sh ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
-      require => [File[$domains_path_dir],
-                  Exec["copy domain jar ${domain_name}"]],
+      require   => [File[$domains_path_dir],
+                    Exec["copy domain jar ${domain_name}"]],
     }
 
     # the enroll domain.py used by the wlst
@@ -169,7 +169,7 @@ define orawls::copydomain (
       content => template("orawls/wlst/enrollDomain.py.erb"),
       ensure  => present,
       replace => true,
-      mode    => 0775,
+      mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
       backup  => false,
@@ -178,21 +178,21 @@ define orawls::copydomain (
     exec { "execwlst ${domain_name} ${title}":
       command     => "${weblogic_home_dir}/common/bin/wlst.sh ${download_dir}/enroll_domain_${domain_name}.py ${weblogic_password}",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
+      path        => $exec_path,
+      user        => $os_user,
+      group       => $os_group,
+      logoutput   => $log_output,
       require     => [File["${download_dir}/enroll_domain_${domain_name}.py"],
                       Exec["unpack ${domain_name}"]],
     }
 
     exec { "domain.py ${domain_name} ${title}":
-      command => "rm ${download_dir}/enroll_domain_${domain_name}.py",
+      command   => "rm ${download_dir}/enroll_domain_${domain_name}.py",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
-      require => Exec["execwlst ${domain_name} ${title}"],
+      require   => Exec["execwlst ${domain_name} ${title}"],
     }
 
   }

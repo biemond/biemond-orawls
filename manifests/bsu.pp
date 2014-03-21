@@ -45,7 +45,7 @@ define orawls::bsu (
       file { "${middleware_home_dir}/utils/bsu/cache_dir":
         ensure  => directory,
         recurse => false,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
       }
@@ -55,11 +55,11 @@ define orawls::bsu (
     if $remote_file == true {
       if !defined(File["${download_dir}/${patch_file}"]) {
         file { "${download_dir}/${patch_file}":
+          ensure  => present,
           source  => "${mountPoint}/${patch_file}",
           require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
           backup  => false,
-          ensure  => present,
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }

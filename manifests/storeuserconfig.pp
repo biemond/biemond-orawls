@@ -24,7 +24,7 @@ define orawls::storeuserconfig (
     ensure  => present,
     backup  => false,
     replace => true,
-    mode    => 0555,
+    mode    => '0555',
     owner   => $os_user,
     group   => $os_group,
   }

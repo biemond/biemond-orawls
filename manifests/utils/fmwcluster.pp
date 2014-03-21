@@ -31,7 +31,7 @@ define orawls::utils::fmwcluster (
 
   if ( $soa_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $found = soa_cluster_configured("${domain_dir}", $soa_cluster_name)
+    $found = soa_cluster_configured("${domain_dir}/${domain_name}", $soa_cluster_name)
 
     if $found == undef {
       $continue = false
@@ -46,7 +46,7 @@ define orawls::utils::fmwcluster (
     }
   } elsif ( $osb_enabled ) {
     # check if the osb is already targeted to the cluster on this weblogic domain
-    $found = osb_cluster_configured("${domain_dir}", $osb_cluster_name)
+    $found = osb_cluster_configured("${domain_dir}/${domain_name}", $osb_cluster_name)
 
     if $found == undef {
       $continue = false
@@ -91,11 +91,11 @@ define orawls::utils::fmwcluster (
     }
 
     file { "${download_dir}/assignOsbSoaBpmBamToClusters.py":
-      content => template("orawls/wlst/wlstexec/fmw/assignOsbSoaBpmBamToClusters.py.erb"),
       ensure  => present,
+      content => template("orawls/wlst/wlstexec/fmw/assignOsbSoaBpmBamToClusters.py.erb"),
       backup  => false,
       replace => true,
-      mode    => 0775,
+      mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
     }
@@ -134,11 +134,11 @@ define orawls::utils::fmwcluster (
       }
 
       file { "${download_dir}/soa-createUDD.py":
-        content => template("orawls/wlst/wlstexec/fmw/soa-createUDD.py.erb"),
         ensure  => present,
+        content => template("orawls/wlst/wlstexec/fmw/soa-createUDD.py.erb"),
         backup  => false,
         replace => true,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
       }
@@ -159,11 +159,11 @@ define orawls::utils::fmwcluster (
       }
       # the py script used by the wlst
       file { "${download_dir}/soa-bpm-createUDD.py":
-        content => template("orawls/wlst/wlstexec/fmw/soa-bpm-createUDD.py.erb"),
         ensure  => present,
+        content => template("orawls/wlst/wlstexec/fmw/soa-bpm-createUDD.py.erb"),
         backup  => false,
         replace => true,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
       }
@@ -195,11 +195,11 @@ define orawls::utils::fmwcluster (
 
       # the py script used by the wlst
       file { "${download_dir}/osb-createUDD.py":
-        content => template("orawls/wlst/wlstexec/fmw/osb-createUDD.py.erb"),
         ensure  => present,
+        content => template("orawls/wlst/wlstexec/fmw/osb-createUDD.py.erb"),
         backup  => false,
         replace => true,
-        mode    => 0775,
+        mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
       }
@@ -242,32 +242,30 @@ define orawls::utils::fmwcluster (
       require                    => Exec[$last_step],       
     }
 
-      # the py script used by the wlst
-      file { "${download_dir}/changeWorkmanagers.py":
-        content => template("orawls/wlst/wlstexec/fmw/changeWorkmanagers.py.erb"),
-        ensure  => present,
-        backup  => false,
-        replace => true,
-        mode    => 0775,
-        owner   => $os_user,
-        group   => $os_group,
-      }
+    # the py script used by the wlst
+    file { "${download_dir}/changeWorkmanagers.py":
+      ensure  => present,
+      content => template("orawls/wlst/wlstexec/fmw/changeWorkmanagers.py.erb"),
+      backup  => false,
+      replace => true,
+      mode    => '0775',
+      owner   => $os_user,
+      group   => $os_group,
+    }
 
-      # execute WLST script
-      exec { "execwlst changeWorkmanagers.py":
-        command     => "${javaCommand} ${download_dir}/changeWorkmanagers.py ${weblogic_password}",
-        environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-                        "JAVA_HOME=${jdk_home_dir}"],
-        path        => $exec_path,
-        user        => $os_user,
-        group       => $os_group,
-        logoutput   => $log_output,
-        require     => [ File["${download_dir}/changeWorkmanagers.py"],
-                         Orawls::Control['StartupAdminServerForSoa'],
-                       ]
-      }
-
-
+    # execute WLST script
+    exec { "execwlst changeWorkmanagers.py":
+      command     => "${javaCommand} ${download_dir}/changeWorkmanagers.py ${weblogic_password}",
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                      "JAVA_HOME=${jdk_home_dir}"],
+      path        => $exec_path,
+      user        => $os_user,
+      group       => $os_group,
+      logoutput   => $log_output,
+      require     => [ File["${download_dir}/changeWorkmanagers.py"],
+                       Orawls::Control['StartupAdminServerForSoa'],
+                     ]
+    }
 
   }
 

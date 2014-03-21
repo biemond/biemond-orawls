@@ -277,6 +277,24 @@ use fmw_infra_121200.jar as filename and set fmw_infra parameter to true
       log_output           => true,                      
     }
 
+or with a bin file located on a share
+
+    class{'orawls::weblogic':                             
+        version              => 1036,
+        filename             => "oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin",
+        oracle_base_home_dir => "/opt/weblogic",
+        middleware_home_dir  => "/opt/weblogic/Middleware",
+        fmw_infra            => false,
+        jdk_home_dir         => "/usr/java/latest",
+        os_user              => "weblogic",
+        os_group             => "bea",
+        download_dir         => "/data/tmp",
+        source               => "/misc/tact/products/oracle/11g/fmw/wls/11.1.1.8",
+        remote_file          => false,
+        log_output           => true,
+        temp_directory       => "/data/tmp",
+     }
+
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
 

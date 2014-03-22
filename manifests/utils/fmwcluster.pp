@@ -31,7 +31,7 @@ define orawls::utils::fmwcluster (
 
   if ( $soa_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $found = soa_cluster_configured("${domain_dir}/${domain_name}", $soa_cluster_name)
+    $found = soa_cluster_configured($domain_dir, $soa_cluster_name)
 
     if $found == undef {
       $continue = false
@@ -46,7 +46,7 @@ define orawls::utils::fmwcluster (
     }
   } elsif ( $osb_enabled ) {
     # check if the osb is already targeted to the cluster on this weblogic domain
-    $found = osb_cluster_configured("${domain_dir}/${domain_name}", $osb_cluster_name)
+    $found = osb_cluster_configured($domain_dir, $osb_cluster_name)
 
     if $found == undef {
       $continue = false

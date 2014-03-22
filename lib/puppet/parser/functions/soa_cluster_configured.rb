@@ -8,12 +8,14 @@ module Puppet::Parser::Functions
     else
       fullDomainPath = args[0].strip.downcase
     end
+    Puppet.debug  "soa_cluster_configured fullDomainPath is #{fullDomainPath}"
 
     if args[1].nil?
       return soa_exists
     else
       target = args[1].strip.downcase
     end
+    Puppet.debug  "soa_cluster_configured target is #{target}"
 
     prefix = "ora_mdw_domain"
 
@@ -27,14 +29,19 @@ module Puppet::Parser::Functions
 
         # lookup up domain
         domain = lookupWlsVar(prefix+'_'+n.to_s)
+        Puppet.debug  "soa_cluster_configured found domain is #{domain}"
+
         unless domain == "empty"
           domain = domain.strip.downcase
           # do we found the right domain
+          Puppet.debug  "soa_cluster_configured compare domain #{domain} with #{fullDomainPath}"
           if domain == fullDomainPath
             soa =  lookupWlsVar(prefix+'_'+n.to_s+'_soa')
+            Puppet.debug  "soa_cluster_configured soa target is #{soa}"
             unless soa == "empty"
               soa = soa.strip.downcase   
               if soa.include? target
+                Puppet.debug  "soa_cluster_configured return true"
                 return true
               end
             end

@@ -8,12 +8,14 @@ module Puppet::Parser::Functions
     else
       fullDomainPath = args[0].strip.downcase
     end
+    Puppet.debug  "osb_cluster_configured fullDomainPath is #{fullDomainPath}"
 
     if args[1].nil?
       return osb_exists
     else
       target = args[1].strip.downcase
     end
+    Puppet.debug  "osb_cluster_configured target is #{target}"
 
     prefix = "ora_mdw_domain"
 
@@ -27,14 +29,18 @@ module Puppet::Parser::Functions
 
         # lookup up domain
         domain = lookupWlsVar(prefix+'_'+n.to_s)
+        Puppet.debug  "osb_cluster_configured found domain is #{domain}"
         unless domain == "empty"
           domain = domain.strip.downcase
           # do we found the right domain
+          Puppet.debug  "osb_cluster_configured compare domain #{domain} with #{fullDomainPath}"
           if domain == fullDomainPath
             osb =  lookupWlsVar(prefix+'_'+n.to_s+'_osb')
+            Puppet.debug  "osb_cluster_configured osb target is #{osb}"
             unless osb == "empty"
               osb = osb.strip.downcase   
               if osb.include? target
+                Puppet.debug  "osb_cluster_configured return true"
                 return true
               end
             end

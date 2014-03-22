@@ -53,8 +53,22 @@ elif bamEnabled == false and soaEnabled == false and osbEnabled == false:
     All            = '<%= @adminserver_name %>'
     Adapters       = '<%= @adminserver_name %>'
 
-
 readDomain(DOMAIN_PATH)
+
+cd('/')
+if soaEnabled == true:
+    cd('/Servers/soa_server1')
+    set('ListenAddress','')
+
+if bamEnabled == true:
+    cd('/Servers/bam_server1')
+    set('ListenAddress','')
+
+if osbEnabled == true:
+    cd('/Servers/osb_server1')
+    set('ListenAddress','')
+
+updateDomain()
 
 if osbEnabled == true:
     OSBServer1Name = getFirstClusterServer(OSBClusterName)

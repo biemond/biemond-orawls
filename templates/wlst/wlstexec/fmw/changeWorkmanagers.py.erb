@@ -24,7 +24,7 @@ try:
         set('Targets', jarray.array([ObjectName('com.bea:Name='+SOAClusterName+',Type=Cluster')], ObjectName))
 
     if osbEnabled == true:
-        cd('/SelfTuning/+domain_name+/WorkManagers/weblogic.wsee.mdb.DispatchPolicy')
+        cd('/SelfTuning/'+domain_name+'/WorkManagers/weblogic.wsee.mdb.DispatchPolicy')
         set('Targets', jarray.array([ObjectName('com.bea:Name='+OSBClusterName+',Type=Cluster')], ObjectName))
 
     save()

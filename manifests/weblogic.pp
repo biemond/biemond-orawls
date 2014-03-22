@@ -60,6 +60,12 @@ class orawls::weblogic (
     } else {
       $mountPoint = $source
     }
+    
+    $oraInventory  = "${oracle_base_home_dir}/oraInventory"
+    orawls::utils::orainst { "weblogic orainst ${version}":
+      ora_inventory_dir => $oraInventory,
+      os_group          => $os_group,
+    }
 
     orawls::utils::structure{"weblogic structure ${version}":
       oracle_base_home_dir => $oracle_base_home_dir,
@@ -127,11 +133,6 @@ class orawls::weblogic (
     notify { "orawls::weblogic $cmd_prefix": }
 
     if ($version == 1212) {
-      # only necessary for WebLogic >= 1212
-      orawls::utils::orainst{"weblogic orainst ${version}":
-        ora_inventory_dir => $ora_inventory_dir,
-        os_group          => $os_group,
-      }
 
       $command = "-silent -responseFile ${download_dir}/weblogic_silent_install.xml "
 

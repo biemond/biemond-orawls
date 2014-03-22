@@ -143,7 +143,8 @@ define orawls::fmw (
         user      => $os_user,
         group     => $os_group,
         logoutput => false,
-        require   => File["${download_dir}/${fmw_file1}"],
+        require   => [File["${download_dir}/${fmw_file1}"],
+                      Orawls::Utils::Orainst["create oraInst for ${fmw_product}"]],
       }
     } else {
       exec { "extract ${fmw_file1}":
@@ -153,6 +154,7 @@ define orawls::fmw (
         user      => $os_user,
         group     => $os_group,
         logoutput => false,
+        require   => Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
       }
     }
 

@@ -7,6 +7,7 @@ portNumber = '<%= @adminserver_port %>'
 soaEnabled     = <%= @soa_enabled %>
 osbEnabled     = <%= @osb_enabled %>
 
+domain_name    = '<%= @domain_name %>'
 SOAClusterName = '<%= @soa_cluster_name %>'
 OSBClusterName = '<%= @osb_cluster_name %>'
 
@@ -19,11 +20,11 @@ startEdit()
 try:
 
     if soaEnabled == true:
-        cd('/SelfTuning/soa_basedomain/WorkManagers/wm/SOAWorkManager')
+        cd('/SelfTuning/'+domain_name+'/WorkManagers/wm/SOAWorkManager')
         set('Targets', jarray.array([ObjectName('com.bea:Name='+SOAClusterName+',Type=Cluster')], ObjectName))
 
     if osbEnabled == true:
-        cd('/SelfTuning/soa_basedomain/WorkManagers/weblogic.wsee.mdb.DispatchPolicy')
+        cd('/SelfTuning/+domain_name+/WorkManagers/weblogic.wsee.mdb.DispatchPolicy')
         set('Targets', jarray.array([ObjectName('com.bea:Name='+OSBClusterName+',Type=Cluster')], ObjectName))
 
     save()
@@ -32,3 +33,5 @@ except:
     print "Unexpected error:", sys.exc_info()[0]
     undo('true','y')
     stopEdit('y')
+    raise
+

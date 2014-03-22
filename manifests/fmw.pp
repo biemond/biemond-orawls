@@ -236,6 +236,7 @@ define orawls::fmw (
       logoutput => $log_output,
       require   => [File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
                     Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
+                    Exec["extract ${fmw_file1}"],
                     Exec[$last_extract_check]
                    ],
     }

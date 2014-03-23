@@ -299,7 +299,7 @@ def get_domain(domain_path,n)
          coherence_clusters
        end
     end
-          
+
     bpmTargets  = nil
     soaTargets  = nil
     osbTargets  = nil
@@ -336,6 +336,7 @@ def get_domain(domain_path,n)
           bpmTargets
         end
       end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_bpm #{bpmTargets}"
     else
       Facter.add("#{prefix}_domain_#{n}_bpm") do
         setcode do
@@ -349,6 +350,7 @@ def get_domain(domain_path,n)
           soaTargets
         end
       end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_soa #{soaTargets}"
     else
       Facter.add("#{prefix}_domain_#{n}_soa") do
         setcode do
@@ -362,6 +364,7 @@ def get_domain(domain_path,n)
           bamTargets
         end
       end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_bam #{bamTargets}"
     else
       Facter.add("#{prefix}_domain_#{n}_bam") do
         setcode do
@@ -375,6 +378,7 @@ def get_domain(domain_path,n)
           osbTargets
         end
       end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_osb #{osbTargets}"
     else
       Facter.add("#{prefix}_domain_#{n}_osb") do
         setcode do
@@ -550,11 +554,30 @@ def get_domain(domain_path,n)
     end
 
 
-
-    libraries = ""
+    jrfTargets  = nil
+    libraries   = ""
     root.elements.each("library") do |libs|
       libraries += libs.elements['name'].text + ";"
+      if libs.elements['name'].text == "adf.oracle.domain#1.0@11.1.1.2.0" 
+         jrfTargets = libs.elements['target'].text
+      end 
+
     end
+    unless jrfTargets.nil?
+      Facter.add("#{prefix}_domain_#{n}_jrf") do
+        setcode do
+          jrfTargets
+        end
+      end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_jrf #{jrfTargets}"
+    else
+      Facter.add("#{prefix}_domain_#{n}_jrf") do
+        setcode do
+          "NotFound"
+        end
+      end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_jrf NotFound"
+    end  
 
     Facter.add("#{prefix}_domain_#{n}_libraries") do
        setcode do

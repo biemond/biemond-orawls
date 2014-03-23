@@ -48,7 +48,8 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - creates a standard WebLogic domain
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
-- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters ) 
+- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters )
+- ADF/JRF support, Assign JRF libraries to a Server or Cluster target
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST

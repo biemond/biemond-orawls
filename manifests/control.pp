@@ -9,8 +9,8 @@
 define orawls::control (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef),
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $domains_dir                = hiera('wls_domains_dir'           , undef),
   $domain_name                = hiera('domain_name'               , undef),
-  $domain_dir                 = undef,
   $server_type                = 'admin',  # admin|managed
   $target                     = 'Server', # Server|Cluster
   $server                     = 'AdminServer',
@@ -26,6 +26,8 @@ define orawls::control (
   $log_output                 = false, # true|false
 )
 {
+  $domain_dir = "$domains_dir/$domain_name"
+  
   case $::kernel {
     Linux: {
       $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.Name=${server}' | /bin/grep ${domain_name}"

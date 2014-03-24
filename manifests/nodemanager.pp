@@ -82,7 +82,7 @@ define orawls::nodemanager (
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
 
     exec { "startNodemanager 1212 ${title}":
-      command => "nohup ${domainsHome}/${domain_name}/bin/startNodeManager.sh &",
+      command => "nohup ${domains_dir}/${domain_name}/bin/startNodeManager.sh &",
       unless  => "${checkCommand}",
       path    => $exec_path,
       user    => $os_user,

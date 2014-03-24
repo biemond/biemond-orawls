@@ -217,7 +217,7 @@ define orawls::domain (
     if $apps_dir != undef {
       if !defined(File[$apps_dir]) {
         # check oracle install folder
-        file { $app_dir:
+        file { $apps_dir:
           ensure  => directory,
           recurse => false,
           replace => false,

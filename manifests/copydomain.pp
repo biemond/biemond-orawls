@@ -110,9 +110,9 @@ define orawls::copydomain (
       logoutput => $log_output,
     }
 
-    $app_dir_arg = $apps_path_dir ? {
+    $app_dir_arg = $apps_dir ? {
       undef      => "",
-      default    => "-app_dir=${apps_path_dir}"
+      default    => "-app_dir=${apps_dir}"
     }
 
     $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"

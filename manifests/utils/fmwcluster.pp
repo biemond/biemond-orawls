@@ -74,7 +74,7 @@ define orawls::utils::fmwcluster (
     orawls::control{'ShutdownAdminServerForSoa':
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
-      domain_dirs                => $domain_dirs,
+      domains_dir                => $domains_dir,
       domain_name                => $domain_name,
       server_type                => 'admin',
       target                     => 'Server',
@@ -225,7 +225,7 @@ define orawls::utils::fmwcluster (
     orawls::control{'StartupAdminServerForSoa':
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
-      domain_dirs                => $domain_dirs,
+      domains_dir                => $domains_dir,
       domain_name                => $domain_name,
       server_type                => 'admin',
       target                     => 'Server',

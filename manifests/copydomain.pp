@@ -86,6 +86,22 @@ define orawls::copydomain (
       }
     }
 
+    if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
+      if !defined(File["weblogic_domain_folder"]) {
+          # check oracle install folder
+          file { "weblogic_domain_folder":
+            ensure  => directory,
+            path    => "${middleware_home_dir}/user_projects",
+            recurse => false,
+            replace => false,
+            mode    => '0775',
+            owner   => $os_user,
+            group   => $os_group,
+          }
+        File["weblogic_domain_folder"] -> File[$domains_dir]  
+      }
+    }
+
     if !defined(File[$domains_dir]) {
       # check oracle install folder
       file { $domains_dir:

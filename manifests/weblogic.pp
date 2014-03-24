@@ -19,15 +19,21 @@ class orawls::weblogic (
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
   
-  if ( $wls_domains_dir == undef ) {
-    $domains_dir = "${middleware_home_dir}/user_projects/domains"
-  } else {
-    $domains_dir =  $wls_domains_dir 
+  if ( $wls_domains_dir != undef ) {
+    # make sure you don't create the middleware home, else root will be owner
+    if ($wls_domains_dir == "${middleware_home_dir}/user_projects/domains") {
+        $domains_dir =  undef
+    } else { 
+        $domains_dir =  $wls_domains_dir 
+    }
   }
-  if ( $wls_apps_dir == undef ) {
-    $apps_dir = "${middleware_home_dir}/user_projects/applications"
-  } else {
-    $apps_dir =  $wls_apps_dir 
+  if ( $wls_apps_dir != undef ) {
+    # make sure you don't create the middleware home, else root will be owner
+    if ($wls_apps_dir == "${middleware_home_dir}/user_projects/applications") {
+        $apps_dir =  undef
+    } else { 
+        $apps_dir =  $wls_apps_dir 
+    }
   }
    
  

@@ -39,12 +39,14 @@ define orawls::utils::structure (
     }
   }
 
-  if !defined(Exec["create ${wls_domains_dir} directory"]) {
-    exec { "create ${wls_domains_dir} directory":
-      command => "mkdir -p ${wls_domains_dir}",
-      unless  => "test -d ${wls_domains_dir}",
-      user    => 'root',
-      path    => $exec_path,
+  if $wls_domains_dir != undef {
+    if !defined(Exec["create ${wls_domains_dir} directory"]) {
+      exec { "create ${wls_domains_dir} directory":
+        command => "mkdir -p ${wls_domains_dir}",
+        unless  => "test -d ${wls_domains_dir}",
+        user    => 'root',
+        path    => $exec_path,
+      }
     }
   }
 
@@ -100,18 +102,19 @@ define orawls::utils::structure (
   }
 
   # also set permissions on domains_dir
-  if !defined(File[$wls_domains_dir]) {
-    file { $wls_domains_dir:
-      ensure  => directory,
-      recurse => false,
-      replace => false,
-      mode    => 0775,
-      owner   => $os_user,
-      group   => $os_group,
-      require => Exec["create ${wls_domains_dir} directory"],
+  if $wls_domains_dir != undef {
+    if !defined(File[$wls_domains_dir]) {
+      file { $wls_domains_dir:
+        ensure  => directory,
+        recurse => false,
+        replace => false,
+        mode    => 0775,
+        owner   => $os_user,
+        group   => $os_group,
+        require => Exec["create ${wls_domains_dir} directory"],
+      }
     }
-  }
-
+  } 
   if $wls_apps_dir != undef {
     # also set permissions on apps_dir
     if !defined(File[$wls_apps_dir]) {

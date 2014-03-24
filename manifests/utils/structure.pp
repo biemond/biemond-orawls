@@ -7,8 +7,8 @@
 define orawls::utils::structure (
   $oracle_base_home_dir = undef,
   $ora_inventory_dir    = undef,
-  $domains_dir          = undef,
-  $apps_dir             = undef,
+  $wls_domains_dir      = undef,
+  $wls_apps_dir         = undef,
   $os_user              = undef,
   $os_group             = undef,
   $download_dir         = undef,
@@ -39,20 +39,20 @@ define orawls::utils::structure (
     }
   }
 
-  if !defined(Exec["create ${domains_dir} directory"]) {
-    exec { "create ${domains_dir} directory":
-      command => "mkdir -p ${domains_dir}",
-      unless  => "test -d ${domains_dir}",
+  if !defined(Exec["create ${wls_domains_dir} directory"]) {
+    exec { "create ${wls_domains_dir} directory":
+      command => "mkdir -p ${wls_domains_dir}",
+      unless  => "test -d ${wls_domains_dir}",
       user    => 'root',
       path    => $exec_path,
     }
   }
 
-  if $apps_dir != undef {
-    if !defined(Exec["create ${apps_dir} directory"]) {
-      exec { "create ${apps_dir} directory":
-        command => "mkdir -p ${apps_dir}",
-        unless  => "test -d ${apps_dir}",
+  if $wls_apps_dir != undef {
+    if !defined(Exec["create ${wls_apps_dir} directory"]) {
+      exec { "create ${wls_apps_dir} directory":
+        command => "mkdir -p ${wls_apps_dir}",
+        unless  => "test -d ${wls_apps_dir}",
         user    => 'root',
         path    => $exec_path,
       }
@@ -100,29 +100,29 @@ define orawls::utils::structure (
   }
 
   # also set permissions on domains_dir
-  if !defined(File[$domains_dir]) {
-    file { $domains_dir:
+  if !defined(File[$wls_domains_dir]) {
+    file { $wls_domains_dir:
       ensure  => directory,
       recurse => false,
       replace => false,
       mode    => 0775,
       owner   => $os_user,
       group   => $os_group,
-      require => Exec["create ${domains_dir} directory"],
+      require => Exec["create ${wls_domains_dir} directory"],
     }
   }
 
-  if $apps_dir != undef {
+  if $wls_apps_dir != undef {
     # also set permissions on apps_dir
-    if !defined(File[$apps_dir]) {
-      file { $apps_dir:
+    if !defined(File[$wls_apps_dir]) {
+      file { $wls_apps_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
         mode    => 0775,
         owner   => $os_user,
         group   => $os_group,
-        require => Exec["create ${apps_dir} directory"],
+        require => Exec["create ${wls_apps_dir} directory"],
       }
     }
   }

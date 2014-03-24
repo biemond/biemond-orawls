@@ -7,7 +7,7 @@ define orawls::utils::fmwcluster (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $domains_dir                = hiera('wls_domains_dir'           , undef),
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $domain_name                = hiera('domain_name'               , undef),
   $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
@@ -28,6 +28,12 @@ define orawls::utils::fmwcluster (
   $log_output                 = false, # true|false
 )
 {
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
+  }
+
   $domain_dir = "${domains_dir}/${domain_name}"
 
   if ( $soa_enabled ) {
@@ -74,7 +80,7 @@ define orawls::utils::fmwcluster (
     orawls::control{'ShutdownAdminServerForSoa':
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
-      domains_dir                => $domains_dir,
+      wls_domains_dir                => $domains_dir,
       domain_name                => $domain_name,
       server_type                => 'admin',
       target                     => 'Server',
@@ -225,7 +231,7 @@ define orawls::utils::fmwcluster (
     orawls::control{'StartupAdminServerForSoa':
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
-      domains_dir                => $domains_dir,
+      wls_domains_dir            => $domains_dir,
       domain_name                => $domain_name,
       server_type                => 'admin',
       target                     => 'Server',

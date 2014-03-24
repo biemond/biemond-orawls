@@ -7,9 +7,10 @@
 #  wlsTarget     = Server|Cluster
 #
 define orawls::control (
+  $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef),
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $domains_dir                = hiera('wls_domains_dir'           , undef),
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $domain_name                = hiera('domain_name'               , undef),
   $server_type                = 'admin',  # admin|managed
   $target                     = 'Server', # Server|Cluster
@@ -26,6 +27,12 @@ define orawls::control (
   $log_output                 = false, # true|false
 )
 {
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
+  }
+
   $domain_dir = "$domains_dir/$domain_name"
   
   case $::kernel {

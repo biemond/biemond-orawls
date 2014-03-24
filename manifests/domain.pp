@@ -7,8 +7,8 @@ define orawls::domain (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $domains_dir                = hiera('wls_domains_dir'           , undef),
-  $apps_dir                   = hiera('wls_apps_dir'              , undef),
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
+  $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
   $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
@@ -29,14 +29,17 @@ define orawls::domain (
   $repository_password        = hiera('repository_password'       , "Welcome01"),
 )
 {
-
-  if ($apps_dir == undef ){
-    $apps_dir = "${middleware_home_dir}/user_projects/applications"
-  }
-  if ($domains_dir == undef ){
+  if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
   }
-
+  if ( $wls_apps_dir == undef ) {
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } else {
+    $apps_dir =  $wls_apps_dir 
+  }
+ 
   $domain_dir = "${domains_dir}/${name}"
   
   # check if the domain already exists

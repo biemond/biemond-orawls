@@ -7,8 +7,8 @@ define orawls::copydomain (
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $domains_dir                = hiera('wls_domains_dir'           , undef),
-  $apps_dir                   = hiera('wls_apps_dir'              , undef),
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
+  $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
   $domain_name                = hiera('domain_name'               , undef),
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
@@ -23,14 +23,17 @@ define orawls::copydomain (
   $log_output                 = false, # true|false
 )
 {
-
-  if ($apps_dir == undef ){
-    $apps_dir = "${middleware_home_dir}/user_projects/applications"
-  }
-  if ($domains_dir == undef ){
+  if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
   }
-
+  if ( $wls_apps_dir == undef ) {
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } else {
+    $apps_dir =  $wls_apps_dir 
+  }
+ 
 
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"

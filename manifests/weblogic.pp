@@ -5,8 +5,8 @@ class orawls::weblogic (
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
-  $domains_dir          = undef, # /opt/oracle/wlsdomains/domains
-  $apps_dir             = undef, # /opt/oracle/wlsdomains/applications
+  $wls_domains_dir      = undef, # /opt/oracle/wlsdomains/domains
+  $wls_apps_dir         = undef, # /opt/oracle/wlsdomains/applications
   $fmw_infra            = false, # true|false 12.1.2 option -> plain weblogic or fmw infra
   $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
@@ -18,14 +18,19 @@ class orawls::weblogic (
   $log_output           = false, # true|false
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
-
-  if ($apps_dir == undef ){
-    $apps_dir = "${middleware_home_dir}/user_projects/applications"
-  }
-  if ($domains_dir == undef ){
+  
+  if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
   }
-
+  if ( $wls_apps_dir == undef ) {
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } else {
+    $apps_dir =  $wls_apps_dir 
+  }
+   
+ 
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = "orawls/weblogic_silent_install.xml.erb"
   } elsif ( $version == 1212) {
@@ -79,8 +84,8 @@ class orawls::weblogic (
     orawls::utils::structure{"weblogic structure ${version}":
       oracle_base_home_dir => $oracle_base_home_dir,
       ora_inventory_dir    => $ora_inventory_dir,
-      domains_dir          => $domains_dir,
-      apps_dir             => $apps_dir,
+      wls_domains_dir      => $domains_dir,
+      wls_apps_dir         => $apps_dir,
       os_user              => $os_user,
       os_group             => $os_group,
       download_dir         => $download_dir,

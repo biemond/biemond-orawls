@@ -838,7 +838,7 @@ unless mdw12cHomes.nil?
 end
 domainFolder = Facter.value('override_weblogic_domain_folder')
 unless domainFolder.nil?
-  count_domains = get_domains(domainFolder+'/domains',count_domains)
+  count_domains = get_domains(domainFolder,count_domains)
 end
 
 Facter.add("ora_mdw_domain_cnt") do

@@ -4,6 +4,7 @@
 #
 define orawls::nodemanager (
   $version                   = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
+  $middleware_home_dir       = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir         = hiera('wls_weblogic_home_dir'     , undef),
   $nodemanager_port          = hiera('domain_nodemanager_port'   , 5556),
   $nodemanager_address       = undef,
@@ -19,6 +20,10 @@ define orawls::nodemanager (
 )
 
 {
+  if ($domains_dir == undef ){
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  }
+ 
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 

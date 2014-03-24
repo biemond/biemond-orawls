@@ -19,6 +19,13 @@ class orawls::weblogic (
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
 
+  if ($apps_dir == undef ){
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  }
+  if ($domains_dir == undef ){
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  }
+
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = "orawls/weblogic_silent_install.xml.erb"
   } elsif ( $version == 1212) {

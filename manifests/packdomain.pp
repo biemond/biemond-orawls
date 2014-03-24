@@ -15,6 +15,10 @@ define orawls::packdomain (
 )
 {
 
+  if ($domains_dir == undef ){
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  }
+
   $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
   $packCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 

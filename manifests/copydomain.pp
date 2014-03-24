@@ -24,6 +24,14 @@ define orawls::copydomain (
 )
 {
 
+  if ($apps_dir == undef ){
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  }
+  if ($domains_dir == undef ){
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  }
+
+
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 

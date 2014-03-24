@@ -29,6 +29,14 @@ define orawls::domain (
   $repository_password        = hiera('repository_password'       , "Welcome01"),
 )
 {
+
+  if ($apps_dir == undef ){
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  }
+  if ($domains_dir == undef ){
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  }
+
   $domain_dir = "${domains_dir}/${name}"
   
   # check if the domain already exists

@@ -28,7 +28,7 @@ define orawls::utils::fmwcluster (
   $log_output                 = false, # true|false
 )
 {
-  $domain_dir = "$domains_dir/$domain_name"
+  $domain_dir = "${domains_dir}/${domain_name}"
 
   if ( $soa_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain

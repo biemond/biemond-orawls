@@ -8,6 +8,7 @@ define orawls::copydomain (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $domains_dir                = hiera('wls_domains_dir'           , undef),
+  $apps_dir                   = hiera('wls_apps_dir'              , undef),
   $domain_name                = hiera('domain_name'               , undef),
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
@@ -86,6 +87,20 @@ define orawls::copydomain (
       }
     }
 
+    if $apps_dir != undef {
+      if !defined(File[$apps_dir]) {
+        # check oracle install folder
+        file { $apps_dir:
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
+      }
+    }
+
     # copy domain from the adminserver to the this node ( with scp and without passwords )
     exec { "copy domain jar ${domain_name}":
       command   => "scp -oStrictHostKeyChecking=no -oCheckHostIP=no ${os_user}@${adminserver_address}:${download_dir}/domain_${domain_name}.jar ${download_dir}/domain_${domain_name}.jar",
@@ -95,7 +110,12 @@ define orawls::copydomain (
       logoutput => $log_output,
     }
 
-    $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+    $app_dir_arg = $apps_path_dir ? {
+      undef      => "",
+      default    => "-app_dir=${apps_path_dir}"
+    }
+
+    $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
     exec { "unpack ${domain_name}":
       command   => "${weblogic_home_dir}/common/bin/unpack.sh ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",

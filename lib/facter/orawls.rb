@@ -1,6 +1,7 @@
 # orawls.rb
 require 'rexml/document' 
 require 'facter'
+require 'yaml'
 
 def get_weblogicUser()
   weblogicUser = Facter.value('override_weblogic_user')
@@ -803,42 +804,36 @@ end
 
 count_domains = -1
 
-def get_domains(domains_folder,count_domains)
+def get_domains(domain_folder,count_domains)
   # check all domain in a domains folder
-  if FileTest.exists?(domains_folder)
-    output2 = Facter::Util::Resolution.exec('/bin/ls '+domains_folder)
-    unless output2.nil?
-      output2.split(/\r?\n/).each_with_index do |domain, n|
-        count_domains += 1
-        # add domain facts
-        get_domain(domains_folder+'/'+domain,count_domains)
-        # add a full path domain fact
-        Facter.add("ora_mdw_domain_#{count_domains}") do
-          setcode do
-            domains_folder+'/'+domain
-          end
-        end
+  if FileTest.exists?(domain_folder)
+    count_domains += 1
+    # add domain facts
+    get_domain(domain_folder,count_domains)
+    # add a full path domain fact
+    Facter.add("ora_mdw_domain_#{count_domains}") do
+      setcode do
+        domain_folder
       end
-    end   
-    # return the domain counter
-  end  
+    end
+  end
   return count_domains
 end
 
-#get all domains
-unless mdw11gHomes.nil?
-  mdw11gHomes.each_with_index do |mdw, i|
-    count_domains = get_domains(mdw+'/user_projects/domains',count_domains)
-  end 
-end
-unless mdw12cHomes.nil?
-  mdw12cHomes.each_with_index do |mdw, i|
-    count_domains = get_domains(mdw+'/user_projects/domains',count_domains)
-  end 
-end
-domainFolder = Facter.value('override_weblogic_domain_folder')
-unless domainFolder.nil?
-  count_domains = get_domains(domainFolder,count_domains)
+# read the domains yaml and analyze domain
+begin
+  entries = YAML.load(File.open("/etc/wls_domains.yaml"))
+  unless entries.nil?
+    domains = entries['domains']
+    unless domains.nil?
+      domains.each { |key, values|
+        Puppet.debug "found #{key} with path #{values}"
+        count_domains = get_domains(values,count_domains)
+      }  
+    end  
+  end
+rescue Exception
+  Puppet.debug "/etc/wls_domains.yaml not found"
 end
 
 Facter.add("ora_mdw_domain_cnt") do

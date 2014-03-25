@@ -270,6 +270,12 @@ define orawls::domain (
       group       => $os_group,
     }
 
+    yaml_setting { "domain ${title}":
+      target =>  "/etc/wls_domains.yaml",
+      key    =>  "domains/${domain_name}",
+      value  =>  $domain_dir,
+    }
+
     if $::kernel == "SunOS" {
 
       if ($domain_template == 'osb' or

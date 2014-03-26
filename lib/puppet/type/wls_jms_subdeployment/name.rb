@@ -6,8 +6,8 @@ newparam(:name) do
 
   isnamevar
 
-  # to_translate_to_resource do | raw_resource|
-  #   raw_resource['name'].split(':')[1]
-  # end
+  to_translate_to_resource do | raw_resource|
+    raw_resource['name']
+  end
 
 end

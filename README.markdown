@@ -99,10 +99,6 @@ Contains WebLogic Facter which displays the following
 default this orawls module uses oracle as weblogic install user  
 you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls  
 
-##Override the default Weblogic domains folder like user_projects 
-
-set the following fact 'override_weblogic_domain_folder',  override_weblogic_domain_folder = /opt/oracle/wlsdomains or set FACTER_override_weblogic_domain_folder=/opt/oracle/wlsdomains  
-
 
 ## Linux low on entropy or urandom fix 
 

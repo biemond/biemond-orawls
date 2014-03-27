@@ -4,10 +4,12 @@
 #
 define orawls::nodemanager (
   $version                   = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
+  $middleware_home_dir       = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir         = hiera('wls_weblogic_home_dir'     , undef),
   $nodemanager_port          = hiera('domain_nodemanager_port'   , 5556),
   $nodemanager_address       = undef,
   $nodemanager_java_mem_args = hiera('nodemanager_java_mem_args' , '-Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m'),
+  $wls_domains_dir           = hiera('wls_domains_dir'           , undef),
   $domain_name               = hiera('domain_name'               , undef),
   $jdk_home_dir              = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $os_user                   = hiera('wls_os_user'               , undef), # oracle
@@ -18,16 +20,19 @@ define orawls::nodemanager (
 )
 
 {
+
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir 
+  }
+
+ 
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
   } elsif $version == 1212 {
-
-    if $::override_weblogic_domain_folder == undef {
-      $nodeMgrHome = "${weblogic_home_dir}/../user_projects/domains/${domain_name}/nodemanager"
-    } else {
-      $nodeMgrHome = "${::override_weblogic_domain_folder}/domains/${domain_name}/nodemanager"
-    }
+    $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
 
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
@@ -83,14 +88,10 @@ define orawls::nodemanager (
   # nodemanager is part of the domain creation
   if $version == "1212" {
 
-    if $::override_weblogic_domain_folder == undef {
-      $domainsHome = "${weblogic_home_dir}/../user_projects/domains"
-    } else {
-      $domainsHome = "${::override_weblogic_domain_folder}/domains"
-    }
+    $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
 
     exec { "startNodemanager 1212 ${title}":
-      command => "nohup ${domainsHome}/${domain_name}/bin/startNodeManager.sh &",
+      command => "nohup ${domains_dir}/${domain_name}/bin/startNodeManager.sh &",
       unless  => "${checkCommand}",
       path    => $exec_path,
       user    => $os_user,

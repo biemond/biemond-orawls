@@ -8,7 +8,7 @@ define orawls::utils::fmwclusterjrf (
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $domain_name                = hiera('domain_name'               , undef),
-  $domain_dir                 = undef,
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
@@ -22,6 +22,12 @@ define orawls::utils::fmwclusterjrf (
   $log_output                 = false, # true|false
 )
 {
+    if ( $wls_domains_dir == undef ) {
+      $domains_dir = "${middleware_home_dir}/user_projects/domains"
+    } else {
+      $domains_dir =  $wls_domains_dir 
+    }
+    $domain_dir = "${domains_dir}/${domain_name}"
 
     # check if the adf is already targeted to the cluster on this weblogic domain
     $found = jrf_cluster_configured($domain_dir, $jrf_target_name)
@@ -45,7 +51,7 @@ define orawls::utils::fmwclusterjrf (
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
       domain_name                => $domain_name,
-      domain_dir                 => $domain_dir,
+      wls_domains_dir            => $domains_dir,
       server_type                => 'admin',
       target                     => 'Server',
       server                     => $adminserver_name,
@@ -91,7 +97,7 @@ define orawls::utils::fmwclusterjrf (
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
       domain_name                => $domain_name,
-      domain_dir                 => $domain_dir,
+      wls_domains_dir            => $domains_dir,
       server_type                => 'admin',
       target                     => 'Server',
       server                     => $adminserver_name,

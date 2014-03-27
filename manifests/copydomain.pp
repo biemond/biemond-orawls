@@ -7,6 +7,8 @@ define orawls::copydomain (
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
+  $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
   $domain_name                = hiera('domain_name'               , undef),
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
@@ -21,31 +23,30 @@ define orawls::copydomain (
   $log_output                 = false, # true|false
 )
 {
-
-  if $::override_weblogic_domain_folder == undef {
-    $domains_path_dir = "${middleware_home_dir}/user_projects/domains"
-    $apps_path_dir    = "${middleware_home_dir}/user_projects/applications"
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_path_dir = "${::override_weblogic_domain_folder}/domains"
-    $apps_path_dir    = "${::override_weblogic_domain_folder}/applications"
+    $domains_dir =  $wls_domains_dir 
   }
+  if ( $wls_apps_dir == undef ) {
+    $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } else {
+    $apps_dir =  $wls_apps_dir 
+  }
+ 
 
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
   } elsif $version == 1212 {
-    if $::override_weblogic_domain_folder == undef {
-      $nodeMgrHome = "${weblogic_home_dir}/../user_projects/domains/${domain_name}/nodemanager"
-    } else {
-      $nodeMgrHome = "${::override_weblogic_domain_folder}/domains/${domain_name}/nodemanager"
-    }
+    $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
 
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
   }
 
   # check if the domain already exists
-  $found = domain_exists("${domains_path_dir}/${domain_name}", $version, $domains_path_dir)
+  $found = domain_exists("${domains_dir}/${domain_name}", $version, $domains_dir)
 
   if $found == undef {
     $continue = true
@@ -53,7 +54,7 @@ define orawls::copydomain (
     if ($found) {
       $continue = false
     } else {
-      notify { "orawls::wlsdomain ${title} ${domains_path_dir}/${domain_name} ${version} does not exists": }
+      notify { "orawls::wlsdomain ${title} ${domains_dir}/${domain_name} ${version} does not exists": }
       $continue = true
     }
   }
@@ -85,60 +86,45 @@ define orawls::copydomain (
       }
     }
 
-    if $::override_weblogic_domain_folder == undef {
-      # make the default domain folders
+    if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
       if !defined(File["weblogic_domain_folder"]) {
-        # check oracle install folder
-        file { "weblogic_domain_folder":
-          ensure  => directory,
-          path    => "${middleware_home_dir}/user_projects",
-          recurse => false,
-          replace => false,
-          mode    => '0775',
-          owner   => $os_user,
-          group   => $os_group,
-        }
-      }
-    } else {
-      # make override domain folders
-
-      if !defined(File["weblogic_domain_folder"]) {
-        # check oracle install folder
-        file { "weblogic_domain_folder":
-          ensure  => directory,
-          path    => $::override_weblogic_domain_folder,
-          recurse => false,
-          replace => false,
-          mode    => '0775',
-          owner   => $os_user,
-          group   => $os_group,
-        }
+          # check oracle install folder
+          file { "weblogic_domain_folder":
+            ensure  => directory,
+            path    => "${middleware_home_dir}/user_projects",
+            recurse => false,
+            replace => false,
+            mode    => '0775',
+            owner   => $os_user,
+            group   => $os_group,
+          }
+        File["weblogic_domain_folder"] -> File[$domains_dir]  
       }
     }
 
-    if !defined(File[$domains_path_dir]) {
+    if !defined(File[$domains_dir]) {
       # check oracle install folder
-      file { $domains_path_dir:
+      file { $domains_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
-        require => File["weblogic_domain_folder"],
       }
     }
 
-    if !defined(File[$apps_path_dir]) {
-      # check oracle install folder
-      file { $apps_path_dir:
-        ensure  => directory,
-        recurse => false,
-        replace => false,
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-        require => File["weblogic_domain_folder"],
+    if $apps_dir != undef {
+      if !defined(File[$apps_dir]) {
+        # check oracle install folder
+        file { $apps_dir:
+          ensure  => directory,
+          recurse => false,
+          replace => false,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
       }
     }
 
@@ -151,7 +137,12 @@ define orawls::copydomain (
       logoutput => $log_output,
     }
 
-    $unPackCommand = "-domain=${domains_path_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -app_dir=${apps_path_dir} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+    $app_dir_arg = $apps_dir ? {
+      undef      => "",
+      default    => "-app_dir=${apps_dir}"
+    }
+
+    $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
     exec { "unpack ${domain_name}":
       command   => "${weblogic_home_dir}/common/bin/unpack.sh ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
@@ -159,7 +150,7 @@ define orawls::copydomain (
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
-      require   => [File[$domains_path_dir],
+      require   => [File[$domains_dir],
                     Exec["copy domain jar ${domain_name}"]],
     }
 

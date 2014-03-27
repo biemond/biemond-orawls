@@ -15,7 +15,24 @@ Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_t
 
 Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc / x86  
 
-Dependency with hajee/easy_type >= 0.6.2
+Dependency with 
+- hajee/easy_type >= 0.6.2
+- adrien/filemapper >= 1.1.1
+- reidmv/yamlfile >=0.2.0
+
+##Upgrade Notice from versions lower then orawls 0.9.5
+When you already used this orawls module to provision some weblogic domains and you want to upgrade to the latest version then you need to do one of the following steps
+- add a your domains to /etc/wls_domains.yaml
+- or remove the domain and re-create this 
+
+here is an example of a /etc/wls_domains.yaml file
+    ---
+      domains:
+        Wls1036_2: /opt/oracle/wlsdomains/domains/Wls1036_2
+        Wls1036: /opt/oracle/middleware11g/user_projects/domains/Wls1036
+
+this way I can detect all weblogic domains and set the right facts.  
+Also see override WebLogic domain folder
 
 ##Complete examples
 see the following usages below  
@@ -98,6 +115,27 @@ Contains WebLogic Facter which displays the following
 
 default this orawls module uses oracle as weblogic install user  
 you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls  
+
+##Override the default WebLogic domain folder
+
+Set the following hiera parameters for weblogic.pp
+
+    wls_domains_dir:   '/opt/oracle/wlsdomains/domains'
+    wls_apps_dir:      '/opt/oracle/wlsdomains/applications'
+
+Set the following wls_domains_dir & wls_apps_dir parameters in 
+- weblogic.pp
+- domain.pp
+- control.pp
+- packdomain.pp
+- copydomain.pp
+- fmwcluster.pp
+- fmwclusterjrf.pp
+
+or hiera parameters of weblogic.pp
+
+    orawls::weblogic::wls_domains_dir:      *wls_domains_dir
+    orawls::weblogic::wls_apps_dir:         *wls_apps_dir
 
 
 ## Linux low on entropy or urandom fix 

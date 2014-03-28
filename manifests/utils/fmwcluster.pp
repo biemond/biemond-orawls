@@ -80,7 +80,7 @@ define orawls::utils::fmwcluster (
     orawls::control{'ShutdownAdminServerForSoa':
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
-      wls_domains_dir                => $domains_dir,
+      wls_domains_dir            => $domains_dir,
       domain_name                => $domain_name,
       server_type                => 'admin',
       target                     => 'Server',

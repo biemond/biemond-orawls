@@ -11,7 +11,7 @@ def queue(token,token2,location,distributed):
     jndiname      = get('JNDIName') 
     subdeployment = get('SubDeploymentName')
 
-    if distributed == 1:
+    if distributed == '1':
       balancingPolicy  = get('LoadBalancingPolicy')
     else:
       balancingPolicy  = ''  

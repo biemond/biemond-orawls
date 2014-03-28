@@ -11,12 +11,12 @@ define orawls::utils::orainst
 )
 {
   case $::kernel {
-     Linux: {
-        $oraInstPath        = "/etc"
-     }
-     SunOS: {
-        $oraInstPath        = "/var/opt"
-     }
+    Linux: {
+      $oraInstPath        = "/etc"
+    }
+    SunOS: {
+      $oraInstPath        = "/var/opt"
+    }
   }
 
   if !defined(File["${oraInstPath}/oraInst.loc"]) {

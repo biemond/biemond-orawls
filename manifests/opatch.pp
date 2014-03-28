@@ -44,12 +44,12 @@ define orawls::opatch (
       # the patch used by the opatch
       if !defined(File["${download_dir}/${patch_file}"]) {
         file { "${download_dir}/${patch_file}":
-           ensure => present,
-           source => "${mountPoint}/${patch_file}",
-           backup => false,
-           mode   => '0775',
-           owner  => $os_user,
-           group  => $os_group,
+          ensure => present,
+          source => "${mountPoint}/${patch_file}",
+          backup => false,
+          mode   => '0775',
+          owner  => $os_user,
+          group  => $os_group,
         }
       }
 

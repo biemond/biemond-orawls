@@ -110,11 +110,11 @@ define orawls::utils::fmwcluster (
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
     case $::kernel {
       Linux: {
-         $java_statement = "java"
-       }
-       SunOS: {
-         $java_statement = "java -d64"
-       }
+        $java_statement = "java"
+      }
+      SunOS: {
+        $java_statement = "java -d64"
+      }
     }
     $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
 
@@ -127,9 +127,10 @@ define orawls::utils::fmwcluster (
       user        => $os_user,
       group       => $os_group,
       logoutput   => $log_output,
-      require     => [ File["${download_dir}/assignOsbSoaBpmBamToClusters.py"],
-                       Orawls::Control['ShutdownAdminServerForSoa'],
-                     ]
+      require     => [
+                      File["${download_dir}/assignOsbSoaBpmBamToClusters.py"],
+                      Orawls::Control['ShutdownAdminServerForSoa'],
+                    ]
     }
 
     if $soa_enabled == true {
@@ -159,10 +160,11 @@ define orawls::utils::fmwcluster (
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => [ Orawls::Control['ShutdownAdminServerForSoa'],
-                         File["${download_dir}/soa-createUDD.py"],
-                         Exec["execwlst assignOsbSoaBpmBamToClusters.py"],
-                       ]
+        require     => [ 
+                        Orawls::Control['ShutdownAdminServerForSoa'],
+                        File["${download_dir}/soa-createUDD.py"],
+                        Exec["execwlst assignOsbSoaBpmBamToClusters.py"],
+                      ]
       }
       # the py script used by the wlst
       file { "${download_dir}/soa-bpm-createUDD.py":
@@ -184,11 +186,12 @@ define orawls::utils::fmwcluster (
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => [ File["${download_dir}/soa-bpm-createUDD.py"],
-                         Orawls::Control['ShutdownAdminServerForSoa'],
-                         Exec["execwlst assignOsbSoaBpmBamToClusters.py"],
-                         Exec["execwlst soa-createUDD.py"],
-                       ]
+        require     => [
+                        File["${download_dir}/soa-bpm-createUDD.py"],
+                        Orawls::Control['ShutdownAdminServerForSoa'],
+                        Exec["execwlst assignOsbSoaBpmBamToClusters.py"],
+                        Exec["execwlst soa-createUDD.py"],
+                      ]
       }
 
     }
@@ -221,9 +224,9 @@ define orawls::utils::fmwcluster (
         group       => $os_group,
         logoutput   => $log_output,
         require     => [ File["${download_dir}/osb-createUDD.py"],
-                         Orawls::Control['ShutdownAdminServerForSoa'],
-                         Exec[$last_soa_step],
-                       ]
+                          Orawls::Control['ShutdownAdminServerForSoa'],
+                          Exec[$last_soa_step],
+                        ]
       }
     }
 
@@ -270,8 +273,8 @@ define orawls::utils::fmwcluster (
       group       => $os_group,
       logoutput   => $log_output,
       require     => [ File["${download_dir}/changeWorkmanagers.py"],
-                       Orawls::Control['StartupAdminServerForSoa'],
-                     ]
+                        Orawls::Control['StartupAdminServerForSoa'],
+                    ]
     }
 
   }

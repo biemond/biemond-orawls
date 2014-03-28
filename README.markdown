@@ -1499,6 +1499,34 @@ in hiera
           targettype: 'Cluster'
     
 
+###wls_saf_remote_context
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_saf_remote_context
+
+    wls_saf_remote_context { 'jmsClusterModule:RemoteSAFContext-0':
+      ensure        => 'present',
+      connect_url   => 't3://10.10.10.10:7001',
+      weblogic_user => 'weblogic',
+      weblogic_password => 'weblogic1',
+    }
+    wls_saf_remote_context { 'jmsClusterModule:RemoteSAFContext-1':
+      ensure      => 'present',
+      connect_url => 't3://10.10.10.10:7001',
+    }
+
+in hiera
+
+    saf_remote_context_instances:
+      'jmsClusterModule:RemoteSAFContext-0':
+         ensure:            'present'
+         connect_url:       't3://10.10.10.10:7001'
+         weblogic_user:     'weblogic'
+         weblogic_password: 'weblogic1'
+      'jmsClusterModule:RemoteSAFContext-1':
+         ensure:            'present'
+         connect_url:       't3://10.10.10.10:7001'
 
 ## WLST execution
 

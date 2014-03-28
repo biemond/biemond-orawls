@@ -33,7 +33,6 @@ define orawls::copydomain (
   } else {
     $apps_dir =  $wls_apps_dir 
   }
- 
 
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
@@ -156,9 +155,9 @@ define orawls::copydomain (
 
     # the enroll domain.py used by the wlst
     file { "enroll.py ${domain_name} ${title}":
+      ensure  => present,
       path    => "${download_dir}/enroll_domain_${domain_name}.py",
       content => template("orawls/wlst/enrollDomain.py.erb"),
-      ensure  => present,
       replace => true,
       mode    => '0775',
       owner   => $os_user,

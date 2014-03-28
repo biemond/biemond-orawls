@@ -33,7 +33,7 @@ define orawls::control (
     $domains_dir =  $wls_domains_dir 
   }
 
-  $domain_dir = "$domains_dir/$domain_name"
+  $domain_dir = "${domains_dir}/${domain_name}"
   
   case $::kernel {
     Linux: {
@@ -51,7 +51,7 @@ define orawls::control (
   $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   Exec {
-     logoutput => $log_output,
+    logoutput => $log_output,
   }
 
   if $server_type == 'admin' {

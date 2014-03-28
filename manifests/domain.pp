@@ -39,7 +39,7 @@ define orawls::domain (
   } else {
     $apps_dir =  $wls_apps_dir 
   }
- 
+
   $domain_dir = "${domains_dir}/${domain_name}"
   
   # check if the domain already exists
@@ -248,7 +248,7 @@ define orawls::domain (
           ensure  => directory,
           recurse => false,
           replace => false,
-          mode    => 0775,
+          mode    => '0775',
           owner   => $os_user,
           group   => $os_group,
         }
@@ -261,7 +261,7 @@ define orawls::domain (
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
       unless      => "/usr/bin/test -e ${domain_dir}",
-      creates     => "${domain_dir}",
+      creates     => $domain_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
                       File[$domains_dir]],
       timeout     => 0,

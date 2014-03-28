@@ -35,7 +35,7 @@ define orawls::bsu (
 
   if ($continue) {
     if $source == undef {
-      $mountPoint = "puppet:///modules/orawls/"
+      $mountPoint = 'puppet:///modules/orawls/'
     }
     else {
       $mountPoint = $source

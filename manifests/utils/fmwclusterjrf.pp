@@ -88,8 +88,8 @@ define orawls::utils::fmwclusterjrf (
       group       => $os_group,
       logoutput   => $log_output,
       require     => [ File["${download_dir}/${title}_assignJrfToCluster.py"],
-                       Orawls::Control["ShutdownAdminServerForJRF"],
-                     ]
+        Orawls::Control["ShutdownAdminServerForJRF"],
+      ]
     }
 
     #startup adminserver for offline WLST scripts

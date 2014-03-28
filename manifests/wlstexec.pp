@@ -84,11 +84,11 @@ define orawls::wlstexec (
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
     case $::kernel {
       Linux: {
-         $java_statement = "java"
-       }
-       SunOS: {
-         $java_statement = "java -d64"
-       }
+        $java_statement = "java"
+      }
+      SunOS: {
+        $java_statement = "java -d64"
+      }
     }
     $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
 

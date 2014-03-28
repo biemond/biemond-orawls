@@ -128,11 +128,11 @@ class orawls::weblogic (
       Linux: {
         $oraInstPath        = "/etc"
         $java_statement     = "java ${javaParameters}"
-       }
-       SunOS: {
-         $oraInstPath       = "/var/opt"
-         $java_statement    = "java -d64 ${javaParameters}"
-       }
+      }
+      SunOS: {
+        $oraInstPath       = "/var/opt"
+        $java_statement    = "java -d64 ${javaParameters}"
+      }
     }
 
     $file_ext = regsubst($filename, '.*(\.jar)$', '\1')

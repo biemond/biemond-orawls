@@ -16,7 +16,7 @@ module Puppet
     set_command(:wlst)
   
     to_get_raw_resources do
-      Puppet.info "index"
+      Puppet.info "index #{name}"
       wlst template('puppet:///modules/orawls/providers/wls_jms_quota/index.py.erb', binding)
     end
 

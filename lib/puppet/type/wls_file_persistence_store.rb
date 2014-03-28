@@ -16,6 +16,7 @@ module Puppet
     set_command(:wlst)
   
     to_get_raw_resources do
+      Puppet.info "index #{name}"
       wlst template('puppet:///modules/orawls/providers/wls_file_persistence_store/index.py.erb', binding)
     end
 

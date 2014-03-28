@@ -21,7 +21,7 @@ module Puppet
     end
 
     on_create  do | command_builder |
-      Puppet.info "create #{name} "
+      Puppet.info "create #{name}"
       template('puppet:///modules/orawls/providers/wls_jms_subdeployment/create.py.erb', binding)
     end
 
@@ -39,10 +39,11 @@ module Puppet
       identity = lambda {|x| x}
       [
         [
-          /^(.*):(.*)$/,
+          /^((.*):(.*))$/,
           [
+            [ :name, identity ],
             [ :jmsmodule, identity ],
-            [ :name, identity ]
+            [ :subdeployment_name, identity ]
           ]
         ],
         [
@@ -55,11 +56,16 @@ module Puppet
     end
 
     parameter :name
+    parameter :subdeployment_name
     parameter :jmsmodule
     property  :target
     property  :targettype
 
   private 
+
+    def subdeployment_name
+       self[:subdeployment_name]
+    end
 
     def jmsmodule
        self[:jmsmodule]

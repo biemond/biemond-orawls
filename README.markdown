@@ -12,6 +12,7 @@ Got the same options as the wls module but with
 - only for Linux and Solaris
 
 Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_type module  
+[![Powered By EasyType](https://raw.github.com/hajee/easy_type/master/powered_by_easy_type.png)](https://github.com/hajee/easy_type)
 
 Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc / x86  
 

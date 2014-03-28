@@ -4,7 +4,10 @@ rvm:
 bundler_args: --without development
 before_install:
   -  gem update --system 2.1.11
-script: bundle exec rspec spec
+script:
+  - bundle exec rspec spec
+  - bundle exec rake syntax
+  - bundle exec rake lint
 notifications:
   email:
     - biemond@gmail.com

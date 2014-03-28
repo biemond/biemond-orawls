@@ -25,7 +25,7 @@ define orawls::utils::fmwclusterjrf (
     if ( $wls_domains_dir == undef ) {
       $domains_dir = "${middleware_home_dir}/user_projects/domains"
     } else {
-      $domains_dir =  $wls_domains_dir 
+      $domains_dir =  $wls_domains_dir
     }
     $domain_dir = "${domains_dir}/${domain_name}"
 
@@ -111,7 +111,7 @@ define orawls::utils::fmwclusterjrf (
       os_group                   => $os_group,
       download_dir               => $download_dir,
       log_output                 => $log_output,
-      require                    => Exec["execwlst assignJrfToCluster.py ${title}"],       
+      require                    => Exec["execwlst assignJrfToCluster.py ${title}"],
     }
 
   }

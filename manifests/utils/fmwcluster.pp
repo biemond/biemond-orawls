@@ -16,10 +16,10 @@ define orawls::utils::fmwcluster (
   $soa_cluster_name           = undef,
   $bam_cluster_name           = undef,
   $osb_cluster_name           = undef,
-  $bpm_enabled                = false, # true|false 
-  $bam_enabled                = false, # true|false 
-  $osb_enabled                = false, # true|false 
-  $soa_enabled                = false, # true|false 
+  $bpm_enabled                = false, # true|false
+  $bam_enabled                = false, # true|false
+  $osb_enabled                = false, # true|false
+  $soa_enabled                = false, # true|false
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
@@ -31,7 +31,7 @@ define orawls::utils::fmwcluster (
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_dir =  $wls_domains_dir 
+    $domains_dir =  $wls_domains_dir
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
@@ -191,7 +191,7 @@ define orawls::utils::fmwcluster (
                        ]
       }
 
-    } 
+    }
     if $osb_enabled == true {
 
       if ( $soa_enabled  ) {
@@ -246,7 +246,7 @@ define orawls::utils::fmwcluster (
       os_group                   => $os_group,
       download_dir               => $download_dir,
       log_output                 => $log_output,
-      require                    => Exec[$last_step],       
+      require                    => Exec[$last_step],
     }
 
     # the py script used by the wlst

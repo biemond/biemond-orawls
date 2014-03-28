@@ -55,15 +55,15 @@ define orawls::wlstexec (
   }
 
   # use userConfigStore for the connect
-  if $weblogic_password == undef {    
+  if $weblogic_password == undef {
     $useStoreConfig = true
   } else {
-    # override if config and key files are provided 
+    # override if config and key files are provided
     if($userConfigFile != undef and $userKeyFile != undef) {
       $useStoreConfig = true
     }
     else {
-       $useStoreConfig = false
+      $useStoreConfig = false
     }
   }
 

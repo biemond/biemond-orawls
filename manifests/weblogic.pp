@@ -18,25 +18,24 @@ class orawls::weblogic (
   $log_output           = false, # true|false
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
-  
+
   if ( $wls_domains_dir != undef ) {
     # make sure you don't create the middleware home, else root will be owner
     if ($wls_domains_dir == "${middleware_home_dir}/user_projects/domains") {
         $domains_dir =  undef
-    } else { 
-        $domains_dir =  $wls_domains_dir 
+    } else {
+        $domains_dir =  $wls_domains_dir
     }
   }
   if ( $wls_apps_dir != undef ) {
     # make sure you don't create the middleware home, else root will be owner
     if ($wls_apps_dir == "${middleware_home_dir}/user_projects/applications") {
         $apps_dir =  undef
-    } else { 
-        $apps_dir =  $wls_apps_dir 
+    } else {
+        $apps_dir =  $wls_apps_dir
     }
   }
-   
- 
+
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = "orawls/weblogic_silent_install.xml.erb"
   } elsif ( $version == 1212) {
@@ -80,7 +79,7 @@ class orawls::weblogic (
     } else {
       $mountPoint = $source
     }
-    
+
     $oraInventory  = "${oracle_base_home_dir}/oraInventory"
     orawls::utils::orainst { "weblogic orainst ${version}":
       ora_inventory_dir => $oraInventory,
@@ -141,13 +140,13 @@ class orawls::weblogic (
     if $file_ext == '.jar' {
       if ! $jar_file {
         $jar_file = true
-      }    
+      }
     } else {
       $jar_file = false
-    }    
+    }
 
     if $jar_file {
-      $cmd_prefix = "${java_statement} -Xmx1024m -Djava.io.tmpdir=${temp_directory} -jar " 
+      $cmd_prefix = "${java_statement} -Xmx1024m -Djava.io.tmpdir=${temp_directory} -jar "
     } else {
       $cmd_prefix = ""
     }

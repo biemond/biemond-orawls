@@ -39,10 +39,11 @@ module Puppet
       identity = lambda {|x| x}
       [
         [
-          /^(.*):(.*)$/,
+          /^((.*):(.*))$/,
           [
+            [ :name, identity ],
             [ :jmsmodule, identity ],
-            [ :name, identity ]
+            [ :queue_name, identity ]
           ]
         ],
         [
@@ -56,6 +57,7 @@ module Puppet
 
     parameter :name
     parameter :jmsmodule
+    parameter :queue_name
     property  :distributed
     property  :jndiname
     property  :subdeployment
@@ -71,6 +73,10 @@ module Puppet
     property  :timetolive
 
   private 
+
+    def queue_name
+       self[:queue_name]
+    end
 
     def jmsmodule
        self[:jmsmodule]

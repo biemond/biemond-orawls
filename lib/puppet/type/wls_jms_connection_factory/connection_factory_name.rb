@@ -1,9 +1,9 @@
-newparam(:jmsmodule) do
+newparam(:connection_factory_name) do
   include EasyType
   include EasyType::Validators::Name
 
   isnamevar
 
-  desc "The JMS module name"
+  desc "The Connection Factory name"
 
 end

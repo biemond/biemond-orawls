@@ -39,10 +39,11 @@ module Puppet
       identity = lambda {|x| x}
       [
         [
-          /^(.*):(.*)$/,
+          /^((.*):(.*))$/,
           [
+            [ :name, identity ],
             [ :jmsmodule, identity ],
-            [ :name, identity ]
+            [ :connection_factory_name, identity ]
           ]
         ],
         [
@@ -56,6 +57,7 @@ module Puppet
 
     parameter :name
     parameter :jmsmodule
+    parameter :connection_factory_name
     property  :jndiname
     property  :subdeployment
     property  :defaulttargeting
@@ -63,6 +65,10 @@ module Puppet
     property  :xaenabled
 
   private 
+
+    def connection_factory_name
+       self[:connection_factory_name]
+    end
 
     def jmsmodule
        self[:jmsmodule]

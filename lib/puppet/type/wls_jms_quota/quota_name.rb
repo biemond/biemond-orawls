@@ -1,9 +1,9 @@
-newparam(:jmsmodule) do
+newparam(:quota_name) do
   include EasyType
   include EasyType::Validators::Name
 
   isnamevar
 
-  desc "The JMS module name"
+  desc "The quota name"
 
 end

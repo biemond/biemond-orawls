@@ -152,7 +152,7 @@ class orawls::weblogic (
       $cmd_prefix = ""
     }
 
-    notify { "orawls::weblogic $cmd_prefix": }
+    notify { "orawls::weblogic ${cmd_prefix}": }
 
     if ($version == 1212) {
 

@@ -38,15 +38,13 @@ try:
     #cmo.setPassword(dsPassword)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
-    set('MaxCapacity', int(maxcapacity))
+    set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
 
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)
 
-    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
-    cmo.createProperty('user')
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/user')
     cmo.setValue(user)
 
@@ -57,8 +55,13 @@ try:
 
           i = 0
           for property in properties:
+            
               cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
-              cmo.createProperty(property)
+              try:
+                cmo.createProperty(property)
+              except:
+                print "already exists"
+              
               cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/'+property)
               cmo.setValue(values[i])
               i = i + 1

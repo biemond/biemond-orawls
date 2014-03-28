@@ -19,9 +19,9 @@ define orawls::storeuserconfig (
 {
   # the py script used by the wlst*-
   file { "${download_dir}/${title}storeUserConfig.py":
+    ensure  => present,
     path    => "${download_dir}/${title}storeUserConfig.py",
     content => template("orawls/wlst/storeUserConfig.py.erb"),
-    ensure  => present,
     backup  => false,
     replace => true,
     mode    => '0555',

@@ -25,6 +25,8 @@ for token in m.split("dr--"):
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCConnectionPoolParams/' + token )
         maxcapacity     = get('MaxCapacity')
         initialcapacity = get('InitialCapacity')
+        if not (initialcapacity):
+           initialcapacity = '0' 
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')

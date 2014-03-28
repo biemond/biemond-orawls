@@ -53,8 +53,8 @@ define orawls::nodemanager (
           cwd     => $nodeMgrHome,
         }
       }
-      if !defined(File["${log_dir}"]) {
-        file { "${log_dir}":
+      if !defined(File[$log_dir]) {
+        file { $log_dir:
           ensure  => directory,
           recurse => false,
           replace => false,
@@ -92,7 +92,7 @@ define orawls::nodemanager (
 
     exec { "startNodemanager 1212 ${title}":
       command => "nohup ${domains_dir}/${domain_name}/bin/startNodeManager.sh &",
-      unless  => "${checkCommand}",
+      unless  => $checkCommand,
       path    => $exec_path,
       user    => $os_user,
       group   => $os_group,
@@ -127,7 +127,7 @@ define orawls::nodemanager (
       environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                       "JAVA_HOME=${jdk_home_dir}",
                       "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${weblogic_home_dir}/server/native/${nativeLib}"],
-      unless      => "${checkCommand}",
+      unless      => $checkCommand,
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,

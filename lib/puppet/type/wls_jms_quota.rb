@@ -39,10 +39,11 @@ module Puppet
       identity = lambda {|x| x}
       [
         [
-          /^(.*):(.*)$/,
+          /^((.*):(.*))$/,
           [
+            [ :name, identity ],
             [ :jmsmodule, identity ],
-            [ :name, identity ]
+            [ :quota_name, identity ]
           ]
         ],
         [
@@ -56,12 +57,17 @@ module Puppet
 
     parameter :name
     parameter :jmsmodule
+    parameter :quota_name
     property  :bytesmaximum
     property  :messagesmaximum
     property  :policy
     property  :shared
 
   private 
+
+    def quota_name
+       self[:quota_name]
+    end
 
     def jmsmodule
        self[:jmsmodule]

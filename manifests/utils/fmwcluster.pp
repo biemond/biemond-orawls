@@ -77,7 +77,6 @@ define orawls::utils::fmwcluster (
       $last_step = "execwlst soa-bpm-createUDD.py"
     }
 
- 
     if ( $soa_enabled ) {
 
       # the domain.py used by the wlst
@@ -249,10 +248,7 @@ define orawls::utils::fmwcluster (
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => [ File["${download_dir}/osb-createUDD.py"],
-                         Orawls::Control['ShutdownAdminServerForSoa'],
-                         Exec[$last_soa_step],
-                       ]
+        require     => [ File["${download_dir}/osb-createUDD.py"],Orawls::Control['ShutdownAdminServerForSoa'],Exec[$last_soa_step]],
       }
     }
 

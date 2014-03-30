@@ -325,9 +325,6 @@ if osbEnabled == true:
 
 dumpStack();
 
-#assign('SelfTuning.WorkManager', 'weblogic.wsee.mdb.DispatchPolicy', 'Target', OSBClusterName)
-#assign('SelfTuning.WorkManager', 'wm/SOAWorkManager'               , 'Target', SOAClusterName)
-#dumpStack();
 
 assign('ShutdownClass', 'JOC-Shutdown'                                      , 'Target', All)
 assign('ShutdownClass', 'DMSShutdown'                                       , 'Target', All)
@@ -363,8 +360,10 @@ if soaEnabled == true:
 if bamEnabled == true:
     assign('JdbcSystemResource', 'BAMDataSource'       , 'Target', BAMClusterName)
     assign('JdbcSystemResource', 'OraSDPMDataSource'   , 'Target', SoaBam)
+    assign('JdbcSystemResource', 'opssDataSource'      , 'Target', SoaBamAdmin)
 elif soaEnabled == true:
     assign('JdbcSystemResource', 'OraSDPMDataSource'   , 'Target', SOAClusterName)
+    assign('JdbcSystemResource', 'opssDataSource'      , 'Target', SoaAdmin)
 
 if osbEnabled == true:
     assign('JdbcSystemResource', 'wlsbjmsrpDataSource' , 'Target', OsbAdmin)

@@ -5,8 +5,8 @@ machine    = '<%= @adminserver_address %>'
 portNumber = '<%= @adminserver_port %>'
 
 opss_datasource = '<%= @repository_prefix %>_OPSS'
-DOMAIN_PATH='<%= @domain_dir %>/<%= @domain_name %>'
+domain_name     = '<%= @domain_name %>'
 
 connect(wlsUser,password,'t3://'+machine+':'+portNumber)
 
-reassociateSecurityStore(domain=DOMAIN_PATH, servertype="DB_ORACLE",datasourcename=opss_datasource, jpsroot="cn=jpsTestNode", join="false")
+reassociateSecurityStore(domain=domain_name, servertype="DB_ORACLE",datasourcename="jdbc/opssDataSource", jpsroot="cn=SecurityStore", join="false")

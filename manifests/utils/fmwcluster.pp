@@ -20,6 +20,7 @@ define orawls::utils::fmwcluster (
   $bam_enabled                = false, # true|false
   $osb_enabled                = false, # true|false
   $soa_enabled                = false, # true|false
+  $repository_prefix          = hiera('repository_prefix'         , "DEV"),
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
@@ -75,6 +76,31 @@ define orawls::utils::fmwcluster (
     } else  {
       $last_step = "execwlst soa-bpm-createUDD.py"
     }
+
+ 
+    if ( $soa_enabled ) {
+
+      # the domain.py used by the wlst
+      file { "migrateSecurityStore.py ${domain_name} ${title}":
+          ensure  => present,
+          path    => "${download_dir}/migrateSecurityStore_${domain_name}.py",
+          content => template("orawls/wlst/wlstexec/fmw/migrateSecurityStore.py.erb"),
+          replace => true,
+          backup  => false,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+      }
+      exec { "execwlst create OPSS store ${domain} ${title}":
+          command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py ${weblogic_password}",
+          environment => ["JAVA_HOME=${jdk_home_dir}"],
+          require     => File["migrateSecurityStore.py ${domain_name} ${title}"],
+          timeout     => 0,
+          before      => Orawls::Control['ShutdownAdminServerForSoa'],
+          logoutput   => $log_output,
+      }
+    }
+
 
     #shutdown adminserver for offline WLST scripts
     orawls::control{'ShutdownAdminServerForSoa':
@@ -224,9 +250,9 @@ define orawls::utils::fmwcluster (
         group       => $os_group,
         logoutput   => $log_output,
         require     => [ File["${download_dir}/osb-createUDD.py"],
-                          Orawls::Control['ShutdownAdminServerForSoa'],
-                          Exec[$last_soa_step],
-                        ]
+                         Orawls::Control['ShutdownAdminServerForSoa'],
+                         Exec[$last_soa_step],
+                       ]
       }
     }
 

@@ -89,6 +89,9 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_jms_queue
 - wls_jms_topic
 - wls_jms_connection_factory
+- wls_saf_remote_context
+- wls_saf_error_handler
+- wls_saf_imported_destination
 
 
 ##Domain creation options (Dev or Prod mode)
@@ -1528,6 +1531,78 @@ in hiera
       'jmsClusterModule:RemoteSAFContext-1':
          ensure:            'present'
          connect_url:       't3://10.10.10.10:7001'
+
+
+
+###wls_saf_error_handler
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_saf_error_handler
+
+    wls_saf_error_handler { 'jmsClusterModule:ErrorHandling-0':
+      ensure => 'present',
+      policy => 'Discard',
+    }
+    wls_saf_error_handler { 'jmsClusterModule:ErrorHandling-1':
+      ensure    => 'present',
+      logformat => '%header%%properties%',
+      policy    => 'Log',
+    }
+
+in hiera
+
+    saf_error_handler_instances:
+      'jmsClusterModule:ErrorHandling-0':
+         ensure:           'present'
+         policy:           'Discard'
+      'jmsClusterModule:ErrorHandling-1':
+         ensure:           'present'
+         policy:           'Log'
+         logformat:        '%header%%properties%'
+
+###wls_saf_imported_destination
+
+needs wls_setting, title must also contain the jms module name  
+
+or use puppet resource wls_saf_imported_destination
+
+    wls_saf_imported_destination { 'jmsClusterModule:SAFImportedDestinations-0':
+      ensure               => 'present',
+      defaulttargeting     => '1',
+      errorhandling        => 'ErrorHandling-0',
+      jndiprefix           => 'saf_',
+      remotecontext        => 'RemoteSAFContext-0',
+      timetolivedefault    => '1000000000',
+      usetimetolivedefault => '1',
+    }
+    wls_saf_imported_destination { 'jmsClusterModule:SAFImportedDestinations-1':
+      ensure               => 'present',
+      defaulttargeting     => '0',
+      jndiprefix           => 'saf2_',
+      remotecontext        => 'RemoteSAFContext-1',
+      subdeployment        => 'safServers',
+      usetimetolivedefault => '0',
+    }
+
+in hiera
+
+    'jmsClusterModule:SAFImportedDestinations-1':
+      ensure:               'present'
+      defaulttargeting:     '1'
+      jndiprefix:           'saf2_'
+      remotecontext:        'RemoteSAFContext-1'
+    'jmsClusterModule:SAFImportedDestinations-0':
+      ensure:               'present'
+      defaulttargeting:     '0'
+      subdeployment:        'safServers'
+      errorhandling:        'ErrorHandling-1'
+      jndiprefix:           'saf_'
+      remotecontext:        'RemoteSAFContext-0'
+      timetolivedefault:    '100000000'
+      usetimetolivedefault: '1'
+
+
 
 ## WLST execution
 

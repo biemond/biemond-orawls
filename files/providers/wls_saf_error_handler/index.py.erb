@@ -1,0 +1,29 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+m = ls('/JMSSystemResources')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;jmsmodule;policy;logformat;errordestination"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('SAFErrorHandlings')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFErrorHandlings/'+token2)
+                print >>f, ";".join(map(quote, [token+":"+token2,token,cmo.getPolicy(),cmo.getLogFormat(),cmo.getSAFErrorDestination()]))
+ 
+f.close()
+
+disconnect()
+exit()

@@ -1,7 +1,14 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
-name               = '<%= remote_context_name %>'
-jmsmodule          = '<%= jmsmodule %>'
+name                   = '<%= imported_destination_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+errorhandling          = '<%= errorhandling %>'
+remotecontext          = '<%= remotecontext %>'
+jndiprefix             = '<%= jndiprefix %>'
+timetolivedefault      = '<%= timetolivedefault %>'
+usetimetolivedefault   = '<%= usetimetolivedefault %>'
+defaulttargeting       = '<%= defaulttargeting %>'
+subdeployment          = '<%= subdeployment %>'
 
 edit()
 startEdit()
@@ -10,7 +17,31 @@ try:
 
     cd('/')
 
-    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name)
+    cmo.setSAFRemoteContext(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+remotecontext))
+
+    cmo.setJNDIPrefix(jndiprefix)
+
+    if errorhandling:
+      cmo.setSAFErrorHandling(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFErrorHandlings/'+errorhandling))
+    else:
+      cmo.setSAFErrorHandling(None)  
+
+    if timetolivedefault:
+      cmo.setTimeToLiveDefault(long(timetolivedefault))
+    else:
+      cmo.setTimeToLiveDefault(0)  
+
+    if usetimetolivedefault == '1':
+      cmo.setUseSAFTimeToLiveDefault(true)
+    else:
+      cmo.setUseSAFTimeToLiveDefault(false)   
+    
+    if defaulttargeting  == '1':
+      cmo.setDefaultTargetingEnabled(true)
+
+    if subdeployment:
+      cmo.setSubDeploymentName(subdeployment)
 
     save()
     activate()          
@@ -21,6 +52,7 @@ try:
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
+    dumpStack()
     undo('true','y')
     stopEdit('y')
     raise

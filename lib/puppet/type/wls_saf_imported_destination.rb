@@ -58,6 +58,13 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :imported_destination_name
+    property  :errorhandling
+    property  :remotecontext
+    property  :jndiprefix
+    property  :timetolivedefault
+    property  :usetimetolivedefault
+    property  :defaulttargeting
+    property  :subdeployment
 
   private 
 
@@ -67,6 +74,34 @@ module Puppet
 
     def jmsmodule
        self[:jmsmodule]
+    end
+
+    def errorhandling
+       self[:errorhandling]
+    end
+
+    def remotecontext
+       self[:remotecontext]
+    end
+
+    def jndiprefix
+       self[:jndiprefix]
+    end
+
+    def timetolivedefault
+       self[:timetolivedefault]
+    end
+
+    def usetimetolivedefault
+       self[:usetimetolivedefault]
+    end
+
+    def subdeployment
+       self[:subdeployment]
+    end
+
+    def defaulttargeting
+      self[:defaulttargeting]
     end
 
   end

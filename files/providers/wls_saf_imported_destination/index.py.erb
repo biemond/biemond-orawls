@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule"
+print >>f, "name;jmsmodule;remotecontext;errorhandling;jndiprefix;timetolivedefault;usetimetolivedefault;subdeployment;defaulttargeting"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -20,8 +20,35 @@ for token in m.split("dr--"):
         for token2 in n.split("dr--"):
             token2=token2.strip().lstrip().rstrip()
             if not token2 == '':
-                #cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFLoginContext/'+token2)
-                print >>f, ";".join(map(quote, [token+":"+token2,token]))
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+
+                remoteContextMbean  = cmo.getSAFRemoteContext()
+                if remoteContextMbean:
+                   path = getPath(remoteContextMbean)
+                   cd("/"+path) 
+                   remoteContext  = get('Name')
+                   cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                else:
+                   remoteContext = ''
+                
+                errorHandlingMbean = cmo.getSAFErrorHandling()
+                if errorHandlingMbean:
+                   path = getPath(errorHandlingMbean)
+                   cd("/"+path) 
+                   errorHandling = get('Name')
+                   cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                else:
+                   errorHandling = ''
+
+                timeToLiveDefault = cmo.getTimeToLiveDefault()   
+                if not (timeToLiveDefault):
+                  useSAFTimeToLiveDefault = '0'
+                else:
+                  useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')  
+                
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+
+                print >>f, ";".join(map(quote, [token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,cmo.getSubDeploymentName(),str(get('DefaultTargetingEnabled'))]))
  
 f.close()
 

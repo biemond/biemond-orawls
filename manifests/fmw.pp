@@ -25,8 +25,15 @@ define orawls::fmw (
 
   case $::kernel {
     Linux: {
-      $installDir    = "linux64"
       $oraInstPath   = "/etc"
+      case $::architecture {
+        i386: {
+          $installDir    = "linux"
+        }
+        default: {
+          $oraInstPath   = "linux64"
+        }
+      } 
     }
     SunOS: {
       case $::architecture {

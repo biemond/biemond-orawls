@@ -14,7 +14,7 @@ module Utils
 
     include Settings
 
-    DEFAULT_FILE = "~/.wls_setting.yaml"
+    DEFAULT_FILE = "/etc/wls_setting.yaml"
 
     def self.included(parent)
       parent.extend(WlsAccess)

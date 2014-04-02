@@ -149,6 +149,7 @@ define orawls::copydomain (
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
+      timeout   => 0, 
       require   => [File[$domains_dir],
                     Exec["copy domain jar ${domain_name}"]],
     }

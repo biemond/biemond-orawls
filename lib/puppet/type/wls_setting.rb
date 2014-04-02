@@ -6,7 +6,7 @@ module Puppet
   newtype(:wls_setting) do
     include EasyType
 
-    DEFAULT_FILE = "~/.wls_setting.yaml"
+    DEFAULT_FILE = "/etc/wls_setting.yaml"
 
     desc "This resource allows you to set the defaults for all other wls types"
 

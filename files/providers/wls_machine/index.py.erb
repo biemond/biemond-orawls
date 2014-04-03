@@ -18,7 +18,11 @@ for token in m.split("dr--"):
         type = get('Type')
         cd('NodeManager/'+token)
 
-        print >>f, ";".join(map(quote, [token,type,get('NMType'),get('ListenAddress'),str(get('ListenPort'))]))
+        listenAddress = get('ListenAddress')
+        if not (listenAddress):
+           listenAddress = '' 
+
+        print >>f, ";".join(map(quote, [token,type,get('NMType'),listenAddress,str(get('ListenPort'))]))
 
 f.close()
 

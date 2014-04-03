@@ -12,7 +12,12 @@ startEdit()
 try:
     cd('/Machines/'+machineName+'/NodeManager/'+machineName)
     cmo.setNMType(nmType)
-    cmo.setListenAddress(machineDnsName)
+
+    if machineDnsName:
+      cmo.setListenAddress(machineDnsName)
+    else:
+      cmo.setListenAddress(None)  
+
     cmo.setListenPort(portNumber)
 
     save()

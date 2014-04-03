@@ -31,7 +31,7 @@ define orawls::fmw (
           $installDir    = "linux"
         }
         default: {
-          $oraInstPath   = "linux64"
+          $installDir   = "linux64"
         }
       } 
     }

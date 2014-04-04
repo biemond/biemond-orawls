@@ -48,8 +48,13 @@ module Puppet
     property  :arguments
     property  :logfilename
     property  :sslhostnameverificationignored
+    property  :jsseenabled
 
   private 
+
+    def jsseenabled
+      self[:jsseenabled]
+    end
 
     def ssllistenport
       self[:ssllistenport]

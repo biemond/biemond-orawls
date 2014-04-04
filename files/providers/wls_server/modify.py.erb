@@ -10,6 +10,7 @@ listenPort    = <%= listenport %>
 sslEnabled    = <%= sslenabled %>
 sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
 sslListenPort = <%= ssllistenport %>
+jsseenabled   = <%= jsseenabled %>
 
 def format(value):
     if (value):
@@ -42,6 +43,8 @@ try:
     cd('/Servers/'+name+'/SSL/'+name)
 
     set('Enabled', formatBoolean(sslEnabled))
+
+    set('JSSEEnabled',formatBoolean(sslEnabled))
 
     set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
 

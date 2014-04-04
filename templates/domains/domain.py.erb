@@ -6,8 +6,8 @@ DOMAIN='<%= @domain_name %>'
 APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
+JSSE_ENABLED=<%= @jsse_enabled %>
 DEVELOPMENT_MODE=<%= @development_mode %>
-
 WEBLOGIC_VERSION=<%= @version %>
 
 ADMIN_SERVER='<%= @adminserver_name %>'
@@ -93,6 +93,11 @@ create(ADMIN_SERVER,'SSL')
 cd('SSL/'+ADMIN_SERVER)
 set('Enabled', 'False')
 set('HostNameVerificationIgnored', 'True')
+
+if JSSE_ENABLED == true:
+  set('JSSEEnabled','True')
+else:
+  set('JSSEEnabled','False')
 
 print('Set adminserver log')
 cd('/Server/'+ADMIN_SERVER)

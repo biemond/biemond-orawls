@@ -10,6 +10,7 @@ listenPort    = <%= listenport %>
 sslEnabled    = <%= sslenabled %>
 sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
 sslListenPort = <%= ssllistenport %>
+jsseenabled   = <%= jsseenabled %>
 
 
 edit()
@@ -24,6 +25,13 @@ def createBootPropertiesFile(directoryPath,fileName, username, password):
   fileNew.write('password=%s\n' % password)
   fileNew.flush()
   fileNew.close()
+
+def formatBoolean(value):
+    if value == 1:
+        return 'True'
+    else:
+        return 'False'    
+
 
 try:
 
@@ -46,15 +54,11 @@ try:
     
     cd('/Servers/'+name+'/SSL/'+name)
 
-    if sslEnabled == 1:
-        set('Enabled', 'True')
-    else:
-        set('Enabled', 'False')    
-
-    if sslHostnameVerificationIgnored == 1:
-        set('HostnameVerificationIgnored', 'True')
-    else:
-        set('HostnameVerificationIgnored', 'False')    
+    set('Enabled', formatBoolean(sslEnabled))
+    
+    set('JSSEEnabled', formatBoolean(jsseenabled))
+    
+    set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
 
     set('ListenPort', sslListenPort)
     

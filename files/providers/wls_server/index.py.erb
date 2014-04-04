@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/Servers')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;classpath;arguments"
+print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;classpath;arguments;jsseenabled"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -21,6 +21,7 @@ for token in m.split("dr--"):
         sslListenPort                     = str(get('ListenPort'))
         sslEnabled                        = str(get('Enabled'))
         sslHostnameVerificationIgnored    = str(get('HostnameVerificationIgnored'))
+        jsseEnabled                       = str(get('JSSEEnabled'))
 
         cd('/Servers/'+token+'/ServerStart/'+token)
         classpath     = get('ClassPath')
@@ -41,7 +42,7 @@ for token in m.split("dr--"):
             if token2:
                machine = token2
 
-        print >>f, ";".join(map(quote, [token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments]))
+        print >>f, ";".join(map(quote, [token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments,jsseEnabled]))
 f.close()
 
 disconnect()

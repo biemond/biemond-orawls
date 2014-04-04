@@ -5,8 +5,8 @@ DOMAIN='<%= @domain_name %>'
 APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
+JSSE_ENABLED=<%= @jsse_enabled %>
 DEVELOPMENT_MODE=<%= @development_mode %>
-
 WEBLOGIC_VERSION=<%= @version %>
 
 ADMIN_SERVER='<%= @adminserver_name %>'
@@ -104,6 +104,10 @@ create(ADMIN_SERVER,'SSL')
 cd('SSL/'+ADMIN_SERVER)
 set('Enabled', 'False')
 set('HostNameVerificationIgnored', 'True')
+if JSSE_ENABLED == true:
+  set('JSSEEnabled','True')
+else:
+  set('JSSEEnabled','False')
 
 cd('/Server/'+ADMIN_SERVER)
 create(ADMIN_SERVER,'Log')
@@ -266,6 +270,10 @@ create('soa_server1','SSL')
 cd('SSL/soa_server1')
 set('Enabled', 'False')
 set('HostNameVerificationIgnored', 'True')
+if JSSE_ENABLED == true:
+  set('JSSEEnabled','True')
+else:
+  set('JSSEEnabled','False')
 
 
 cd('/Server/soa_server1')
@@ -294,6 +302,11 @@ if BAM_ENABLED == true:
   cd('SSL/bam_server1')
   set('Enabled', 'False')
   set('HostNameVerificationIgnored', 'True')
+
+  if JSSE_ENABLED == true:
+    set('JSSEEnabled','True')
+  else:
+    set('JSSEEnabled','False')
 
 
   cd('/Server/bam_server1')

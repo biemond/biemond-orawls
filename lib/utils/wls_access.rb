@@ -66,6 +66,7 @@ module Utils
 
       def execute_wlst(script, tmpFile, parameters)
         output = `su - #{operatingSystemUser} -c '. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;rm -f /tmp/#{script}.out;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning #{tmpFile.path}'`
+        #Puppet.info "wlst output #{output}"
         raise ArgumentError, "Error executing puppet code, #{output}" if $? != 0
         File.read("/tmp/"+script+".out")
       end

@@ -7,6 +7,7 @@ created by Edwin Biemond email biemond at gmail dot com
 
 Got the same options as the wls module but with 
 - types & providers instead of wlstexec scripts ( detect changes )
+- support for FMW clusters ( SOA Suite,OSB & ADF )
 - optimized for Hiera
 - totally refactored
 - only for Linux and Solaris
@@ -67,8 +68,9 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - creates a standard WebLogic domain
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
-- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters )
+- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
+- Java Secure Socket Extension (JSSE) support
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
@@ -141,6 +143,31 @@ or hiera parameters of weblogic.pp
 
     orawls::weblogic::wls_domains_dir:      *wls_domains_dir
     orawls::weblogic::wls_apps_dir:         *wls_apps_dir
+
+## Java Secure Socket Extension (JSSE) support 
+
+Requires the JDK 7 or 8 JCE extension 
+
+    jdk7::install7{ 'jdk1.7.0_51':
+        version                   => "7u51" , 
+        fullVersion               => "jdk1.7.0_51",
+        alternativesPriority      => 18000, 
+        x64                       => true,
+        downloadDir               => "/data/install",
+        urandomJavaFix            => true,
+        rsakeySizeFix             => true,
+        cryptographyExtensionFile => "UnlimitedJCEPolicyJDK7.zip",  <!---
+        sourcePath                => "/software",
+    }
+
+To enable this in orawls you can set the jsse_enabled on the following manifests
+- nodemanager.pp
+- domain.pp
+- control.pp
+
+or set the following hiera parameter
+     
+     wls_jsse_enabled:         true
 
 
 ## Linux low on entropy or urandom fix 

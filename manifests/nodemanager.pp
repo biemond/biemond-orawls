@@ -9,6 +9,7 @@ define orawls::nodemanager (
   $nodemanager_port          = hiera('domain_nodemanager_port'   , 5556),
   $nodemanager_address       = undef,
   $nodemanager_java_mem_args = hiera('nodemanager_java_mem_args' , '-Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m'),
+  $jsse_enabled              = hiera('wls_jsse_enabled'          , false),
   $wls_domains_dir           = hiera('wls_domains_dir'           , undef),
   $domain_name               = hiera('domain_name'               , undef),
   $jdk_home_dir              = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
@@ -18,7 +19,6 @@ define orawls::nodemanager (
   $log_dir                   = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                = false, # true|false
 )
-
 {
 
   if ( $wls_domains_dir == undef ) {
@@ -27,16 +27,17 @@ define orawls::nodemanager (
     $domains_dir =  $wls_domains_dir 
   }
 
-
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
-
+    $startHome   = "${weblogic_home_dir}/server/bin"
   } elsif $version == 1212 {
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
-
+    $startHome   = "${domains_dir}/${domain_name}/bin"
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
+    $startHome   = "${weblogic_home_dir}/server/bin"
   }
+
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   if $log_dir == undef {
@@ -86,33 +87,7 @@ define orawls::nodemanager (
   }
 
   # nodemanager is part of the domain creation
-  if $version == "1212" {
-
-    $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
-
-    exec { "startNodemanager 1212 ${title}":
-      command => "nohup ${domains_dir}/${domain_name}/bin/startNodeManager.sh &",
-      unless  => $checkCommand,
-      path    => $exec_path,
-      user    => $os_user,
-      group   => $os_group,
-      cwd     => $nodeMgrHome,
-    }
-
-    exec { "sleep 20 sec for wlst exec ${title}":
-      command     => "/bin/sleep 20",
-      subscribe   => Exec["startNodemanager 1212 ${title}"],
-      refreshonly => true,
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      cwd         => $nodeMgrHome,
-    }
-  } elsif (  $version == 1111 or $version == 1036 or $version == 1211 ){
-
-
-    $javaCommand = "${java_statement} -client ${$nodemanager_java_mem_args} -DListenPort=${nodemanager_port} -Dbea.home=${weblogic_home_dir} -Dweblogic.nodemanager.JavaHome=${jdk_home_dir} -Djava.security.policy=${weblogic_home_dir}/server/lib/weblogic.policy -Xverify:none weblogic.NodeManager -v"
-
+  if (  $version == 1111 or $version == 1036 or $version == 1211 ){
     file { "nodemanager.properties ux ${title}":
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
@@ -120,29 +95,32 @@ define orawls::nodemanager (
       content => template("orawls/nodemgr/nodemanager.properties.erb"),
       owner   => $os_user,
       group   => $os_group,
+      before  => Exec["startNodemanager ${title}"],
     }
+  }
 
-    exec { "execwlst ux nodemanager ${title}":
-      command     => "/usr/bin/nohup ${javaCommand} &",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-                      "JAVA_HOME=${jdk_home_dir}",
-                      "LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:${weblogic_home_dir}/server/native/${nativeLib}"],
-      unless      => $checkCommand,
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      cwd         => $nodeMgrHome,
-      require     => File["nodemanager.properties ux ${title}"],
-    }
+  if $jsse_enabled == true {
+    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true"
+  } else {
+    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false"
+  }
 
-    exec { "sleep 5 sec for wlst exec ${title}":
-      command     => "/bin/sleep 5",
-      subscribe   => Exec["execwlst ux nodemanager ${title}"],
+  exec { "startNodemanager ${title}":
+    command     => "nohup ${startHome}/startNodeManager.sh &",
+    environment => $env,
+    unless      => $checkCommand,
+    path        => $exec_path,
+    user        => $os_user,
+    group       => $os_group,
+    cwd         => $nodeMgrHome,
+  }
+
+  exec { "sleep 20 sec for wlst exec ${title}":
+      command     => "/bin/sleep 20",
+      subscribe   => Exec["startNodemanager ${title}"],
       refreshonly => true,
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
-      cwd         => $nodeMgrHome,
-    }
   }
 }

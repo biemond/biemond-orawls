@@ -125,22 +125,23 @@ class orawls::weblogic (
     }
 
     case $::kernel {
-      Linux: {
+      'Linux': {
         $oraInstPath        = "/etc"
         $java_statement     = "java ${javaParameters}"
       }
-      SunOS: {
+      'SunOS': {
         $oraInstPath       = "/var/opt"
         $java_statement    = "java -d64 ${javaParameters}"
+      }
+      default: {
+        fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
       }
     }
 
     $file_ext = regsubst($filename, '.*(\.jar)$', '\1')
 
     if $file_ext == '.jar' {
-      if ! $jar_file {
-        $jar_file = true
-      }
+      $jar_file = true
     } else {
       $jar_file = false
     }

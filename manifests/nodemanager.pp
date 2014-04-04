@@ -68,17 +68,20 @@ define orawls::nodemanager (
   }
 
   case $::kernel {
-    Linux: {
+    'Linux': {
       $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
       $nativeLib      = "linux/x86_64"
       $suCommand      = "su -l ${os_user}"
       $java_statement = "java"
     }
-    SunOS: {
+    'SunOS': {
       $checkCommand   = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.NodeManager'"
       $nativeLib      = "solaris/x64"
       $suCommand      = "su - ${os_user}"
       $java_statement = "java -d64"
+    }
+    default: {
+      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
     }
   }
 

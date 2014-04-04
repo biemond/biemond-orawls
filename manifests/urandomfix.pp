@@ -17,8 +17,8 @@ class orawls::urandomfix () {
 
   package { "rng-tools": ensure => present, }
 
-  case $operatingsystem {
-    CentOS, RedHat, OracleLinux : {
+  case $::operatingsystem {
+    'CentOS', 'RedHat', 'OracleLinux' : {
       exec { "set urandom /etc/sysconfig/rngd":
         command => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
         unless  => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
@@ -43,7 +43,7 @@ class orawls::urandomfix () {
       }
 
     }
-    Ubuntu, Debian, SLES: {
+    'Ubuntu', 'Debian', 'SLES': {
       exec { "set urandom /etc/default/rng-tools":
         command => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
         unless  => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",
@@ -59,6 +59,8 @@ class orawls::urandomfix () {
         require => Exec["set urandom /etc/default/rng-tools"],
       }
     }
-
+    default: {
+      fail("Unrecognized operating system ${::operatingsystem}, please use it on a Linux host")
+    }    
   }
 }

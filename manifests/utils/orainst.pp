@@ -11,11 +11,14 @@ define orawls::utils::orainst
 )
 {
   case $::kernel {
-    Linux: {
+    'Linux': {
       $oraInstPath        = "/etc"
     }
-    SunOS: {
+    'SunOS': {
       $oraInstPath        = "/var/opt"
+    }
+    default: {
+        fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
     }
   }
 

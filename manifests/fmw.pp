@@ -24,10 +24,10 @@ define orawls::fmw (
   $oraInventory  = "${oracle_base_home_dir}/oraInventory"
 
   case $::kernel {
-    Linux: {
+    'Linux': {
       $oraInstPath   = "/etc"
       case $::architecture {
-        i386: {
+        'i386': {
           $installDir    = "linux"
         }
         default: {
@@ -35,9 +35,9 @@ define orawls::fmw (
         }
       } 
     }
-    SunOS: {
+    'SunOS': {
       case $::architecture {
-        i86pc: {
+        'i86pc': {
           $oraInstPath   = "/var/opt"
           $installDir    = "intelsolaris"
         }
@@ -47,6 +47,10 @@ define orawls::fmw (
         }
       }
     }
+    default: {
+      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
+    }    
+
   }
 
   if      ( $fmw_product == "adf" ) {

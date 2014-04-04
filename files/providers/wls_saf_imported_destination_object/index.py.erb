@@ -1,0 +1,58 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+
+def object(token,token2,token3,location,type):
+    cd(location)
+
+    remotejndiname    = cmo.getRemoteJNDIName()
+    nonpersistentqos  = cmo.getNonPersistentQos()
+    localjndiname     = cmo.getLocalJNDIName()
+    unitoforder       = cmo.getUnitOfOrderRouting()
+
+    timeToLiveDefault = cmo.getTimeToLiveDefault()   
+    if not (timeToLiveDefault):
+      useSAFTimeToLiveDefault = '0'
+    else:
+      useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')  
+
+    print >>f, ";".join(map(quote, [token+":"+token2+":"+token3,token,token2,type,timeToLiveDefault,useSAFTimeToLiveDefault,unitoforder,nonpersistentqos,remotejndiname,localjndiname]))
+
+
+m = ls('/JMSSystemResources')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('SAFImportedDestinations')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                l = ls('SAFQueues')
+                for token3 in l.split("dr--"):
+                    token3=token3.strip().lstrip().rstrip()
+                    if not token3 == '':
+                       object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFQueues/'+token3,"queue") 
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                l = ls('SAFTopics')
+                for token3 in l.split("dr--"):
+                    token3=token3.strip().lstrip().rstrip()
+                    if not token3 == '':
+                       object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFTopics/'+token3,"topic") 
+
+ 
+f.close()
+
+disconnect()
+exit()

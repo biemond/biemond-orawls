@@ -1,0 +1,60 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name                   = '<%= object_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+imported_destination   = '<%= imported_destination %>'
+timetolivedefault      = '<%= timetolivedefault %>'
+usetimetolivedefault   = '<%= usetimetolivedefault %>'
+object_type            = '<%= object_type %>'
+unitoforderrouting     = '<%= unitoforderrouting %>'
+nonpersistentqos       = '<%= nonpersistentqos %>'
+remotejndiname         = '<%= remotejndiname %>'
+localjndiname          = '<%= localjndiname %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination)
+
+    if object_type == "queue":
+        cmo.createSAFQueue(name)
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFQueues/'+name)
+    else:
+        cmo.createSAFTopic(name)
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFTopics/'+name)
+
+    cmo.setRemoteJNDIName(remotejndiname)
+    cmo.setNonPersistentQos(nonpersistentqos)
+    cmo.setLocalJNDIName(localjndiname)
+    cmo.setUnitOfOrderRouting(unitoforderrouting)
+
+    if timetolivedefault:
+      cmo.setTimeToLiveDefault(long(timetolivedefault))
+    else:
+      cmo.setTimeToLiveDefault(0)  
+
+    if usetimetolivedefault == '1':
+      cmo.setUseSAFTimeToLiveDefault(true)
+    else:
+      cmo.setUseSAFTimeToLiveDefault(false)   
+    
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    dumpStack()
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

@@ -92,6 +92,7 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_saf_remote_context
 - wls_saf_error_handler
 - wls_saf_imported_destination
+- wls_saf_imported_destination_object
 
 
 ##Domain creation options (Dev or Prod mode)
@@ -1600,6 +1601,47 @@ in hiera
       timetolivedefault:    '100000000'
       usetimetolivedefault: '1'
 
+###wls_saf_imported_destination_object
+
+needs wls_setting, title must also contain the jms module name and imported_destination 
+
+or use puppet resource wls_saf_imported_destination_object
+
+    wls_saf_imported_destination_object { 'jmsClusterModule:SAFImportedDestinations-0:SAFDemoQueue':
+      ensure               => 'present',
+      nonpersistentqos     => 'Exactly-Once',
+      object_type          => 'queue',
+      remotejndiname       => 'jms/DemoQueue',
+      unitoforderrouting   => 'Hash',
+      usetimetolivedefault => '0',
+    }
+    wls_saf_imported_destination_object { 'jmsClusterModule:SAFImportedDestinations-0:SAFDemoTopic':
+      ensure               => 'present',
+      nonpersistentqos     => 'Exactly-Once',
+      object_type          => 'topic',
+      remotejndiname       => 'jms/DemoTopic',
+      timetolivedefault    => '100000000',
+      unitoforderrouting   => 'Hash',
+      usetimetolivedefault => '1',
+    }
+
+in hiera
+
+    saf_imported_destination_object_instances:
+      'jmsClusterModule:SAFImportedDestinations-0:SAFDemoQueue':
+          ensure:                'present'
+          object_type:           'queue'
+          remotejndiname:        'jms/DemoQueue'
+          unitoforderrouting:    'Hash'
+          nonpersistentqos:      'Exactly-Once'
+      'jmsClusterModule:SAFImportedDestinations-0:SAFDemoTopic':
+          ensure:                'present'
+          object_type:           'topic'
+          remotejndiname:        'jms/DemoTopic'
+          timetolivedefault:     '100000000'
+          unitoforderrouting:    'Hash'
+          usetimetolivedefault:  '1'
+          nonpersistentqos:      'Exactly-Once'
 
 
 ## WLST execution

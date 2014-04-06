@@ -263,11 +263,8 @@ define orawls::domain (
     if ( $version == "1212" and $domain_template == 'adf' ) {
       # only works for a 12c middleware home
       # creates RCU for ADF
-      if ( $rcu_database_url        == undefined or
-           $repository_sys_password  == undefined or
-           $repository_password      == undefined or
-           $repository_prefix        == undefined
-      ) {
+      if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ) 
+      {
         fail("Not all RCU parameters are provided")
       }
 

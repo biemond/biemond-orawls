@@ -18,11 +18,11 @@ define orawls::utils::rcu(
 
   case $::kernel {
     'Linux','SunOS': {
-       $execPath = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
-     }
-     default: {
-       fail("Unrecognized operating system")
-     }
+      $execPath = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+    }
+    default: {
+      fail("Unrecognized operating system")
+    }
   }
 
   if $fmw_product == 'adf' {

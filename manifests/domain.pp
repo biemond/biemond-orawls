@@ -16,6 +16,7 @@ define orawls::domain (
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $java_arguments             = hiera('java_arguments', {}),               # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
+  $nodemanager_address        = undef,
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
@@ -26,8 +27,10 @@ define orawls::domain (
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
   $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $rcu_database_url           = undef,                                      #localhost:1521:XE"
   $repository_prefix          = hiera('repository_prefix'         , "DEV"),
   $repository_password        = hiera('repository_password'       , "Welcome01"),
+  $repository_sys_password    = undef,
 )
 {
   if ( $wls_domains_dir == undef ) {
@@ -257,6 +260,34 @@ define orawls::domain (
       File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
+    if ( $version == "1212" and $domain_template == 'adf' ) {
+      # only works for a 12c middleware home
+      # creates RCU for ADF
+      if ( $rcu_database_url        == undefined or
+           $repository_sys_password  == undefined or
+           $repository_password      == undefined or
+           $repository_prefix        == undefined
+      ) {
+        fail("Not all RCU parameters are provided")
+      }
+
+      orawls::utils::rcu{ "RCU_12c ${title}":
+        fmw_product                 => 'adf',
+        oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
+        jdk_home_dir                => $jdk_home_dir,
+        os_user                     => $os_user,
+        os_group                    => $os_group,
+        download_dir                => $download_dir,
+        rcu_action                  => 'create',
+        rcu_database_url            => $rcu_database_url,
+        rcu_sys_password            => $repository_sys_password,
+        rcu_prefix                  => $repository_prefix,
+        rcu_password                => $repository_password,
+        log_output                  => $log_output,
+        before                      => Exec["execwlst ${domain_name} ${title}"],
+      }
+    }
+
     # create domain
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh ${download_dir}/domain_${domain_name}.py",
@@ -338,7 +369,6 @@ define orawls::domain (
     }
 
     $nodeMgrHome = "${domain_dir}/nodemanager"
-    $listenPort   = $nodemanager_port
 
     # set our 12.1.2 nodemanager properties
     if ($version == 1212) {

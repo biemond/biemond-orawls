@@ -65,11 +65,12 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
 - apply a BSU patch on a Middleware home ( < 12.1.2 )
 - apply an OPatch on a Middleware home or a Oracle product home
-- creates a standard WebLogic domain
+- creates a WebLogic domain
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
 - OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
+- Change FMW log location of a managed server
 - Java Secure Socket Extension (JSSE) support
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
@@ -155,7 +156,7 @@ Requires the JDK 7 or 8 JCE extension
         x64                       => true,
         downloadDir               => "/data/install",
         urandomJavaFix            => true,
-        rsakeySizeFix             => true,
+        rsakeySizeFix             => true,                          <!-- 
         cryptographyExtensionFile => "UnlimitedJCEPolicyJDK7.zip",  <!---
         sourcePath                => "/software",
     }
@@ -413,7 +414,7 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
-    $opatch_instances = hiera('opatch_instances', [])
+    $opatch_instances = hiera('opatch_instances', {})
     create_resources('orawls::opatch',$opatch_instances, $default_params)
   
 
@@ -475,7 +476,7 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
-    $bsu_instances = hiera('bsu_instances', [])
+    $bsu_instances = hiera('bsu_instances', {})
     create_resources('orawls::bsu',$bsu_instances, $default_params)
   
 
@@ -537,7 +538,7 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
-    $fmw_installations = hiera('fmw_installations', [])
+    $fmw_installations = hiera('fmw_installations', {})
     create_resources('orawls::fmw',$fmw_installations, $default_params)
 
 
@@ -605,7 +606,7 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default = {}
-    $domain_instances = hiera('domain_instances', [])
+    $domain_instances = hiera('domain_instances', {})
     create_resources('orawls::domain',$domain_instances, $default)
 
 
@@ -677,7 +678,7 @@ when you just have one WebLogic domain on a server
 pack a WebLogic Domain and add this to the download folder
 
     $default_params = {}
-    $pack_domain_instances = hiera('pack_domain_instances', [])
+    $pack_domain_instances = hiera('pack_domain_instances', {})
     create_resources('orawls::packdomain',$pack_domain_instances, $default_params)
 
 
@@ -695,7 +696,7 @@ Configuration with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
-    $copy_instances = hiera('copy_instances', [])
+    $copy_instances = hiera('copy_instances', {})
     create_resources('orawls::copydomain',$copy_instances, $default_params)
 
 
@@ -826,7 +827,7 @@ or when you set the defaults hiera variables
 Same configuration but then with Hiera ( need to have puppet > 3.0 )    
  
     $default = {}
-    $control_instances = hiera('control_instances', [])
+    $control_instances = hiera('control_instances', {})
     create_resources('orawls::control',$control_instances, $default)
  
  
@@ -916,7 +917,6 @@ when you set the defaults hiera variables
       adminserver_port           => 7001,
       weblogic_password          => "weblogic1",
       user_config_dir            => '/home/oracle',
-      weblogic_password          => undef,
       log_output                 => false,
     }
 
@@ -924,7 +924,7 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
  
     notify { 'class userconfig':} 
     $default_params = {}
-    $userconfig_instances = hiera('userconfig_instances', [])
+    $userconfig_instances = hiera('userconfig_instances', {})
     create_resources('orawls::storeuserconfig',$userconfig_instances, $default_params)
  
 vagrantcentos64.example.com.yaml
@@ -955,6 +955,39 @@ when you just have one WebLogic domain on a server
       'Wls12c':
          log_output:           true
          user_config_dir:      '/home/oracle'
+
+###orawls::fmwlogdir 
+Change a log folder location of a FMW server  
+when you set the defaults hiera variables
+
+    orawls::fmwlogdir{'AdminServer':
+      middleware_home_dir    => "/opt/oracle/middleware11gR1",
+      weblogic_user          => "weblogic",
+      weblogic_password      => "weblogic1",
+      os_user                => "oracle",
+      os_group               => "dba",
+      download_dir           => "/data/install"
+      log_dir                => "/var/log/weblogic"
+      adminserver_address    => "localhost",
+      adminserver_port       => 7001,
+      server                 => "AdminServer",
+      log_output             => false,
+    }
+
+Same configuration but then with Hiera ( need to have puppet > 3.0 )    
+ 
+    $default_params = {}
+    $fmwlogdir_instances = hiera('fmwlogdir_instances', {})
+    create_resources('orawls::fmwlogdir',$fmwlogdir_instances, $default_params)
+ 
+vagrantcentos64.example.com.yaml
+or when you set the defaults hiera variables
+
+    ---
+    fmwlogdir_instances:
+      'AdminServer':
+         log_output:      true
+         server:          'AdminServer'
 
 
 ### orawls::utils::fmwcluster

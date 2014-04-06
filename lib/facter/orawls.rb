@@ -559,7 +559,7 @@ def get_domain(domain_path,n)
     libraries   = ""
     root.elements.each("library") do |libs|
       libraries += libs.elements['name'].text + ";"
-      if libs.elements['name'].text == "adf.oracle.domain#1.0@11.1.1.2.0" 
+      if ( libs.elements['name'].text.include? "adf.oracle.domain#1.0" )
          jrfTargets = libs.elements['target'].text
       end 
 

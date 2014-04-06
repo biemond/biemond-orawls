@@ -22,9 +22,9 @@ ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
 
-ADF_REPOS_DBURL='<%= @reposDbUrl %>'
-ADF_REPOS_DBUSER_PREFIX='<%= @reposPrefix %>'
-ADF_REPOS_DBPASSWORD='<%= @reposPassword %>'
+ADF_REPOS_DBURL='<%= @repository_database_url %>'
+ADF_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+ADF_REPOS_DBPASSWORD='<%= @repository_password %>'
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):
   serverDir = File(directoryPath)
@@ -44,9 +44,6 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.write('Arguments=%s\n' % args)
   fileNew.flush()
   fileNew.close()
-
-
-
 
 print('Start...adf domain with template <%= @template %>')
 readTemplate('<%= @template %>')
@@ -101,6 +98,7 @@ create(ADMIN_SERVER,'SSL')
 cd('SSL/'+ADMIN_SERVER)
 set('Enabled', 'False')
 set('HostNameVerificationIgnored', 'True')
+
 if JSSE_ENABLED == true:
   set('JSSEEnabled','True')
 else:
@@ -114,8 +112,6 @@ set('FileCount',10)
 set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
-
-
 
 
 print('Set password...')
@@ -170,9 +166,9 @@ addTemplate('<%= @templateEM %>')
 
 dumpStack();
 
+print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-
-if WEBLOGIC_VERSION == "1212":
+if WEBLOGIC_VERSION == 1212:
 
     print 'Add advanced JAX-WS Template'
     addTemplate('<%= @templateJaxWS %>')

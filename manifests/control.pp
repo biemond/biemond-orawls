@@ -97,7 +97,8 @@ define orawls::control (
   if $action == 'start' {
     exec { "execwlst ${title}${script} ":
       command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", 
+                      "JAVA_HOME=${jdk_home_dir}"],
       unless      => $checkCommand,
       require     => File["${download_dir}/${title}${script}"],
       path        => $exec_path,
@@ -108,7 +109,8 @@ define orawls::control (
   } elsif $action == 'stop' {
     exec { "execwlst ${title}${script} ":
       command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
+      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                      "JAVA_HOME=${jdk_home_dir}"],
       onlyif      => $checkCommand,
       require     => File["${download_dir}/${title}${script}"],
       path        => $exec_path,

@@ -1,0 +1,44 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+def object(token,token2,token3,location,type):
+    cd(location)
+    print >>f, ";".join(map(quote, [token+":"+token2+":"+token3,token,token2,type,cmo.getLocalJNDIName(),cmo.getRemoteJNDIName()]))
+
+m = ls('/JMSSystemResources')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;jmsmodule;foreign_server;object_type;localjndiname;remotejndiname"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('ForeignServers')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+                l = ls('ForeignDestinations')
+                for token3 in l.split("dr--"):
+                    token3=token3.strip().lstrip().rstrip()
+                    if not token3 == '':
+                       object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignDestinations/'+token3,"destination") 
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+                l = ls('ForeignConnectionFactories')
+                for token3 in l.split("dr--"):
+                    token3=token3.strip().lstrip().rstrip()
+                    if not token3 == '':
+                       object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignConnectionFactories/'+token3,"connectionfactory") 
+
+ 
+f.close()
+
+disconnect()
+exit()

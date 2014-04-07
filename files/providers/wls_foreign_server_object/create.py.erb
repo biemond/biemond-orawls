@@ -1,0 +1,40 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name                   = '<%= object_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+foreign_server_name    = '<%= foreign_server_name %>'
+object_type            = '<%= object_type %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name)
+
+    if object_type == "destination":
+        cmo.createForeignDestination(name)
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignDestinations/'+name)
+
+    if object_type == "connectionfactory":
+        cmo.createForeignConnectionFactory(name)
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignConnectionFactories/'+name)
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    dumpStack()
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

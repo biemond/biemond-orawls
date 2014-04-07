@@ -1,0 +1,43 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+m = ls('/JMSSystemResources')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;jmsmodule;subdeployment;defaulttargeting;extraproperties;extrapropertiesvalues;connectionurl;initialcontextfactory"
+
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('ForeignServers')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+
+                p = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties')
+                properties     = []
+                propertyValues = []
+                for token3 in p.split("dr--"):
+                    token3=token3.strip().lstrip().rstrip()
+                    if not token3 == '':
+                       properties.append(token3)
+                       cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties/'+token3)
+                       propertyValues.append(get('Value'))
+                
+
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+                print >>f, ";".join(map(quote, [token+":"+token2,token,cmo.getSubDeploymentName(),str(get('DefaultTargetingEnabled')),','.join(properties),','.join(propertyValues),cmo.getConnectionURL(),cmo.getInitialContextFactory()]))
+ 
+f.close()
+
+disconnect()
+exit()

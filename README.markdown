@@ -79,6 +79,8 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 ##Wls types and providers ( ensurable, create,modify,destroy ) + puppet resource
 
 - wls_setting, set the default wls parameters for the other types and also used by puppet resource
+- wls_user
+- wls_group
 - wls_machine
 - wls_server
 - wls_cluster
@@ -1027,6 +1029,88 @@ hiera configuration
         weblogic_user      => 'weblogic',
         weblogic_password  => 'weblogic1',
       }
+
+###wls_user
+
+it needs wls_setting  
+
+or use puppet resource wls_user
+
+    wls_user { 'OracleSystemUser':
+      ensure                 => 'present',
+      authenticationprovider => 'DefaultAuthenticator',
+      description            => 'Oracle application software system user.',
+      realm                  => 'myrealm',
+    }
+    wls_user { 'testuser1':
+      ensure                 => 'present',
+      authenticationprovider => 'DefaultAuthenticator',
+      description            => 'testuser1',
+      realm                  => 'myrealm',
+    }
+
+in hiera
+
+    $default_params = {}
+    $user_instances = hiera('user_instances', {})
+    create_resources('wls_user',$user_instances, $default_params)
+
+
+    user_instances:
+      'testuser1':
+        ensure:                 'present'
+        password:               'weblogic1'
+        authenticationprovider: 'DefaultAuthenticator'
+        realm:                  'myrealm'
+        description:            'my test user'
+      'testuser2':
+        ensure:                 'present'
+        password:               'weblogic1'
+        authenticationprovider: 'DefaultAuthenticator'
+        realm:                  'myrealm'
+        description:            'my test user'
+
+###wls_group
+
+it needs wls_setting  
+
+or use puppet resource wls_group
+
+    wls_group { 'SuperUsers':
+      ensure                 => 'present',
+      authenticationprovider => 'DefaultAuthenticator',
+      description            => 'SuperUsers',
+      realm                  => 'myrealm',
+      users                  => 'testuser2',
+    }
+    wls_group { 'TestGroup':
+      ensure                 => 'present',
+      authenticationprovider => 'DefaultAuthenticator',
+      description            => 'TestGroup',
+      realm                  => 'myrealm',
+      users                  => 'testuser1,testuser2',
+    }
+
+in hiera
+
+    $default_params = {}
+    $group_instances = hiera('group_instances', {})
+    create_resources('wls_group',$group_instances, $default_params)
+
+    group_instances:
+      'TestGroup':
+        ensure:                 'present'
+        authenticationprovider: 'DefaultAuthenticator'
+        description:            'TestGroup'
+        realm:                  'myrealm'
+        users:                  'testuser1,testuser2'
+      'SuperUsers':
+        ensure:                 'present'
+        authenticationprovider: 'DefaultAuthenticator'
+        description:            'SuperUsers'
+        realm:                  'myrealm'
+        users:                  'testuser2'
+
 
 ###wls_machine
 

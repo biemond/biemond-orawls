@@ -29,7 +29,7 @@ define orawls::fmw (
       $oraInstPath   = "/etc"
       case $::architecture {
         'i386': {
-          $installDir    = "linux"
+          $installDir   = "linux"
         }
         default: {
           $installDir   = "linux64"
@@ -37,13 +37,12 @@ define orawls::fmw (
       } 
     }
     'SunOS': {
+      $oraInstPath   = "/var/opt"
       case $::architecture {
         'i86pc': {
-          $oraInstPath   = "/var/opt"
           $installDir    = "intelsolaris"
         }
         default: {
-          $oraInstPath   = "/var/opt"
           $installDir    = "solaris"
         }
       }
@@ -58,43 +57,32 @@ define orawls::fmw (
     $fmw_silent_response_file = "orawls/fmw_silent_adf.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/oracle_common"
     $total_files              = 1
-    $last_extract_check       = "extract ${fmw_file1}"
-    $last_download_check      = "${download_dir}/${fmw_file1}"
 
   } elsif ( $fmw_product == "soa" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_soa.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_SOA1"
     $total_files              = 2
-    $last_extract_check       = "extract ${fmw_file2}"
-    $last_download_check      = "${download_dir}/${fmw_file2}"
 
   } elsif ( $fmw_product == "osb" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_osb.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_OSB1"
     $total_files              = 1
-    $last_extract_check       = "extract ${fmw_file1}"
-    $last_download_check      = "${download_dir}/${fmw_file1}"
 
   } elsif ( $fmw_product == "oim" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_oim.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_IDM1"
     $total_files              = 2
-    $last_extract_check       = "extract ${fmw_file2}"
-    $last_download_check      = "${download_dir}/${fmw_file2}"
 
   } elsif ( $fmw_product == "wc" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_wc.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_WC1"
     $total_files              = 1
-    $last_extract_check       = "extract ${fmw_file1}"
-    $last_download_check      = "${download_dir}/${fmw_file1}"
 
   } elsif ( $fmw_product == "wcc" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_wcc.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_WCC1"
     $total_files              = 2
-    $last_extract_check       = "extract ${fmw_file2}"
-    $last_download_check      = "${download_dir}/${fmw_file2}"
+
   } else {
     fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc')
   }
@@ -193,8 +181,9 @@ define orawls::fmw (
           group     => $os_group,
           logoutput => false,
           require   => [File["${download_dir}/${fmw_file2}"],
-                        Exec["extract ${fmw_file1}"]
-                      ],
+                        Exec["extract ${fmw_file1}"],
+                       ],
+          before    => Exec["install ${fmw_product} ${title}"],             
         }
       } else {
         exec { "extract ${fmw_file2}":
@@ -203,18 +192,18 @@ define orawls::fmw (
           user      => $os_user,
           group     => $os_group,
           logoutput => false,
+          before    => Exec["install ${fmw_product} ${title}"],
         }
       }
     }
 
     if $::kernel == "SunOS" {
-
       if $fmw_product == "soa" {
         exec { "add -d64 oraparam.ini ${title}":
           command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/soa.tmp && mv /tmp/soa.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
           require   => [
                         Exec["extract ${fmw_file1}"],
-                        Exec["extract ${fmw_file1}"],
+                        Exec["extract ${fmw_file2}"],
                       ],
           before    => Exec["install ${fmw_product} ${title}"],
           path      => $exec_path,
@@ -224,7 +213,6 @@ define orawls::fmw (
         }
       }
       if $fmw_product == "osb" {
-
         exec { "add -d64 oraparam.ini ${title}":
           command   => "sed -e's/\\[Oracle\\]/\\[Oracle\\]\\\nJRE_MEMORY_OPTIONS=\"-d64\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/osb.tmp && mv /tmp/osb.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
           require   => Exec["extract ${fmw_file1}"],
@@ -247,12 +235,10 @@ define orawls::fmw (
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
-      require   => [
-                    File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
+      require   => [File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
                     Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
                     Exec["extract ${fmw_file1}"],
-                    Exec[$last_extract_check]
-                  ],
+                   ],
     }
   }
 }

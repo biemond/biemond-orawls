@@ -1,0 +1,40 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+from weblogic.management.security.authentication import GroupReaderMBean
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
+authProvider = realmName.getAuthenticationProviders()
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;realm;authenticationprovider;users;description"
+
+for i in authProvider:
+  if isinstance(i,GroupReaderMBean):
+
+    groupReader = i
+    authName    = i.getName()
+
+    cursor = i.listGroups('*',0)
+    while groupReader.haveCurrent(cursor):
+      group       = groupReader.getCurrentName(cursor)
+      description = i.getGroupDescription(group)
+      usergroup   = i.listAllUsersInGroup(group,"*",0) 
+      users       = []
+      for user in usergroup: 
+        users.append(user)
+
+      print >>f, ";".join(map(quote, [group, realmName.getName(), authName,','.join(users),description]))
+      groupReader.advance(cursor)
+    
+    groupReader.close(cursor)
+
+f.close()
+
+disconnect()
+exit()

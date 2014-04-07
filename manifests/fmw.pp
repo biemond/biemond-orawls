@@ -17,6 +17,7 @@ define orawls::fmw (
   $source                     = hiera('wls_source'                , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file                = true,                                       # true|false
   $log_output                 = false,                                      # true|false
+  $temp_directory             = '/tmp',                                     # /tmp temporay directory for files extractions  
 )
 {
 
@@ -239,7 +240,7 @@ define orawls::fmw (
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion "
 
     exec { "install ${fmw_product} ${title}":
-      command   => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
+      command   => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}  -Djava.io.tmpdir=${temp_directory}",
       creates   => $oracleHome,
       timeout   => 0,
       path      => $exec_path,

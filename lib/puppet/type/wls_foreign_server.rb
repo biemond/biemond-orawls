@@ -58,6 +58,7 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :foreign_server_name
+    parameter :password
     property  :subdeployment
     property  :defaulttargeting
     property  :extraproperties
@@ -66,6 +67,10 @@ module Puppet
     property  :connectionurl
 
   private 
+
+    def password
+       self[:password]
+    end
 
     def initialcontextfactory
        self[:initialcontextfactory]

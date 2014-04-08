@@ -98,6 +98,8 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_saf_error_handler
 - wls_saf_imported_destination
 - wls_saf_imported_destination_object
+- wls_foreign_server
+- wls_foreign_server_object
 
 
 ##Domain creation options (Dev or Prod mode)
@@ -1786,6 +1788,91 @@ in hiera
           unitoforderrouting:    'Hash'
           usetimetolivedefault:  '1'
           nonpersistentqos:      'Exactly-Once'
+
+###wls_foreign_server
+
+needs wls_setting, title must also contain the jms module name 
+
+or use puppet resource wls_foreign_server
+
+    wls_foreign_server { 'jmsClusterModule:AQForeignServer':
+      ensure                => 'present',
+      defaulttargeting      => '1',
+      extraproperties       => 'datasource',
+      extrapropertiesvalues => 'jdbc/hrDS',
+      initialcontextfactory => 'oracle.jms.AQjmsInitialContextFactory',
+    }
+    wls_foreign_server { 'jmsClusterModule:Jboss':
+      ensure                => 'present',
+      connectionurl         => 'remote://10.10.10.10:4447',
+      defaulttargeting      => '0',
+      extraproperties       => 'java.naming.security.principal',
+      extrapropertiesvalues => 'jmsuser',
+      initialcontextfactory => 'org.jboss.naming.remote.client.InitialContextFactory',
+      subdeployment         => 'wlsServers',
+    }
+
+in hiera
+
+    'jmsClusterModule:AQForeignServer':
+        ensure:                'present'
+        defaulttargeting:      '1'
+        extraproperties:       'datasource'
+        extrapropertiesvalues: 'jdbc/hrDS'
+        initialcontextfactory: 'oracle.jms.AQjmsInitialContextFactory'
+    'jmsClusterModule:Jboss':
+        ensure:                'present'
+        connectionurl:         'remote://10.10.10.10:4447'
+        defaulttargeting:      '0'
+        extraproperties:       'java.naming.security.principal'
+        extrapropertiesvalues: 'jmsuser'
+        initialcontextfactory: 'org.jboss.naming.remote.client.InitialContextFactory'
+        subdeployment:         'wlsServers'
+        password:              'test'
+
+
+###wls_foreign_server_object
+
+needs wls_setting, title must also contain the jms module name and foreign server 
+
+or use puppet resource wls_foreign_server_object
+
+    wls_foreign_server_object { 'jmsClusterModule:Jboss:CF':
+      ensure         => 'present',
+      localjndiname  => 'jms/jboss/CF',
+      object_type    => 'connectionfactory',
+      remotejndiname => 'jms/Remote/CF',
+    }
+    wls_foreign_server_object { 'jmsClusterModule:Jboss:JBossQ':
+      ensure         => 'present',
+      localjndiname  => 'jms/jboss/Queue',
+      object_type    => 'destination',
+      remotejndiname => 'jms/Remote/Queue',
+    }
+
+
+in hiera
+
+    'jmsClusterModule:Jboss:CF':
+        ensure:         'present'
+        localjndiname:  'jms/jboss/CF'
+        object_type:    'connectionfactory'
+        remotejndiname: 'jms/Remote/CF'
+    'jmsClusterModule:Jboss:JBossQ':
+        ensure:         'present'
+        localjndiname:  'jms/jboss/Queue'
+        object_type:    'destination'
+        remotejndiname: 'jms/Remote/Queue'
+    'jmsClusterModule:AQForeignServer:XAQueueCF':
+        ensure:         'present'
+        localjndiname:  'jms/XAQueueCF'
+        object_type:    'connectionfactory'
+        remotejndiname: 'XAQueueConnectionFactory'
+    'jmsClusterModule:AQForeignServer:TestQueue':
+        ensure:         'present'
+        localjndiname:  'jms/aq/TestQueue'
+        object_type:    'destination'
+        remotejndiname: 'Queues/TestQueue'
 
 
 ## WLST execution

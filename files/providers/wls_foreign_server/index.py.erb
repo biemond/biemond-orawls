@@ -35,7 +35,13 @@ for token in m.split("dr--"):
                 
 
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
-                print >>f, ";".join(map(quote, [token+":"+token2,token,cmo.getSubDeploymentName(),str(get('DefaultTargetingEnabled')),','.join(properties),','.join(propertyValues),cmo.getConnectionURL(),cmo.getInitialContextFactory()]))
+                defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
+                if defaultTargetingEnabled == '1':
+                  subDeploymentName = ''
+                else:
+                  subDeploymentName = cmo.getSubDeploymentName()  
+
+                print >>f, ";".join(map(quote, [token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),','.join(propertyValues),cmo.getConnectionURL(),cmo.getInitialContextFactory()]))
  
 f.close()
 

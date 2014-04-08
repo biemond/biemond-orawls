@@ -47,8 +47,15 @@ for token in m.split("dr--"):
                   useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')  
                 
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                
+                
+                defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
+                if defaultTargetingEnabled == '1':
+                  subDeploymentName = ''
+                else:
+                  subDeploymentName = cmo.getSubDeploymentName()     
 
-                print >>f, ";".join(map(quote, [token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,cmo.getSubDeploymentName(),str(get('DefaultTargetingEnabled'))]))
+                print >>f, ";".join(map(quote, [token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,subDeploymentName,defaultTargetingEnabled]))
  
 f.close()
 

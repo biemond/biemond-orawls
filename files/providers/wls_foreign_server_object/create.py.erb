@@ -2,8 +2,10 @@ connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUr
 
 name                   = '<%= object_name %>'
 jmsmodule              = '<%= jmsmodule %>'
-foreign_server_name    = '<%= foreign_server_name %>'
+foreign_server_name    = '<%= foreign_server %>'
 object_type            = '<%= object_type %>'
+localjndiname          = '<%= localjndiname %>'
+remotejndiname         = '<%= remotejndiname %>'
 
 edit()
 startEdit()
@@ -20,6 +22,10 @@ try:
     if object_type == "connectionfactory":
         cmo.createForeignConnectionFactory(name)
         cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignConnectionFactories/'+name)
+
+    cmo.setLocalJNDIName(localjndiname)
+    cmo.setRemoteJNDIName(remotejndiname)
+
 
     save()
     activate()          

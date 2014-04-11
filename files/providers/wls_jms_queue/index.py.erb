@@ -9,7 +9,13 @@ def quote(text):
 def queue(token,token2,location,distributed):
     cd(location)
     jndiname      = get('JNDIName') 
-    subdeployment = get('SubDeploymentName')
+
+    defaultTargeting   = str(get('DefaultTargetingEnabled'))
+    if defaultTargeting == '1':
+       subdeployment = ''
+    else:
+       subdeployment = cmo.getSubDeploymentName()  
+
 
     if distributed == '1':
       balancingPolicy  = get('LoadBalancingPolicy')
@@ -24,8 +30,6 @@ def queue(token,token2,location,distributed):
        cd(location)
     else:
        quota = ''
-
-    defaultTargeting = str(get('DefaultTargetingEnabled'))  
 
     cd(location+'/DeliveryFailureParams/'+token2)
     redeliveryLimit         = get('RedeliveryLimit')

@@ -19,8 +19,13 @@ for token in m.split("dr--"):
             if not token2 == '':
                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2)
                jndiname           = get('JNDIName') 
-               subdeployment      = get('SubDeploymentName')
-               defaultTargeting   = str(get('DefaultTargetingEnabled')) 
+               defaultTargeting   = str(get('DefaultTargetingEnabled'))
+               if defaultTargeting == '1':
+                  subdeployment = ''
+               else:
+                  subdeployment = cmo.getSubDeploymentName()  
+
+
                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/TransactionParams/'+token2)
                xaEnabled          = str(get('XAConnectionFactoryEnabled'))
                transactionTimeout = get('TransactionTimeout')

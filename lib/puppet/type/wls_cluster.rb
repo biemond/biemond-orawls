@@ -39,8 +39,13 @@ module Puppet
     property  :servers
     property  :migrationbasis
     property  :messagingmode
+    property  :datasourceforjobscheduler
 
   private 
+
+    def datasourceforjobscheduler
+      self[:datasourceforjobscheduler]
+    end
 
     def servers
       self[:servers]

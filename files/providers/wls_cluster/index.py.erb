@@ -9,12 +9,21 @@ def quote(text):
 m = ls('/Clusters')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;servers;messagingmode;migrationbasis"
+print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
         print '___'+token+'___'
         cd('/Clusters/'+token)
+
+        datasourceforjobschedulerMbean = cmo.getDataSourceForJobScheduler()
+        if datasourceforjobschedulerMbean:
+           path = getPath(datasourceforjobschedulerMbean)
+           cd("/"+path) 
+           datasourceforjobscheduler = get('Name')
+           cd('/Clusters/'+token)
+        else:
+           datasourceforjobscheduler = ''
 
         n = ls('/Clusters/'+token+'/Servers')
         servers = []
@@ -23,7 +32,7 @@ for token in m.split("dr--"):
             if token2:
                servers.append(token2)
 
-        print >>f, ";".join(map(quote, [token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis')]))
+        print >>f, ";".join(map(quote, [token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler]))
 f.close()
 
 disconnect()

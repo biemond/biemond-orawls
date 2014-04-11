@@ -1,9 +1,10 @@
 connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
 
-name                 = '<%= name %>'
-clusterNodesTargets  = String('<%= servers %>').split(",")
-messagingmode        = '<%= messagingmode %>'
-migrationbasis       = '<%= migrationbasis %>'
+name                      = '<%= name %>'
+clusterNodesTargets       = String('<%= servers %>').split(",")
+messagingmode             = '<%= messagingmode %>'
+migrationbasis            = '<%= migrationbasis %>'
+datasourceforjobscheduler = '<%= datasourceforjobscheduler %>'
 
 edit()
 startEdit()
@@ -17,6 +18,9 @@ try:
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
     cmo.setMigrationBasis(migrationbasis)
+
+    if datasourceforjobscheduler:
+      cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))   
 
     for node in clusterNodesTargets:
       cd('/Servers/'+node)

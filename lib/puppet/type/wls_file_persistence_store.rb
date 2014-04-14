@@ -39,20 +39,5 @@ module Puppet
     property  :directory
     property  :target
     property  :targettype
-
-  private 
-
-    def directory
-      self[:directory]
-    end
-
-    def target
-      self[:target]
-    end
-
-    def targettype
-      self[:targettype]
-    end
-
   end
 end

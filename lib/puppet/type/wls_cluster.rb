@@ -40,24 +40,5 @@ module Puppet
     property  :migrationbasis
     property  :messagingmode
     property  :datasourceforjobscheduler
-
-  private 
-
-    def datasourceforjobscheduler
-      self[:datasourceforjobscheduler]
-    end
-
-    def servers
-      self[:servers]
-    end
-
-    def migrationbasis
-      self[:migrationbasis]
-    end
-
-    def messagingmode
-      self[:messagingmode]
-    end
-
   end
 end

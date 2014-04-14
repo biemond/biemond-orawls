@@ -61,28 +61,5 @@ module Puppet
     property  :errordestination
     property  :logformat
     property  :policy
-
-  private 
-
-    def error_handler_name
-       self[:error_handler_name]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def errordestination
-       self[:errordestination]
-    end
-
-    def logformat
-       self[:logformat]
-    end
-
-    def policy
-       self[:policy]
-    end
-
   end
 end

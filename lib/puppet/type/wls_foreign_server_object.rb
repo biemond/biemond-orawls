@@ -63,32 +63,5 @@ module Puppet
     property  :object_type
     property  :remotejndiname
     property  :localjndiname
-
-  private 
-
-    def remotejndiname
-       self[:remotejndiname]
-    end
-
-    def localjndiname
-       self[:localjndiname]
-    end
-
-    def foreign_server
-       self[:foreign_server]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def object_name
-       self[:object_name]
-    end
-
-    def object_type
-       self[:object_type]
-    end
-
   end
 end

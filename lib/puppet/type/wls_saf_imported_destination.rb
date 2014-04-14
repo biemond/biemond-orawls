@@ -66,43 +66,5 @@ module Puppet
     property  :defaulttargeting
     property  :subdeployment
 
-  private 
-
-    def imported_destination_name
-       self[:imported_destination_name]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def errorhandling
-       self[:errorhandling]
-    end
-
-    def remotecontext
-       self[:remotecontext]
-    end
-
-    def jndiprefix
-       self[:jndiprefix]
-    end
-
-    def timetolivedefault
-       self[:timetolivedefault]
-    end
-
-    def usetimetolivedefault
-       self[:usetimetolivedefault]
-    end
-
-    def subdeployment
-       self[:subdeployment]
-    end
-
-    def defaulttargeting
-      self[:defaulttargeting]
-    end
-
-  end
+   end
 end

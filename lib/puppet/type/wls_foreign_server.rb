@@ -66,44 +66,5 @@ module Puppet
     property  :initialcontextfactory
     property  :connectionurl
 
-  private 
-
-    def password
-       self[:password]
-    end
-
-    def initialcontextfactory
-       self[:initialcontextfactory]
-    end
-
-    def connectionurl
-       self[:connectionurl]
-    end
-
-    def extraproperties
-       self[:extraproperties]
-    end
-
-    def extrapropertiesvalues
-       self[:extrapropertiesvalues]
-    end
-
-    def foreign_server_name
-       self[:foreign_server_name]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def subdeployment
-       self[:subdeployment]
-    end
-
-    def defaulttargeting
-       self[:defaulttargeting]
-    end
-
-
   end
 end

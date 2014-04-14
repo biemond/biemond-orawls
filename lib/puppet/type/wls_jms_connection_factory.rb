@@ -63,36 +63,5 @@ module Puppet
     property  :defaulttargeting
     property  :transactiontimeout
     property  :xaenabled
-
-  private 
-
-    def connection_factory_name
-       self[:connection_factory_name]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def transactiontimeout
-       self[:transactiontimeout]
-    end
-
-    def xaenabled
-       self[:xaenabled]
-    end
-
-    def jndiname
-       self[:jndiname]
-    end
-
-    def subdeployment
-       self[:subdeployment]
-    end
-
-    def defaulttargeting
-       self[:defaulttargeting]
-    end
-
   end
 end

@@ -63,31 +63,5 @@ module Puppet
     property  :policy
     property  :shared
 
-  private 
-
-    def quota_name
-       self[:quota_name]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def bytesmaximum
-      self[:bytesmaximum]
-    end
-
-    def messagesmaximum
-      self[:messagesmaximum]
-    end
-
-    def policy
-      self[:policy]
-    end
-
-    def shared
-      self[:shared]
-    end
-
   end
 end

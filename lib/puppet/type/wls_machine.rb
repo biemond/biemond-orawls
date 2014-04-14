@@ -45,24 +45,5 @@ module Puppet
     property  :nmtype
     property  :listenaddress
     property  :listenport
-
-  private 
-
-    def listenaddress
-      self[:listenaddress]
-    end
-
-    def listenport
-      self[:listenport]
-    end
-
-    def machinetype
-      self[:machinetype]
-    end
-
-    def nmtype
-      self[:nmtype]
-    end
-
   end
 end

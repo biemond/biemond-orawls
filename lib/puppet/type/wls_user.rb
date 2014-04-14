@@ -41,24 +41,5 @@ module Puppet
     property  :realm
     property  :authenticationprovider
     property  :description
-
-  private 
-
-    def description
-      self[:description]
-    end
-
-    def password
-      self[:password]
-    end
-
-    def realm
-      self[:realm]
-    end
-
-    def authenticationprovider
-      self[:authenticationprovider]
-    end
-
   end
 end

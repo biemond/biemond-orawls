@@ -40,25 +40,5 @@ module Puppet
     property  :persistentstoretype
     property  :target
     property  :targettype
-
-
-  private 
-
-    def persistentstore
-      self[:persistentstore]
-    end
-
-    def persistentstoretype
-      self[:persistentstoretype]
-    end
-
-    def target
-      self[:target]
-    end
-
-    def targettype
-      self[:targettype]
-    end
-
   end
 end

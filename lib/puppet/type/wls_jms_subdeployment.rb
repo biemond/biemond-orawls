@@ -60,24 +60,5 @@ module Puppet
     parameter :jmsmodule
     property  :target
     property  :targettype
-
-  private 
-
-    def subdeployment_name
-       self[:subdeployment_name]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def target
-      self[:target]
-    end
-
-    def targettype
-      self[:targettype]
-    end
-
   end
 end

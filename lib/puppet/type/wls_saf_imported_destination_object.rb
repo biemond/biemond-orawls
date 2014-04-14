@@ -68,47 +68,5 @@ module Puppet
     property  :localjndiname
     property  :nonpersistentqos
 
-  private 
-
-    def nonpersistentqos
-       self[:nonpersistentqos]
-    end
-
-    def remotejndiname
-       self[:remotejndiname]
-    end
-
-    def localjndiname
-       self[:localjndiname]
-    end
-
-    def imported_destination
-       self[:imported_destination]
-    end
-
-    def jmsmodule
-       self[:jmsmodule]
-    end
-
-    def object_name
-       self[:object_name]
-    end
-
-    def object_type
-       self[:object_type]
-    end
-
-    def timetolivedefault
-       self[:timetolivedefault]
-    end
-
-    def usetimetolivedefault
-       self[:usetimetolivedefault]
-    end
-
-    def unitoforderrouting
-       self[:unitoforderrouting]
-    end	
-
   end
 end

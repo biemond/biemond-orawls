@@ -38,16 +38,5 @@ module Puppet
     parameter :name
     property  :target
     property  :targettype
-
-  private 
-
-    def target
-      self[:target]
-    end
-
-    def targettype
-      self[:targettype]
-    end
-
   end
 end

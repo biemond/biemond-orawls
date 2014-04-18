@@ -40,5 +40,8 @@ module Puppet
     property  :migrationbasis
     property  :messagingmode
     property  :datasourceforjobscheduler
+    property  :unicastbroadcastchannel
+    property  :multicastaddress
+    property  :multicastport
   end
 end

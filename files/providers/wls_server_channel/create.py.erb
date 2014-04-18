@@ -1,0 +1,72 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+name             = '<%= channel_name %>'
+server           = '<%= server %>'
+protocol         = '<%= protocol %>'
+enabled          = '<%= enabled %>'
+listenaddress    = '<%= listenaddress %>'
+publicaddress    = '<%= publicaddress %>'
+listenport       = '<%= listenport %>'
+httpenabled      = '<%= httpenabled %>'
+outboundenabled  = '<%= outboundenabled %>'
+tunnelingenabled = '<%= tunnelingenabled %>'
+
+edit()
+startEdit()
+
+
+try:
+
+    cd('/Servers/'+server)
+    cmo.createNetworkAccessPoint(name)
+
+    cd('/Servers/'+server+'/NetworkAccessPoints/'+name)
+    cmo.setProtocol(protocol)
+    cmo.setListenPort(int(listenport))
+
+    if enabled == '1':
+      cmo.setEnabled(true)
+    else:
+      cmo.setEnabled(false)
+
+    if httpenabled == '1':    
+      cmo.setHttpEnabledForThisProtocol(true)
+    else:
+      cmo.setHttpEnabledForThisProtocol(false)
+
+    if tunnelingenabled == '1':    
+      cmo.setTunnelingEnabled(true)
+    else:
+      cmo.setTunnelingEnabled(false)
+
+    if outboundenabled == '1':    
+      cmo.setOutboundEnabled(true)
+    else:
+      cmo.setOutboundEnabled(false)
+
+    if listenaddress:
+      set('ListenAddress',listenaddress )
+    else:
+      set('ListenAddress',None )  
+
+    if publicaddress:
+      set('PublicAddress', publicaddress)
+    else:
+      set('PublicAddress',None )  
+
+    save()
+    activate()          
+
+    # still required cause of easy_type module
+    f = open("/tmp/wlstScript.out", "w")
+    f.close()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

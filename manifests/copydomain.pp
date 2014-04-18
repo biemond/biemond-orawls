@@ -154,6 +154,12 @@ define orawls::copydomain (
                     Exec["copy domain jar ${domain_name}"]],
     }
 
+    yaml_setting { "domain ${title}":
+      target =>  "/etc/wls_domains.yaml",
+      key    =>  "domains/${domain_name}",
+      value  =>  "${domains_dir}/${domain_name}",
+    }
+
     # the enroll domain.py used by the wlst
     file { "enroll.py ${domain_name} ${title}":
       ensure  => present,

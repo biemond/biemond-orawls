@@ -83,6 +83,7 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_group
 - wls_machine
 - wls_server
+- wls_server_channel
 - wls_cluster
 - wls_datasource
 - wls_file_persistence_store
@@ -1177,6 +1178,55 @@ in hiera
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
  
+###wls_server_channel
+
+needs wls_setting, title must also contain the server name    
+
+or use puppet resource wls_server_channel
+
+    wls_server_channel { 'wlsServer1:Channel-Cluster':
+      ensure           => 'present',
+      enabled          => '1',
+      httpenabled      => '1',
+      listenaddress    => '10.10.10.100',
+      listenport       => '8003',
+      outboundenabled  => '0',
+      protocol         => 'cluster-broadcast',
+      publicaddress    => '10.10.10.100',
+      tunnelingenabled => '0',
+    }
+    wls_server_channel { 'wlsServer2:Channel-Cluster':
+      ensure           => 'present',
+      enabled          => '1',
+      httpenabled      => '1',
+      listenport       => '8003',
+      outboundenabled  => '0',
+      protocol         => 'cluster-broadcast',
+      tunnelingenabled => '0',
+    }
+
+in hiera
+
+    server_channel_instances:
+      'wlsServer1:Channel-Cluster':
+        ensure:           'present'
+        enabled:          '1'
+        httpenabled:      '1'
+        listenaddress:    '10.10.10.100'
+        listenport:       '8003'
+        outboundenabled:  '0'
+        protocol:         'cluster-broadcast'
+        publicaddress:    '10.10.10.100'
+        tunnelingenabled: '0'
+      'wlsServer2:Channel-Cluster':
+        ensure:           'present'
+        enabled:          '1'
+        httpenabled:      '1'
+        listenport:       '8003'
+        outboundenabled:  '0'
+        protocol:         'cluster-broadcast'
+        tunnelingenabled: '0'    
+
 
 ###wls_cluster
 
@@ -1185,10 +1235,22 @@ needs wls_setting
 or use puppet resource wls_cluster
 
       wls_cluster { 'WebCluster':
-        ensure         => 'present',
-        messagingmode  => 'unicast',
-        migrationbasis => 'consensus',
-        servers        => 'wlsServer3,wlsServer4',
+        ensure           => 'present',
+        messagingmode    => 'unicast',
+        migrationbasis   => 'consensus',
+        servers          => 'wlsServer3,wlsServer4',
+        multicastaddress => '239.192.0.0',
+        multicastport    => '7001',
+      }
+
+      wls_cluster { 'WebCluster2':
+        ensure                  => 'present',
+        messagingmode           => 'unicast',
+        migrationbasis          => 'consensus',
+        servers                 => 'wlsServer3,wlsServer4',
+        unicastbroadcastchannel => 'channel',
+        multicastaddress        => '239.192.0.0',
+        multicastport           => '7001',
       }
 
 in hiera

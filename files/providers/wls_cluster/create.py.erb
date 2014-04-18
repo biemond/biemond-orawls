@@ -6,6 +6,10 @@ messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
 datasourceforjobscheduler = '<%= datasourceforjobscheduler %>'
 
+unicastbroadcastchannel = '<%= unicastbroadcastchannel %>'
+multicastaddress        = '<%= multicastaddress %>'
+multicastport           = '<%= multicastport %>'
+
 edit()
 startEdit()
 
@@ -18,6 +22,15 @@ try:
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
     cmo.setMigrationBasis(migrationbasis)
+
+    if unicastbroadcastchannel:
+       cmo.setClusterBroadcastChannel(unicastbroadcastchannel)
+
+    if multicastaddress:
+       cmo.setMulticastAddress(multicastaddress)
+
+    if multicastport:
+      cmo.setMulticastPort(multicastport)
 
     if datasourceforjobscheduler:
       cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))   

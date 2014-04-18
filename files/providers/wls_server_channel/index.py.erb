@@ -1,0 +1,38 @@
+connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+
+def quote(text):
+	if text:
+		return "\"" + str(text).replace("\"", "\"\"") + "\""
+	else: 
+		return ""
+
+m = ls('/Servers')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicaddress"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/Servers/'+token)
+
+        n = ls('/Servers/'+token+'/NetworkAccessPoints')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if token2:
+               cd('/Servers/'+token+'/NetworkAccessPoints/'+token2)
+               protocol         = get('Protocol')
+               enabled          = str(get('Enabled'))
+               listenaddress    = get('ListenAddress')
+               publicaddress    = get('PublicAddress')
+               listenport       = str(get('ListenPort'))
+               httpenabled      = str(get('HttpEnabledForThisProtocol'))
+               outboundenabled  = str(get('OutboundEnabled'))
+               tunnelingenabled = str(get('TunnelingEnabled'))
+
+               print >>f, ";".join(map(quote, [token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicaddress]))
+
+f.close()
+
+disconnect()
+exit()

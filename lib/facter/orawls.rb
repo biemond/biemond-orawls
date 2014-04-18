@@ -84,33 +84,6 @@ def get_middleware_1212_Home(name)
     return elements
 end 
 
-def get_bsu_patches(name)
-  os = Facter.value(:kernel)
-
-  if ["Linux","SunOS"].include?os
-   if FileTest.exists?(name+'/utils/bsu/patch-client.jar')
-    output2 = Facter::Util::Resolution.exec(get_suCommand()+ get_weblogicUser() + " -c \""+get_javaCommand()+" -Xms256m -Xmx512m -jar "+ name+"/utils/bsu/patch-client.jar -report -bea_home="+name+" -output_format=xml\"")
-    if output2.nil?
-      return "empty"
-    end
-   else
-    return nil
-   end 
-  else
-    return nil 
-  end
-  doc = REXML::Document.new output2
-
-  root = doc.root
-  patches = ""
-  root.elements.each("//patchDesc") do |patch|
-    patches += patch.elements['patchId'].text + ";"
-  end
-  return patches
-
-end
-
-
 def get_opatch_patches(name)
     Puppet.debug "orawls.rb get_opatch_patches with path: #{name}"
     #Puppet.debug "orawls.rb opatch command: "+get_suCommand()+get_weblogicUser()+" -c '"+name+"/OPatch/opatch lsinventory -patch_id -oh "+name+" -invPtrLoc "+get_oraInvPath()+"/oraInst.loc'"
@@ -778,12 +751,6 @@ count = -1
 unless mdw11gHomes.nil?
   mdw11gHomes.each_with_index do |mdw, i|
     count += 1
-    # get bsu patches
-    Facter.add("ora_mdw_#{count}_bsu") do
-      setcode do
-        get_bsu_patches(mdw)
-      end
-    end
     Facter.add("ora_mdw_#{count}") do
       setcode do
         mdw

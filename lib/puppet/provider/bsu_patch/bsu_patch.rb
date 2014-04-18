@@ -30,11 +30,17 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
   end
 
   def bsu_status
-    command   = "su - "+resource[:os_user]+" -c '"+resource[:jdk_home_dir]+"/bin/java -Xms256m -Xmx256m -jar "+resource[:middleware_home_dir]+"/utils/bsu/patch-client.jar -report -bea_home="+resource[:middleware_home_dir]+" -output_format=xml'"
-    patchName = resource[:name]
+
+    user                = resource[:os_user]
+    patchName           = resource[:name]
+    middleware_home_dir = resource[:middleware_home_dir]
+    weblogic_home_dir   = resource[:weblogic_home_dir]
+    jdk_home_dir        = resource[:jdk_home_dir]
+
+    command   = jdk_home_dir+"/bin/java -Xms256m -Xmx256m -jar "+middleware_home_dir+"/utils/bsu/patch-client.jar -report -bea_home="+middleware_home_dir+" -output_format=xml"
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
 
-    output = execute command
+    output = execute command, :failonfail => true ,:uid => user
     doc = REXML::Document.new output
      
     root = doc.root

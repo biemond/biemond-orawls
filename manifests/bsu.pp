@@ -18,83 +18,63 @@ define orawls::bsu (
 {
   $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${jdk_home_dir}/bin"
 
-  # check if the bsu already is installed
-  $found = bsu_exists($middleware_home_dir, $patch_id)
+  if $source == undef {
+    $mountPoint = 'puppet:///modules/orawls/'
+  }
+  else {
+    $mountPoint = $source
+  }
 
-  if $found == undef {
-    $continue = true
-  } else {
-    if ($found) {
-      $continue = false
-    }
-    else {
-      notify { "orawls::bsu ${title} ${middleware_home_dir} does not exists": }
-      $continue = true
+  if !defined(File["${middleware_home_dir}/utils/bsu/cache_dir"]) {
+    file { "${middleware_home_dir}/utils/bsu/cache_dir":
+      ensure  => directory,
+      recurse => false,
+      mode    => '0775',
+      owner   => $os_user,
+      group   => $os_group,
     }
   }
 
-  if ($continue) {
-    if $source == undef {
-      $mountPoint = 'puppet:///modules/orawls/'
-    }
-    else {
-      $mountPoint = $source
-    }
-
-    if !defined(File["${middleware_home_dir}/utils/bsu/cache_dir"]) {
-      file { "${middleware_home_dir}/utils/bsu/cache_dir":
-        ensure  => directory,
-        recurse => false,
+  # the patch used by the bsu
+  if $remote_file == true {
+    if !defined(File["${download_dir}/${patch_file}"]) {
+      file { "${download_dir}/${patch_file}":
+        ensure  => present,
+        source  => "${mountPoint}/${patch_file}",
+        require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
+        backup  => false,
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
       }
     }
-
-    # the patch used by the bsu
-    if $remote_file == true {
-      if !defined(File["${download_dir}/${patch_file}"]) {
-        file { "${download_dir}/${patch_file}":
-          ensure  => present,
-          source  => "${mountPoint}/${patch_file}",
-          require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
-          backup  => false,
-          mode    => '0775',
-          owner   => $os_user,
-          group   => $os_group,
-        }
-      }
-      exec { "extract ${patch_file}":
-        command   => "unzip -n ${download_dir}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
-        require   => File["${download_dir}/${patch_file}"],
-        creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
-        path      => $exec_path,
-        user      => $os_user,
-        group     => $os_group,
-        logoutput => $log_output,
-      }
-    } else {
-      exec { "extract ${patch_file}":
-        command   => "unzip -n ${source}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
-        creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
-        path      => $exec_path,
-        user      => $os_user,
-        group     => $os_group,
-        logoutput => $log_output,
-      }
+    exec { "extract ${patch_file}":
+      command   => "unzip -n ${download_dir}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+      require   => File["${download_dir}/${patch_file}"],
+      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
+      path      => $exec_path,
+      user      => $os_user,
+      group     => $os_group,
+      logoutput => $log_output,
     }
-
-    $bsuCommand = "-install -patchlist=${patch_id} -prod_dir=${weblogic_home_dir} -verbose"
-
-    exec { "exec bsu ux ${title}":
-      command     => "${middleware_home_dir}/utils/bsu/bsu.sh ${bsuCommand}",
-      require     => Exec["extract ${patch_file}"],
-      cwd         => "${middleware_home_dir}/utils/bsu",
-      environment => ["USER=${os_user}", "HOME=/home/${os_user}", "LOGNAME=${os_user}"],
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      logoutput   => $log_output,
+  } else {
+    exec { "extract ${patch_file}":
+      command   => "unzip -n ${source}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
+      path      => $exec_path,
+      user      => $os_user,
+      group     => $os_group,
+      logoutput => $log_output,
     }
   }
+
+  bsu_patch{ $patch_id:
+    ensure              => present,
+    os_user             => $os_user,
+    middleware_home_dir => $middleware_home_dir,
+    weblogic_home_dir   => $weblogic_home_dir,
+    jdk_home_dir        => $jdk_home_dir,
+    require             => Exec["extract ${patch_file}"],
+  }
+
 }

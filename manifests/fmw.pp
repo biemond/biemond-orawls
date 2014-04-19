@@ -61,6 +61,7 @@ define orawls::fmw (
   } elsif ( $fmw_product == "soa" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_soa.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_SOA1"
+    $createFile2              = "${download_dir}/${fmw_product}/Disk4"
     $total_files              = 2
 
   } elsif ( $fmw_product == "osb" ) {
@@ -71,6 +72,7 @@ define orawls::fmw (
   } elsif ( $fmw_product == "oim" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_oim.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_IDM1"
+    $createFile2              = "${download_dir}/${fmw_product}/Disk4"
     $total_files              = 2
 
   } elsif ( $fmw_product == "wc" ) {
@@ -81,14 +83,14 @@ define orawls::fmw (
   } elsif ( $fmw_product == "wcc" ) {
     $fmw_silent_response_file = "orawls/fmw_silent_wcc.rsp.erb"
     $oracleHome               = "${middleware_home_dir}/Oracle_WCC1"
+    $createFile2              = "${download_dir}/${fmw_product}/Disk2"
     $total_files              = 2
 
   } else {
     fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc')
   }
 
-
-  # check if the oracle home already exists
+  # check if the oracle home already exists, this is for performance reasons
   $found = oracle_exists($oracleHome)
 
   if $found == undef {
@@ -128,33 +130,27 @@ define orawls::fmw (
     # for performance reasons, download and extract or just extract it
     if $remote_file == true {
       file { "${download_dir}/${fmw_file1}":
-        ensure  => present,
-        source  => "${mountPoint}/${fmw_file1}",
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
+        ensure   => file,
+        source   => "${mountPoint}/${fmw_file1}",
+        mode     => '0775',
+        owner    => $os_user,
+        group    => $os_group,
+        backup   => false,
+        before   => Exec["extract ${fmw_file1}"],
       }
-      exec { "extract ${fmw_file1}":
-        command   => "unzip -o ${download_dir}/${fmw_file1} -d ${download_dir}/${fmw_product}",
-        creates   => "${download_dir}/${fmw_product}/Disk1",
-        path      => $exec_path,
-        user      => $os_user,
-        group     => $os_group,
-        logoutput => false,
-        require   => [File["${download_dir}/${fmw_file1}"],
-                      Orawls::Utils::Orainst["create oraInst for ${fmw_product}"]],
-      }
+      $disk1_file = "${download_dir}/${fmw_file1}"
     } else {
-      exec { "extract ${fmw_file1}":
-        command   => "unzip -o ${source}/${fmw_file1} -d ${download_dir}/${fmw_product}",
-        creates   => "${download_dir}/${fmw_product}/Disk1",
-        path      => $exec_path,
-        user      => $os_user,
-        group     => $os_group,
-        logoutput => false,
-        require   => Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
-      }
+      $disk1_file = "${source}/${fmw_file1}"
+    }
+      
+    exec { "extract ${fmw_file1}":
+      command   => "unzip -o ${disk1_file} -d ${download_dir}/${fmw_product}",
+      creates   => "${download_dir}/${fmw_product}/Disk1",
+      path      => $exec_path,
+      user      => $os_user,
+      group     => $os_group,
+      logoutput => false,
+      require   => Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
     }
 
     if ( $total_files > 1 ) {
@@ -163,36 +159,30 @@ define orawls::fmw (
       if $remote_file == true {
 
         file { "${download_dir}/${fmw_file2}":
-          ensure  => present,
-          source  => "${mountPoint}/${fmw_file2}",
-          mode    => '0775',
-          owner   => $os_user,
-          group   => $os_group,
-          backup  => false,
-          require => [
-                      File["${download_dir}/${fmw_file1}"],
-                      Exec["extract ${fmw_file1}"]
-                    ],
+          ensure   => file,
+          source   => "${mountPoint}/${fmw_file2}",
+          mode     => '0775',
+          owner    => $os_user,
+          group    => $os_group,
+          backup   => false,
+          before   => Exec["extract ${fmw_file2}"],
+          require  => [File["${download_dir}/${fmw_file1}"],
+                      Exec["extract ${fmw_file1}"]],
         }
-        exec { "extract ${fmw_file2}":
-          command   => "unzip -o ${download_dir}/${fmw_file2} -d ${download_dir}/${fmw_product}",
-          path      => $exec_path,
-          user      => $os_user,
-          group     => $os_group,
-          logoutput => false,
-          require   => [File["${download_dir}/${fmw_file2}"],
-                        Exec["extract ${fmw_file1}"],],
-          before    => Exec["install ${fmw_product} ${title}"],             
-        }
+        $disk2_file = "${download_dir}/${fmw_file2}"
       } else {
-        exec { "extract ${fmw_file2}":
-          command   => "unzip -o ${source}/${fmw_file2} -d ${download_dir}/${fmw_product}",
-          path      => $exec_path,
-          user      => $os_user,
-          group     => $os_group,
-          logoutput => false,
-          before    => Exec["install ${fmw_product} ${title}"],
-        }
+        $disk2_file = "${source}/${fmw_file2}"
+      }
+
+      exec { "extract ${fmw_file2}":
+        command   => "unzip -o ${disk2_file} -d ${download_dir}/${fmw_product}",
+        creates   => $createFile2,
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => false,
+        require   => Exec["extract ${fmw_file1}"],
+        before    => Exec["install ${fmw_product} ${title}"],             
       }
     }
 
@@ -200,10 +190,9 @@ define orawls::fmw (
       if $fmw_product == "soa" {
         exec { "add -d64 oraparam.ini ${title}":
           command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/soa.tmp && mv /tmp/soa.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
-          require   => [
-                        Exec["extract ${fmw_file1}"],
-                        Exec["extract ${fmw_file2}"],
-                      ],
+          unless    => "grep 'JRE_MEMORY_OPTIONS=\"-d64' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
+          require   => [Exec["extract ${fmw_file1}"],
+                        Exec["extract ${fmw_file2}"],],
           before    => Exec["install ${fmw_product} ${title}"],
           path      => $exec_path,
           user      => $os_user,
@@ -214,6 +203,7 @@ define orawls::fmw (
       if $fmw_product == "osb" {
         exec { "add -d64 oraparam.ini ${title}":
           command   => "sed -e's/\\[Oracle\\]/\\[Oracle\\]\\\nJRE_MEMORY_OPTIONS=\"-d64\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/osb.tmp && mv /tmp/osb.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
+          unless    => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
           require   => Exec["extract ${fmw_file1}"],
           before    => Exec["install ${fmw_product} ${title}"],
           path      => $exec_path,

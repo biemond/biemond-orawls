@@ -94,7 +94,7 @@ define orawls::utils::structure (
       ensure  => directory,
       recurse => false,
       replace => false,
-      mode    => '0775',
+      mode    => '0770',
       owner   => $os_user,
       group   => $os_group,
       require => [Exec["create ${oracle_base_home_dir} directory"],File[$oracle_base_home_dir]],

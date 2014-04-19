@@ -24,7 +24,7 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     environment = ["USER="+user, "HOME=/home/"+user, "LOGNAME="+user]
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
 
-    output = execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
+    output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
     Puppet.debug "bsu_patch result: #{output}"
 
   end
@@ -40,7 +40,7 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     command   = jdk_home_dir+"/bin/java -Xms256m -Xmx256m -jar "+middleware_home_dir+"/utils/bsu/patch-client.jar -report -bea_home="+middleware_home_dir+" -output_format=xml"
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
 
-    output = execute command, :failonfail => true ,:uid => user
+    output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
     doc = REXML::Document.new output
      
     root = doc.root

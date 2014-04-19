@@ -8,15 +8,10 @@ description            = '<%= description %>'
 
 try:
     cd('/')
-
     atnr=cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProvider(authenticationprovider)
 
     print 'modify user: ',name
     atnr.setUserDescription(name,description)
-
-    # still required cause of easy_type module
-    f = open("/tmp/wlstScript.out", "w")
-    f.close()
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

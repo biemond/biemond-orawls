@@ -18,11 +18,12 @@ module Puppet
   
     to_get_raw_resources do
       Puppet.info "index #{name} "
-      wlst template('puppet:///modules/orawls/providers/wls_user/index.py.erb', binding)
+      environment = { "action"=>"index","type"=>"wls_user"}
+      wlst template('puppet:///modules/orawls/providers/wls_user/index.py.erb', binding), environment
     end
 
     on_create  do | command_builder |
-      Puppet.info "create #{name} "
+      Puppet.info "create #{name}"
       template('puppet:///modules/orawls/providers/wls_user/create.py.erb', binding)
     end
 

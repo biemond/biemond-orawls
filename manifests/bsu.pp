@@ -37,35 +37,28 @@ define orawls::bsu (
 
   # the patch used by the bsu
   if $remote_file == true {
-    if !defined(File["${download_dir}/${patch_file}"]) {
-      file { "${download_dir}/${patch_file}":
-        ensure  => present,
-        source  => "${mountPoint}/${patch_file}",
-        require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
-        backup  => false,
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-      }
+    file { "${download_dir}/${patch_file}":
+      ensure   => file,
+      source   => "${mountPoint}/${patch_file}",
+      require  => File["${middleware_home_dir}/utils/bsu/cache_dir"],
+      backup   => false,
+      mode     => '0775',
+      owner    => $os_user,
+      group    => $os_group,
+      before   => Exec["extract ${patch_file}"],
     }
-    exec { "extract ${patch_file}":
-      command   => "unzip -n ${download_dir}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
-      require   => File["${download_dir}/${patch_file}"],
-      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-    }
+    $disk1_file = "${download_dir}/${patch_file}"
   } else {
-    exec { "extract ${patch_file}":
-      command   => "unzip -n ${source}/${patch_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
-      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-    }
+    $disk1_file = "${source}/${patch_file}"
+  }      
+
+  exec { "extract ${patch_file}":
+    command   => "unzip -n ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+    creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
+    path      => $exec_path,
+    user      => $os_user,
+    group     => $os_group,
+    logoutput => false,
   }
 
   bsu_patch{ $patch_id:

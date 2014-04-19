@@ -25,37 +25,27 @@ define orawls::opatch (
   }
 
   if $remote_file == true {
-
-    # the patch used by the opatch
-    if !defined(File["${download_dir}/${patch_file}"]) {
-      file { "${download_dir}/${patch_file}":
-        ensure => present,
-        source => "${mountPoint}/${patch_file}",
-        backup => false,
-        mode   => '0775',
-        owner  => $os_user,
-        group  => $os_group,
-      }
+    file { "${download_dir}/${patch_file}":
+      ensure   => file,
+      source   => "${mountPoint}/${patch_file}",
+      backup   => false,
+      mode     => '0775',
+      owner    => $os_user,
+      group    => $os_group,
+      before   => Exec["extract opatch ${patch_file} ${title}"],
     }
-
-    exec { "extract opatch ${patch_file} ${title}":
-      command   => "unzip -n ${download_dir}/${patch_file} -d ${download_dir}",
-      require   => File["${download_dir}/${patch_file}"],
-      creates   => "${download_dir}/${patch_id}",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-    }
+    $disk1_file = "${download_dir}/${patch_file}"
   } else {
-    exec { "extract opatch ${patch_file} ${title}":
-      command   => "unzip -n ${source}/${patch_file} -d ${download_dir}",
-      creates   => "${download_dir}/${patch_id}",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-    }
+    $disk1_file = "${source}/${patch_file}"
+  }  
+
+  exec { "extract opatch ${patch_file} ${title}":
+    command   => "unzip -n ${disk1_file} -d ${download_dir}",
+    creates   => "${download_dir}/${patch_id}",
+    path      => $exec_path,
+    user      => $os_user,
+    group     => $os_group,
+    logoutput => false,
   }
 
   case $::kernel {

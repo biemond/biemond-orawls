@@ -23,14 +23,25 @@ module Utils
     def wlst( content, parameters = {})
            
       script = "wlstScript"
-      Puppet.info "Executing: #{script}"
-            
+      action = ""
+      unless parameters.nil?
+        action = parameters["action"] 
+        Puppet.info "Executing: #{script} with action #{action}"
+      else
+        Puppet.info "Executing: #{script} for a create,modify or destroy"
+      end      
+
       tmpFile = Tempfile.new([ script, '.py' ])
       tmpFile.write(content)
       tmpFile.close
       FileUtils.chmod(0555, tmpFile.path)
-      csv_string = execute_wlst( script , tmpFile , parameters)
-      convert_csv_data_to_hash(csv_string, [], :col_sep => ";")
+
+      if action == "index"
+        csv_string = execute_wlst( script , tmpFile , parameters, action)
+        convert_csv_data_to_hash(csv_string, [], :col_sep => ";")
+      else
+        execute_wlst( script , tmpFile , parameters , action)
+      end 
     end
 
 
@@ -64,11 +75,12 @@ module Utils
         setting_for('weblogic_password') || "weblogic1"
       end
 
-      def execute_wlst(script, tmpFile, parameters)
-        output = `su - #{operatingSystemUser} -c '. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;rm -f /tmp/#{script}.out;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning #{tmpFile.path}'`
-        #Puppet.info "wlst output #{output}"
-        raise ArgumentError, "Error executing puppet code, #{output}" if $? != 0
-        File.read("/tmp/"+script+".out")
+      def execute_wlst(script, tmpFile, parameters,action)
+        command = ". #{weblogicHomeDir}/server/bin/setWLSEnv.sh;rm -f /tmp/#{script}.out;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning #{tmpFile.path}"
+        output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => operatingSystemUser
+        if action == "index"
+          File.read("/tmp/"+script+".out")
+        end  
       end
   end
 end

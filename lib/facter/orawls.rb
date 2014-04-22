@@ -257,10 +257,10 @@ def get_domain(domain_path,n)
       if earName == "soa-infra" 
          soaTargets = apps.elements['target'].text
       end 
-      if earName == "oracle-bam#11.1.1" 
+      if earName == "OracleBamAdapter" 
          bamTargets = apps.elements['target'].text
       end         
-      if earName == "ALSB Domain Singleton Marker Application" 
+      if earName == "ALSB Routing" 
          osbTargets = apps.elements['target'].text
       end  
     end
@@ -333,17 +333,18 @@ def get_domain(domain_path,n)
     root.elements.each("app-deployment[name = 'FileAdapter']") do |apps|
       unless apps.elements['plan-dir'].nil?
         fileAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text
-        subfile = File.read( fileAdapterPlan )
-        subdoc = REXML::Document.new subfile
+        if FileTest.exists?(fileAdapterPlan)
+          subfile = File.read( fileAdapterPlan )
+          subdoc = REXML::Document.new subfile
 
-        planroot = subdoc.root
-        planroot.elements["variable-definition"].elements.each("variable") do |eis| 
-          entry = eis.elements["value"].text 
-          if entry.include? "eis"
-            fileAdapterPlanEntries +=  eis.elements["value"].text + ";"
-          end  
-        end
-
+          planroot = subdoc.root
+          planroot.elements["variable-definition"].elements.each("variable") do |eis| 
+            entry = eis.elements["value"].text 
+            if entry.include? "eis"
+              fileAdapterPlanEntries +=  eis.elements["value"].text + ";"
+            end  
+          end
+        end 
       end   
     end
 
@@ -366,17 +367,19 @@ def get_domain(domain_path,n)
       unless apps.elements['plan-dir'].nil?
         dbAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
 
-        subfile = File.read( dbAdapterPlan )
-        subdoc = REXML::Document.new subfile
+        if FileTest.exists?(dbAdapterPlan)
 
-        planroot = subdoc.root
-        planroot.elements["variable-definition"].elements.each("variable") do |eis| 
-          entry = eis.elements["value"].text 
-          if entry.include? "eis"
-            dbAdapterPlanEntries +=  eis.elements["value"].text + ";"
-          end  
+          subfile = File.read( dbAdapterPlan )
+          subdoc = REXML::Document.new subfile
+
+          planroot = subdoc.root
+          planroot.elements["variable-definition"].elements.each("variable") do |eis| 
+            entry = eis.elements["value"].text 
+            if entry.include? "eis"
+              dbAdapterPlanEntries +=  eis.elements["value"].text + ";"
+            end  
+          end
         end
-
 
       end
     end
@@ -401,15 +404,18 @@ def get_domain(domain_path,n)
       unless apps.elements['plan-dir'].nil?
         aqAdapterPlan = apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
 
-        subfile = File.read( aqAdapterPlan )
-        subdoc = REXML::Document.new subfile
+        if FileTest.exists?(aqAdapterPlan)
 
-        planroot = subdoc.root
-        planroot.elements["variable-definition"].elements.each("variable") do |eis| 
-          entry = eis.elements["value"].text 
-          if entry.include? "eis"
-            aqAdapterPlanEntries +=  eis.elements["value"].text + ";"
-          end  
+          subfile = File.read( aqAdapterPlan )
+          subdoc = REXML::Document.new subfile
+
+          planroot = subdoc.root
+          planroot.elements["variable-definition"].elements.each("variable") do |eis| 
+            entry = eis.elements["value"].text 
+            if entry.include? "eis"
+              aqAdapterPlanEntries +=  eis.elements["value"].text + ";"
+            end  
+          end
         end
       end
     end
@@ -433,17 +439,20 @@ def get_domain(domain_path,n)
       unless apps.elements['plan-dir'].nil?
         jmsAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
 
-        subfile = File.read( jmsAdapterPlan )
-        subdoc = REXML::Document.new subfile
+        if FileTest.exists?(jmsAdapterPlan)
 
-        planroot = subdoc.root
-        planroot.elements["variable-definition"].elements.each("variable") do |eis| 
-          entry = eis.elements["value"].text 
-          if entry.include? "eis"
-            jmsAdapterPlanEntries +=  eis.elements["value"].text + ";"
-          end  
+          subfile = File.read( jmsAdapterPlan )
+          subdoc = REXML::Document.new subfile
+
+          planroot = subdoc.root
+          planroot.elements["variable-definition"].elements.each("variable") do |eis| 
+            entry = eis.elements["value"].text 
+            if entry.include? "eis"
+              jmsAdapterPlanEntries +=  eis.elements["value"].text + ";"
+            end  
+          end
+
         end
-
       end
     end
 
@@ -467,17 +476,19 @@ def get_domain(domain_path,n)
       unless apps.elements['plan-dir'].nil?
         ftpAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
 
-        subfile = File.read( ftpAdapterPlan )
-        subdoc = REXML::Document.new subfile
+        if FileTest.exists?(ftpAdapterPlan)
 
-        planroot = subdoc.root
-        planroot.elements["variable-definition"].elements.each("variable") do |eis| 
-          entry = eis.elements["value"].text 
-          if entry.include? "eis"
-            ftpAdapterPlanEntries +=  eis.elements["value"].text + ";"
-          end  
+          subfile = File.read( ftpAdapterPlan )
+          subdoc = REXML::Document.new subfile
+
+          planroot = subdoc.root
+          planroot.elements["variable-definition"].elements.each("variable") do |eis| 
+            entry = eis.elements["value"].text 
+            if entry.include? "eis"
+              ftpAdapterPlanEntries +=  eis.elements["value"].text + ";"
+            end  
+          end
         end
-
 
       end
     end

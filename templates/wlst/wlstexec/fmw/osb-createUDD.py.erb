@@ -91,12 +91,19 @@ cd('/')
 cd('JMSSystemResource/jmsResourcesUDDs/JmsResource/NO_NAME_0')
 
 udd=create('dist_QueueIn_auto'                                 ,'DistributedQueue')
+udd.setJNDIName("QueueIn")
 udd=create('dist_wli.reporting.jmsprovider.queue_auto'         ,'DistributedQueue')
+udd.setJNDIName("wli.reporting.jmsprovider.queue")
 udd=create('dist_wli.reporting.jmsprovider_error.queue_auto'   ,'DistributedQueue')
+udd.setJNDIName("wli.reporting.jmsprovider_error.queue")
 udd=create('dist_wlsb.internal.transport.task.queue.email_auto','DistributedQueue')
+udd.setJNDIName("wlsb.internal.transport.task.queue.email")
 udd=create('dist_wlsb.internal.transport.task.queue.file_auto' ,'DistributedQueue')
+udd.setJNDIName("wlsb.internal.transport.task.queue.file")
 udd=create('dist_wlsb.internal.transport.task.queue.ftp_auto'  ,'DistributedQueue')
+udd.setJNDIName("wlsb.internal.transport.task.queue.ftp")
 udd=create('dist_wlsb.internal.transport.task.queue.sftp_auto' ,'DistributedQueue')
+udd.setJNDIName("wlsb.internal.transport.task.queue.sftp")
 
 
 print ' '

@@ -244,7 +244,6 @@ def get_domain(domain_path,n)
     bpmTargets  = nil
     soaTargets  = nil
     osbTargets  = nil
-    bamTargets  = nil
 
     deployments = ""
     root.elements.each("app-deployment[module-type = 'ear']") do |apps|
@@ -257,9 +256,6 @@ def get_domain(domain_path,n)
       if earName == "soa-infra" 
          soaTargets = apps.elements['target'].text
       end 
-      if earName == "OracleBamAdapter" 
-         bamTargets = apps.elements['target'].text
-      end         
       if earName == "ALSB Routing" 
          osbTargets = apps.elements['target'].text
       end  
@@ -294,20 +290,6 @@ def get_domain(domain_path,n)
       Puppet.debug "orawls.rb #{prefix}_domain_#{n}_soa #{soaTargets}"
     else
       Facter.add("#{prefix}_domain_#{n}_soa") do
-        setcode do
-          "NotFound"
-        end
-      end
-    end
-    unless bamTargets.nil?
-      Facter.add("#{prefix}_domain_#{n}_bam") do
-        setcode do
-          bamTargets
-        end
-      end
-      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_bam #{bamTargets}"
-    else
-      Facter.add("#{prefix}_domain_#{n}_bam") do
         setcode do
           "NotFound"
         end
@@ -507,12 +489,17 @@ def get_domain(domain_path,n)
 
 
     jrfTargets  = nil
+    bamTargets  = nil
     libraries   = ""
     root.elements.each("library") do |libs|
-      libraries += libs.elements['name'].text + ";"
-      if ( libs.elements['name'].text.include? "adf.oracle.domain#1.0" )
+      libName = libs.elements['name'].text
+      libraries += libName + ";"
+      if ( libName.include? "adf.oracle.domain#1.0" )
          jrfTargets = libs.elements['target'].text
       end 
+      if ( libName.include? "oracle.bam.library" )
+         bamTargets = libs.elements['target'].text
+      end         
 
     end
     unless jrfTargets.nil?
@@ -530,6 +517,20 @@ def get_domain(domain_path,n)
       end
       Puppet.debug "orawls.rb #{prefix}_domain_#{n}_jrf NotFound"
     end  
+    unless bamTargets.nil?
+      Facter.add("#{prefix}_domain_#{n}_bam") do
+        setcode do
+          bamTargets
+        end
+      end
+      Puppet.debug "orawls.rb #{prefix}_domain_#{n}_bam #{bamTargets}"
+    else
+      Facter.add("#{prefix}_domain_#{n}_bam") do
+        setcode do
+          "NotFound"
+        end
+      end
+    end
 
     Facter.add("#{prefix}_domain_#{n}_libraries") do
        setcode do

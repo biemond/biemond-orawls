@@ -313,8 +313,12 @@ def get_domain(domain_path,n)
     fileAdapterPlan = ""
     fileAdapterPlanEntries = ""
     root.elements.each("app-deployment[name = 'FileAdapter']") do |apps|
-      unless apps.elements['plan-dir'].nil?
-        fileAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text
+      unless apps.elements['plan-path'].nil?
+        unless apps.elements['plan-dir'].attributes['xsi:nil'] == "true"
+          fileAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
+        else 
+          fileAdapterPlan += apps.elements['plan-path'].text 
+        end 
         if FileTest.exists?(fileAdapterPlan)
           subfile = File.read( fileAdapterPlan )
           subdoc = REXML::Document.new subfile
@@ -346,9 +350,13 @@ def get_domain(domain_path,n)
     dbAdapterPlan = ""
     dbAdapterPlanEntries = ""
     root.elements.each("app-deployment[name = 'DbAdapter']") do |apps|
-      unless apps.elements['plan-dir'].nil?
-        dbAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
-
+      unless apps.elements['plan-path'].nil?
+        unless apps.elements['plan-dir'].attributes['xsi:nil'] == "true"
+          dbAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
+        else 
+          dbAdapterPlan += apps.elements['plan-path'].text 
+        end 
+        Puppet.debug "db #{dbAdapterPlan}" 
         if FileTest.exists?(dbAdapterPlan)
 
           subfile = File.read( dbAdapterPlan )
@@ -362,6 +370,7 @@ def get_domain(domain_path,n)
             end  
           end
         end
+
 
       end
     end
@@ -383,9 +392,12 @@ def get_domain(domain_path,n)
     aqAdapterPlan = ""
     aqAdapterPlanEntries = ""
     root.elements.each("app-deployment[name = 'AqAdapter']") do |apps|
-      unless apps.elements['plan-dir'].nil?
-        aqAdapterPlan = apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
-
+      unless apps.elements['plan-path'].nil?
+        unless apps.elements['plan-dir'].attributes['xsi:nil'] == "true"
+          aqAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
+        else 
+          aqAdapterPlan += apps.elements['plan-path'].text 
+        end 
         if FileTest.exists?(aqAdapterPlan)
 
           subfile = File.read( aqAdapterPlan )
@@ -418,9 +430,12 @@ def get_domain(domain_path,n)
     jmsAdapterPlan = ""
     jmsAdapterPlanEntries = ""
     root.elements.each("app-deployment[name = 'JmsAdapter']") do |apps|
-      unless apps.elements['plan-dir'].nil?
-        jmsAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
-
+      unless apps.elements['plan-path'].nil?
+        unless apps.elements['plan-dir'].attributes['xsi:nil'] == "true"
+          jmsAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
+        else 
+          jmsAdapterPlan += apps.elements['plan-path'].text 
+        end 
         if FileTest.exists?(jmsAdapterPlan)
 
           subfile = File.read( jmsAdapterPlan )
@@ -455,9 +470,12 @@ def get_domain(domain_path,n)
     ftpAdapterPlan = ""
     ftpAdapterPlanEntries = ""
     root.elements.each("app-deployment[name = 'FtpAdapter']") do |apps|
-      unless apps.elements['plan-dir'].nil?
-        ftpAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
-
+      unless apps.elements['plan-path'].nil?
+        unless apps.elements['plan-dir'].attributes['xsi:nil'] == "true"
+          ftpAdapterPlan += apps.elements['plan-dir'].text + "/" + apps.elements['plan-path'].text 
+        else 
+          ftpAdapterPlan += apps.elements['plan-path'].text 
+        end 
         if FileTest.exists?(ftpAdapterPlan)
 
           subfile = File.read( ftpAdapterPlan )

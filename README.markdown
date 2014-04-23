@@ -1979,30 +1979,3 @@ in hiera
         remotejndiname: 'Queues/TestQueue'
 
 
-## WLST execution
-
-###orawls::wlstexec
-execute any WLST script you want 
-
-- create Machines, Managed Servers, Clusters, Server templates, Dynamic Clusters, Coherence clusters ( all 12.1.2 )
-- create Persistence Store
-- create JMS Server, Module, SubDeployment, Quota, Connection Factory, JMS (distributed) Queue or Topic
-- basically can run every WLST script with the flexible WLST define manifest
-- WLST bulk creation
-
-See the vagrant boxes for all the working examples
-
-###orawls::utils::wlstbulk
-execute any WLST script you want( bulk mode )
-
-orawls::utils::wlstbulk is disabled by default so you can also use this in puppet Enterprise > 3.0  
-requirements
-- needs puppet version >= 3.4 ( make use of iteration and lambda expressions )
-- need to set --parser future ( puppet agent )
-- to use this you need uncomment this orawls::utils::wlstbulk define and enable future parser
-
-use hiera_array, this will search for this entry in all hiera data files
-
-See the vagrant boxes for all the working examples
-
-

@@ -14,16 +14,6 @@ def get_weblogicUser()
   return "oracle"
 end
 
-def get_suCommand()
-  os = Facter.value(:kernel)
-  if "Linux" == os
-    return "su -l "
-  elsif "SunOS" == os
-    return "su - "
-  end
-  return "su -l "
-end
-
 def get_oraInvPath()
   os = Facter.value(:kernel)
   if "Linux" == os
@@ -44,15 +34,6 @@ def get_userHomePath()
   return "/home"
 end
 
-def get_javaCommand()
-  os = Facter.value(:kernel)
-  if "Linux" == os
-    return "java"
-  elsif "SunOS" == os
-    return "/usr/java -d64"
-  end
-  return "java"
-end
 
 # read middleware home in the oracle home folder
 def get_middleware_1036_Home()
@@ -73,8 +54,6 @@ def get_middleware_1036_Home()
 end
 
 def get_middleware_1212_Home(name)
-    #puts "vars: "+ get_suCommand()+" "+get_weblogicUser()+" "+get_oraInvPath()+" "+get_userHomePath()
-
     elements = [] 
     name.split(/;/).each_with_index{ |element, index|  
       if FileTest.exists?(element+"/wlserver")

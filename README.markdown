@@ -62,19 +62,22 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 ##Orawls WebLogic Features
 
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
-- installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
 - apply a BSU patch on a Middleware home ( < 12.1.2 )
 - apply an OPatch on a Middleware home or a Oracle product home
 - creates a WebLogic domain
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
-- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
-- ADF/JRF support, Assign JRF libraries to a Server or Cluster target
-- Change FMW log location of a managed server
 - Java Secure Socket Extension (JSSE) support
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
+
+###Fusion Middleware
+- installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
+- OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
+- ADF/JRF support, Assign JRF libraries to a Server or Cluster target
+- Change FMW log location of a managed server
+- Resource Adapter plan and entries for AQ, DB and JMS
 
 ##Wls types and providers ( ensurable, create,modify,destroy ) + puppet resource
 
@@ -993,6 +996,45 @@ or when you set the defaults hiera variables
       'AdminServer':
          log_output:      true
          server:          'AdminServer'
+
+
+
+###orawls::resourceadapter 
+Add a Resource adapter plan for Aq ,DB or JMS with some entries  
+when you set the defaults hiera variables
+ 
+    $default_params = {}
+    $resource_adapter_instances = hiera('resource_adapter_instances', {})
+    create_resources('orawls::resourceadapter',$resource_adapter_instances, $default_params)
+ 
+vagrantcentos64.example.com.yaml
+or when you set the defaults hiera variables
+
+    resource_adapter_instances:
+      'JmsAdapter_hr':
+        adapter_name:              'JmsAdapter'
+        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/JmsAdapter.rar"
+        adapter_plan_dir:          "/opt/oracle/wlsdomains"
+        adapter_plan:              'Plan_JMS.xml'
+        adapter_entry:             'eis/JMS/cf'
+        adapter_entry_property:    'ConnectionFactoryLocation'
+        adapter_entry_value:       'jms/cf'
+      'AqAdapter_hr':
+        adapter_name:              'AqAdapter'
+        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/AqAdapter.rar"
+        adapter_plan_dir:          "/opt/oracle/wlsdomains"
+        adapter_plan:              'Plan_AQ.xml'
+        adapter_entry:             'eis/AQ/hr'
+        adapter_entry_property:    'xADataSourceName'
+        adapter_entry_value:       'jdbc/hrDS'
+      'DbAdapter_hr':
+        adapter_name:              'DbAdapter'
+        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/DbAdapter.rar"
+        adapter_plan_dir:          "/opt/oracle/wlsdomains"
+        adapter_plan:              'Plan_DB.xml'
+        adapter_entry:             'eis/DB/hr'
+        adapter_entry_property:    'xADataSourceName'
+        adapter_entry_value:       'jdbc/hrDS'
 
 
 ### orawls::utils::fmwcluster

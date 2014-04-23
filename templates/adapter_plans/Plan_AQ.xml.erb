@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<deployment-plan xmlns="http://xmlns.oracle.com/weblogic/deployment-plan" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/weblogic/deployment-plan http://xmlns.oracle.com/weblogic/deployment-plan/1.0/deployment-plan.xsd" global-variables="false">
+  <application-name>AqAdapter</application-name>
+  <variable-definition>
+    <variable>
+      <name>ConnectionInstance_eis/AQ/initial_JNDIName_13683889666630</name>
+      <value>eis/AQ/initial</value>
+    </variable>
+  </variable-definition>
+  <module-override>
+    <module-name>AqAdapter.rar</module-name>
+    <module-type>rar</module-type>
+    <module-descriptor external="false">
+      <root-element>weblogic-connector</root-element>
+      <uri>META-INF/weblogic-ra.xml</uri>
+      <variable-assignment>
+        <name>ConnectionInstance_eis/AQ/initial_JNDIName_13683889666630</name>
+        <xpath>/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="javax.resource.cci.ConnectionFactory"]/connection-instance/[jndi-name="eis/AQ/initial"]/jndi-name</xpath>
+        <origin>planbased</origin>
+      </variable-assignment>
+    </module-descriptor>
+    <module-descriptor external="false">
+      <root-element>connector</root-element>
+      <uri>META-INF/ra.xml</uri>
+    </module-descriptor>
+    <module-descriptor external="true">
+      <root-element>wldf-resource</root-element>
+      <uri>META-INF/weblogic-diagnostics.xml</uri>
+    </module-descriptor>
+  </module-override>
+  <config-root><%= @adapter_plan_dir %></config-root>
+</deployment-plan>

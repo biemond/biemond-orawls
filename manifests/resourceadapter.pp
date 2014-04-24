@@ -39,15 +39,15 @@ define orawls::resourceadapter(
     fail("domain, adapter_name,adapter_plan_dir or adapter_plan is nill")
   } else {
     # check if the object already exists on the weblogic domain
-    $found = artifact_exists($domain_dir ,"resource",$adapter_name,"${adapter_plan_dir}/${adapter_plan}",$version )
+    $found = artifact_exists($domain_dir ,"resource",$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
     if $found == undef {
       $continuePlan = true
-      notify {"wls::resourceadapter ${title} ${version} continue cause nill":}
+      notify {"wls::resourceadapter ${title} continue cause nill":}
     } else {
       if ( $found ) {
         $continuePlan = false
       } else {
-        notify {"wls::resourceadapter ${title} ${version} continue, does not exists":}
+        notify {"wls::resourceadapter ${title} continue, does not exists":}
         $continuePlan = true
       }
     }
@@ -61,12 +61,12 @@ define orawls::resourceadapter(
     $foundEntry = artifact_exists($domain_dir ,"resource_entry",$adapter_name,$adapter_entry )
     if $foundEntry == undef {
       $continueEntry = true
-      notify {"wls::resourceadapter entry ${adapter_entry} ${title} ${version} continue cause nill":}
+      notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue cause nill":}
     } else {
       if ( $foundEntry ) {
         $continueEntry = false
       } else {
-        notify {"wls::resourceadapter entry ${adapter_entry} ${title} ${version} continue, does not exists":}
+        notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue, does not exists":}
         $continueEntry = true
       }
     }
@@ -78,7 +78,7 @@ define orawls::resourceadapter(
   if $userConfigFile != undef {
     $credentials    =   " -userconfigfile ${userConfigFile} -userkeyfile ${userKeyFile}"
     $useStoreConfig = true
-  } elsif $wlsUser != undef {
+  } elsif $weblogic_user != undef {
     $credentials =   " -user ${weblogic_user} -password ${weblogic_password}"
     $useStoreConfig = false
   } else {

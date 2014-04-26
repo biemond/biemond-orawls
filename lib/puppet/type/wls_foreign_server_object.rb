@@ -37,15 +37,35 @@ module Puppet
     end
 
     def self.title_patterns
-      identity = lambda {|x| x}
+      # possible values for /^((.*\/)?(.*):(.*)?)$/
+      # default/server1:channel1 with this as regex outcome 
+      #    default/server1:channel1  default/ server1 channel1
+      # server1:channel1 with this as regex outcome
+      #    server1  nil  server1 channel1
+      identity  = lambda {|x| x}
+      name      = lambda {|x| 
+          if x.include? "/"
+            x            # it contains a domain
+          else
+            'default/'+x # add the default domain
+          end
+        }
+      optional  = lambda{ |x| 
+          if x.nil?
+            'default' # when not found use default
+          else
+            x[0..-2]  # remove the last char / from domain name
+          end
+        }
       [
         [
-          /^((.*):(.*):(.*))$/,
+          /^((.*\/)?(.*):(.*):(.*)?)$/,
           [
-            [ :name, identity ],
-            [ :jmsmodule, identity ],
-            [ :foreign_server, identity ],
-            [ :object_name, identity ],
+            [ :name                     , name     ],
+            [ :domain                   , optional ],
+            [ :jmsmodule                , identity ],
+            [ :foreign_server           , identity ],
+            [ :object_name              , identity ]
           ]
         ],
         [
@@ -57,6 +77,7 @@ module Puppet
       ]
     end
 
+    parameter :domain
     parameter :name
     parameter :jmsmodule
     parameter :foreign_server

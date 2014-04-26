@@ -1,9 +1,19 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
 
-name                      = '<%= name %>'
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
+name                      = '<%= cluster_name %>'
 clusterNodesTargets       = String('<%= servers %>').split(",")
 messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
+migration_table_name      = '<%= migration_table_name %>'
+migration_datasource      = '<%= migration_datasource %>'
+
 datasourceforjobscheduler = '<%= datasourceforjobscheduler %>'
 
 unicastbroadcastchannel = '<%= unicastbroadcastchannel %>'
@@ -21,7 +31,13 @@ try:
 
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
+
     cmo.setMigrationBasis(migrationbasis)
+    if migrationbasis == 'database':
+      cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
+
+      if migration_table_name:
+         cmo.setAutoMigrationTableName(migration_table_name)
 
     if unicastbroadcastchannel:
        cmo.setClusterBroadcastChannel(unicastbroadcastchannel)

@@ -1,6 +1,4 @@
 require 'pathname'
-$:.unshift(Pathname.new(__FILE__).dirname.parent.parent)
-$:.unshift(Pathname.new(__FILE__).dirname.parent.parent.parent.parent + 'easy_type' + 'lib')
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
@@ -39,7 +37,49 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_server/destroy.py.erb', binding)
     end
 
+    def self.title_patterns
+      # possible values for /^((.*\/)?(.*)?)$/
+      # default/testuser1 with this as regex outcome 
+      #    default/testuser1 default/ testuser1
+      # testuser1 with this as regex outcome
+      #    testuser1  nil  testuser1
+      identity  = lambda {|x| x}
+      name      = lambda {|x| 
+          if x.include? "/"
+            x            # it contains a domain
+          else
+            'default/'+x # add the default domain
+          end
+        }
+      optional  = lambda{ |x| 
+          if x.nil?
+            'default' # when not found use default
+          else
+            x[0..-2]  # remove the last char / from domain name
+          end
+        }
+      [
+        [
+          /^((.*\/)?(.*)?)$/,
+          [
+            [ :name       , name     ],
+            [ :domain     , optional ],
+            [ :server_name, identity ]
+          ]
+        ],
+        [
+          /^([^=]+)$/,
+          [
+            [ :name, identity ]
+          ]
+        ]
+      ]
+    end
+
+    parameter :domain
     parameter :name
+    parameter :server_name
+
     property  :ssllistenport
     property  :sslenabled
     property  :listenaddress

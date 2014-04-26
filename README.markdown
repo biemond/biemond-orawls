@@ -1065,7 +1065,11 @@ hiera configuration
 
 ##Types and providers
 
-###wls_setting, required for wls type/providers
+It needs wls_setting and you need to create one for every domain. When domain is not provided on the type it will use the default entry.
+
+###wls_setting, required for all the weblogic type/providers
+
+
 
       wls_setting { 'default':
         user               => 'oracle',
@@ -1075,9 +1079,17 @@ hiera configuration
         weblogic_password  => 'weblogic1',
       }
 
+      wls_setting { 'domain2':
+        user               => 'oracle',
+        weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
+        connect_url        => "t3://localhost:7011",
+        weblogic_user      => 'weblogic',
+        weblogic_password  => 'weblogic1',
+      }
+
 ###wls_user
 
-it needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_user
 
@@ -1087,12 +1099,20 @@ or use puppet resource wls_user
       description            => 'Oracle application software system user.',
       realm                  => 'myrealm',
     }
-    wls_user { 'testuser1':
+    wls_user { 'default/testuser1':
       ensure                 => 'present',
       authenticationprovider => 'DefaultAuthenticator',
       description            => 'testuser1',
       realm                  => 'myrealm',
     }
+
+    wls_user { 'domain2/testuser1':
+      ensure                 => 'present',
+      authenticationprovider => 'DefaultAuthenticator',
+      description            => 'testuser1',
+      realm                  => 'myrealm',
+    }
+
 
 in hiera
 
@@ -1108,7 +1128,7 @@ in hiera
         authenticationprovider: 'DefaultAuthenticator'
         realm:                  'myrealm'
         description:            'my test user'
-      'testuser2':
+      'domain2/testuser2':
         ensure:                 'present'
         password:               'weblogic1'
         authenticationprovider: 'DefaultAuthenticator'
@@ -1117,7 +1137,7 @@ in hiera
 
 ###wls_group
 
-it needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_group
 
@@ -1159,7 +1179,7 @@ in hiera
 
 ###wls_machine
 
-it needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_machine
 
@@ -1171,6 +1191,15 @@ or use puppet resource wls_machine
         nmtype        => 'SSL',
       }
 
+      wls_machine { 'domain2/test2':
+        ensure        => 'present',
+        listenaddress => '10.10.10.10',
+        listenport    => '5556',
+        machinetype   => 'UnixMachine',
+        nmtype        => 'SSL',
+      }
+
+
 in hiera
 
     machines_instances:
@@ -1180,7 +1209,7 @@ in hiera
         listenport:     '5556'
         machinetype:    'UnixMachine'
         nmtype:         'SSL'
-      'Node2':
+      'domain2/Node2':
         ensure:         'present'
         listenaddress:  '10.10.10.200'
         listenport:     '5556'
@@ -1190,11 +1219,23 @@ in hiera
 
 ###wls_server
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_server
 
       wls_server { 'wlsServer3':
+        ensure                         => 'present',
+        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
+        listenaddress                  => '10.10.10.100',
+        listenport                     => '8002',
+        logfilename                    => '/data/logs/wlsServer3.log',
+        machine                        => 'Node1',
+        sslenabled                     => '0',
+        sslhostnameverificationignored => '1',
+        ssllistenport                  => '7002',
+      }
+
+      wls_server { 'domain2/wlsServer3':
         ensure                         => 'present',
         arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
         listenaddress                  => '10.10.10.100',
@@ -1217,12 +1258,24 @@ in hiera
          logfilename:                    '/data/logs/wlsServer1.log'
          machine:                        'Node1'
          sslenabled:                     '1'
+         jsseenabled:                    '0'
+         ssllistenport:                  '8201'
+         sslhostnameverificationignored: '1'
+      'domain2/wlsServer1':
+         ensure:                         'present'
+         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+         listenaddress:                  '10.10.10.100'
+         listenport:                     '8001'
+         logfilename:                    '/data/logs/wlsServer1.log'
+         machine:                        'Node1'
+         jsseenabled:                    '0'
+         sslenabled:                     '1'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
  
 ###wls_server_channel
 
-needs wls_setting, title must also contain the server name    
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the server name    
 
 or use puppet resource wls_server_channel
 
@@ -1272,7 +1325,7 @@ in hiera
 
 ###wls_cluster
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_cluster
 
@@ -1306,7 +1359,7 @@ in hiera
 
 ###wls_file_persistence_store
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_file_persistence_store
 
@@ -1351,7 +1404,7 @@ in hiera
 
 ###wls_safagent
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_safagent
 
@@ -1391,7 +1444,7 @@ in hiera
 
 ###wls_jmsserver
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_jmsserver
 
@@ -1431,7 +1484,7 @@ in hiera
 
 ###wls_datasource
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_datasource
 
@@ -1501,7 +1554,7 @@ in hiera
 
 ###wls_jms_module
 
-needs wls_setting  
+it needs wls_setting and when domain is not provided it will use the 'default'
 
 or use puppet resource wls_jms_module
 
@@ -1522,7 +1575,7 @@ in hiera
 
 ###wls_connection_factory
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_connection_factory
 
@@ -1564,7 +1617,7 @@ in hiera
 
 ###wls_jms_queue
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_jms_queue
 
@@ -1649,7 +1702,7 @@ in hiera
 
 ###wls_jms_topic
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_jms_topic
 
@@ -1685,7 +1738,7 @@ in hiera
 
 ###wls_jms_quota
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_jms_quota
 
@@ -1724,7 +1777,7 @@ in hiera
 
 ###wls_jms_subdeployment
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_jms_subdeployment
 
@@ -1754,7 +1807,7 @@ in hiera
 
 ###wls_saf_remote_context
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_saf_remote_context
 
@@ -1785,7 +1838,7 @@ in hiera
 
 ###wls_saf_error_handler
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_saf_error_handler
 
@@ -1812,7 +1865,7 @@ in hiera
 
 ###wls_saf_imported_destination
 
-needs wls_setting, title must also contain the jms module name  
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name  
 
 or use puppet resource wls_saf_imported_destination
 
@@ -1853,7 +1906,7 @@ in hiera
 
 ###wls_saf_imported_destination_object
 
-needs wls_setting, title must also contain the jms module name and imported_destination 
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name and imported_destination 
 
 or use puppet resource wls_saf_imported_destination_object
 
@@ -1895,7 +1948,7 @@ in hiera
 
 ###wls_foreign_server
 
-needs wls_setting, title must also contain the jms module name 
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name 
 
 or use puppet resource wls_foreign_server
 
@@ -1937,7 +1990,7 @@ in hiera
 
 ###wls_foreign_server_object
 
-needs wls_setting, title must also contain the jms module name and foreign server 
+it needs wls_setting and when domain is not provided it will use the 'default', title must also contain the jms module name and foreign server 
 
 or use puppet resource wls_foreign_server_object
 

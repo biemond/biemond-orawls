@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;bytesmaximum;messagesmaximum;policy;shared"
+print >>f, "name;jmsmodule;bytesmaximum;messagesmaximum;policy;shared;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -22,7 +27,7 @@ for token in m.split("dr--"):
             if not token2 == '':
                 print 'cd(\''+'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2+'\')'
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2)
-                print >>f, ";".join(map(quote, [token+":"+token2,token,get('BytesMaximum'),get('MessagesMaximum'),get('Policy'),str(get('Shared'))]))
+                print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,get('BytesMaximum'),get('MessagesMaximum'),get('Policy'),str(get('Shared')),domain]))
         
 f.close()
 

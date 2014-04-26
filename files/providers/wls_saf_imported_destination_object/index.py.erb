@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -21,13 +26,13 @@ def object(token,token2,token3,location,type):
     else:
       useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')  
 
-    print >>f, ";".join(map(quote, [token+":"+token2+":"+token3,token,token2,type,timeToLiveDefault,useSAFTimeToLiveDefault,unitoforder,nonpersistentqos,remotejndiname,localjndiname]))
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,timeToLiveDefault,useSAFTimeToLiveDefault,unitoforder,nonpersistentqos,remotejndiname,localjndiname,domain]))
 
 
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname"
+print >>f, "name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:

@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
 	if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/Servers')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;classpath;arguments;jsseenabled"
+print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;classpath;arguments;jsseenabled;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -42,7 +47,7 @@ for token in m.split("dr--"):
             if token2:
                machine = token2
 
-        print >>f, ";".join(map(quote, [token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments,jsseEnabled]))
+        print >>f, ";".join(map(quote, [domain+'/'+token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments,jsseEnabled,domain]))
 f.close()
 
 disconnect()

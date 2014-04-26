@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;policy;logformat;errordestination"
+print >>f, "name;jmsmodule;policy;logformat;errordestination;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -21,7 +26,7 @@ for token in m.split("dr--"):
             token2=token2.strip().lstrip().rstrip()
             if not token2 == '':
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFErrorHandlings/'+token2)
-                print >>f, ";".join(map(quote, [token+":"+token2,token,cmo.getPolicy(),cmo.getLogFormat(),cmo.getSAFErrorDestination()]))
+                print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,cmo.getPolicy(),cmo.getLogFormat(),cmo.getSAFErrorDestination(),domain]))
  
 f.close()
 

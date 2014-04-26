@@ -36,7 +36,48 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_jmsserver/destroy.py.erb', binding)
     end
 
+    def self.title_patterns
+      # possible values for /^((.*\/)?(.*)?)$/
+      # default/testuser1 with this as regex outcome 
+      #    default/testuser1 default/ testuser1
+      # testuser1 with this as regex outcome
+      #    testuser1  nil  testuser1
+      identity  = lambda {|x| x}
+      name      = lambda {|x| 
+          if x.include? "/"
+            x            # it contains a domain
+          else
+            'default/'+x # add the default domain
+          end
+        }
+      optional  = lambda{ |x| 
+          if x.nil?
+            'default' # when not found use default
+          else
+            x[0..-2]  # remove the last char / from domain name
+          end
+        }
+      [
+        [
+          /^((.*\/)?(.*)?)$/,
+          [
+            [ :name          , name     ],
+            [ :domain        , optional ],
+            [ :jmsserver_name, identity ]
+          ]
+        ],
+        [
+          /^([^=]+)$/,
+          [
+            [ :name, identity ]
+          ]
+        ]
+      ]
+    end
+
+    parameter :domain
     parameter :name
+    parameter :jmsserver_name
     property  :persistentstore
     property  :persistentstoretype
     property  :target

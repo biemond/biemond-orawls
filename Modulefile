@@ -1,5 +1,5 @@
 name    'biemond-orawls'
-version '0.9.8'
+version '1.0.0'
 source 'https://github.com/biemond/biemond-orawls'
 author 'Edwin Biemond'
 license 'Apache 2.0'
@@ -8,7 +8,7 @@ description 'Only for Linux & Solaris
 Oracle WebLogic module optimized for Hiera and Puppet 3
 wls native types & providers like wls_machine, wls_server and wls_cluster
 
-based on the wls module and follow the naming standards and compliant modules of https://github.com/stdmod
+based on the wls module
 '
 project_page ''
 

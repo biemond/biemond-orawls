@@ -1,0 +1,39 @@
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
+def quote(text):
+	if text:
+		return "\"" + str(text).replace("\"", "\"\"") + "\""
+	else: 
+		return ""
+
+m = ls('/VirtualHosts')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;channelname;target;targettype;domain"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/VirtualHosts/'+token)
+        channelname = get('NetworkAccessPoint')
+        n = ls('Targets')
+        target     = []
+        targetType = []
+        for token2 in n.split("dr--"):
+             token2=token2.strip().lstrip().rstrip()
+             if not token2 == '':
+                target.append(token2)
+                cd('/VirtualHosts/'+token+'/Targets/'+token2)
+                targetType.append(get('Type'))
+
+        print >>f, ";".join(map(quote, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain]))
+
+f.close()
+
+disconnect()
+exit()

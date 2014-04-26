@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/Clusters')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport"
+print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -33,7 +38,7 @@ for token in m.split("dr--"):
                servers.append(token2)
 
         cd('/Clusters/'+token)
-        print >>f, ";".join(map(quote, [token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort')]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,get('DataSourceForAutomaticMigration'),get('AutoMigrationTableName'),domain]))
 f.close()
 
 disconnect()

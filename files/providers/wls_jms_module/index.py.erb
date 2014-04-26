@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype"
+print >>f, "name;target;targettype;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -26,7 +31,7 @@ for token in m.split("dr--"):
                cd('/JMSSystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [token,','.join(target),','.join(targetType)]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),domain]))
 
 disconnect()
 exit()

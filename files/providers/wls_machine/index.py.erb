@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/Machines')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;machinetype;nmtype;listenaddress;listenport"
+print >>f, "name;machinetype;nmtype;listenaddress;listenport;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -22,7 +27,7 @@ for token in m.split("dr--"):
         if not (listenAddress):
            listenAddress = '' 
 
-        print >>f, ";".join(map(quote, [token,type,get('NMType'),listenAddress,str(get('ListenPort'))]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain]))
 
 f.close()
 

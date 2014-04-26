@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;subdeployment;defaulttargeting;extraproperties;extrapropertiesvalues;connectionurl;initialcontextfactory"
+print >>f, "name;jmsmodule;subdeployment;defaulttargeting;extraproperties;extrapropertiesvalues;connectionurl;initialcontextfactory;domain"
 
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
@@ -41,7 +46,7 @@ for token in m.split("dr--"):
                 else:
                   subDeploymentName = cmo.getSubDeploymentName()  
 
-                print >>f, ";".join(map(quote, [token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),','.join(propertyValues),cmo.getConnectionURL(),cmo.getInitialContextFactory()]))
+                print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),','.join(propertyValues),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain]))
  
 f.close()
 

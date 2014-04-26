@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 from weblogic.management.security.authentication import GroupReaderMBean
 
@@ -12,7 +17,7 @@ realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
 authProvider = realmName.getAuthenticationProviders()
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;realm;authenticationprovider;users;description"
+print >>f, "name;realm;authenticationprovider;users;description;domain"
 
 for i in authProvider:
   if isinstance(i,GroupReaderMBean):
@@ -29,7 +34,7 @@ for i in authProvider:
       for user in usergroup: 
         users.append(user)
 
-      print >>f, ";".join(map(quote, [group, realmName.getName(), authName,','.join(users),description]))
+      print >>f, ";".join(map(quote, [domain+'/'+group, realmName.getName(), authName,','.join(users),description,domain]))
       groupReader.advance(cursor)
     
     groupReader.close(cursor)

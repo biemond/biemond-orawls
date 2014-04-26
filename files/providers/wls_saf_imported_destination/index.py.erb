@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/JMSSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;remotecontext;errorhandling;jndiprefix;timetolivedefault;usetimetolivedefault;subdeployment;defaulttargeting"
+print >>f, "name;jmsmodule;remotecontext;errorhandling;jndiprefix;timetolivedefault;usetimetolivedefault;subdeployment;defaulttargeting;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -55,7 +60,7 @@ for token in m.split("dr--"):
                 else:
                   subDeploymentName = cmo.getSubDeploymentName()     
 
-                print >>f, ";".join(map(quote, [token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,subDeploymentName,defaultTargetingEnabled]))
+                print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,subDeploymentName,defaultTargetingEnabled,domain]))
  
 f.close()
 

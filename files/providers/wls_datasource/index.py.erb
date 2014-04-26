@@ -1,4 +1,9 @@
-connect('<%= weblogicUser %>','<%= weblogicPassword %>'  ,'<%= weblogicConnectUrl %>')
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -9,7 +14,7 @@ def quote(text):
 m = ls('/JDBCSystemResources')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;extrapropertiesvalues;maxcapacity;initialcapacity"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;extrapropertiesvalues;maxcapacity;initialcapacity;domain"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -60,7 +65,7 @@ for token in m.split("dr--"):
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),','.join(propertyValues),maxcapacity,initialcapacity]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),','.join(propertyValues),maxcapacity,initialcapacity,domain]))
 f.close()
 
 disconnect()

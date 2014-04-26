@@ -88,6 +88,7 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_server
 - wls_server_channel
 - wls_cluster
+- wls_virtual_host
 - wls_datasource
 - wls_file_persistence_store
 - wls_jmsserver
@@ -1356,6 +1357,28 @@ in hiera
         messagingmode:  'unicast'
         migrationbasis: 'consensus'
         servers:        'wlsServer1,wlsServer2'
+
+###wls_virtual_host
+
+it needs wls_setting and when domain is not provided it will use the 'default'
+
+or use puppet resource wls_virtual_host
+
+    wls_virtual_host { 'default/WS':
+      ensure     => 'present',
+      channel    => 'HTTP',
+      target     => 'WebCluster',
+      targettype => 'Cluster',
+    }
+
+in hiera
+
+    virtual_host_instances:
+     'WS':
+       ensure:     'present'
+       channel:    'HTTP'
+       target:     'WebCluster'
+       targettype: 'Cluster'
 
 ###wls_file_persistence_store
 

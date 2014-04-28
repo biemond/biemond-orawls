@@ -1,7 +1,7 @@
 newparam(:name) do
   include EasyType
 
-  desc "The virtual host name"
+  desc "The workmanager name"
 
   isnamevar
 

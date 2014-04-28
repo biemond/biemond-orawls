@@ -1,0 +1,74 @@
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
+def quote(text):
+	if text:
+		return "\"" + str(text).replace("\"", "\"\"") + "\""
+	else: 
+		return ""
+
+m = ls('/SelfTuning')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity"
+for token in m.split("drw-"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/SelfTuning/'+token)
+
+        n = ls('WorkManagers')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
+
+                stuckthreads = str(cmo.getIgnoreStuckThreads())
+
+                minThreadsConstraintsMbean = cmo.getMinThreadsConstraint()
+                if minThreadsConstraintsMbean:
+                   path = getPath(minThreadsConstraintsMbean)
+                   cd("/"+path) 
+                   minThreadsConstraint = get('Name')
+                else:
+                   minThreadsConstraint = ''
+
+                cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
+                maxThreadsConstraintsMbean = cmo.getMaxThreadsConstraint()
+                if maxThreadsConstraintsMbean:
+                   path = getPath(maxThreadsConstraintsMbean)
+                   cd("/"+path) 
+                   maxThreadsConstraint = get('Name')
+                else:
+                   maxThreadsConstraint = ''
+
+                cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
+                capacitiesmBean = cmo.getCapacity()
+                if capacitiesmBean:
+                   path = getPath(capacitiesmBean)
+                   cd("/"+path) 
+                   capacity = get('Name')
+                else:
+                   capacity = ''
+
+                cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
+                t = ls('Targets')
+                target     = []
+                targetType = []
+                for token3 in t.split("dr--"):
+                     token3=token3.strip().lstrip().rstrip()
+                     if not token3 == '':
+                        target.append(token3)
+                        cd('/SelfTuning/'+token+'/WorkManagers/'+token2+'/Targets/'+token3)
+                        targetType.append(get('Type'))
+
+                print >>f, ";".join(map(quote, [domain+'/'+token2,stuckthreads,','.join(target),','.join(targetType),domain,minThreadsConstraint,maxThreadsConstraint,capacity]))
+
+f.close()
+
+disconnect()
+exit()

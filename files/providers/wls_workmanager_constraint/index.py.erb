@@ -1,0 +1,65 @@
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+domain               = sys.argv[4] 
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
+def quote(text):
+	if text:
+		return "\"" + str(text).replace("\"", "\"\"") + "\""
+	else: 
+		return ""
+
+def constraint(token2,location,type):
+    cd(location)
+
+    count = get('Count')
+    t = ls('Targets')
+    target     = []
+    targetType = []
+    for token3 in t.split("dr--"):
+         token3=token3.strip().lstrip().rstrip()
+         if not token3 == '':
+            target.append(token3)
+            cd(location+'/Targets/'+token3)
+            targetType.append(get('Type'))
+
+    print >>f, ";".join(map(quote, [domain+'/'+token2,type,','.join(target),','.join(targetType),domain,count]))
+
+
+m = ls('/SelfTuning')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;constrainttype;target;targettype;domain;constraintvalue"
+for token in m.split("drw-"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('/SelfTuning/'+token)
+
+        n = ls('MaxThreadsConstraints')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                constraint(token2,'/SelfTuning/'+token+'/MaxThreadsConstraints/'+token2,'MaxThreadsConstraint')
+
+        cd('/SelfTuning/'+token)
+        n = ls('MinThreadsConstraints')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                constraint(token2,'/SelfTuning/'+token+'/MinThreadsConstraints/'+token2,'MinThreadsConstraint')
+
+        cd('/SelfTuning/'+token)
+        n = ls('Capacities')
+        for token2 in n.split("dr--"):
+            token2=token2.strip().lstrip().rstrip()
+            if not token2 == '':
+                constraint(token2,'/SelfTuning/'+token+'/Capacities/'+token2,'Capacity')
+
+
+f.close()
+
+disconnect()
+exit()

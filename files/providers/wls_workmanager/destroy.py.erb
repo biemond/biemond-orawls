@@ -1,0 +1,35 @@
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
+name             = '<%= workmanager_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    domain = get('Name') 
+
+    cd('/SelfTuning/'+domain)
+
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/SelfTuning/'+domain+'/WorkManagers/'+name))
+    cmo.destroyWorkManager(getMBean('/SelfTuning/'+domain+'/WorkManagers/'+name))
+
+    save()
+    activate()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()

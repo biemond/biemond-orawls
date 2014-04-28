@@ -89,6 +89,8 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_server_channel
 - wls_cluster
 - wls_virtual_host
+- wls_workmanager_constraint
+- wls_workmanager
 - wls_datasource
 - wls_file_persistence_store
 - wls_jmsserver
@@ -1379,6 +1381,86 @@ in hiera
        channel:    'HTTP'
        target:     'WebCluster'
        targettype: 'Cluster'
+
+###wls_workmanager_constaint
+
+it needs wls_setting and when domain is not provided it will use the 'default'
+
+or use puppet resource wls_workmanager_constaint
+
+    wls_workmanager_constraint { 'default/CapacityConstraint':
+      ensure          => 'present',
+      constrainttype  => 'Capacity',
+      constraintvalue => '20',
+      target          => 'WebCluster',
+      targettype      => 'Cluster',
+    }
+    wls_workmanager_constraint { 'default/MaxThreadsConstraint':
+      ensure          => 'present',
+      constrainttype  => 'MaxThreadsConstraint',
+      constraintvalue => '5',
+      target          => 'WebCluster',
+      targettype      => 'Cluster',
+    }
+    wls_workmanager_constraint { 'default/MinThreadsConstraint':
+      ensure          => 'present',
+      constrainttype  => 'MinThreadsConstraint',
+      constraintvalue => '2',
+      target          => 'WebCluster',
+      targettype      => 'Cluster',
+    }
+
+in hiera
+
+    workmanager_constraint_instances:
+      'CapacityConstraint':
+        ensure:          'present'
+        constraintvalue: '20'
+        target:          'WebCluster'
+        targettype:      'Cluster'
+        constrainttype:  'Capacity'
+      'MaxThreadsConstraint':
+        ensure:          'present'
+        constraintvalue: '5'
+        target:          'WebCluster'
+        targettype:      'Cluster'
+        constrainttype:  'MaxThreadsConstraint'
+      'MinThreadsConstraint':
+        ensure:          'present'
+        constraintvalue: '2'
+        target:          'WebCluster'
+        targettype:      'Cluster'
+        constrainttype:  'MinThreadsConstraint'
+
+###wls_workmanager
+
+it needs wls_setting and when domain is not provided it will use the 'default'
+
+or use puppet resource wls_workmanager
+
+    wls_workmanager { 'WorkManagerConstraints':
+      ensure               => 'present',
+      capacity             => 'CapacityConstraint',
+      maxthreadsconstraint => 'MaxThreadsConstraint',
+      minthreadsconstraint => 'MinThreadsConstraint',
+      stuckthreads         => '0',
+      target               => 'WebCluster',
+      targettype           => 'Cluster',
+    }
+
+in hiera
+
+    workmanager_instances:
+      'WorkManagerConstraints':
+        ensure:                'present'
+        capacity:              'CapacityConstraint'
+        maxthreadsconstraint:  'MaxThreadsConstraint'
+        minthreadsconstraint:  'MinThreadsConstraint'
+        stuckthreads:          '1'
+        target:                'WebCluster'
+        targettype:            'Cluster'
+
+
 
 ###wls_file_persistence_store
 

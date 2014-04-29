@@ -11,6 +11,7 @@ name             = '<%= virtual_host_name %>'
 channel          = '<%= channel %>'
 target           = '<%= target %>'
 targettype       = '<%= targettype %>'
+vhost_names      = '<%= virtual_host_names %>'
 
 edit()
 startEdit()
@@ -23,6 +24,10 @@ try:
     cd('/VirtualHosts/'+name)
     if channel:
       channelname = set('NetworkAccessPoint',channel)
+
+    if vhost_names: 
+      hosts     = String(vhost_names).split(",")  
+      set('VirtualHostNames',jarray.array(hosts, String))
 
     print "target: "     +  target
     print "targettype: " +  targettype

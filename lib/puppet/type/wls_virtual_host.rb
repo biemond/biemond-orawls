@@ -82,6 +82,7 @@ module Puppet
     property  :channel
     property  :target
     property  :targettype
+    property  :virtual_host_names
 
   end
 end

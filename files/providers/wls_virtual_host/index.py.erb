@@ -14,13 +14,16 @@ def quote(text):
 m = ls('/VirtualHosts')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;channelname;target;targettype;domain"
+print >>f, "name;channelname;target;targettype;domain;virtualhostnames"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
         print '___'+token+'___'
         cd('/VirtualHosts/'+token)
         channelname = get('NetworkAccessPoint')
+
+        hosts = get('VirtualHostNames')
+
         n = ls('Targets')
         target     = []
         targetType = []
@@ -31,7 +34,7 @@ for token in m.split("dr--"):
                 cd('/VirtualHosts/'+token+'/Targets/'+token2)
                 targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain]))
+        print >>f, ";".join(map(quote, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts)]))
 
 f.close()
 

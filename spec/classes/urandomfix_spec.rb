@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'orawls::urandomfix' , :type => :class do
 
-  it { should compile }
   it { should contain_package('rng-tools').with_ensure('present') }
 
   describe "Windows" do

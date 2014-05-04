@@ -1,8 +1,7 @@
 require 'spec_helper'
 
-describe 'orawls::urandomfix' do
+describe 'orawls::urandomfix' , :type => :class do
 
-  it { should contain_class('orawls::urandomfix') }
   it { should compile }
   it { should contain_package('rng-tools').with_ensure('present') }
 

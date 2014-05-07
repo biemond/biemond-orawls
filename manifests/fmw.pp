@@ -7,7 +7,7 @@ define orawls::fmw (
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
   $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'  , undef), # /opt/oracle
-  $oracle_home_dir            = hiera('wls_oracle_home_dir'       , undef), # /opt/oracle/middleware/Oracle_SOA
+  $oracle_home_dir            = undef,                                      # /opt/oracle/middleware/Oracle_SOA
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $fmw_product                = undef,                                      # adf|soa|osb
   $fmw_file1                  = undef,

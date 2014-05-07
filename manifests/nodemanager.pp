@@ -110,7 +110,7 @@ define orawls::nodemanager (
 
   exec { "startNodemanager ${title}":
     command     => "nohup ${startHome}/startNodeManager.sh &",
-    environment => $env,
+    environment => [ $env, "JAVA_HOME=${jdk_home_dir}", "JAVA_VENDOR=Oracle" ],
     unless      => $checkCommand,
     path        => $exec_path,
     user        => $os_user,

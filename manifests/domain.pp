@@ -205,6 +205,13 @@ define orawls::domain (
       }
     }
 
+    file { "${download_dir}":
+        ensure  => directory,
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+    } 
+    
     # the domain.py used by the wlst
     file { "domain.py ${domain_name} ${title}":
       ensure  => present,
@@ -215,6 +222,7 @@ define orawls::domain (
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
+      require => [ File["${download_dir}"] ],
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
@@ -235,7 +243,7 @@ define orawls::domain (
 
     if !defined(File[$domains_dir]) {
       # check oracle install folder
-      file { $domains_dir:
+      @file { $domains_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
@@ -248,7 +256,7 @@ define orawls::domain (
     if $apps_dir != undef {
       if !defined(File[$apps_dir]) {
         # check oracle install folder
-        file { $apps_dir:
+        @file { $apps_dir:
           ensure  => directory,
           recurse => false,
           replace => false,

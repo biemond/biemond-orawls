@@ -257,16 +257,16 @@ define orawls::fmw (
     }
 
     exec { "install ${fmw_product} ${title}":
-      command   => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
+      command     => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
       environment => "TMP=${temp_directory}",
-      timeout   => 0,
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-      require   => [File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
-                    Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
-                    Exec["extract ${fmw_file1}"],],
+      timeout     => 0,
+      path        => $exec_path,
+      user        => $os_user,
+      group       => $os_group,
+      logoutput   => $log_output,
+      require     => [File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
+                      Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
+                      Exec["extract ${fmw_file1}"],],
     }
   }
 }

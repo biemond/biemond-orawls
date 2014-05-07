@@ -247,12 +247,13 @@ define orawls::fmw (
 
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion"
 
-    notify { "orawls::fmw ${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}": } 
+    #notify { "orawls::fmw ${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}": } 
 
-   file { "$oracleHome":
+    file { $oracleHome:
       ensure => "directory",
-      owner     => $os_user,
-      group     => $os_group,      
+      owner  => $os_user,
+      group  => $os_group,
+      before => Exec["install ${fmw_product} ${title}"],      
     }
 
     exec { "install ${fmw_product} ${title}":

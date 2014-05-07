@@ -3,19 +3,19 @@ require 'spec_helper'
 describe 'orawls::fmw', :type => :define do
 
   describe "CentOS remote" do
-  	let(:params){{:download_dir         => '/install',
-  		          :fmw_product          => 'soa',
-  		          :os_user              => 'oracle',
-  		          :os_group             => 'dba',
-  		          :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+    let(:params){{:download_dir         => '/install',
+                  :fmw_product          => 'soa',
+                  :os_user              => 'oracle',
+                  :os_group             => 'dba',
+                  :middleware_home_dir  => '/opt/oracle/middleware11gR1',
                   :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_103',
                   :oracle_base_home_dir => '/opt/oracle', 
-  		          :remote_file          => true,
+                  :remote_file          => true,
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :fmw_file1            => 'file1',
                   :fmw_file2            => 'file2',
                   :source               => '/mnt',
-  		          }}
+                }}
     let(:title) {'soaPS6'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
@@ -98,20 +98,20 @@ describe 'orawls::fmw', :type => :define do
   end
 
   describe "CentOS local" do
-  	let(:params){{:download_dir         => '/install',
-  		          :fmw_product          => 'osb',
-  		          :os_user              => 'oracle',
-  		          :os_group             => 'dba',
-  		          :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+    let(:params){{:download_dir         => '/install',
+                  :fmw_product          => 'osb',
+                  :os_user              => 'oracle',
+                  :os_group             => 'dba',
+                  :middleware_home_dir  => '/opt/oracle/middleware11gR1',
                   :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_103',
                   :oracle_base_home_dir => '/opt/oracle', 
-  		          :remote_file          => false,
+                  :remote_file          => false,
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :fmw_file1            => 'file1',
                   :fmw_file2            => 'file2',
                   :source               => '/mnt',
                   :temp_directory       => '/tmp1',
-  		          }}
+                }}
     let(:title) {'osbPS6'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',

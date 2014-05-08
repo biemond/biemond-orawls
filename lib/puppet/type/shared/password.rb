@@ -1,7 +1,7 @@
 newparam(:password) do
   include EasyType
 
-  desc "The Foreign Server user's password"
+  desc "The weblogic artifact's password"
 
   to_translate_to_resource do | raw_resource|
     raw_resource['password']

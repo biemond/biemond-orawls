@@ -1,7 +1,7 @@
 newproperty(:defaulttargeting) do
   include EasyType
 
-  desc "default targeting enabled on the cf"
+  desc "default targeting enabled"
   newvalues(1, 0)
   defaultto 1
 

@@ -11,6 +11,7 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     patchName           = resource[:name]
     middleware_home_dir = resource[:middleware_home_dir]
     weblogic_home_dir   = resource[:weblogic_home_dir]
+    patch_download_dir  = resource[:patch_download_dir]
 
     if action == :present
       bsuaction = "-install"
@@ -19,8 +20,12 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     end 
 
     Puppet.debug "bsu_patch action: #{action}"
- 
-    command     = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -verbose"
+
+    if patch_download_dir == nil
+      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -verbose"
+    else 
+      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -patch_download_dir="+patch_download_dir+" -verbose"
+    end 
     environment = ["USER="+user, "HOME=/home/"+user, "LOGNAME="+user]
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
 

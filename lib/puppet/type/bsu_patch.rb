@@ -64,5 +64,12 @@ module Puppet
       EOT
     end
 
+    newparam(:patch_download_dir) do
+      desc <<-EOT
+        The BSU pathc download dir folder.
+      EOT
+    end
+
+
   end
 end

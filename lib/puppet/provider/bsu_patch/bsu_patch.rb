@@ -41,13 +41,8 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     middleware_home_dir = resource[:middleware_home_dir]
     weblogic_home_dir   = resource[:weblogic_home_dir]
     jdk_home_dir        = resource[:jdk_home_dir]
-    patch_download_dir  = resource[:patch_download_dir]
 
-    if patch_download_dir == nil
-      command = jdk_home_dir+"/bin/java -Xms256m -Xmx256m -jar "+middleware_home_dir+"/utils/bsu/patch-client.jar -report -bea_home="+middleware_home_dir+" -output_format=xml"
-    else 
-      command = jdk_home_dir+"/bin/java -Xms256m -Xmx256m -jar "+middleware_home_dir+"/utils/bsu/patch-client.jar -report -bea_home="+middleware_home_dir+" -output_format=xml -patch_download_dir="+patch_download_dir
-    end 
+    command = jdk_home_dir+"/bin/java -Xms256m -Xmx256m -jar "+middleware_home_dir+"/utils/bsu/patch-client.jar -report -bea_home="+middleware_home_dir+" -output_format=xml"
 
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
 

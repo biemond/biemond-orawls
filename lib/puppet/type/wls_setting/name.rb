@@ -1,13 +1,12 @@
 newparam(:name) do
   include EasyType
-  include EasyType::Validators::Name
 
-  desc "The name"
+  desc "The name of the setting"
 
   isnamevar
 
   to_translate_to_resource do | raw_resource|
-    raw_resource['name']
+    raw_resource[self.name]
   end
 
 end

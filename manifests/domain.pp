@@ -9,7 +9,7 @@ define orawls::domain (
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
-  $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm
+  $domain_template            = "standard",                                 # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
   $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
@@ -152,13 +152,20 @@ define orawls::domain (
       $templateFile  = "orawls/domains/domain_adf.py.erb"
       $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
 
+    } elsif $domain_template == 'wc' {
+      $templateFile  = "orawls/domains/domain_wc.py.erb"
+      $wlstPath      = "${middleware_home_dir}/Oracle_WC1/common/bin"
+
+    } elsif $domain_template == 'wc_wcc_bpm' {
+      $templateFile  = "orawls/domains/domain_wc_wcc_bpm.py.erb"
+      $wlstPath      = "${middleware_home_dir}/Oracle_WCC1/common/bin"
+
     } else {
       $templateFile   = "orawls/domains/domain.py.erb"
       $wlstPath       = "${weblogic_home_dir}/common/bin"
     }
 
     $exec_path        = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
-    $nodeMgrMachine   = "UnixMachine"
 
     Exec {
       logoutput => $log_output,
@@ -172,6 +179,11 @@ define orawls::domain (
       $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"
       $bam_nodemanager_log_dir   = "${domain_dir}/servers/bam_server1/logs"
 
+      $wcCollaboration_nodemanager_log_dir   = "${domain_dir}/servers/WC_Collaboration/logs"
+      $wcPortlet_nodemanager_log_dir         = "${domain_dir}/servers/WC_Portlet/logs"
+      $wcSpaces_nodemanager_log_dir          = "${domain_dir}/servers/WC_Spaces/logs"
+      $umc_nodemanager_log_dir               = "${domain_dir}/servers/UCM_server1/logs"
+
 
     } else {
       $admin_nodemanager_log_dir = $log_dir
@@ -180,6 +192,11 @@ define orawls::domain (
       $osb_nodemanager_log_dir   = $log_dir
       $soa_nodemanager_log_dir   = $log_dir
       $bam_nodemanager_log_dir   = $log_dir
+
+      $wcCollaboration_nodemanager_log_dir   = $log_dir
+      $wcPortlet_nodemanager_log_dir         = $log_dir
+      $wcSpaces_nodemanager_log_dir          = $log_dir
+      $umc_nodemanager_log_dir               = $log_dir
 
 
       # create all log folders
@@ -245,7 +262,7 @@ define orawls::domain (
 
     if !defined(File[$domains_dir]) {
       # check oracle install folder
-      @file { $domains_dir:
+      file { $domains_dir:
         ensure  => directory,
         recurse => false,
         replace => false,
@@ -258,7 +275,7 @@ define orawls::domain (
     if $apps_dir != undef {
       if !defined(File[$apps_dir]) {
         # check oracle install folder
-        @file { $apps_dir:
+        file { $apps_dir:
           ensure  => directory,
           recurse => false,
           replace => false,

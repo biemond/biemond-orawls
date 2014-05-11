@@ -38,7 +38,7 @@ define orawls::fmw (
       } 
     }
     'SunOS': {
-      $oraInstPath   = "/var/opt"
+      $oraInstPath   = "/var/opt/oracle"
       case $::architecture {
         'i86pc': {
           $installDir    = "intelsolaris"

@@ -15,7 +15,13 @@ define orawls::utils::orainst
       $oraInstPath        = "/etc"
     }
     'SunOS': {
-      $oraInstPath        = "/var/opt"
+      $oraInstPath        = "/var/opt/oracle"
+      if !defined(File[$oraInstPath]) {
+        file { $oraInstPath:
+          ensure  => directory,
+          before  => File["${oraInstPath}/oraInst.loc"],  
+        }
+      }  
     }
     default: {
         fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")

@@ -65,7 +65,7 @@ class orawls::weblogic (
       $java_statement     = "java ${javaParameters}"
     }
     'SunOS': {
-      $oraInstPath       = "/var/opt"
+      $oraInstPath       = "/var/opt/oracle"
       $java_statement    = "java -d64 ${javaParameters}"
     }
     default: {

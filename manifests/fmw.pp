@@ -122,7 +122,7 @@ define orawls::fmw (
   }
 
   # check if the oracle home already exists, this is for performance reasons
-  $found = oracle_exists($oracleHome)
+  $found = orawls_oracle_exists($oracleHome)
 
   if $found == undef {
     $continue = true
@@ -260,6 +260,7 @@ define orawls::fmw (
       command     => "${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
       environment => "TMP=${temp_directory}",
       timeout     => 0,
+      creates     => "${oracleHome}/OPatch",
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,

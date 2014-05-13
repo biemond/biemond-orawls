@@ -15,6 +15,7 @@ describe 'orawls::fmw', :type => :define do
                   :fmw_file1            => 'file1',
                   :fmw_file2            => 'file2',
                   :source               => '/mnt',
+                  :temp_directory       => '/tmp',
                 }}
     let(:title) {'soaPS6'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,

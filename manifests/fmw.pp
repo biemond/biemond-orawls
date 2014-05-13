@@ -18,7 +18,7 @@ define orawls::fmw (
   $source                     = hiera('wls_source'                , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file                = true,                                       # true|false
   $log_output                 = false,                                      # true|false
-  $temp_directory             = '/tmp',                                     # /tmp temporay directory for files extractions  
+  $temp_directory             = hiera('wls_temp_dir'              ,'/tmp'), # /tmp directory
 )
 {
 

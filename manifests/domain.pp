@@ -9,11 +9,7 @@ define orawls::domain (
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
-<<<<<<< HEAD
   $domain_template            = hiera('domain_template'           , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm
-=======
-  $domain_template            = hiera('wls_domain_template'       , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm
->>>>>>> 72c1505287eb8974d9db17930d5811489df28c0c
   $domain_name                = hiera('domain_name'               , undef),
   $development_mode           = true,
   $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),

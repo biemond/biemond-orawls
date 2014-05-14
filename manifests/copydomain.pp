@@ -135,7 +135,7 @@ define orawls::copydomain (
         }
       }
     }
-   
+
     # copy domain from the adminserver to the this node ( with scp and without passwords )
     if ( $use_ssh == true ) {
       exec { "copy domain jar ${domain_name}":

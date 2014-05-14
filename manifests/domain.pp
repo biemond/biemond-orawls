@@ -15,7 +15,7 @@ define orawls::domain (
   $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
   $adminserver_address        = hiera('domain_adminserver_address', undef),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $java_arguments             = hiera('java_arguments', {}),               # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
+  $java_arguments             = hiera('domain_java_arguments', {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address        = undef,
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),

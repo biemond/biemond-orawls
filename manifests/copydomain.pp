@@ -9,6 +9,8 @@ define orawls::copydomain (
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
+  $use_ssh                    = true,
+  $domain_pack_dir            = undef,
   $domain_name                = hiera('domain_name'               , undef),
   $adminserver_address        = hiera('domain_adminserver_address', undef),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
@@ -28,6 +30,7 @@ define orawls::copydomain (
   } else {
     $domains_dir =  $wls_domains_dir 
   }
+
   if ( $wls_apps_dir == undef ) {
     $apps_dir = "${middleware_home_dir}/user_projects/applications"
   } else {
@@ -42,6 +45,12 @@ define orawls::copydomain (
 
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
+  }
+
+  if ( $domain_pack_dir == undef ) {
+    $remote_or_share_domain_domain_dir = $download_dir
+  } else {
+    $remote_or_share_domain_domain_dir = $domain_pack_dir
   }
 
   # check if the domain already exists
@@ -126,15 +135,25 @@ define orawls::copydomain (
         }
       }
     }
-
+   
     # copy domain from the adminserver to the this node ( with scp and without passwords )
-    exec { "copy domain jar ${domain_name}":
-      command   => "scp -oStrictHostKeyChecking=no -oCheckHostIP=no ${os_user}@${adminserver_address}:${download_dir}/domain_${domain_name}.jar ${download_dir}/domain_${domain_name}.jar",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-    }
+    if ( $use_ssh == true ) {
+      exec { "copy domain jar ${domain_name}":
+        command   => "scp -oStrictHostKeyChecking=no -oCheckHostIP=no ${os_user}@${adminserver_address}:${remote_or_share_domain_domain_dir}/domain_${domain_name}.jar ${download_dir}/domain_${domain_name}.jar",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+      }
+    } else {
+      exec { "copy domain jar ${domain_name}":
+        command   => "cp ${remote_or_share_domain_domain_dir}/domain_${domain_name}.jar ${download_dir}/domain_${domain_name}.jar",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+      }
+    } 
 
     $app_dir_arg = $apps_dir ? {
       undef      => "",

@@ -703,7 +703,7 @@ pack a WebLogic Domain and add this to the download folder
 
 
 ###orawls::copydomain 
-copies a WebLogic domain with SSH, unpack and enroll to a nodemanager
+copies a WebLogic domain with SSH or from a share, unpack and enroll to a nodemanager
 
 
 Configuration with Hiera ( need to have puppet > 3.0 )    
@@ -728,6 +728,10 @@ when you just have one WebLogic domain on a server
     # copy domains to other nodes
     copy_instances:
       'wlsDomain':
+         use_ssh:                 false
+         domain_pack_dir:         /mnt/fmw_share
+         log_output:              *logoutput
+      'wlsDomain2':
          log_output:              *logoutput
     
 

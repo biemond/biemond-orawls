@@ -40,7 +40,7 @@ module Utils
           csv_domain_string = execute_wlst( script , tmpFile , parameters,key,values, action)
           if i > 1 
             # with multi domain, remove first line if it is a header
-            csv_domain_string = csv_domain_string.to_a[1..-1].join
+            csv_domain_string = csv_domain_string.lines.to_a[1..-1].join
           end  
           csv_string += csv_domain_string
           i += 1

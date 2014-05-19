@@ -630,9 +630,9 @@ vagrantcentos64.example.com.yaml
     domain_instances:
       'wlsDomain12c':
          version:              1212
-         weblogic_home_dir     "/opt/oracle/middleware12c/wlserver"
-         middleware_home_dir   "/opt/oracle/middleware12c"
-         jdk_home_dir          "/usr/java/jdk1.7.0_45"
+         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
+         middleware_home_dir:  "/opt/oracle/middleware12c"
+         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
          domain_template:      "standard"
          domain_name:          "Wls12c"
          development_mode:     false
@@ -771,8 +771,8 @@ vagrantcentos64.example.com.yaml
     nodemanager_instances:
       'nodemanager12c':
          version:              1212
-         weblogic_home_dir     "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir          "/usr/java/jdk1.7.0_45"
+         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
+         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
          nodemanager_port:     5556
          domain_name:          "Wls12c"
          os_user:              "oracle"
@@ -860,7 +860,7 @@ vagrantcentos64.example.com.yaml
          target:               'Server'
          server:               'AdminServer'
          action:               'start'
-         weblogic_home_dir     "/opt/oracle/middleware12c/wlserver"
+         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
          jdk_home_dir          "/usr/java/jdk1.7.0_45"
          weblogic_user:        "weblogic"
          weblogic_password:    "weblogic1"

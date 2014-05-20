@@ -1186,6 +1186,46 @@ in hiera
         realm:                  'myrealm'
         users:                  'testuser2'
 
+###wls_authentication_provider
+
+it needs wls_setting and when domain is not provided it will use the 'default' and probably needs a reboot
+
+only control_flag is a property, the rest are parameters and only used with a create action
+
+or use puppet resource wls_authentication_provider
+
+    wls_authentication_provider { 'DefaultAuthenticator':
+      ensure       => 'present',
+      control_flag => 'SUFFICIENT',
+    }
+    wls_authentication_provider { 'ldap':
+      ensure            => 'present',
+      control_flag      => 'SUFFICIENT',
+      providerclassname => 'weblogic.security.providers.authentication.LDAPAuthenticator',
+      attributes:       =>  'Principal,Host,Port,CacheTTL,CacheSize,MaxGroupMembershipSearchLevel,SSLEnabled',
+      attributesvalues  =>  'ldapuser,ldapserver,389,60,1024,4,true',
+    }
+
+
+in hiera
+
+    $default_params = {}
+    $authentication_provider_instances = hiera('authentication_provider_instances', {})
+    create_resources('wls_authentication_provider',$authentication_provider_instances, $default_params)
+
+
+    authentication_provider_instances:
+      'DefaultAuthenticator':
+        ensure:             'present'
+        control_flag:       'SUFFICIENT'
+      'ldap':
+        ensure:             'present'
+        control_flag:       'SUFFICIENT'
+        providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
+        attributes:         'Principal,Host,Port,CacheTTL,CacheSize,MaxGroupMembershipSearchLevel,SSLEnabled'
+        attributesvalues:   'ldapuser,ldapserver,389,60,1024,4,true'
+
+
 
 ###wls_machine
 

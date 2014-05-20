@@ -1,0 +1,34 @@
+weblogicUser         = sys.argv[1] 
+weblogicPassword     = sys.argv[2] 
+weblogicConnectUrl   = sys.argv[3] 
+
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
+name   = '<%= authentication_provider_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
+    path = getPath(realmName)
+    cd(path)
+
+    cmo.destroyAuthenticationProvider(getMBean(path+'/AuthenticationProviders/'+name))
+    save()
+    activate()          
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+disconnect()
+exit()
+

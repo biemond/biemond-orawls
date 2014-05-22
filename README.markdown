@@ -84,6 +84,7 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_setting, set the default wls parameters for the other types and also used by puppet resource
 - wls_user
 - wls_group
+- wls_authentication_provider
 - wls_machine
 - wls_server
 - wls_server_channel
@@ -1202,8 +1203,8 @@ or use puppet resource wls_authentication_provider
       ensure            => 'present',
       control_flag      => 'SUFFICIENT',
       providerclassname => 'weblogic.security.providers.authentication.LDAPAuthenticator',
-      attributes:       =>  'Principal,Host,Port,CacheTTL,CacheSize,MaxGroupMembershipSearchLevel,SSLEnabled',
-      attributesvalues  =>  'ldapuser,ldapserver,389,60,1024,4,true',
+      attributes:       =>  'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled',
+      attributesvalues  =>  'ldapuser;ldapserver;389;60;1024;4;true',
     }
 
 

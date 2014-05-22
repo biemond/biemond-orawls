@@ -31,8 +31,8 @@ try:
 
     if attributes:
       if attributesvalues:
-          properties=String(attributes).split(",")
-          values=String(attributesvalues).split(",")
+          properties=String(attributes).split(";")
+          values=String(attributesvalues).split(";")
 
           i = 0
           for property in properties:

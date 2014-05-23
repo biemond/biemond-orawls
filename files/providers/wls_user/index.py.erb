@@ -1,9 +1,4 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-domain               = sys.argv[4] 
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 from weblogic.management.security.authentication import UserReaderMBean
 
@@ -35,5 +30,4 @@ for i in authProvider:
 
 f.close()
 
-disconnect()
-exit()
+print "~~~~"

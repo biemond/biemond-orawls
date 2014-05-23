@@ -1,11 +1,7 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
 
 name                      = '<%= authentication_provider_name %>'
 control_flag              = '<%= control_flag %>'
@@ -42,11 +38,11 @@ try:
 
             print "set property " + property + " value "+ values[i]
             if property in numbers:
-              print "is a int"  
+              print "is a int"
               set(property,int(values[i]))
 
             elif property in booleans:
-              print "is a boolean"  
+              print "is a boolean"
               if values[i] == '1' or values[i] == 1:
                 print "True"
                 set(property,true)
@@ -54,13 +50,13 @@ try:
                 set(property,false)
 
             else:
-              print "is a string"  
+              print "is a string"
               set(property,values[i])
 
             i = i + 1
 
     save()
-    activate()          
+    activate()
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
@@ -68,6 +64,4 @@ except:
     stopEdit('y')
     raise
 
-disconnect()
-exit()
-
+print "~~~~"

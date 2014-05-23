@@ -1,9 +1,4 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-domain               = sys.argv[4] 
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
     if text:
@@ -64,5 +59,4 @@ for token in m.split("dr--"):
  
 f.close()
 
-disconnect()
-exit()
+print "~~~~"

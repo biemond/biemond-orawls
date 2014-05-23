@@ -22,6 +22,9 @@ define orawls::control (
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
   $jsse_enabled               = hiera('wls_jsse_enabled'          , false),
+  $custom_trust               = hiera('wls_custom_trust'              , false),
+  $trust_keystore_file        = hiera('wls_trust_keystore_file'       , undef),
+  $trust_keystore_passphrase  = hiera('wls_trust_keystore_passphrase' , undef),
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
   $os_group                   = hiera('wls_os_group'              , undef), # dba
   $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
@@ -52,10 +55,16 @@ define orawls::control (
     }    
   }
 
-  if $jsse_enabled == true {
-    $javaCommand = "${java_statement} -Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+  if ( $custom_trust == true ) {
+    $trust_env = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}"
   } else {
-    $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+    $trust_env = ""
+  }
+
+  if $jsse_enabled == true {
+    $javaCommand = "${java_statement} ${trust_env} -Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+  } else {
+    $javaCommand = "${java_statement} ${trust_env} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
   }
 
   $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"

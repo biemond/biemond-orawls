@@ -3,21 +3,28 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                   = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
-  $middleware_home_dir       = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir         = hiera('wls_weblogic_home_dir'     , undef),
-  $nodemanager_port          = hiera('domain_nodemanager_port'   , 5556),
-  $nodemanager_address       = undef,
-  $nodemanager_java_mem_args = hiera('nodemanager_java_mem_args' , '-Xms32m -Xmx200m -XX:PermSize=128m -XX:MaxPermSize=256m'),
-  $jsse_enabled              = hiera('wls_jsse_enabled'          , false),
-  $wls_domains_dir           = hiera('wls_domains_dir'           , undef),
-  $domain_name               = hiera('domain_name'               , undef),
-  $jdk_home_dir              = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $os_user                   = hiera('wls_os_user'               , undef), # oracle
-  $os_group                  = hiera('wls_os_group'              , undef), # dba
-  $download_dir              = hiera('wls_download_dir'          , undef), # /data/install
-  $log_dir                   = hiera('wls_log_dir'               , undef), # /data/logs
-  $log_output                = false, # true|false
+  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212
+  $middleware_home_dir                   = hiera('wls_middleware_home_dir'       , undef), # /opt/oracle/middleware11gR1
+  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'         , undef),
+  $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
+  $nodemanager_address                   = undef,
+  $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
+  $custom_trust                          = hiera('wls_custom_trust'              , false),
+  $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
+  $trust_keystore_passphrase             = hiera('wls_trust_keystore_passphrase' , undef),
+  $custom_identity                       = false,
+  $custom_identity_keystore_filename     = undef,
+  $custom_identity_keystore_passphrase   = undef,
+  $custom_identity_alias                 = undef,
+  $custom_identity_privatekey_passphrase = undef,
+  $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
+  $domain_name                           = hiera('domain_name'                   , undef),
+  $jdk_home_dir                          = hiera('wls_jdk_home_dir'              , undef), # /usr/java/jdk1.7.0_45
+  $os_user                               = hiera('wls_os_user'                   , undef), # oracle
+  $os_group                              = hiera('wls_os_group'                  , undef), # dba
+  $download_dir                          = hiera('wls_download_dir'              , undef), # /data/install
+  $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
+  $log_output                            = false, # true|false
 )
 {
 
@@ -102,10 +109,16 @@ define orawls::nodemanager (
     }
   }
 
-  if $jsse_enabled == true {
-    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true"
+  if ( $custom_trust == true ) {
+    $trust_env = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}"
   } else {
-    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false"
+    $trust_env = ""
+  }
+
+  if $jsse_enabled == true {
+    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true ${trust_env}"
+  } else {
+    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env}"
   }
 
   exec { "startNodemanager ${title}":

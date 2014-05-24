@@ -134,10 +134,10 @@ define orawls::utils::fmwcluster (
 
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
     case $::kernel {
-      Linux: {
+      'Linux': {
         $java_statement = "java"
       }
-      SunOS: {
+      'SunOS': {
         $java_statement = "java -d64"
       }
     }

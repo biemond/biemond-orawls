@@ -1,7 +1,7 @@
 require 'tempfile'
 require 'fileutils'
 require 'utils/settings'
-require 'open3'
+require 'utils/wls_daemon'
 
 module Utils
   module WlsAccess
@@ -76,34 +76,12 @@ module Utils
 
         require 'ruby-debug'
         debugger
-        prepare_detached_process(operatingSystemUser,domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl )
-        execute_wls_script( tmpFile.path)
+        wls_daemon = WlsDaemon.run(operatingSystemUser,domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl )
+        wls_daemon.execute_script( tmpFile.path)
         if action == "index"
           File.read("/tmp/"+script+".out")
         end
       end
-
-
-      def prepare_detached_process(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
-        @stdin, @stdout , @stderr = Open3.popen3("su - #{user}") unless @stdin
-        @stdin.puts ". #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning"
-        @stdin.puts "connect('#{weblogicUser}','#{weblogicPassword}','#{weblogicConnectUrl}')"
-        @stdin.puts "domain = '#{domain}'"
-      end
-
-
-      def execute_wls_script(script)
-        @stdin.puts("execfile('#{script}')")
-        wait_for_finish
-      end
-
-      def wait_for_finish
-        @stdout.each_line do |line|
-          puts "skip: #{line}"
-          break if line == "~~~~\n"
-        end
-      end
-
 
   end
 end

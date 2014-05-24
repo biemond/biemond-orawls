@@ -1,12 +1,10 @@
-require 'utils/daemon'
-
-class WlsDaemon < Daemon
+class WlsDaemon < EasyType::Daemon
 
 
   def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
-    identity = "wls-#{domain}"
-    if daemonized?(identity)
-      daemon_for(identity)
+    daemon = super("wls-#{domain}")
+    if daemon
+      return daemon
     else
       new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
     end

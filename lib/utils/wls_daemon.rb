@@ -24,7 +24,9 @@ class WlsDaemon < Daemon
     command =  ". #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning"
     super(identity, command, user )
     connect_to_wls
-    set_domain
+    pass_domain
+    pass_credentials
+
   end
 
   def execute_script(script, debug = false)
@@ -40,8 +42,14 @@ class WlsDaemon < Daemon
       execute_command "connect('#{@weblogicUser}','#{@weblogicPassword}','#{@weblogicConnectUrl}')"
     end
 
-    def set_domain
-      Puppet.info "Setting domain to  #{@domain}"
+    def pass_credentials
+      Puppet.info "Passing credintials to WLST"
+      execute_command "weblogicUser = '#{@weblogicUser}'"
+      execute_command "weblogicPassword = '#{@weblogicPassword}'"
+    end   
+
+    def pass_domain
+      Puppet.info "Passing domain #{@domain}"
       execute_command "domain = '#{@domain}'"
     end
 

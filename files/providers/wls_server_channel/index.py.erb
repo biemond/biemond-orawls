@@ -33,5 +33,6 @@ for token in m.split("dr--"):
                print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicaddress,domain]))
 
 f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
 
-print "~~~~"
+

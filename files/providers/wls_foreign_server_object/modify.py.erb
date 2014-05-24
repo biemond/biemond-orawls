@@ -29,13 +29,15 @@ try:
 
     save()
     activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
     dumpStack()
     undo('true','y')
     stopEdit('y')
     raise
 
-print "~~~~"
+
 

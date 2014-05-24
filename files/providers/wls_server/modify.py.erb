@@ -76,15 +76,15 @@ try:
     set('/Servers/'+name+'/Log/'+name+'/FileName', format(logFilename))
 
     save()
-    activate()          
+    activate()       
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
-    print "~~~~COMMAND FAILED~~~~"
     undo('true','y')
     stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
     raise
 
 

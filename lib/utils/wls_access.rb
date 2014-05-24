@@ -74,8 +74,6 @@ module Utils
         weblogicConnectUrl  = domainValues['connect_url']       || "t3://localhost:7001"
         weblogicPassword    = domainValues['weblogic_password'] || "weblogic1"
 
-        require 'ruby-debug'
-        debugger
         wls_daemon = WlsDaemon.run(operatingSystemUser,domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl )
         wls_daemon.execute_script( tmpFile.path)
         if action == "index"

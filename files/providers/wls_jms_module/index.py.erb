@@ -27,5 +27,5 @@ for token in m.split("dr--"):
                targetType.append(get('Type'))
 
         print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),domain]))
-print "~~~~"
-
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

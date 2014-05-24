@@ -18,10 +18,12 @@ try:
     atnr.setGroupDescription(name,description)
     for user in users:        
       atnr.addMemberToGroup(name,user)
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
     raise
 
-print "~~~~"
+
 

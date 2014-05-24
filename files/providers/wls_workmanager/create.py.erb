@@ -55,16 +55,16 @@ try:
     if capacity:
       cmo.setCapacity(getMBean('/SelfTuning/'+domain+'/Capacities/'+capacity))
 
-
-
     save()
     activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
     undo('true','y')
     stopEdit('y')
     raise
 
-print "~~~~"
+
 

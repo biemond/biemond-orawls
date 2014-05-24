@@ -34,5 +34,6 @@ for token in m.split("dr--"):
                 print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
         
 f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
 
-print "~~~~"
+

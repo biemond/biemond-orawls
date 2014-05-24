@@ -38,5 +38,7 @@ for token in m.split("dr--"):
                persistentStoreType = get('Type')
 
         print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,domain]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
 
-print "~~~~"
+

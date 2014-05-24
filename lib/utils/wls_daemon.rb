@@ -5,7 +5,9 @@ class WlsDaemon < Daemon
 
   def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
     identity = "wls-#{domain}"
-    unless daemonized?(identity)
+    if daemonized?(identity)
+      daemon_for(identity)
+    else
       new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
     end
   end

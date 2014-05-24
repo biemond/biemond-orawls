@@ -94,6 +94,7 @@ try:
     DOMAIN_PATH = get('RootDirectory')
 
     createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
     save()
     activate()          
@@ -103,6 +104,7 @@ try:
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
     undo('true','y')
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"

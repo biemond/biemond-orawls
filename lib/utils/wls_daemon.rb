@@ -29,6 +29,7 @@ class WlsDaemon < EasyType::Daemon
 
   def execute_script(script, debug = false)
     Puppet.info "Executing wls-script #{script}"
+    connect_to_wls
     execute_command "execfile('#{script}')"
     sync
   end

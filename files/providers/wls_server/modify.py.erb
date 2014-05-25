@@ -1,11 +1,7 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
 
 name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
@@ -18,14 +14,6 @@ sslEnabled    = <%= sslenabled %>
 sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
 sslListenPort = <%= ssllistenport %>
 jsseenabled   = <%= jsseenabled %>
-
-custom_identity                        = '<%= custom_identity %>'
-custom_identity_keystore_filename      = '<%= custom_identity_keystore_filename %>'
-custom_identity_keystore_passphrase    = '<%= custom_identity_keystore_passphrase %>'
-custom_identity_alias                  = '<%= custom_identity_alias %>'
-custom_identity_privatekey_passphrase  = '<%= custom_identity_privatekey_passphrase %>'
-trust_keystore_file                    = '<%= trust_keystore_file %>'
-trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 def format(value):
     if (value):
@@ -54,18 +42,6 @@ try:
     set('ServerStart/'+name+'/ClassPath', format(classpath))
 
     set('ServerStart/'+name+'/Arguments', format(arguments))
-
-    if custom_identity == '1':
-      set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
-      set('CustomIdentityKeyStoreFileName'           ,custom_identity_keystore_filename)
-      set('CustomIdentityKeyStorePassPhrase'         ,custom_identity_keystore_passphrase)
-      set('CustomTrustKeyStoreFileName'              ,trust_keystore_file)
-      set('CustomTrustKeyStorePassPhrase'            ,trust_keystore_passphrase)
-      cd('SSL/'+name)
-      set('ServerPrivateKeyAlias'                    ,custom_identity_alias)
-      set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
-    else:
-      set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
     
     cd('/Servers/'+name+'/SSL/'+name)
 
@@ -81,13 +57,14 @@ try:
 
     save()
     activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
     undo('true','y')
     stopEdit('y')
     raise
 
-disconnect()
-exit()
 

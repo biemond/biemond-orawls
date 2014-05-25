@@ -1,11 +1,7 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
 
 name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
@@ -94,21 +90,20 @@ try:
         cd('/Servers/'+name+'/Log/'+name)
         set('FileName', logFilename)
 
-    save()
-    activate()          
-
     cd('/')
     DOMAIN_PATH = get('RootDirectory')
 
     createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
     undo('true','y')
     stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
     raise
 
-disconnect()
-exit()
 

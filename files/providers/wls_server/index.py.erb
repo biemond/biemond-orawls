@@ -1,9 +1,4 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-domain               = sys.argv[4] 
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
 	if text:
@@ -61,6 +56,4 @@ for token in m.split("dr--"):
 
         print >>f, ";".join(map(quote, [domain+'/'+token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments,jsseEnabled,domain,custom_identity,custom_identity_keystore_filename,trust_keystore_file,custom_identity_alias]))
 f.close()
-
-disconnect()
-exit()
+print "~~~~COMMAND SUCCESFULL~~~~"

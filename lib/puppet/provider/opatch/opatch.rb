@@ -14,12 +14,11 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     extracted_patch_dir     = resource[:extracted_patch_dir]
 
     if action == :present
-      opatchAction = "apply"
+      command = "#{oracle_product_home_dir}/OPatch/opatch apply -silent -jre #{jdk_home_dir}/jre -oh #{oracle_product_home_dir} #{extracted_patch_dir}"
     else 
-      opatchAction = "rollback"
+      command = "#{oracle_product_home_dir}/OPatch/opatch rollback -id #{patchName} -silent -jre #{jdk_home_dir}/jre -oh #{oracle_product_home_dir}"
     end 
 
-    command = oracle_product_home_dir+"/OPatch/opatch "+opatchAction+" -silent -jre "+jdk_home_dir+"/jre -oh "+oracle_product_home_dir+" "+extracted_patch_dir
     Puppet.debug "opatch action: #{action} with command #{command}"
 
     output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user

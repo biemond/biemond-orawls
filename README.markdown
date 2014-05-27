@@ -452,6 +452,7 @@ vagrantcentos64.example.com.yaml
 apply an OPatch on a Middleware home or a Oracle product home
 
     orawls::opatch {'16175470':
+      ensure                  => "present",
       oracle_product_home_dir => "/opt/oracle/middleware12c",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
       patch_id                => "16175470",
@@ -467,6 +468,7 @@ apply an OPatch on a Middleware home or a Oracle product home
 or when you set the defaults hiera variables
 
     orawls::opatch {'16175470':
+      ensure                  => "present",
       oracle_product_home_dir => "/opt/oracle/middleware12c",
       patch_id                => "16175470",
       patch_file              => "p16175470_121200_Generic.zip",
@@ -486,6 +488,7 @@ common.yaml
     ---
     opatch_instances:
       '16175470':
+         ensure:                   "present"
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
          patch_id:                 "16175470"
          patch_file:               "p16175470_121200_Generic.zip"
@@ -503,6 +506,7 @@ or when you set the defaults hiera variables
     ---
     opatch_instances:
       '16175470':
+         ensure:                   "present"
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
          patch_id:                 "16175470"
          patch_file:               "p16175470_121200_Generic.zip"
@@ -510,9 +514,10 @@ or when you set the defaults hiera variables
 
 
 ###orawls::bsu 
-apply a WebLogic BSU Patch
+apply or remove a WebLogic BSU Patch ( ensure = present or absent )
 
     orawls::bsu {'BYJ1':
+      ensure                  => "present",
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
       weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
@@ -529,6 +534,7 @@ apply a WebLogic BSU Patch
 or when you set the defaults hiera variables
 
     orawls::bsu {'BYJ1':
+      ensure                  => "present",
       patch_id                => "BYJ1",
       patch_file              => "p17071663_1036_Generic.zip",
       log_output              => false,
@@ -548,6 +554,7 @@ common.yaml
     ---
     bsu_instances:
       'BYJ1':
+         ensure                   "present"
          middleware_home_dir:     "/opt/oracle/middleware11gR1"
          weblogic_home_dir:       "/opt/oracle/middleware11gR1/wlserver"
          jdk_home_dir:            "/usr/java/jdk1.7.0_45"
@@ -565,6 +572,7 @@ or when you set the defaults hiera variables
     ---
     bsu_instances:
       'BYJ1':
+         ensure                   "present"
          patch_id:                "BYJ1"
          patch_file:              "p17071663_1036_Generic.zip"
          log_output:              false

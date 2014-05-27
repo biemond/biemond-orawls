@@ -3,6 +3,7 @@
 # installs WebLogic BSU patch
 ##
 define orawls::bsu (
+  $ensure                 = 'present',  #present|absent
   $middleware_home_dir    = hiera('wls_middleware_home_dir' , undef), # /opt/oracle/middleware11gR1
   $weblogic_home_dir      = hiera('wls_weblogic_home_dir'   , undef),
   $jdk_home_dir           = hiera('wls_jdk_home_dir'        , undef), # /usr/java/jdk1.7.0_45
@@ -35,39 +36,40 @@ define orawls::bsu (
     }
   }
 
-  # the patch used by the bsu
-  if $remote_file == true {
-    file { "${download_dir}/${patch_file}":
-      ensure   => file,
-      source   => "${mountPoint}/${patch_file}",
-      require  => File["${middleware_home_dir}/utils/bsu/cache_dir"],
-      backup   => false,
-      mode     => '0775',
-      owner    => $os_user,
-      group    => $os_group,
-      before   => Exec["extract ${patch_file}"],
+  if $ensure == 'present' {
+    # the patch used by the bsu
+    if $remote_file == true {
+      file { "${download_dir}/${patch_file}":
+        ensure   => file,
+        source   => "${mountPoint}/${patch_file}",
+        require  => File["${middleware_home_dir}/utils/bsu/cache_dir"],
+        backup   => false,
+        mode     => '0775',
+        owner    => $os_user,
+        group    => $os_group,
+        before   => Exec["extract ${patch_file}"],
+      }
+      $disk1_file = "${download_dir}/${patch_file}"
+    } else {
+      $disk1_file = "${source}/${patch_file}"
+    }      
+
+    exec { "extract ${patch_file}":
+      command   => "unzip -n ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+      creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
+      path      => $exec_path,
+      user      => $os_user,
+      group     => $os_group,
+      logoutput => false,
+      before    => Bsu_patch[$patch_id],
     }
-    $disk1_file = "${download_dir}/${patch_file}"
-  } else {
-    $disk1_file = "${source}/${patch_file}"
-  }      
-
-  exec { "extract ${patch_file}":
-    command   => "unzip -n ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
-    creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
-    path      => $exec_path,
-    user      => $os_user,
-    group     => $os_group,
-    logoutput => false,
   }
-
   bsu_patch{ $patch_id:
-    ensure              => present,
+    ensure              => $ensure,
     os_user             => $os_user,
     middleware_home_dir => $middleware_home_dir,
     weblogic_home_dir   => $weblogic_home_dir,
     jdk_home_dir        => $jdk_home_dir,
-    require             => Exec["extract ${patch_file}"],
   }
 
 }

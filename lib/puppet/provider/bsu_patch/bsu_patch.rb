@@ -30,6 +30,20 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
 
     output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
     Puppet.debug "bsu_patch result: #{output}"
+    
+    # Check for 'Result: Success' else raise
+
+    result = false
+    output.each_line do |li|
+      unless li.nil?
+        if li.include? "Result: Success"
+          result = true
+        end
+      end 
+    end
+    if result == false
+      fail(output)
+    end 
 
   end
 

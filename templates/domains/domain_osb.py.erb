@@ -7,7 +7,8 @@ APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
 DEVELOPMENT_MODE=<%= @development_mode %>
-
+CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
+JSSE_ENABLED=<%= @jsse_enabled %>
 WEBLOGIC_VERSION=<%= @version %>
 
 ADMIN_SERVER='<%= @adminserver_name %>'
@@ -104,6 +105,24 @@ cd('SSL/'+ADMIN_SERVER)
 set('Enabled', 'False')
 set('HostNameVerificationIgnored', 'True')
 
+if JSSE_ENABLED == true:
+  set('JSSEEnabled','True')
+else:
+  set('JSSEEnabled','False')
+
+if CUSTOM_IDENTITY_ENABLED == true:
+  print('Set adminserver custom identity')
+  cd('/Server/'+ADMIN_SERVER)
+  set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
+  set('CustomIdentityKeyStoreFileName'           ,'<%= @custom_identity_keystore_filename %>')
+  set('CustomIdentityKeyStorePassPhraseEncrypted','<%= @custom_identity_keystore_passphrase %>')
+  set('CustomTrustKeyStoreFileName'              ,'<%= @trust_keystore_file %>')
+  set('CustomTrustKeyStorePassPhraseEncrypted'   ,'<%= @trust_keystore_passphrase %>')
+  cd('SSL/'+ADMIN_SERVER)
+  set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
+  set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
+
+
 cd('/Server/'+ADMIN_SERVER)
 create(ADMIN_SERVER,'Log')
 cd('/Server/'+ADMIN_SERVER+'/Log/'+ADMIN_SERVER)
@@ -196,6 +215,11 @@ create('osb_server1','SSL')
 cd('SSL/osb_server1')
 set('Enabled', 'False')
 set('HostNameVerificationIgnored', 'True')
+if JSSE_ENABLED == true:
+  set('JSSEEnabled','True')
+else:
+  set('JSSEEnabled','False')
+
 
 cd('/Server/osb_server1')
 create('osb_server1','Log')

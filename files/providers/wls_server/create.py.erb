@@ -1,11 +1,7 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
+
 
 name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
@@ -19,6 +15,15 @@ sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
 sslListenPort = <%= ssllistenport %>
 jsseenabled   = <%= jsseenabled %>
 
+jsseenabled   = <%= jsseenabled %>
+
+custom_identity                        = '<%= custom_identity %>'
+custom_identity_keystore_filename      = '<%= custom_identity_keystore_filename %>'
+custom_identity_keystore_passphrase    = '<%= custom_identity_keystore_passphrase %>'
+custom_identity_alias                  = '<%= custom_identity_alias %>'
+custom_identity_privatekey_passphrase  = '<%= custom_identity_privatekey_passphrase %>'
+trust_keystore_file                    = '<%= trust_keystore_file %>'
+trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 edit()
 startEdit()
@@ -58,6 +63,18 @@ try:
 
     if arguments:    
         set('ServerStart/'+name+'/Arguments', arguments)
+
+    if custom_identity == '1':
+      set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
+      set('CustomIdentityKeyStoreFileName'           ,custom_identity_keystore_filename)
+      set('CustomIdentityKeyStorePassPhrase'         ,custom_identity_keystore_passphrase)
+      set('CustomTrustKeyStoreFileName'              ,trust_keystore_file)
+      set('CustomTrustKeyStorePassPhrase'            ,trust_keystore_passphrase)
+      cd('SSL/'+name)
+      set('ServerPrivateKeyAlias'                    ,custom_identity_alias)
+      set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
+    else:
+      set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
     
     cd('/Servers/'+name+'/SSL/'+name)
 
@@ -73,21 +90,20 @@ try:
         cd('/Servers/'+name+'/Log/'+name)
         set('FileName', logFilename)
 
-    save()
-    activate()          
-
     cd('/')
     DOMAIN_PATH = get('RootDirectory')
 
     createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
     undo('true','y')
     stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
     raise
 
-disconnect()
-exit()
 

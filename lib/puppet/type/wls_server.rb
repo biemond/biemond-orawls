@@ -80,6 +80,16 @@ module Puppet
     parameter :name
     parameter :server_name
 
+    parameter :custom_identity_keystore_passphrase
+    parameter :custom_identity_privatekey_passphrase
+    parameter :trust_keystore_passphrase
+
+    property  :custom_identity
+
+    property  :trust_keystore_file
+    property  :custom_identity_keystore_filename
+    property  :custom_identity_alias
+
     property  :ssllistenport
     property  :sslenabled
     property  :listenaddress

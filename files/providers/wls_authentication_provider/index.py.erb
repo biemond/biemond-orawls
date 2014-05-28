@@ -1,0 +1,34 @@
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+cd('/')
+realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
+path = getPath(realmName)
+cd(path)
+
+m = ls('AuthenticationProviders')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;authentication_provider_name;control_flag;domain"
+for token in m.split("dr--"):
+    token=token.strip().lstrip().rstrip()
+    if token:
+        print '___'+token+'___'
+        cd('AuthenticationProviders/'+token)
+        description       = get('Description')
+        providerclassname = get('ProviderClassName')
+
+        control_flag      = ''
+        try:
+          control_flag = get('ControlFlag')
+        except:
+          print "already exists"
+
+        cd('../../')
+        print >>f, ";".join(map(quote, [domain+'/'+token,token,control_flag,domain]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

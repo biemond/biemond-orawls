@@ -15,29 +15,29 @@ Got the same options as the wls module but with
 Many thanks to Bert Hajee (hajee) for his contributions, help and the his easy_type module  
 [![Powered By EasyType](https://raw.github.com/hajee/easy_type/master/powered_by_easy_type.png)](https://github.com/hajee/easy_type)
 
-Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10 sparc / x86  
+Should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86  
 
 Dependency with 
 - hajee/easy_type (latest)
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
 
-##Upgrade Notice from versions lower then orawls 0.9.5
-When you already used this orawls module to provision some weblogic domains and you want to upgrade to the latest version then you need to do one of the following steps
-- add a your domains to /etc/wls_domains.yaml
-- or remove the domain and re-create this 
-
-here is an example of a /etc/wls_domains.yaml file
-    ---
-      domains:
-        Wls1036_2: /opt/oracle/wlsdomains/domains/Wls1036_2
-        Wls1036: /opt/oracle/middleware11g/user_projects/domains/Wls1036
-
-this way I can detect all weblogic domains and set the right facts.  
-Also see override WebLogic domain folder
-
 ##Complete examples
 see the following usages below  
+
+###Masterless (vagrant box)
+
+WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
+https://github.com/biemond/biemond-orawls-vagrant  
+
+WebLlogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
+https://github.com/biemond/biemond-orawls-vagrant-12.1.2  
+
+Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
+https://github.com/biemond/biemond-orawls-vagrant-solaris  
+
+Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
+https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
 ###Puppetmaster (vagrant box)
 Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
@@ -48,17 +48,6 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - adminwls4 ( adminserver 10.3.6 + osb PS6 + soa suite PS6 ( with bpm & bam ))
 - adminwls5 ( adminserver 10.3.6 + osb PS6 )
 
-###Masterless (vagrant box)
-
-Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant  
-
-Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-solaris  
-
-Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
-https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
-
 ##Orawls WebLogic Features
 
 - installs WebLogic 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
@@ -68,6 +57,7 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - pack a WebLogic domain
 - copy a WebLogic domain to a other node with SSH, unpack and enroll to a nodemanager
 - Java Secure Socket Extension (JSSE) support
+- Custom Identity and Trust Store support
 - startup the nodemanager
 - start or stop AdminServer, Managed or a Cluster
 - storeUserConfig for storing WebLogic Credentials and using in WLST
@@ -84,6 +74,7 @@ https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemon
 - wls_setting, set the default wls parameters for the other types and also used by puppet resource
 - wls_user
 - wls_group
+- wls_authentication_provider
 - wls_machine
 - wls_server
 - wls_server_channel
@@ -183,6 +174,64 @@ To enable this in orawls you can set the jsse_enabled on the following manifests
 or set the following hiera parameter
      
      wls_jsse_enabled:         true
+
+## Enterprise security with Custom Identity and Trust store
+
+in combination with JDK7 JCE policy, ORAUTILS and WebLogic JSSE you can use your own certificates 
+
+just generates all the certificates and set the following hiera variables.
+
+    # custom trust
+    orautils::customTrust:             true
+    orautils::trustKeystoreFile:       '/vagrant/truststore.jks'
+    orautils::trustKeystorePassphrase: 'welcome'
+
+    # used by nodemanager, control and domain creation
+    wls_custom_trust:                  &wls_custom_trust              true
+    wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
+    wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
+
+    # create a standard domain with custom identity for the adminserver
+    domain_instances:
+      'Wls1036':
+        domain_template:                       "standard"
+        development_mode:                      false
+        log_output:                            *logoutput
+        custom_identity:                       true
+        custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
+        custom_identity_keystore_passphrase:   'welcome'
+        custom_identity_alias:                 'admin'
+        custom_identity_privatekey_passphrase: 'welcome'
+
+    nodemanager_instances:
+      'nodemanager':
+        log_output:                            *logoutput
+        custom_identity:                       true
+        custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
+        custom_identity_keystore_passphrase:   'welcome'
+        custom_identity_alias:                 'admin'
+        custom_identity_privatekey_passphrase: 'welcome'
+        nodemanager_address:                   *domain_adminserver_address
+
+        server_instances:
+          'wlsServer1':
+            ensure:                                'present'
+            arguments:                             '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out'
+            listenaddress:                         '10.10.10.100'
+            listenport:                            '8001'
+            logfilename:                           '/var/log/weblogic/wlsServer1.log'
+            machine:                               'Node1'
+            sslenabled:                            '1'
+            ssllistenport:                         '8201'
+            sslhostnameverificationignored:        '1'
+            jsseenabled:                           '1' 
+            custom_identity:                       '1'
+            custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'
+            custom_identity_keystore_passphrase:   'welcome'
+            custom_identity_alias:                 'node1'
+            custom_identity_privatekey_passphrase: 'welcome'
+            trust_keystore_file:                   *wls_trust_keystore_file
+            trust_keystore_passphrase:             *wls_trust_keystore_passphrase
 
 
 ## Linux low on entropy or urandom fix 
@@ -403,6 +452,7 @@ vagrantcentos64.example.com.yaml
 apply an OPatch on a Middleware home or a Oracle product home
 
     orawls::opatch {'16175470':
+      ensure                  => "present",
       oracle_product_home_dir => "/opt/oracle/middleware12c",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
       patch_id                => "16175470",
@@ -418,6 +468,7 @@ apply an OPatch on a Middleware home or a Oracle product home
 or when you set the defaults hiera variables
 
     orawls::opatch {'16175470':
+      ensure                  => "present",
       oracle_product_home_dir => "/opt/oracle/middleware12c",
       patch_id                => "16175470",
       patch_file              => "p16175470_121200_Generic.zip",
@@ -437,6 +488,7 @@ common.yaml
     ---
     opatch_instances:
       '16175470':
+         ensure:                   "present"
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
          patch_id:                 "16175470"
          patch_file:               "p16175470_121200_Generic.zip"
@@ -454,6 +506,7 @@ or when you set the defaults hiera variables
     ---
     opatch_instances:
       '16175470':
+         ensure:                   "present"
          oracle_product_home_dir:  "/opt/oracle/middleware12c"
          patch_id:                 "16175470"
          patch_file:               "p16175470_121200_Generic.zip"
@@ -461,9 +514,10 @@ or when you set the defaults hiera variables
 
 
 ###orawls::bsu 
-apply a WebLogic BSU Patch
+apply or remove a WebLogic BSU Patch ( ensure = present or absent )
 
     orawls::bsu {'BYJ1':
+      ensure                  => "present",
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
       weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
@@ -480,6 +534,7 @@ apply a WebLogic BSU Patch
 or when you set the defaults hiera variables
 
     orawls::bsu {'BYJ1':
+      ensure                  => "present",
       patch_id                => "BYJ1",
       patch_file              => "p17071663_1036_Generic.zip",
       log_output              => false,
@@ -499,6 +554,7 @@ common.yaml
     ---
     bsu_instances:
       'BYJ1':
+         ensure                   "present"
          middleware_home_dir:     "/opt/oracle/middleware11gR1"
          weblogic_home_dir:       "/opt/oracle/middleware11gR1/wlserver"
          jdk_home_dir:            "/usr/java/jdk1.7.0_45"
@@ -516,6 +572,7 @@ or when you set the defaults hiera variables
     ---
     bsu_instances:
       'BYJ1':
+         ensure                   "present"
          patch_id:                "BYJ1"
          patch_file:              "p17071663_1036_Generic.zip"
          log_output:              false
@@ -630,9 +687,9 @@ vagrantcentos64.example.com.yaml
     domain_instances:
       'wlsDomain12c':
          version:              1212
-         weblogic_home_dir     "/opt/oracle/middleware12c/wlserver"
-         middleware_home_dir   "/opt/oracle/middleware12c"
-         jdk_home_dir          "/usr/java/jdk1.7.0_45"
+         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
+         middleware_home_dir:  "/opt/oracle/middleware12c"
+         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
          domain_template:      "standard"
          domain_name:          "Wls12c"
          development_mode:     false
@@ -686,7 +743,26 @@ when you just have one WebLogic domain on a server
          domain_template:      "standard"
          development_mode:     false
          log_output:           *logoutput
-    
+
+or with custom identity and custom truststore    
+
+    # used by nodemanager, control and domain creation
+    wls_custom_trust:                  &wls_custom_trust              true
+    wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
+    wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
+
+    # create a standard domain with custom identity for the adminserver
+    domain_instances:
+      'Wls1036':
+        domain_template:                       "standard"
+        development_mode:                      false
+        log_output:                            *logoutput
+        custom_identity:                       true
+        custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
+        custom_identity_keystore_passphrase:   'welcome'
+        custom_identity_alias:                 'admin'
+        custom_identity_privatekey_passphrase: 'welcome'
+
 
 ###orawls::packdomain 
 pack a WebLogic Domain and add this to the download folder
@@ -771,8 +847,8 @@ vagrantcentos64.example.com.yaml
     nodemanager_instances:
       'nodemanager12c':
          version:              1212
-         weblogic_home_dir     "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir          "/usr/java/jdk1.7.0_45"
+         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
+         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
          nodemanager_port:     5556
          domain_name:          "Wls12c"
          os_user:              "oracle"
@@ -801,6 +877,23 @@ when you just have one WebLogic domain on a server
     nodemanager_instances:
       'nodemanager12c':
          log_output:           true
+
+or with custom identity and custom truststore    
+
+    # used by nodemanager, control and domain creation
+    wls_custom_trust:                  &wls_custom_trust              true
+    wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
+    wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
+
+    nodemanager_instances:
+      'nodemanager':
+        log_output:                            *logoutput
+        custom_identity:                       true
+        custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
+        custom_identity_keystore_passphrase:   'welcome'
+        custom_identity_alias:                 'admin'
+        custom_identity_privatekey_passphrase: 'welcome'
+        nodemanager_address:                   *domain_adminserver_address
 
 
 
@@ -860,8 +953,8 @@ vagrantcentos64.example.com.yaml
          target:               'Server'
          server:               'AdminServer'
          action:               'start'
-         weblogic_home_dir     "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir          "/usr/java/jdk1.7.0_45"
+         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
+         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
          weblogic_user:        "weblogic"
          weblogic_password:    "weblogic1"
          adminserver_address:  'localhost'
@@ -1186,6 +1279,46 @@ in hiera
         realm:                  'myrealm'
         users:                  'testuser2'
 
+###wls_authentication_provider
+
+it needs wls_setting and when domain is not provided it will use the 'default' and probably needs a reboot
+
+only control_flag is a property, the rest are parameters and only used with a create action
+
+or use puppet resource wls_authentication_provider
+
+    wls_authentication_provider { 'DefaultAuthenticator':
+      ensure       => 'present',
+      control_flag => 'SUFFICIENT',
+    }
+    wls_authentication_provider { 'ldap':
+      ensure            => 'present',
+      control_flag      => 'SUFFICIENT',
+      providerclassname => 'weblogic.security.providers.authentication.LDAPAuthenticator',
+      attributes:       =>  'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled',
+      attributesvalues  =>  'ldapuser;ldapserver;389;60;1024;4;true',
+    }
+
+
+in hiera
+
+    $default_params = {}
+    $authentication_provider_instances = hiera('authentication_provider_instances', {})
+    create_resources('wls_authentication_provider',$authentication_provider_instances, $default_params)
+
+
+    authentication_provider_instances:
+      'DefaultAuthenticator':
+        ensure:             'present'
+        control_flag:       'SUFFICIENT'
+      'ldap':
+        ensure:             'present'
+        control_flag:       'SUFFICIENT'
+        providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
+        attributes:         'Principal,Host,Port,CacheTTL,CacheSize,MaxGroupMembershipSearchLevel,SSLEnabled'
+        attributesvalues:   'ldapuser,ldapserver,389,60,1024,4,true'
+
+
 
 ###wls_machine
 
@@ -1282,6 +1415,35 @@ in hiera
          sslenabled:                     '1'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
+
+or with custom identity and custom truststore
+
+    # used by nodemanager, control and domain creation
+    wls_custom_trust:                  &wls_custom_trust              true
+    wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
+    wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
+
+
+    server_instances:
+      'wlsServer1':
+        ensure:                                'present'
+        arguments:                             '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out'
+        listenaddress:                         '10.10.10.100'
+        listenport:                            '8001'
+        logfilename:                           '/var/log/weblogic/wlsServer1.log'
+        machine:                               'Node1'
+        sslenabled:                            '1'
+        ssllistenport:                         '8201'
+        sslhostnameverificationignored:        '1'
+        jsseenabled:                           '1' 
+        custom_identity:                       '1'
+        custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'
+        custom_identity_keystore_passphrase:   'welcome'
+        custom_identity_alias:                 'node1'
+        custom_identity_privatekey_passphrase: 'welcome'
+        trust_keystore_file:                   *wls_trust_keystore_file
+        trust_keystore_passphrase:             *wls_trust_keystore_passphrase
+
  
 ###wls_server_channel
 

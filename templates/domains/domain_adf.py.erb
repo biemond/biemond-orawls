@@ -7,6 +7,7 @@ APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
 JSSE_ENABLED=<%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
 DEVELOPMENT_MODE=<%= @development_mode %>
 WEBLOGIC_VERSION=<%= @version %>
 
@@ -103,6 +104,18 @@ if JSSE_ENABLED == true:
   set('JSSEEnabled','True')
 else:
   set('JSSEEnabled','False')
+
+if CUSTOM_IDENTITY_ENABLED == true:
+  print('Set adminserver custom identity')
+  cd('/Server/'+ADMIN_SERVER)
+  set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
+  set('CustomIdentityKeyStoreFileName'           ,'<%= @custom_identity_keystore_filename %>')
+  set('CustomIdentityKeyStorePassPhraseEncrypted','<%= @custom_identity_keystore_passphrase %>')
+  set('CustomTrustKeyStoreFileName'              ,'<%= @trust_keystore_file %>')
+  set('CustomTrustKeyStorePassPhraseEncrypted'   ,'<%= @trust_keystore_passphrase %>')
+  cd('SSL/'+ADMIN_SERVER)
+  set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
+  set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
 
 cd('/Server/'+ADMIN_SERVER)
 create(ADMIN_SERVER,'Log')

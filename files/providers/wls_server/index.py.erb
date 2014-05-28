@@ -1,9 +1,4 @@
-weblogicUser         = sys.argv[1] 
-weblogicPassword     = sys.argv[2] 
-weblogicConnectUrl   = sys.argv[3] 
-domain               = sys.argv[4] 
 
-connect(weblogicUser,weblogicPassword,weblogicConnectUrl)
 
 def quote(text):
 	if text:
@@ -14,7 +9,7 @@ def quote(text):
 m = ls('/Servers')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;classpath;arguments;jsseenabled;domain"
+print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias"
 for token in m.split("dr--"):
     token=token.strip().lstrip().rstrip()
     if token:
@@ -22,11 +17,23 @@ for token in m.split("dr--"):
         cd('/Servers/'+token)
         listenAddress = get('ListenAddress')
         listenPort    = str(get('ListenPort'))
+
+        if get("KeyStores") == "CustomIdentityAndCustomTrust":
+          custom_identity = '1'
+        else:
+          custom_identity = '0'     
+
+        custom_identity_keystore_filename = get("CustomIdentityKeyStoreFileName")
+        trust_keystore_file               = get("CustomTrustKeyStoreFileName")
+
+
         cd('/Servers/'+token+'/SSL/'+token)
         sslListenPort                     = str(get('ListenPort'))
         sslEnabled                        = str(get('Enabled'))
         sslHostnameVerificationIgnored    = str(get('HostnameVerificationIgnored'))
         jsseEnabled                       = str(get('JSSEEnabled'))
+
+        custom_identity_alias             = get("ServerPrivateKeyAlias")
 
         cd('/Servers/'+token+'/ServerStart/'+token)
         classpath     = get('ClassPath')
@@ -47,8 +54,6 @@ for token in m.split("dr--"):
             if token2:
                machine = token2
 
-        print >>f, ";".join(map(quote, [domain+'/'+token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments,jsseEnabled,domain]))
+        print >>f, ";".join(map(quote, [domain+'/'+token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename, classpath, arguments,jsseEnabled,domain,custom_identity,custom_identity_keystore_filename,trust_keystore_file,custom_identity_alias]))
 f.close()
-
-disconnect()
-exit()
+print "~~~~COMMAND SUCCESFULL~~~~"

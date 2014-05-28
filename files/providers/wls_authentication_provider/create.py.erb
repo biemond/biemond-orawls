@@ -1,0 +1,68 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name                      = '<%= authentication_provider_name %>'
+control_flag              = '<%= control_flag %>'
+providerclassname         = '<%= providerclassname %>'
+attributes                = '<%= attributes %>'
+attributesvalues          = '<%= attributesvalues %>'
+
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
+    path = getPath(realmName)
+    cd(path)
+
+    cmo.createAuthenticationProvider(name, providerclassname)
+
+    cd('AuthenticationProviders/'+name)
+    cmo.setControlFlag(control_flag)
+
+    if attributes:
+      if attributesvalues:
+          properties=String(attributes).split(";")
+          values=String(attributesvalues).split(";")
+
+          i = 0
+          for property in properties:
+
+            numbers  = ['Port','CacheTTL','CacheSize','MaxGroupMembershipSearchLevel']
+            booleans = ['KeepAliveEnabled','UseRetrievedUserNameAsPrincipal','IgnoreDuplicateMembership']
+
+            print "set property " + property + " value "+ values[i]
+            if property in numbers:
+              print "is a int"
+              set(property,int(values[i]))
+
+            elif property in booleans:
+              print "is a boolean"
+              if values[i] == '1' or values[i] == 1:
+                print "True"
+                set(property,true)
+              else:
+                set(property,false)
+
+            else:
+              print "is a string"
+              set(property,values[i])
+
+            i = i + 1
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+

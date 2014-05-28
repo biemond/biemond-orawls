@@ -24,3 +24,10 @@ CrashRecoveryEnabled=true
 StartScriptEnabled=true
 LogFormatter=weblogic.nodemanager.server.LogFormatter
 ListenBacklog=50
+<% if @custom_identity == true %>
+KeyStores=CustomIdentityAndCustomTrust
+CustomIdentityKeyStoreFileName=<%= @custom_identity_keystore_filename %>
+CustomIdentityKeyStorePassPhrase=<%= @custom_identity_keystore_passphrase %>
+CustomIdentityAlias=<%= @custom_identity_alias %>
+CustomIdentityPrivateKeyPassPhrase=<%= @custom_identity_privatekey_passphrase %>
+<% end %>

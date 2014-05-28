@@ -1,6 +1,7 @@
 require 'tempfile'
 require 'fileutils'
 require 'utils/settings'
+require 'utils/wls_daemon'
 
 module Utils
   module WlsAccess
@@ -14,21 +15,21 @@ module Utils
     end
 
     def wlst( content, parameters = {})
-           
+
       script = "wlstScript"
       action = ""
       unless parameters.nil?
-        action = parameters["action"] 
+        action = parameters["action"]
         Puppet.info "Executing: #{script} with action #{action}"
       else
         Puppet.info "Executing: #{script} for a create,modify or destroy"
-      end      
+      end
 
       tmpFile = Tempfile.new([ script, '.py' ])
       tmpFile.write(content)
       tmpFile.close
       FileUtils.chmod(0555, tmpFile.path)
-      
+
       csv_string = ""
       domains = configuration()
 
@@ -38,13 +39,13 @@ module Utils
         domains.each { |key, values|
           Puppet.info "domain found #{key}"
           csv_domain_string = execute_wlst( script , tmpFile , parameters,key,values, action)
-          if i > 1 
+          if i > 1
             # with multi domain, remove first line if it is a header
             csv_domain_string = csv_domain_string.lines.to_a[1..-1].join
-          end  
+          end
           csv_string += csv_domain_string
           i += 1
-        }  
+        }
         convert_csv_data_to_hash(csv_string, [], :col_sep => ";")
       else
         #  Puppet.info "domain found #{domain}"
@@ -53,11 +54,11 @@ module Utils
           if content.include? "real_domain='"+key
             Puppet.info "Got the right domain #{key} script, now execute WLST"
             execute_wlst( script , tmpFile , parameters,key,values, action)
-          else 
+          else
             Puppet.info "Skip WLST for domain #{key}"
           end
-        }  
-      end 
+        }
+      end
     end
 
     private
@@ -67,18 +68,18 @@ module Utils
       end
 
       def execute_wlst(script, tmpFile, parameters, domain , domainValues, action)
-        
         operatingSystemUser = domainValues['user']              || "oracle"
         weblogicHomeDir     = domainValues['weblogic_home_dir']
         weblogicUser        = domainValues['weblogic_user']     || "weblogic"
         weblogicConnectUrl  = domainValues['connect_url']       || "t3://localhost:7001"
         weblogicPassword    = domainValues['weblogic_password'] || "weblogic1"
 
-        command = ". #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning #{tmpFile.path} #{weblogicUser} #{weblogicPassword} #{weblogicConnectUrl} #{domain}"
-        output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => operatingSystemUser
+        wls_daemon = WlsDaemon.run(operatingSystemUser,domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl )
+        wls_daemon.execute_script( tmpFile.path)
         if action == "index"
           File.read("/tmp/"+script+".out")
-        end  
+        end
       end
+
   end
 end

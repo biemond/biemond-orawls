@@ -4,6 +4,7 @@
 #
 ##
 define orawls::opatch (
+  $ensure                 = 'present',  #present|absent
   $oracle_product_home_dir = undef, # /opt/oracle/middleware11gR1
   $jdk_home_dir            = hiera('wls_jdk_home_dir' , undef), # /usr/java/jdk1.7.0_45
   $patch_id                = undef,
@@ -24,28 +25,31 @@ define orawls::opatch (
     $mountPoint = $source
   }
 
-  if $remote_file == true {
-    file { "${download_dir}/${patch_file}":
-      ensure   => file,
-      source   => "${mountPoint}/${patch_file}",
-      backup   => false,
-      mode     => '0775',
-      owner    => $os_user,
-      group    => $os_group,
-      before   => Exec["extract opatch ${patch_file} ${title}"],
-    }
-    $disk1_file = "${download_dir}/${patch_file}"
-  } else {
-    $disk1_file = "${source}/${patch_file}"
-  }  
+  if $ensure == "present" {
+    if $remote_file == true {
+      file { "${download_dir}/${patch_file}":
+        ensure   => file,
+        source   => "${mountPoint}/${patch_file}",
+        backup   => false,
+        mode     => '0775',
+        owner    => $os_user,
+        group    => $os_group,
+        before   => Exec["extract opatch ${patch_file} ${title}"],
+      }
+      $disk1_file = "${download_dir}/${patch_file}"
+    } else {
+      $disk1_file = "${source}/${patch_file}"
+    }  
 
-  exec { "extract opatch ${patch_file} ${title}":
-    command   => "unzip -n ${disk1_file} -d ${download_dir}",
-    creates   => "${download_dir}/${patch_id}",
-    path      => $exec_path,
-    user      => $os_user,
-    group     => $os_group,
-    logoutput => false,
+    exec { "extract opatch ${patch_file} ${title}":
+      command   => "unzip -n ${disk1_file} -d ${download_dir}",
+      creates   => "${download_dir}/${patch_id}",
+      path      => $exec_path,
+      user      => $os_user,
+      group     => $os_group,
+      logoutput => false,
+      before    => Opatch[$patch_id],
+    }
   }
 
   case $::kernel {
@@ -61,13 +65,12 @@ define orawls::opatch (
   }
 
   opatch{ $patch_id:
-    ensure                  => present,
+    ensure                  => $ensure,
     os_user                 => $os_user,
     oracle_product_home_dir => $oracle_product_home_dir,
     orainst_dir             => $oraInstPath,
     jdk_home_dir            => $jdk_home_dir,
     extracted_patch_dir     => "${download_dir}/${patch_id}",
-    require                 => Exec["extract opatch ${patch_file} ${title}"],
   }
 
 }

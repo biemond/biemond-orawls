@@ -1,4 +1,3 @@
-require 'rexml/document' 
 
 Puppet::Type.type(:opatch).provide(:opatch) do
 

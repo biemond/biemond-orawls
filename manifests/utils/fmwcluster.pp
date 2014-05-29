@@ -245,9 +245,9 @@ define orawls::utils::fmwcluster (
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => [ File["${download_dir}/osb-createUDD${title}.py"],
-                         Orawls::Control["ShutdownAdminServerForSoa${title}"],
-                         Exec[$last_soa_step]],
+        require     => [File["${download_dir}/osb-createUDD${title}.py"],
+                        Orawls::Control["ShutdownAdminServerForSoa${title}"],
+                        Exec[$last_soa_step]],
       }
     }
 
@@ -293,8 +293,8 @@ define orawls::utils::fmwcluster (
       user        => $os_user,
       group       => $os_group,
       logoutput   => $log_output,
-      require     => [ File["${download_dir}/changeWorkmanagers${title}.py"],
-                       Orawls::Control["StartupAdminServerForSoa${title}"],]
+      require     => [File["${download_dir}/changeWorkmanagers${title}.py"],
+                      Orawls::Control["StartupAdminServerForSoa${title}"],]
     }
   }
 }

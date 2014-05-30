@@ -22,6 +22,12 @@ Dependency with
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
 
+##History
+- 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
+- 1.0.2 Custom Identity and Custom Trust
+- 1.0.1 Multi domain support with Puppet WLS types and providers
+
+
 ##Complete examples
 see the following usages below  
 

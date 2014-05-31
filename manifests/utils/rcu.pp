@@ -48,6 +48,17 @@ define orawls::utils::rcu(
     $action = "-dropRepository"
   }
 
+  # wls_rcu{ $schemaPrefix:
+  #   ensure                  => $rcu_action,
+  #   statement               => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser SYS -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt",  
+  #   os_user                 => $os_user,
+  #   oracle_home             => $oracleHome,
+  #   sys_password            => $sysPassword,
+  #   db_server               => $dbServer,
+  #   db_service              => $dbService,
+  #   require                 => File["${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt"],
+  # }
+
   exec { "install rcu repos ${title}":
     command     => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser SYS -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt",
     require     => File["${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt"],

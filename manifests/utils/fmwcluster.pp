@@ -71,14 +71,13 @@ define orawls::utils::fmwcluster (
 
   if ($continue) {
 
-    if ( $osb_enabled  ) {
+    if ( $osb_enabled  == true ) {
       $last_step = "execwlst osb-createUDD.py ${title}"
     } else  {
       $last_step = "execwlst soa-bpm-createUDD.py ${title}"
     }
 
-    if ( $soa_enabled ) {
-
+    if ( $soa_enabled  == true) {
       # the domain.py used by the wlst
       file { "migrateSecurityStore.py ${domain_name} ${title}":
         ensure  => present,
@@ -90,14 +89,14 @@ define orawls::utils::fmwcluster (
         owner   => $os_user,
         group   => $os_group,
       }
-      exec { "execwlst create OPSS store ${domain} ${title}":
-        command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py ${weblogic_password}",
-        environment => ["JAVA_HOME=${jdk_home_dir}"],
-        require     => File["migrateSecurityStore.py ${domain_name} ${title}"],
-        timeout     => 0,
-        before      => Orawls::Control["ShutdownAdminServerForSoa${title}"],
-        logoutput   => $log_output,
-      }
+      # exec { "execwlst create OPSS store ${domain} ${title}":
+      #   command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py ${weblogic_password}",
+      #   environment => ["JAVA_HOME=${jdk_home_dir}"],
+      #   require     => File["migrateSecurityStore.py ${domain_name} ${title}"],
+      #   timeout     => 0,
+      #   before      => Orawls::Control["ShutdownAdminServerForSoa${title}"],
+      #   logoutput   => $log_output,
+      # }
     }
 
     #shutdown adminserver for offline WLST scripts
@@ -219,7 +218,7 @@ define orawls::utils::fmwcluster (
     }
     if $osb_enabled == true {
 
-      if ( $soa_enabled  ) {
+      if ( $soa_enabled  == true ) {
         $last_soa_step = "execwlst soa-bpm-createUDD.py ${title}"
       } else  {
         $last_soa_step = "execwlst assignOsbSoaBpmBamToClusters.py ${title}"
@@ -273,6 +272,29 @@ define orawls::utils::fmwcluster (
       require                    => Exec[$last_step],
     }
 
+    if ( $soa_enabled  == true  ) {
+
+      file { "changeMachineOfAdminserver ${domain_name} ${title}":
+        ensure  => present,
+        path    => "${download_dir}/changeAdminServerNodemanager_${domain_name}.py",
+        content => template("orawls/wlst/wlstexec/fmw/changeAdminServerNodemanager.py.erb"),
+        replace => true,
+        backup  => false,
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+      }
+      exec { "execwlst changeMachineOfAdminserver ${domain} ${title}":
+        command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/changeAdminServerNodemanager_${domain_name}.py ${weblogic_password}",
+        environment => ["JAVA_HOME=${jdk_home_dir}"],
+        before      => Exec["execwlst changeWorkmanagers.py ${title}"],
+        require     => [File["changeMachineOfAdminserver ${domain_name} ${title}"],
+                        Orawls::Control["StartupAdminServerForSoa${title}"]],
+        timeout     => 0,
+        logoutput   => $log_output,
+      }
+    }
+
     # the py script used by the wlst
     file { "${download_dir}/changeWorkmanagers${title}.py":
       ensure  => present,
@@ -294,7 +316,9 @@ define orawls::utils::fmwcluster (
       group       => $os_group,
       logoutput   => $log_output,
       require     => [File["${download_dir}/changeWorkmanagers${title}.py"],
-                      Orawls::Control["StartupAdminServerForSoa${title}"],]
+                      Orawls::Control["StartupAdminServerForSoa${title}"]],
     }
+
+
   }
 }

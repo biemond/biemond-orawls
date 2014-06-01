@@ -21,14 +21,16 @@ class WlsDaemon < EasyType::Daemon
     Puppet.info "Starting the wls daemon for domain #{@domain}"
     command =  ". #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning"
     super(identity, command, user )
-    connect_to_wls
     pass_domain
     pass_credentials
+    connect_to_wls
 
   end
 
   def execute_script(script, debug = false)
     Puppet.info "Executing wls-script #{script}"
+    pass_domain
+    pass_credentials
     connect_to_wls
     execute_command "execfile('#{script}')"
     sync
@@ -42,13 +44,13 @@ class WlsDaemon < EasyType::Daemon
     end
 
     def pass_credentials
-      Puppet.info "Passing credintials to WLST"
+      Puppet.debug "Passing credintials to WLST"
       execute_command "weblogicUser = '#{@weblogicUser}'"
       execute_command "weblogicPassword = '#{@weblogicPassword}'"
     end   
 
     def pass_domain
-      Puppet.info "Passing domain #{@domain}"
+      Puppet.debug "Passing domain #{@domain}"
       execute_command "domain = '#{@domain}'"
     end
 

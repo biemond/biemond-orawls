@@ -89,14 +89,14 @@ define orawls::utils::fmwcluster (
         owner   => $os_user,
         group   => $os_group,
       }
-      # exec { "execwlst create OPSS store ${domain} ${title}":
-      #   command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py ${weblogic_password}",
-      #   environment => ["JAVA_HOME=${jdk_home_dir}"],
-      #   require     => File["migrateSecurityStore.py ${domain_name} ${title}"],
-      #   timeout     => 0,
-      #   before      => Orawls::Control["ShutdownAdminServerForSoa${title}"],
-      #   logoutput   => $log_output,
-      # }
+      exec { "execwlst create OPSS store ${domain} ${title}":
+        command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py ${weblogic_password}",
+        environment => ["JAVA_HOME=${jdk_home_dir}"],
+        require     => File["migrateSecurityStore.py ${domain_name} ${title}"],
+        timeout     => 0,
+        before      => Orawls::Control["ShutdownAdminServerForSoa${title}"],
+        logoutput   => $log_output,
+      }
     }
 
     #shutdown adminserver for offline WLST scripts

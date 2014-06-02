@@ -3,7 +3,8 @@ require 'spec_helper'
 describe 'orawls::fmw', :type => :define do
 
   describe "CentOS remote" do
-    let(:params){{:download_dir         => '/install',
+    let(:params){{:version              => 1111,
+                  :download_dir         => '/install',
                   :fmw_product          => 'soa',
                   :os_user              => 'oracle',
                   :os_group             => 'dba',
@@ -99,7 +100,8 @@ describe 'orawls::fmw', :type => :define do
   end
 
   describe "CentOS local" do
-    let(:params){{:download_dir         => '/install',
+    let(:params){{:version              => 1111,
+                  :download_dir         => '/install',
                   :fmw_product          => 'osb',
                   :os_user              => 'oracle',
                   :os_group             => 'dba',

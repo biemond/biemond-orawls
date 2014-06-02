@@ -67,11 +67,12 @@
     }
   ],
   "name": "biemond-orawls",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "summary": "Oracle WebLogic puppet module v2, wls type/provider, optimized for Hiera ( Puppet 3.X ) and for Linux,Solaris",
   "author": "Edwin Biemond",
   "description": "Only for Linux & Solaris \nOracle WebLogic module optimized for Hiera and Puppet 3\nwls native types & providers like wls_machine, wls_server and wls_cluster\n\nbased on the wls module",
   "dependencies": [
+    {"version_requirement":">=0.8.0","name":"hajee-easy_type"},
     {"name":"hajee/easy_type","version_requirement":">=0.7.4"},
     {"name":"adrien/filemapper","version_requirement":">=1.1.1"},
     {"name":"reidmv/yamlfile","version_requirement":">=0.2.0"}

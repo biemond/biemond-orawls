@@ -7,6 +7,7 @@ APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
 JSSE_ENABLED=<%= @jsse_enabled %>
+WEBTIER_ENABLED=<%= @webtier_enabled %>
 CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
 DEVELOPMENT_MODE=<%= @development_mode %>
 WEBLOGIC_VERSION=<%= @version %>
@@ -182,6 +183,12 @@ dumpStack();
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 if WEBLOGIC_VERSION == 1212:
+
+    if WEBTIER_ENABLED == true:
+        print 'Adding OHS Template'
+        addTemplate('<%= @templateOHS %>')
+        #print 'Adding EM WebTier Template'
+        #addTemplate('<%= @templateEMWebTier %>')
 
     print 'Add advanced JAX-WS Template'
     addTemplate('<%= @templateJaxWS %>')

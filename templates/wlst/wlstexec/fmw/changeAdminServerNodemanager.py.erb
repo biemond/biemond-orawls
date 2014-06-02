@@ -1,0 +1,53 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+machineName      = 'AdminNode'
+adminserver_name = '<%= @adminserver_name %>'
+
+connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cmo.createUnixMachine(machineName)
+
+    cd('/Machines/'+machineName+'/NodeManager/'+machineName)
+    cmo.setNMType('SSL')
+    cmo.setListenAddress(machine)
+    cmo.setListenPort(int(portNumber))
+
+    save()
+    activate()
+
+    edit()
+    startEdit()
+
+    # change AdminServer
+    cd('/Servers/'+adminserver_name)
+    set('Machine',getMBean('/Machines/'+machineName))
+
+    save()
+    activate()
+
+    edit()
+    startEdit()
+
+    # drop LocalMachine 
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/Machines/LocalMachine'))
+    cd('/')
+    cmo.destroyMachine(getMBean('/Machines/LocalMachine'))
+
+    save()
+    activate()          
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise
+

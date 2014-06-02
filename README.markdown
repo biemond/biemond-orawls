@@ -22,6 +22,13 @@ Dependency with
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
 
+##History
+- 1.0.4 WebTier for 12.1.2 and 11.1.1.7 
+- 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
+- 1.0.2 Custom Identity and Custom Trust
+- 1.0.1 Multi domain support with Puppet WLS types and providers
+
+
 ##Complete examples
 see the following usages below  
 
@@ -30,8 +37,12 @@ see the following usages below
 WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant  
 
-WebLlogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
+WebLogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-12.1.2  
+
+WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server)  
+https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra  
+
 
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
@@ -64,6 +75,7 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 
 ###Fusion Middleware
 - installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
+- WebTier Oracle HTTP server
 - OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
 - Change FMW log location of a managed server
@@ -579,14 +591,16 @@ or when you set the defaults hiera variables
 
 
 ###orawls::fmw 
-install FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
+install FMW add-on to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center + Content
 
+
+    # fmw_product = adf|soa|osb|wcc|wc|oim|web
     orawls::fmw{"osbPS6":
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
       weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
       jdk_home_dir            => "/usr/java/jdk1.7.0_45",
       oracle_base_home_dir    => "/opt/oracle",
-      fmw_product             => "osb",  # adf|soa|osb|oim|wc|wcc
+      fmw_product             => "osb",  # adf|soa|osb|oim|wc|wcc|web
       fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
       os_user                 => "oracle",
       os_group                => "dba",
@@ -599,7 +613,7 @@ install FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Mana
 or when you set the defaults hiera variables
 
     orawls::fmw{"osbPS6":
-      fmw_product             => "osb"  # adf|soa|osb|oim|wc|wcc
+      fmw_product             => "osb"  # adf|soa|osb|oim|wc|wcc|web
       fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
       log_output              => false,
     }
@@ -629,6 +643,42 @@ when you set the defaults hiera variables
         fmw_file1:               "ofm_soa_generic_11.1.1.7.0_disk1_1of2.zip"
         fmw_file2:               "ofm_soa_generic_11.1.1.7.0_disk1_2of2.zip"
         log_output:              true
+
+
+    # FMW installation on top of WebLogic 12.1.2
+    fmw_installations:
+      'webtier1212':
+        version:                 1212 
+        fmw_product:             "web"
+        fmw_file1:               "ofm_ohs_linux_12.1.2.0.0_64_disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+
+    fmw_installations:
+      'webTierPS6':
+        fmw_product:             "web"
+        fmw_file1:               "ofm_webtier_linux_11.1.1.7.0_64_disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+
+    fmw_installations:
+      'wcPS7':
+        fmw_product:             "wc"
+        fmw_file1:               "ofm_wc_generic_11.1.1.8.0_disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'soaPS6':
+        fmw_product:             "soa"
+        fmw_file1:               "ofm_soa_generic_11.1.1.7.0_disk1_1of2.zip"
+        fmw_file2:               "ofm_soa_generic_11.1.1.7.0_disk1_2of2.zip"
+        log_output:              true
+        remote_file:             false
+      'wccPS7':
+        fmw_product:             "wcc"
+        fmw_file1:               "ofm_wcc_generic_11.1.1.8.0_disk1_1of2.zip"
+        fmw_file2:               "ofm_wcc_generic_11.1.1.8.0_disk1_2of2.zip"
+        log_output:              true
+        remote_file:             false
 
 
 ###orawls::domain 
@@ -1165,6 +1215,44 @@ hiera configuration
          soa_enabled:          true
          osb_enabled:          true
 
+### orawls::utils::fmwclusterjrf
+convert existing cluster to a ADF/JRF cluster
+you need to create a wls cluster with some managed servers first
+
+    $default_params = {}
+    $fmw_jrf_cluster_instances = hiera('fmw_jrf_cluster_instances', $default_params)
+    create_resources('orawls::utils::fmwclusterjrf',$fmw_jrf_cluster_instances, $default_params)
+
+hiera configuration
+
+    fmw_jrf_cluster_instances:
+      'WebCluster':
+         domain_name:          "adf_domain"
+         jrf_target_name:      "WebCluster"
+         log_output:           *logoutput
+
+### orawls::utils::webtier
+add an OHS instance to a WebLogic Domain and in the Enterprise Manager
+
+    $default_params = {}
+    $webtier_instances = hiera('webtier_instances', {})
+    create_resources('orawls::utils::webtier',$webtier_instances, $default_params)
+
+hiera configuration
+
+    # 11g
+    webtier_instances:
+      'ohs1':
+        action_name:           'create'
+        instance_name:         'ohs1'
+        log_output:            *logoutput
+
+    # 12.1.2
+      webtier_instances:
+        'ohs1':
+          action_name:           'create'
+          instance_name:         'ohs1'
+          machine_name:          'Node1'
 
 ##Types and providers
 

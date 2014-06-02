@@ -21,6 +21,7 @@ define orawls::domain (
   $weblogic_user                         = hiera('wls_weblogic_user'             , "weblogic"),
   $weblogic_password                     = hiera('domain_wls_password'           , undef),
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
+  $webtier_enabled                       = false,
   $os_user                               = hiera('wls_os_user'                   , undef), # oracle
   $os_group                              = hiera('wls_os_group'                  , undef), # dba
   $download_dir                          = hiera('wls_download_dir'              , undef), # /data/install
@@ -102,6 +103,8 @@ define orawls::domain (
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.12.1.3_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.2.jar"
 
+      $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.2.jar"
+      $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.2.jar"
 
     } else {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"

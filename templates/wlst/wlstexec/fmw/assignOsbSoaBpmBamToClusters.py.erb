@@ -84,11 +84,10 @@ if soaEnabled == true:
     delete('UMSJMSSystemResource'   , 'JMSSystemResource')
     delete('UMSJMSServer'           , 'JMSServer')
     delete('SOAJMSServer'           , 'JMSServer')
-
-if bamEnabled == true:
+    #if bamEnabled == true:
     delete('bam_server1'            , 'Server')
     delete('BAMJmsSystemResource'   , 'JMSSystemResource')
-    delete('BAMJMSServer'           ,'JMSServer')
+    delete('BAMJMSServer'           , 'JMSServer')
 
 if osbEnabled == true:
     delete('osb_server1'            , 'Server')

@@ -3,7 +3,8 @@ require 'spec_helper'
 describe 'orawls::fmw', :type => :define do
 
   describe "Windows" do
-    let(:params){{:download_dir         => '/install',
+    let(:params){{:version              => 1111,
+                  :download_dir         => '/install',
                   :fmw_product          => 'xxx',
                   :os_user              => 'oracle',
                   :os_group             => 'dba',
@@ -27,7 +28,8 @@ describe 'orawls::fmw', :type => :define do
   end
 
   describe "unknown product" do
-    let(:params){{:download_dir         => '/install',
+    let(:params){{:version              => 1111,
+                  :download_dir         => '/install',
                   :fmw_product          => 'xxx',
                   :os_user              => 'oracle',
                   :os_group             => 'dba',

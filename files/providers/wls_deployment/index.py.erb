@@ -1,0 +1,63 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;versionidentifier;deploymenttype;target;targettype;domain"
+
+domainConfig()
+
+cd('/')
+print 'apps'
+myapps=cmo.getAppDeployments()
+for appName in myapps:
+  cd('/AppDeployments/'+appName.getName() ) 
+
+  app               = get('ApplicationName')
+  deploymenttype    = get('Type')
+  versionidentifier = get('VersionIdentifier')
+
+  n = ls('/AppDeployments/'+appName.getName()+'/Targets')
+
+  target     = []
+  targetType = []
+  for token2 in n.split("dr--"):
+      token2=token2.strip().lstrip().rstrip()
+      if not token2 == '':
+         target.append(token2)
+         cd('/AppDeployments/'+appName.getName()+'/Targets/'+token2)
+         targetType.append(get('Type'))
+
+  print >>f, ";".join(map(quote, [domain+'/'+app,versionidentifier,deploymenttype,','.join(target),','.join(targetType),domain]))
+
+print 'libs'
+cd('/')
+mylibs=cmo.getLibraries()
+for libName in mylibs:
+  cd('/Libraries/'+libName.getName() ) 
+
+  lib               = get('ApplicationName')
+  deploymenttype    = get('Type')
+  versionidentifier = get('VersionIdentifier')
+
+  n = ls('/Libraries/'+libName.getName()+'/Targets')
+
+  target     = []
+  targetType = []
+  for token2 in n.split("dr--"):
+      token2=token2.strip().lstrip().rstrip()
+      if not token2 == '':
+         target.append(token2)
+         cd('/Libraries/'+libName.getName()+'/Targets/'+token2)
+         targetType.append(get('Type'))
+
+  print >>f, ";".join(map(quote, [domain+'/'+lib,versionidentifier,deploymenttype,','.join(target),','.join(targetType),domain]))
+
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
+

@@ -23,7 +23,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.4 WebTier for 12.1.2 and 11.1.1.7 
+- 1.0.4 WebTier for 12.1.2 and 11.1.1.7, wls_deployment type
 - 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
 - 1.0.2 Custom Identity and Custom Trust
 - 1.0.1 Multi domain support with Puppet WLS types and providers
@@ -84,6 +84,7 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 ##Wls types and providers ( ensurable, create,modify,destroy ) + puppet resource
 
 - wls_setting, set the default wls parameters for the other types and also used by puppet resource
+- wls_deployment
 - wls_user
 - wls_group
 - wls_authentication_provider
@@ -1277,6 +1278,69 @@ It needs wls_setting and you need to create one for every domain. When domain is
         weblogic_user      => 'weblogic',
         weblogic_password  => 'weblogic1',
       }
+
+###wls_deployment
+
+it needs wls_setting and when domain is not provided it will use the 'default'
+
+or use puppet resource wls_deployment
+
+    wls_deployment { 'jersey-bundle':
+      ensure            => 'present',
+      deploymenttype    => 'Library',
+      target            => 'AdminServer,WebCluster',
+      targettype        => 'Server,Cluster',
+      versionidentifier => '1.18@1.18.0.0',
+      localpath         =>  '/vagrant/jersey-bundle-1.18.war',
+    }
+    wls_deployment { 'webapp':
+      ensure            => 'present',
+      deploymenttype    => 'AppDeployment',
+      target            => 'WebCluster',
+      targettype        => 'Cluster',
+      localpath         => '/vagrant/webapp.war',
+    }
+
+or add a version
+
+    wls_deployment { 'webapp':
+      ensure            => 'present',
+      deploymenttype    => 'AppDeployment',
+      target            => 'WebCluster',
+      targettype        => 'Cluster',
+      versionidentifier => '1.1@1.1.0.0',
+      localpath         => '/vagrant/webapp.war',
+    }
+
+
+in hiera
+
+    $default_params = {}
+    $deployment_instances = hiera('deployment_library_instances', $default_params)
+    create_resources('wls_deployment',$deployment_instances, $default_params)
+
+    deployment_library_instances:
+      'jersey-bundle':
+        ensure:            'present'
+        deploymenttype:    'Library'
+        versionidentifier: '1.18@1.18.0.0'
+        target:            'AdminServer,WebCluster'
+        targettype:        'Server,Cluster'
+        localpath:         '/vagrant/jersey-bundle-1.18.war'
+
+    $default_params = {}
+    $deployment_instances = hiera('deployment_application_instances', $default_params)
+    create_resources('wls_deployment',$deployment_instances, $default_params)
+
+    deployment_application_instances:
+      'webapp':
+        ensure:            'present'
+        deploymenttype:    'AppDeployment'
+        versionidentifier: '1.1@1.1.0.0'
+        target:            'AdminServer,WebCluster'
+        targettype:        'Server,Cluster'
+        localpath:         '/vagrant/webapp.war'
+
 
 ###wls_user
 

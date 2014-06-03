@@ -43,6 +43,6 @@ for token in m.split("dr--"):
                servers.append(token2)
 
         cd('/Clusters/'+token)
-        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),domain]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName')]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

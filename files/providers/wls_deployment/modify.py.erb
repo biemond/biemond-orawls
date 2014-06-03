@@ -1,0 +1,84 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name              = '<%= deployment_name %>'
+localpath         = '<%= localpath %>'
+target            = '<%= target %>'
+targettype        = '<%= targettype %>'
+deploymenttype    = '<%= deploymenttype %>'
+versionidentifier = '<%= versionidentifier %>'
+
+edit()
+startEdit()
+
+try:
+
+    print 'target....'+target
+    print 'targettype....'+targettype
+
+    print 'start....'
+    if deploymenttype == 'Library':
+      library = 'true'
+      mylibs=cmo.getLibraries()
+      for libName in mylibs:
+        cd('/Libraries/'+libName.getName() )
+        if get('ApplicationName') == name:
+          fullApp                  = libName.getName()
+          currentApp               = get('ApplicationName')
+          currentVersionidentifier = get('VersionIdentifier')
+    else:
+      library = 'false'  
+      myapps=cmo.getAppDeployments()
+      for appName in myapps:
+        cd('/AppDeployments/'+appName.getName() )
+        if get('ApplicationName') == name:
+          fullApp                  = appName.getName()
+          currentApp               = get('ApplicationName')
+          currentVersionidentifier = get('VersionIdentifier')
+
+    # if we got the right app
+    print 'step 1....'
+    cd('/')
+    print 'current version: '+ currentVersionidentifier
+    # version is different
+    if currentVersionidentifier != versionidentifier:
+      print 'undeploy....'
+      undeploy(currentApp, timeout=60000)
+      print 'deploying....'
+      if versionidentifier:
+        print 'deploying with version....'
+        deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library,versionIdentifier=versionidentifier)
+      else: 
+        deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library)
+    else:
+      print 'change targets for app '+fullApp
+
+      print 'target....'+target
+      print 'targettype....'+targettype
+      targets     = String(target).split(",")
+      targettypes = String(targettype).split(",")
+      targetList  = []
+      for i in range(len(targets)):
+        print "target "+targets[i] + " " + targettypes[i]
+        targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
+      
+      print 'set targets....'
+      if deploymenttype == 'Library':
+        print 'lib....'
+        cd('/Libraries/'+fullApp )
+      else:
+        print 'app....'
+        cd('/AppDeployments/'+fullApp )
+
+      set('Targets',jarray.array(targetList, ObjectName))
+
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise

@@ -23,7 +23,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.4 WebTier for 12.1.2 and 11.1.1.7, wls_deployment type
+- 1.0.4 wls_deployment type/provider,WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.2.1 & 11.2.2 support 
 - 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
 - 1.0.2 Custom Identity and Custom Trust
 - 1.0.1 Multi domain support with Puppet WLS types and providers
@@ -43,12 +43,14 @@ https://github.com/biemond/biemond-orawls-vagrant-12.1.2
 WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server)  
 https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra  
 
-
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
+Reference OIM / OAM, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.2.2 example  
+https://github.com/biemond/biemond-orawls-vagrant-oim_oam
+
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
-https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
+https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
 ###Puppetmaster (vagrant box)
 Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
@@ -78,6 +80,7 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - WebTier Oracle HTTP server
 - OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
+- OIM configurations
 - Change FMW log location of a managed server
 - Resource Adapter plan and entries for AQ, DB and JMS
 
@@ -126,6 +129,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM 
 - domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM 
 - domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM 
+- domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)  
 
 
 ## Orawls WebLogic Facter

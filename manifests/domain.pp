@@ -79,7 +79,7 @@ define orawls::domain (
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.11.1.1_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.wsmpm_template_11.1.1.jar"
 
-    } elsif $version == 1121 {
+    } elsif $version == 1121 or $version == 1122 {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"
       $templateWS        = "${weblogic_home_dir}/common/templates/applications/wls_webservice.jar"
 
@@ -163,6 +163,10 @@ define orawls::domain (
       $templateFile  = "orawls/domains/domain_adf.py.erb"
       $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
 
+    } elsif $domain_template == 'oim' {
+      $templateFile  = "orawls/domains/domain_oim.py.erb"
+      $wlstPath      = "${middleware_home_dir}/Oracle_IDM1/common/bin"
+
     } elsif $domain_template == 'wc' {
       $templateFile  = "orawls/domains/domain_wc.py.erb"
       $wlstPath      = "${middleware_home_dir}/Oracle_WC1/common/bin"
@@ -190,6 +194,9 @@ define orawls::domain (
       $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"
       $bam_nodemanager_log_dir   = "${domain_dir}/servers/bam_server1/logs"
 
+      $oim_nodemanager_log_dir   = "${domain_dir}/servers/oim_server1/logs"
+      $oam_nodemanager_log_dir   = "${domain_dir}/servers/oam_server1/logs"
+
       $wcCollaboration_nodemanager_log_dir   = "${domain_dir}/servers/WC_Collaboration/logs"
       $wcPortlet_nodemanager_log_dir         = "${domain_dir}/servers/WC_Portlet/logs"
       $wcSpaces_nodemanager_log_dir          = "${domain_dir}/servers/WC_Spaces/logs"
@@ -203,6 +210,9 @@ define orawls::domain (
       $osb_nodemanager_log_dir   = $log_dir
       $soa_nodemanager_log_dir   = $log_dir
       $bam_nodemanager_log_dir   = $log_dir
+
+      $oim_nodemanager_log_dir   = $log_dir
+      $oam_nodemanager_log_dir   = $log_dir
 
       $wcCollaboration_nodemanager_log_dir   = $log_dir
       $wcPortlet_nodemanager_log_dir         = $log_dir
@@ -341,6 +351,30 @@ define orawls::domain (
       target =>  "/etc/wls_domains.yaml",
       key    =>  "domains/${domain_name}",
       value  =>  $domain_dir,
+    }
+    if ($domain_template == 'oim') {
+
+      exec { "execwlst create OPSS store ${domain_name} ${title}":
+        command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m create -c IAM -p ${repository_password}",
+        environment => ["JAVA_HOME=${jdk_home_dir}"],
+        require     => Exec["execwlst ${domain_name} ${title}"],
+        timeout     => 0,
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+      }
+
+      exec { "execwlst validate OPSS store ${domain_name} ${title}":
+        command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m validate",
+        environment => ["JAVA_HOME=${jdk_home_dir}"],
+        require     => [Exec["execwlst ${domain_name} ${title}"],
+                        Exec["execwlst create OPSS store ${domain_name} ${title}"]],
+        timeout     => 0,
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+      }
+
     }
 
     if $::kernel == "SunOS" {

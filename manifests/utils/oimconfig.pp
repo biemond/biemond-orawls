@@ -88,17 +88,15 @@ define orawls::utils::oimconfig(
     }
   }
 
-
   if ( $server_config ) {
 
-    # if these params are empty always continue
-    # if $domain_dir != undef  {
-    #   # check if oim is already configured in this weblogic domain
-    #   $oimValue = oim_configured( $domain_dir , $version )
-    # } else {
-    #   fail("domain parameters are empty ")
-    # }
-    $oimValue = false
+    #if these params are empty always continue
+    if $domain_dir != undef  {
+      # check if oim is already configured in this weblogic domain
+      $oimValue = oim_configured( $domain_dir )
+    } else {
+      fail("domain parameters are empty ")
+    }
     if ( $oimValue == false ) {
       file { "${download_dir}/${title}config_oim_server.rsp":
         ensure  => present,

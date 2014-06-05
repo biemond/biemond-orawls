@@ -136,6 +136,20 @@ def get_domain(domain_path,n)
       end
     end
 
+    Puppet.debug "orawls.rb check authentication provider "
+    oimconfigured = "false"
+    root.elements.to_a( "security-configuration/realm//sec:name" ).each() do |provider|
+      #Puppet.debug "orawls.rb check 2 authentication #{provider} "
+      if ( provider.text == "OIMAuthenticationProvider")
+        Puppet.debug "orawls.rb oimconfigured is true "
+        oimconfigured = "true"
+      end
+    end
+    Facter.add("#{prefix}_domain_#{n}_oim_configured") do
+      setcode do
+        oimconfigured
+      end
+    end        
 
     k = 0
     root.elements.each("server") do |server| 

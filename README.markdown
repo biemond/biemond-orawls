@@ -23,7 +23,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.4 wls_deployment type/provider, post_classpath param on wls_setting,WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.1.2.1 & 11.1.2.2 support 
+- 1.0.4 wls_deployment type/provider, post_classpath param on wls_setting, WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.1.2.1 & 11.1.2.2 support with OHS OAM Webgate
 - 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
 - 1.0.2 Custom Identity and Custom Trust
 - 1.0.1 Multi domain support with Puppet WLS types and providers
@@ -80,7 +80,7 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - WebTier Oracle HTTP server
 - OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
-- OIM configurations
+- OIM IDM / OAM configurations with Oracle OHS OAM WebGate
 - Change FMW log location of a managed server
 - Resource Adapter plan and entries for AQ, DB and JMS
 
@@ -599,7 +599,7 @@ or when you set the defaults hiera variables
 install FMW add-on to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center + Content
 
 
-    # fmw_product = adf|soa|osb|wcc|wc|oim|web
+    # fmw_product = adf|soa|osb|wcc|wc|oim|web|webgate
     orawls::fmw{"osbPS6":
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
       weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
@@ -618,7 +618,7 @@ install FMW add-on to a middleware home like OSB,SOA Suite, WebTier (HTTP Server
 or when you set the defaults hiera variables
 
     orawls::fmw{"osbPS6":
-      fmw_product             => "osb"  # adf|soa|osb|oim|wc|wcc|web
+      fmw_product             => "osb"  # adf|soa|osb|oim|wc|wcc|web|webgate
       fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
       log_output              => false,
     }
@@ -682,6 +682,12 @@ when you set the defaults hiera variables
         fmw_product:             "wcc"
         fmw_file1:               "ofm_wcc_generic_11.1.1.8.0_disk1_1of2.zip"
         fmw_file2:               "ofm_wcc_generic_11.1.1.8.0_disk1_2of2.zip"
+        log_output:              true
+        remote_file:             false
+      'webGate11.1.2.2':
+        version:                 1112
+        fmw_product:             "webgate"
+        fmw_file1:               "ofm_webgates_generic_11.1.2.2.0_disk1_1of1.zip"
         log_output:              true
         remote_file:             false
 
@@ -1237,7 +1243,7 @@ hiera configuration
          log_output:           *logoutput
 
 ### orawls::utils::webtier
-add an OHS instance to a WebLogic Domain and in the Enterprise Manager
+add an OHS instance to a WebLogic Domain and in the Enterprise Manager, optional with OHS OAM Webgate
 
     $default_params = {}
     $webtier_instances = hiera('webtier_instances', {})
@@ -1250,6 +1256,7 @@ hiera configuration
       'ohs1':
         action_name:           'create'
         instance_name:         'ohs1'
+        webgate_configure:     true
         log_output:            *logoutput
 
     # 12.1.2

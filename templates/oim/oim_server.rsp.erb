@@ -7,81 +7,57 @@ Response File Version=1.0.0.0.0
 
 #Provide the complete path of the Oracle Home. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
 ORACLE_HOME=<%= @oim_home %>
-
 #Provide Database connection string in the format host:port:servicename.
 OIM_DATABASE_CONNECTSTRING=<%= @repository_database_url %>
-
 #Provide OIM Schema name.
-OIM_SCHEMA_USER_NAME=<%= @repository_prefix %>_oim
-
+OIM_SCHEMA_USER_NAME=<%= @repository_prefix %>_OIM
 #Provide OIM Schema password.
 OIM_SCHEMA_USER_PASSWORD=<%= @repository_password %>
-
 #Provide MDS Schema name.
-MDS_USER_NAME=<%= @repository_prefix %>_mds
-
+MDS_USER_NAME=<%= @repository_prefix %>_MDS
 #Provide MDS Schema password.
 MDS_PASSWORD=<%= @repository_password %>
-
 #Provide MDS Schema Database connection string, if MDS and OIM schemas are loaded on different databases.
 MDS_DATABASE_CONNECTSTRING=<%= @repository_database_url %>
-
 #Provide true if MDS and OIM schemas are loaded on different databases.
 SELECT_DIFFERENT_DATABASE_FOR_MDS=false
-
 #Provide true if OIM Schema is already encrypted.
 IS_OIM_UPGRADE=false
-
 #Specify WebLogic Administrator User Name.
 WEBLOGIC_ADMINISTRATOR_USERNAME=<%= @weblogic_user %>
-
 #Specify WebLogic Administrator Password.
 WEBLOGIC_ADMINISTRATOR_PASSWORD=<%= @weblogic_password %>
 #Provide WebLogic Admin Server
-
 #URL of the domain in the format t3://hostname:port.
 WEBLOGIC_ADMIN_SERVER_URL=t3://<%= @adminserver_address %>:<%= @adminserver_port %>
-
 #Provide the password for the System Administrator(xelsysadm). Valid Passwords must contain at least 6 characters, must begin with an alphabetic character, and include at least one number, one uppercase letter and one lowercase letter. Password cannot contain firstname, lastname and loginname of OIM.
 OIM_ADMINISTRATOR_PASSWORD=<%= @oim_password %>
-
 #Confirm the System Administrator(xelsysadm) password.
 CONFIRM_OIM_ADMINISTRATOR_PASSWORD=<%= @oim_password %>
-
 #Provide the HTPP Proxy URL. Format: http(s)://hostname:port
 PROXY_URL_FOR_OIM=http://<%= @oimserver_hostname %>:<%= @oimserver_port %>
-
 #Provide the External Front End URL. Format: http(s)://hostname:port
 EXTERNAL_FRONTEND_URL_FOR_OIM=
-
 #Provide the KeyStore Password. Valid passwords are 6 to 30 characters long, must begin with an alphabetic character, use only alphanumeric, underscore (_), dollar ($) or pound (#) characters and include at least one number.
-KEYSTORE_PASSWORD=<%= @keystorePassword %>
-
+KEYSTORE_PASSWORD=
 #Confirm the KeyStore Password.
-KEYSTORE_CONFIRM_PASSWORD=<%= @keystorePassword %>
-
+KEYSTORE_CONFIRM_PASSWORD=
 #Provide true to enable LDAP sync. LDAP sync synchronizes Oracle Identity Manager users, roles, role membership and role hierarchy to a LDAP directory. Any direct changes in the directory will be reconciled back to Oracle Identity Manager.
 SELECTION_OPTIONS_PAGE_SYNC_LDAP=false
 
 [SYSTEM]
 
-
 [APPLICATIONS]
-
 
 [RELATIONSHIPS]
 
 #
 COMPONENT_OIM_SELECTION_ROOT=false
-
 #Provide true to configure OIM Server.
 OIM_SERVER=true
-
 #Provide true to configure OIM Design Console.
 INSTALL_OIM_DESIGN_CONSOLE=false
-
 #Provide true to configure OIM Remote Manager.
 INSTALL_OIM_REMOTE_MANAGER=false
-
 #
 IS_SERVICE_ID_USED_IN_SPECIFYODSPASSWORDPAGE=false

@@ -14,9 +14,9 @@ define orawls::utils::oimconfig(
   $oimserver_port             = 14000,
   $soaserver_name             = 'soa_server1',
   $oimserver_name             = 'oim_server1',
-  $repository_database_url    = hiera('repository_database_url'       , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
-  $repository_prefix          = hiera('repository_prefix'             , "DEV"),
-  $repository_password        = hiera('repository_password'           , "Welcome01"),
+  $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $repository_prefix          = hiera('repository_prefix'         , "DEV"),
+  $repository_password        = hiera('repository_password'       , "Welcome01"),
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
@@ -56,7 +56,7 @@ define orawls::utils::oimconfig(
     }
 
     exec { "config oim remote ${title}":
-      command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_remote.rsp",
+      command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_remote.rsp -waitforcompletion",
       timeout   => 0,
       onlyif    => "${remote_config} == true",
       require   => File["${download_dir}/${title}config_oim_remote.rsp"],
@@ -78,7 +78,7 @@ define orawls::utils::oimconfig(
     }
 
     exec { "config oim design ${title}":
-      command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_design.rsp",
+      command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_design.rsp -waitforcompletion",
       timeout   => 0,
       require   => File["${download_dir}/${title}config_oim_design.rsp"],
       path      => $execPath,
@@ -90,13 +90,14 @@ define orawls::utils::oimconfig(
 
   if ( $server_config ) {
 
-    #if these params are empty always continue
+    ##if these params are empty always continue
     if $domain_dir != undef  {
       # check if oim is already configured in this weblogic domain
       $oimValue = oim_configured( $domain_dir )
     } else {
       fail("domain parameters are empty ")
     }
+    #$oimValue = false
     if ( $oimValue == false ) {
       file { "${download_dir}/${title}config_oim_server.rsp":
         ensure  => present,
@@ -107,10 +108,9 @@ define orawls::utils::oimconfig(
         backup  => false,
       }
       exec { "config oim server ${title}":
-        command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_server.rsp",
+        command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_server.rsp -waitforcompletion",
         timeout   => 0,
         require   => File["${download_dir}/${title}config_oim_server.rsp"],
-        creates   => "${domain_dir}/soa/autodeploy",
         path      => $execPath,
         user      => $os_user,
         group     => $os_group,

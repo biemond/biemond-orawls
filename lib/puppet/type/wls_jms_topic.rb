@@ -86,6 +86,7 @@ module Puppet
     property  :balancingpolicy
     property  :quota
     property  :defaulttargeting
+    parameter :errordestinationtype
     property  :errordestination
     property  :expirationloggingpolicy
     property  :redeliverylimit

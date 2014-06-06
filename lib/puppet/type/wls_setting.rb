@@ -20,6 +20,7 @@ module Puppet
     property  :weblogic_user
     property  :connect_url
     property  :weblogic_password
+    property  :post_classpath
 
     def self.configuration
       @configuration
@@ -40,6 +41,7 @@ module Puppet
     def self.read_from_yaml
       if File.exists?(config_file)
         open(config_file){|f| YAML.load(f)}
+        #YAML.load_file_with_options(config_file, {})
       else
         Hash['default', {}]
       end

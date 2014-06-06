@@ -73,8 +73,9 @@ module Utils
         weblogicUser        = domainValues['weblogic_user']     || "weblogic"
         weblogicConnectUrl  = domainValues['connect_url']       || "t3://localhost:7001"
         weblogicPassword    = domainValues['weblogic_password'] || "weblogic1"
+        postClasspath       = domainValues['post_classpath'] || ""
 
-        wls_daemon = WlsDaemon.run(operatingSystemUser,domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl )
+        wls_daemon = WlsDaemon.run(operatingSystemUser,domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath )
         wls_daemon.execute_script( tmpFile.path)
         if action == "index"
           File.read("/tmp/"+script+".out")

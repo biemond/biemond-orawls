@@ -13,6 +13,7 @@ quota                    = '<%= quota %>'
 defaulttargeting         = '<%= defaulttargeting %>'
 redeliverylimit          = '<%= redeliverylimit %>'
 expirationpolicy         = '<%= expirationpolicy %>'
+errordestinationtype     = '<%= errordestinationtype %>'
 errordestination         = '<%= errordestination %>'
 expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
@@ -45,7 +46,7 @@ try:
       print "distributed"
       cmo.setLoadBalancingPolicy(balancingpolicy)
 
-    if expirationpolicy :
+    if expirationpolicy:
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
       cmo.setExpirationPolicy(expirationpolicy)
 
@@ -53,11 +54,20 @@ try:
       print "limit"
       cmo.setRedeliveryLimit( int(redeliverylimit) )  
 
-    if errordestination:
+    print "before"
+    if errordestinationtype:
+      jmsErrType = errordestinationtype
+    else:
       if distributed == "1":
-        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/UniformDistributedQueues/'+errordestination))
+        jmsErrType = 'UniformDistributedQueues'
       else:
-        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Queues/'+errordestination))
+        jmsErrType = 'Queues'
+
+    print "after"
+ 
+    print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination 
+    if errordestination:
+        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination))
 
     if expirationloggingpolicy:
       cmo.setExpirationLoggingPolicy(expirationloggingpolicy)

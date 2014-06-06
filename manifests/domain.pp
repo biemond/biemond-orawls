@@ -354,10 +354,28 @@ define orawls::domain (
     }
     if ($domain_template == 'oim') {
 
+      file { "${download_dir}/${title}psa_opss_upgrade.rsp":
+        ensure  => present,
+        content => template("orawls/oim/psa_opss_upgrade.rsp.erb"),
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+        backup  => false,
+      }
+
+      exec { "exec PSA OPSS store upgrade ${domain_name} ${title}":
+        command     => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
+        require     => [Exec["execwlst ${domain_name} ${title}"],File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
+        timeout     => 0,
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+      }
+
       exec { "execwlst create OPSS store ${domain_name} ${title}":
         command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m create -c IAM -p ${repository_password}",
         environment => ["JAVA_HOME=${jdk_home_dir}"],
-        require     => Exec["execwlst ${domain_name} ${title}"],
+        require     => [Exec["execwlst ${domain_name} ${title}"],Exec["exec PSA OPSS store upgrade ${domain_name} ${title}"],],
         timeout     => 0,
         path        => $exec_path,
         user        => $os_user,

@@ -1,0 +1,22 @@
+#
+#  cd /opt/oracle/middleware11g/oracle_common/bin
+#  ./psa -response /vagrant/responses_psa.rsp
+#
+# This is a response file for the Fusion Middleware Patch Set Assistant.
+# Individual component upgrades are performed in the order they are described here.
+
+[GENERAL]
+# This is the file format version number.  Do not change the next line.
+fileFormatVersion = 3
+
+[OPSS.OPSS1]
+pluginInstance = 4
+
+OPSS.databaseType = Oracle Database
+OPSS.databaseConnectionString = <%= @rcu_database_url %>
+OPSS.schemaConnectionString = <%= @rcu_database_url %>
+OPSS.schemaUserName = <%= @repository_prefix %>_OPSS
+OPSS.cleartextSchemaPassword = <%= @repository_password %>
+OPSS.dbaUserName = sys as sysdba
+OPSS.cleartextDbaPassword = <%= @repository_sys_password %>
+

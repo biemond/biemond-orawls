@@ -1,25 +1,26 @@
 class WlsDaemon < EasyType::Daemon
 
 
-  def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
+  def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
     daemon = super("wls-#{domain}")
     if daemon
       return daemon
     else
-      new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
+      new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
     end
   end
 
-  def initialize(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl)
+  def initialize(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
     @user = user
     @domain = domain
     @weblogicHomeDir = weblogicHomeDir
     @weblogicUser = weblogicUser
     @weblogicPassword = weblogicPassword
     @weblogicConnectUrl = weblogicConnectUrl
+    @postClasspath = postClasspath
     identity = "wls-#{domain}"
     Puppet.info "Starting the wls daemon for domain #{@domain}"
-    command =  ". #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning"
+    command =  "export POST_CLASSPATH='#{@postClasspath}';. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning"
     super(identity, command, user )
     pass_domain
     pass_credentials

@@ -23,7 +23,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.4 wls_deployment type/provider,WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.2.1 & 11.2.2 support 
+- 1.0.4 wls_deployment type/provider, post_classpath param on wls_setting,WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.1.2.1 & 11.1.2.2 support 
 - 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
 - 1.0.2 Custom Identity and Custom Trust
 - 1.0.1 Multi domain support with Puppet WLS types and providers
@@ -46,7 +46,7 @@ https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
-Reference OIM / OAM, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.2.2 example  
+Reference OIM / OAM, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
 https://github.com/biemond/biemond-orawls-vagrant-oim_oam
 
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
@@ -1281,6 +1281,7 @@ It needs wls_setting and you need to create one for every domain. When domain is
         connect_url        => "t3://localhost:7011",
         weblogic_user      => 'weblogic',
         weblogic_password  => 'weblogic1',
+        post_classpath:     "/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar"
       }
 
 ###wls_deployment

@@ -31,7 +31,9 @@ try:
     cmo.setName(name)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
-    set('JNDINames', jarray.array([String(jndinames)], String))
+    if jndinames: 
+      jndis = String(jndinames).split(",")  
+      set('JNDINames',jarray.array(jndis, String))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
     cmo.setUrl(url)

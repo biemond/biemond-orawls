@@ -1,0 +1,36 @@
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#Provide the complete path of the Oracle Home. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
+ORACLE_HOME=<%= @oim_home %>
+
+#Provide WebLogic Managed Server hostname in which Oracle Identity Manager application is deployed.
+AS_HOST_NAME=<%= @oimserver_hostname %>
+
+#Provide WebLogic Managed Server port in which Oracle Identity Manager application is deployed.
+AS_PORT_NUMBER=<%= @oimserver_port %>
+
+
+[SYSTEM]
+
+
+[APPLICATIONS]
+
+
+[RELATIONSHIPS]
+
+#
+COMPONENT_OIM_SELECTION_ROOT=false
+
+#Provide true to configure OIM Server.
+OIM_SERVER=false
+
+#Provide true to configure OIM Design Console.
+INSTALL_OIM_DESIGN_CONSOLE=true
+
+#Provide true to configure OIM Remote Manager.
+INSTALL_OIM_REMOTE_MANAGER=false

@@ -23,7 +23,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.4 WebTier for 12.1.2 and 11.1.1.7 
+- 1.0.4 wls_deployment type/provider,WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.2.1 & 11.2.2 support 
 - 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
 - 1.0.2 Custom Identity and Custom Trust
 - 1.0.1 Multi domain support with Puppet WLS types and providers
@@ -43,12 +43,14 @@ https://github.com/biemond/biemond-orawls-vagrant-12.1.2
 WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server)  
 https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra  
 
-
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
+Reference OIM / OAM, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.2.2 example  
+https://github.com/biemond/biemond-orawls-vagrant-oim_oam
+
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
-https://github.com/biemond/vagrant-soasuite or https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
+https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
 ###Puppetmaster (vagrant box)
 Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
@@ -78,12 +80,14 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - WebTier Oracle HTTP server
 - OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
+- OIM configurations
 - Change FMW log location of a managed server
 - Resource Adapter plan and entries for AQ, DB and JMS
 
 ##Wls types and providers ( ensurable, create,modify,destroy ) + puppet resource
 
 - wls_setting, set the default wls parameters for the other types and also used by puppet resource
+- wls_deployment
 - wls_user
 - wls_group
 - wls_authentication_provider
@@ -125,6 +129,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM 
 - domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM 
 - domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM 
+- domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)  
 
 
 ## Orawls WebLogic Facter
@@ -1277,6 +1282,69 @@ It needs wls_setting and you need to create one for every domain. When domain is
         weblogic_user      => 'weblogic',
         weblogic_password  => 'weblogic1',
       }
+
+###wls_deployment
+
+it needs wls_setting and when domain is not provided it will use the 'default'
+
+or use puppet resource wls_deployment
+
+    wls_deployment { 'jersey-bundle':
+      ensure            => 'present',
+      deploymenttype    => 'Library',
+      target            => 'AdminServer,WebCluster',
+      targettype        => 'Server,Cluster',
+      versionidentifier => '1.18@1.18.0.0',
+      localpath         =>  '/vagrant/jersey-bundle-1.18.war',
+    }
+    wls_deployment { 'webapp':
+      ensure            => 'present',
+      deploymenttype    => 'AppDeployment',
+      target            => 'WebCluster',
+      targettype        => 'Cluster',
+      localpath         => '/vagrant/webapp.war',
+    }
+
+or add a version
+
+    wls_deployment { 'webapp':
+      ensure            => 'present',
+      deploymenttype    => 'AppDeployment',
+      target            => 'WebCluster',
+      targettype        => 'Cluster',
+      versionidentifier => '1.1@1.1.0.0',
+      localpath         => '/vagrant/webapp.war',
+    }
+
+
+in hiera
+
+    $default_params = {}
+    $deployment_instances = hiera('deployment_library_instances', $default_params)
+    create_resources('wls_deployment',$deployment_instances, $default_params)
+
+    deployment_library_instances:
+      'jersey-bundle':
+        ensure:            'present'
+        deploymenttype:    'Library'
+        versionidentifier: '1.18@1.18.0.0'
+        target:            'AdminServer,WebCluster'
+        targettype:        'Server,Cluster'
+        localpath:         '/vagrant/jersey-bundle-1.18.war'
+
+    $default_params = {}
+    $deployment_instances = hiera('deployment_application_instances', $default_params)
+    create_resources('wls_deployment',$deployment_instances, $default_params)
+
+    deployment_application_instances:
+      'webapp':
+        ensure:            'present'
+        deploymenttype:    'AppDeployment'
+        versionidentifier: '1.1@1.1.0.0'
+        target:            'AdminServer,WebCluster'
+        targettype:        'Server,Cluster'
+        localpath:         '/vagrant/webapp.war'
+
 
 ###wls_user
 

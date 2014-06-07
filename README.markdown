@@ -46,7 +46,7 @@ https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
-Reference OIM / OAM, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
+Reference OIM / OAM with WebTier and Webgate, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
 https://github.com/biemond/biemond-orawls-vagrant-oim_oam
 
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
@@ -1265,6 +1265,47 @@ hiera configuration
           action_name:           'create'
           instance_name:         'ohs1'
           machine_name:          'Node1'
+
+### orawls::utils::oimconfig
+Configure OIM , oim server, design or remote configuration
+
+    $default_params = {}
+    $oimconfig_instances = hiera('oimconfig_instances', $default_params)
+    create_resources('orawls::utils::oimconfig',$oimconfig_instances, $default_params)
+
+    oimconfig_instances:
+      'oimDomain':
+        version:                    1112
+        oim_home:                   '/opt/oracle/middleware11g/Oracle_IDM1'
+        server_config:              true
+        oim_password:               'Welcome01'
+        remote_config:              false
+        keystore_password:          'Welcome01'
+        design_config:              false
+        oimserver_hostname:         'oim1admin.example.com'
+        oimserver_port:             '14000'
+        repository_database_url:    "oimdb.example.com:1521:oimrepos.example.com"
+        repository_prefix:          "DEV"
+        repository_password:        "Welcome01"
+
+
+hiera configuration
+
+    # 11g
+    webtier_instances:
+      'ohs1':
+        action_name:           'create'
+        instance_name:         'ohs1'
+        webgate_configure:     true
+        log_output:            *logoutput
+
+    # 12.1.2
+      webtier_instances:
+        'ohs1':
+          action_name:           'create'
+          instance_name:         'ohs1'
+          machine_name:          'Node1'
+
 
 ##Types and providers
 

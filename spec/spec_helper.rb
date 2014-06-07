@@ -10,7 +10,6 @@ RSpec.configure do |c|
   c.config = '/doesnotexist'
   c.module_path  = File.expand_path(File.join(File.dirname(__FILE__), 'fixtures/modules'))
   c.manifest_dir = File.expand_path(File.join(File.dirname(__FILE__), 'fixtures/manifests'))
-  c.mock_with :mocha
 end
 
 def param_value(subject, type, title, param)

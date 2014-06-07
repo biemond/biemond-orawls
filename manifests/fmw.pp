@@ -10,7 +10,7 @@ define orawls::fmw (
   $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'  , undef), # /opt/oracle
   $oracle_home_dir            = undef,                                      # /opt/oracle/middleware/Oracle_SOA
   $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $fmw_product                = undef,                                      # adf|soa|osb|wcc|wc|oim|web|webgate
+  $fmw_product                = undef,                                      # adf|soa|osb|wcc|wc|oim|web|webgate|oud
   $fmw_file1                  = undef,
   $fmw_file2                  = undef,
   $os_user                    = hiera('wls_os_user'               , undef), # oracle
@@ -159,8 +159,21 @@ define orawls::fmw (
     }
     $total_files = 1
 
+  } elsif ( $fmw_product == "oud" ) {
+
+    $fmw_silent_response_file = "orawls/fmw_silent_oud.rsp.erb"
+    $createFile1              = "${download_dir}/${fmw_product}/Disk1"
+
+    if ($oracle_home_dir == undef) {
+      $oracleHome = "${middleware_home_dir}/Oracle_OUD1"
+    }
+    else {
+      $oracleHome = $oracle_home_dir
+    }
+    $total_files = 1
+
   } else {
-    fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc|web|webgate')
+    fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc|web|webgate|oud')
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons

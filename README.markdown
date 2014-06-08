@@ -23,6 +23,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
+- 1.0.5 Oracle Unified Directory install, domain, instances creation & OUD control
 - 1.0.4 wls_deployment type/provider, post_classpath param on wls_setting, WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.1.2.1 & 11.1.2.2 support with OHS OAM Webgate
 - 1.0.3 WLST Domain daemin for fast WLS types execution, BSU & OPatch absent option and better output when it fails
 - 1.0.2 Custom Identity and Custom Trust
@@ -46,7 +47,7 @@ https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
-Reference OIM / OAM with WebTier and Webgate, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
+Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
 https://github.com/biemond/biemond-orawls-vagrant-oim_oam
 
 Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
@@ -76,11 +77,12 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - storeUserConfig for storing WebLogic Credentials and using in WLST
 
 ###Fusion Middleware
-- installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity Management, Web Center + Content
+- installs FMW add-on to a middleware home like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - WebTier Oracle HTTP server
 - OSB, SOA Suite ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - ADF/JRF support, Assign JRF libraries to a Server or Cluster target
 - OIM IDM / OAM configurations with Oracle OHS OAM WebGate
+- OUD Oracle Unified Directory install, WebLogic domain, instances creation & OUD control
 - Change FMW log location of a managed server
 - Resource Adapter plan and entries for AQ, DB and JMS
 
@@ -130,6 +132,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM 
 - domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM 
 - domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)  
+- domain 'oud'         -> OUD (Oracle Unified Directory)  
 
 
 ## Orawls WebLogic Facter
@@ -688,6 +691,12 @@ when you set the defaults hiera variables
         version:                 1112
         fmw_product:             "webgate"
         fmw_file1:               "ofm_webgates_generic_11.1.2.2.0_disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'oud11.1.2.2':
+        version:                 1112
+        fmw_product:             "oud"
+        fmw_file1:               "ofm_oud_generic_11.1.2.2.0_disk1_1of1.zip"
         log_output:              true
         remote_file:             false
 
@@ -1288,24 +1297,48 @@ Configure OIM , oim server, design or remote configuration
         repository_prefix:          "DEV"
         repository_password:        "Welcome01"
 
+### orawls::oud::instance
+Configure OUD (Oracle Unified Directory) ldap instance
 
-hiera configuration
+    $default_params = {}
+    $oudconfig_instances = hiera('oudconfig_instances', $default_params)
+    create_resources('orawls::oud::instance',$oudconfig_instances, $default_params)
 
-    # 11g
-    webtier_instances:
-      'ohs1':
-        action_name:           'create'
-        instance_name:         'ohs1'
-        webgate_configure:     true
-        log_output:            *logoutput
+    oudconfig_instances:
+      'instance1':
+        version:                    1112
+        oud_home:                   '/opt/oracle/middleware11g/Oracle_OUD1'
+        oud_instance_name:          'instance1'
+        oud_root_user_password:     'Welcome01'
+        oud_baseDN:                 'dc=example,dc=com'
+        oud_ldapPort:               1389
+        oud_adminConnectorPort:     4444
+        oud_ldapsPort:              1636
+        log_output:                 *logoutput
+      'instance2':
+        version:                    1112
+        oud_home:                   '/opt/oracle/middleware11g/Oracle_OUD1'
+        oud_instance_name:          'instance2'
+        oud_root_user_password:     'Welcome01'
+        oud_baseDN:                 'dc=example,dc=com'
+        oud_ldapPort:               2389
+        oud_adminConnectorPort:     5555
+        oud_ldapsPort:              2636
+        log_output:                 *logoutput
 
-    # 12.1.2
-      webtier_instances:
-        'ohs1':
-          action_name:           'create'
-          instance_name:         'ohs1'
-          machine_name:          'Node1'
+### orawls::oud::control
+Stop or start an OUD (Oracle Unified Directory) ldap instance
 
+    $default_params = {}
+    $oud_control_instances = hiera('oud_control_instances', $default_params)
+    create_resources('orawls::oud::control',$oud_control_instances, $default_params)
+
+    oud_control_instances:
+      'instance1':
+        oud_instances_home_dir:     '/opt/oracle/oud_instances' 
+        oud_instance_name:          'instance1'
+        action:                     'start'
+        log_output:                 *logoutput
 
 ##Types and providers
 

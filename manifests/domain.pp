@@ -9,7 +9,7 @@ define orawls::domain (
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'              , undef), # /usr/java/jdk1.7.0_45
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm
+  $domain_template                       = hiera('domain_template'               , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm|oud
   $domain_name                           = hiera('domain_name'                   , undef),
   $development_mode                      = true,
   $adminserver_name                      = hiera('domain_adminserver'            , "AdminServer"),
@@ -91,6 +91,8 @@ define orawls::domain (
       $templateOIM       = "${middleware_home_dir}/Oracle_IDM1/common/templates/applications/oracle.oim_11.1.2.0.0_template.jar"
       $templateOAM       = "${middleware_home_dir}/Oracle_IDM1/common/templates/applications/oracle.oam_ds_11.1.2.0.0_template.jar"
 
+      $templateOUD       = "${middleware_home_dir}/Oracle_OUD1/common/templates/applications/oracle.odsm_11.1.1.5.0_template.jar"
+
     } elsif $version == 1212 {
       $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
       $templateWS        = "${weblogic_home_dir}/common/templates/wls/wls_webservice.jar"
@@ -166,6 +168,10 @@ define orawls::domain (
     } elsif $domain_template == 'oim' {
       $templateFile  = "orawls/domains/domain_oim.py.erb"
       $wlstPath      = "${middleware_home_dir}/Oracle_IDM1/common/bin"
+
+    } elsif $domain_template == 'oud' {
+      $templateFile  = "orawls/domains/domain_oud.py.erb"
+      $wlstPath      = "${weblogic_home_dir}/common/bin"
 
     } elsif $domain_template == 'wc' {
       $templateFile  = "orawls/domains/domain_wc.py.erb"

@@ -1,0 +1,41 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;domain;jta_transaction_timeout;jta_max_transactions;jpa_default_provider;security_crossdomain;log_file_min_size;log_filecount;log_rotate_logon_startup;log_filename;log_rotationtype;log_number_of_files_limited"
+
+cd('/')
+domain_name = get('Name') 
+
+cd('/Log/'+domain_name)
+log_rotationtype            = get('RotationType')
+log_rotate_logon_startup    = str(get('RotateLogOnStartup'))
+log_number_of_files_limited = str(get('NumberOfFilesLimited'))
+log_filename                = str(get('FileName'))
+log_filecount               = str(get('FileCount'))
+log_file_min_size           = str(get('FileMinSize'))
+
+cd('/JTA/'+domain_name)
+jta_max_transactions    = str(cmo.getMaxTransactions())
+jta_transaction_timeout = str(cmo.getTimeoutSeconds())
+
+cd('/JPA/'+domain_name)
+jpa_default_provider = cmo.getDefaultJPAProvider()
+
+cd('/SecurityConfiguration/'+domain_name)
+try:
+  security_crossdomain = str(get('CrossDomainSecurityEnabled'))
+except:
+  print "exception security_crossdomain", sys.exc_info()[0]
+  security_crossdomain = '0'
+
+print >>f, ";".join(map(quote, [domain+'/'+domain_name,domain,jta_transaction_timeout,jta_max_transactions,jpa_default_provider,security_crossdomain,log_file_min_size,log_filecount,log_rotate_logon_startup,log_filename,log_rotationtype,log_number_of_files_limited]))
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
+

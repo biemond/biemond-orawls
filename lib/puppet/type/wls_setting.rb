@@ -29,7 +29,7 @@ module Puppet
   private
 
     def self.resources_from_yaml
-      Puppet.info "0 read_from_yaml "
+      Puppet.debug "0 read_from_yaml "
       @configuration = read_from_yaml
       normalize(@configuration)
     end
@@ -41,7 +41,6 @@ module Puppet
     def self.read_from_yaml
       if File.exists?(config_file)
         open(config_file){|f| YAML.load(f)}
-        #YAML.load_file_with_options(config_file, {})
       else
         Hash['default', {}]
       end

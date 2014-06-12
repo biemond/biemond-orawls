@@ -1,0 +1,79 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+print "modify domain"
+
+name                        = '<%= domain_name %>'
+jta_transaction_timeout     = <%= jta_transaction_timeout %>
+jta_max_transactions        = <%= jta_max_transactions %>
+jpa_default_provider        = '<%= jpa_default_provider %>'
+security_crossdomain        = <%= security_crossdomain %>
+log_file_min_size           = <%= log_file_min_size %>
+log_filecount               = <%= log_filecount %>
+log_rotate_logon_startup    = <%= log_rotate_logon_startup %>
+log_filename                = '<%= log_filename %>'
+log_rotationtype            = '<%= log_rotationtype %>'
+log_number_of_files_limited = <%= log_number_of_files_limited %>
+
+def formatBoolean(value):
+  if value == 1:
+    return true
+  else:
+    return false    
+
+print "start edit"
+
+edit()
+startEdit()
+
+try:
+
+    print "change log"
+    cd('/Log/'+name)
+    if log_rotationtype:
+      print "change log 1" +log_rotationtype
+      cmo.setRotationType(log_rotationtype)
+    if log_rotate_logon_startup:
+      print "change log 2 " + str(log_rotate_logon_startup)
+      cmo.setRotateLogOnStartup(formatBoolean(log_rotate_logon_startup))
+    if log_filecount:
+      print "change log 3" + str(log_filecount)
+      cmo.setFileCount(int(log_filecount))
+    if log_number_of_files_limited:
+      print "change log 4"
+      cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
+    if log_filename:
+      print "change log 5"
+      cmo.setFileName(log_filename)
+    if log_file_min_size:
+      print "change log 6"
+      cmo.setFileMinSize(int(log_file_min_size))
+
+    print "change jta"
+    cd('/JTA/'+name)
+    if jta_transaction_timeout:
+      cmo.setTimeoutSeconds(int(jta_transaction_timeout))
+    if jta_max_transactions:    
+      cmo.setMaxTransactions(int(jta_max_transactions))
+
+    print "change jpa"
+    cd('/JPA/'+name)
+    if jpa_default_provider:
+      cmo.setDefaultJPAProvider(jpa_default_provider)
+
+    print "change security"
+    cd('/SecurityConfiguration/'+name)
+    if security_crossdomain:
+      cmo.setCrossDomainSecurityEnabled(formatBoolean(security_crossdomain))
+
+    print "save"
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise

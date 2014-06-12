@@ -12,7 +12,7 @@
 #  set java.security in JDK ( jre/lib/security )
 #  set -Djava.security.egd=file:/dev/./urandom param
 #
-class orawls::urandomfix () {
+class orawls::urandomfix() {
   $path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
   package { "rng-tools": ensure => present, }

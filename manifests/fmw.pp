@@ -5,17 +5,17 @@
 ##
 define orawls::fmw (
   $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
-  $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'  , undef), # /opt/oracle
+  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'), # /opt/oracle
   $oracle_home_dir            = undef,                                      # /opt/oracle/middleware/Oracle_SOA
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $fmw_product                = undef,                                      # adf|soa|osb|wcc|wc|oim|web|webgate|oud
   $fmw_file1                  = undef,
   $fmw_file2                  = undef,
-  $os_user                    = hiera('wls_os_user'               , undef), # oracle
-  $os_group                   = hiera('wls_os_group'              , undef), # dba
-  $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
+  $os_user                    = hiera('wls_os_user'), # oracle
+  $os_group                   = hiera('wls_os_group'), # dba
+  $download_dir               = hiera('wls_download_dir'), # /data/install
   $source                     = hiera('wls_source'                , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file                = true,                                       # true|false
   $log_output                 = false,                                      # true|false

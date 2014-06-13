@@ -19,6 +19,17 @@ class orawls::weblogic (
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
 
+  # check required parameters
+  if ( $filename == undef or
+       $oracle_base_home_dir == undef or 
+       $middleware_home_dir == undef or 
+       $jdk_home_dir == undef or 
+       $os_user == undef or 
+       $os_group == undef or 
+       $download_dir == undef ) {
+    fail('please provide all the required parameters')
+  }
+
   if ( $wls_domains_dir != undef ) {
     # make sure you don't create the middleware home, else root will be owner
     if ($wls_domains_dir == "${middleware_home_dir}/user_projects/domains") {

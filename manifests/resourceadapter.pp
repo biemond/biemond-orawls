@@ -1,9 +1,9 @@
 #
 #
 define orawls::resourceadapter( 
-  $middleware_home_dir       = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir         = hiera('wls_weblogic_home_dir'     , undef),
-  $jdk_home_dir              = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
+  $middleware_home_dir       = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $weblogic_home_dir         = hiera('wls_weblogic_home_dir'),
+  $jdk_home_dir              = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir           = hiera('wls_domains_dir'           , undef),
   $domain_name               = hiera('domain_name'               , undef),
   $adapter_name              = undef,
@@ -19,9 +19,9 @@ define orawls::resourceadapter(
   $userKeyFile               = hiera('domain_user_key_file'      , undef),
   $weblogic_user             = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password         = hiera('domain_wls_password'       , undef),
-  $os_user                   = hiera('wls_os_user'               , undef), # oracle
-  $os_group                  = hiera('wls_os_group'              , undef), # dba
-  $download_dir              = hiera('wls_download_dir'          , undef), # /data/install
+  $os_user                   = hiera('wls_os_user'), # oracle
+  $os_group                  = hiera('wls_os_group'), # dba
+  $download_dir              = hiera('wls_download_dir'), # /data/install
   $log_output                = false, # true|false
 ) 
 {

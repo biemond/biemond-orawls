@@ -1,10 +1,12 @@
+
 {
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "5",
-        "6"
+        "6",
+        "7"
       ]
     },
     {
@@ -45,7 +47,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "10.04",
-        "12.04"
+        "12.04",
+        "14.04"
       ]
     },
     {
@@ -59,7 +62,7 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": "3.x"
+      "version_requirement": ">= 3.0"
     },
     {
       "name": "puppet",
@@ -67,19 +70,25 @@
     }
   ],
   "name": "biemond-orawls",
-  "version": "1.0.5",
-  "summary": "Oracle WebLogic puppet module v2, wls type/provider, optimized for Hiera ( Puppet 3.X ) and for Linux,Solaris",
-  "author": "Edwin Biemond",
-  "description": "Only for Linux & Solaris \nOracle WebLogic module optimized for Hiera and Puppet 3\nwls native types & providers like wls_machine, wls_server and wls_cluster\n\nbased on the wls module",
-  "dependencies": [
-    {"version_requirement":">=0.8.0","name":"hajee-easy_type"},
-    {"name":"hajee/easy_type","version_requirement":">=0.8.0"},
-    {"name":"adrien/filemapper","version_requirement":">=1.1.1"},
-    {"name":"reidmv/yamlfile","version_requirement":">=0.2.0"}
-  ],
-  "types": [],
-  "checksums": {},
+  "version": "1.0.6",
   "source": "https://github.com/biemond/biemond-orawls",
-  "project_page": "",
-  "license": "Apache 2.0"
+  "author": "Edwin Biemond",
+  "license": "Apache Version 2.0",
+  "summary": "Oracle WebLogic puppet module v2, wls type/provider, optimized for Hiera ( Puppet 3.X ) and for Linux,Solaris",
+  "description": "Oracle WebLogic module optimized for Hiera and Puppet 3 with wls native types & providers",
+  "project_page": "http://github.com/puppetlabs/puppetlabs-ntp",
+  "dependencies": [
+    {
+      "name": "hajee/easy_type",
+      "version_requirement": ">=0.8.0"
+    },
+    {
+      "name": "adrien/filemapper",
+      "version_requirement": ">=1.1.1"
+    },
+    {
+      "name": "reidmv/yamlfile",
+      "version_requirement": ">=0.2.0"
+    }
+  ]
 }

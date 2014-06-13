@@ -20,13 +20,7 @@ class orawls::weblogic (
 ) {
 
   # check required parameters
-  if ( $filename == undef or
-       $oracle_base_home_dir == undef or 
-       $middleware_home_dir == undef or 
-       $jdk_home_dir == undef or 
-       $os_user == undef or 
-       $os_group == undef or 
-       $download_dir == undef ) {
+  if ( $filename == undef or $oracle_base_home_dir == undef or $middleware_home_dir == undef or $jdk_home_dir == undef or $os_user == undef or $os_group == undef or $download_dir == undef ) {
     fail('please provide all the required parameters')
   }
 

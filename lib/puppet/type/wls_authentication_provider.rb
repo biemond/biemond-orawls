@@ -2,6 +2,7 @@ require 'pathname'
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -9,6 +10,7 @@ module Puppet
   newtype(:wls_authentication_provider) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage authentication providers in an WebLogic domain."
 
@@ -47,47 +49,8 @@ module Puppet
     parameter :attributes
     parameter :attributesvalues
 
-    # map_title_to_attributes(:name, [:domain, parse_domain_title], :authentication_provider_name) do 
-    #   /^((.*\/)?(.*)?)$/
-    # end
-
-    def self.title_patterns
-      # possible values for /^((.*\/)?(.*)?)$/
-      # default/testuser1 with this as regex outcome 
-      #    default/testuser1 default/ testuser1
-      # testuser1 with this as regex outcome
-      #    testuser1  nil  testuser1
-      identity  = lambda {|x| x}
-      name      = lambda {|x| 
-          if x.include? "/"
-            x            # it contains a domain
-          else
-            'default/'+x # add the default domain
-          end
-        }
-      optional  = lambda{ |x| 
-          if x.nil?
-            'default' # when not found use default
-          else
-            x[0..-2]  # remove the last char / from domain name
-          end
-        }
-      [
-        [
-          /^((.*\/)?(.*)?)$/,
-          [
-            [ :name       , name     ],
-            [ :domain     , optional ],
-            [ :authentication_provider_name, identity ]
-          ]
-        ],
-        [
-          /^([^=]+)$/,
-          [
-            [ :name, identity ]
-          ]
-        ]
-      ]
+    add_title_attributes( :authentication_provider_name) do 
+      /^((.*\/)?(.*)?)$/
     end
 
   end

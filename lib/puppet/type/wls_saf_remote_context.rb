@@ -36,6 +36,18 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_saf_remote_context/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :jmsmodule
+    parameter :remote_context_name
+    parameter :weblogic_password
+    property  :weblogic_user
+    property  :connect_url
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :remote_context_name) do 
+    #   /^((.*\/)?(.*):(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*):(.*)?)$/
       # default/server1:channel1 with this as regex outcome 
@@ -76,12 +88,5 @@ module Puppet
       ]
     end
 
-    parameter :domain
-    parameter :name
-    parameter :jmsmodule
-    parameter :remote_context_name
-    parameter :weblogic_password
-    property  :weblogic_user
-    property  :connect_url
   end
 end

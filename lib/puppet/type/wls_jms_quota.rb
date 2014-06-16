@@ -36,6 +36,19 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_jms_quota/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :jmsmodule
+    parameter :quota_name
+    property  :bytesmaximum
+    property  :messagesmaximum
+    property  :policy
+    property  :shared
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :quota_name) do 
+    #   /^((.*\/)?(.*):(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*):(.*)?)$/
       # default/server1:channel1 with this as regex outcome 
@@ -75,15 +88,6 @@ module Puppet
         ]
       ]
     end
-
-    parameter :domain
-    parameter :name
-    parameter :jmsmodule
-    parameter :quota_name
-    property  :bytesmaximum
-    property  :messagesmaximum
-    property  :policy
-    property  :shared
 
   end
 end

@@ -36,6 +36,23 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_cluster/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :cluster_name
+    property  :servers
+    property  :migrationbasis
+    property  :migration_datasource
+    property  :migration_table_name
+    property  :messagingmode
+    property  :datasourceforjobscheduler
+    property  :unicastbroadcastchannel
+    property  :multicastaddress
+    property  :multicastport
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :cluster_name) do 
+    #   /^((.*\/)?(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*)?)$/
       # default/testuser1 with this as regex outcome 
@@ -75,17 +92,5 @@ module Puppet
       ]
     end
 
-    parameter :domain
-    parameter :name
-    parameter :cluster_name
-    property  :servers
-    property  :migrationbasis
-    property  :migration_datasource
-    property  :migration_table_name
-    property  :messagingmode
-    property  :datasourceforjobscheduler
-    property  :unicastbroadcastchannel
-    property  :multicastaddress
-    property  :multicastport
   end
 end

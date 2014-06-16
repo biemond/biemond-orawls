@@ -1,7 +1,0 @@
-# check the domain else we need to skip this (done in wls_access.rb)
-real_domain='<%= domain %>'
-
-name  = '<%= domain_name %>'
-
-print "~~~~COMMAND FAILED~~~~"
-raise SkipDomainError, "Can't destroy this domain,only modify, skipping. "

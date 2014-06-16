@@ -36,6 +36,20 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_jms_connection_factory/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :jmsmodule
+    parameter :connection_factory_name
+    property  :jndiname
+    property  :subdeployment
+    property  :defaulttargeting
+    property  :transactiontimeout
+    property  :xaenabled
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :connection_factory_name) do 
+    #   /^((.*\/)?(.*):(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*):(.*)?)$/
       # default/server1:channel1 with this as regex outcome 
@@ -76,14 +90,5 @@ module Puppet
       ]
     end
 
-    parameter :domain
-    parameter :name
-    parameter :jmsmodule
-    parameter :connection_factory_name
-    property  :jndiname
-    property  :subdeployment
-    property  :defaulttargeting
-    property  :transactiontimeout
-    property  :xaenabled
   end
 end

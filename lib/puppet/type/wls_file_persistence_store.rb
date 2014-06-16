@@ -36,6 +36,17 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_file_persistence_store/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :file_persistence_name
+    property  :directory
+    property  :target
+    property  :targettype
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :file_persistence_name) do 
+    #   /^((.*\/)?(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*)?)$/
       # default/testuser1 with this as regex outcome 
@@ -75,11 +86,5 @@ module Puppet
       ]
     end
 
-    parameter :domain
-    parameter :name
-    parameter :file_persistence_name
-    property  :directory
-    property  :target
-    property  :targettype
   end
 end

@@ -37,6 +37,18 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_user/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :user_name
+    parameter :password
+    property  :realm
+    property  :authenticationprovider
+    property  :description
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :user_name) do 
+    #   /^((.*\/)?(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*)?)$/
       # default/testuser1 with this as regex outcome 
@@ -75,14 +87,6 @@ module Puppet
         ]
       ]
     end
-
-    parameter :domain
-    parameter :name
-    parameter :user_name
-    parameter :password
-    property  :realm
-    property  :authenticationprovider
-    property  :description
 
   end
 end

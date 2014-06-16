@@ -37,6 +37,17 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_virtual_host/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :virtual_host_name
+    property  :channel
+    property  :target
+    property  :targettype
+    property  :virtual_host_names
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :virtual_host_name) do 
+    #   /^((.*\/)?(.*)?)$/
+    # end
     def self.title_patterns
       # possible values for /^((.*\/)?(.*):(.*)?)$/
       # default/server1:channel1 with this as regex outcome 
@@ -75,14 +86,5 @@ module Puppet
         ]
       ]
     end
-
-    parameter :domain
-    parameter :name
-    parameter :virtual_host_name
-    property  :channel
-    property  :target
-    property  :targettype
-    property  :virtual_host_names
-
   end
 end

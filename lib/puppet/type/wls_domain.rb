@@ -22,8 +22,7 @@ module Puppet
     end
 
     on_create  do | command_builder |
-      Puppet.info "create #{name} "
-      template('puppet:///modules/orawls/providers/wls_domain/create.py.erb', binding)
+      fail("create of a domain is not allowed") 
     end
 
     on_modify  do | command_builder |
@@ -32,9 +31,26 @@ module Puppet
     end
 
     on_destroy  do | command_builder |
-      Puppet.info "destroy #{name} "
-      template('puppet:///modules/orawls/providers/wls_domain/destroy.py.erb', binding)
+      fail("destroy of a domain is not allowed") 
     end
+
+    parameter :domain
+    parameter :name
+    parameter :weblogic_domain_name
+    property  :jta_transaction_timeout
+    property  :jta_max_transactions
+    property  :jpa_default_provider
+    property  :security_crossdomain
+    property  :log_file_min_size
+    property  :log_filename
+    property  :log_number_of_files_limited
+    property  :log_filecount
+    property  :log_rotationtype
+    property  :log_rotate_logon_startup
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :domain_name) do 
+    #   /^((.*\/)?(.*)?)$/
+    # end
 
     def self.title_patterns
       # possible values for /^((.*\/)?(.*)?)$/
@@ -63,7 +79,7 @@ module Puppet
           [
             [ :name        , name     ],
             [ :domain      , optional ],
-            [ :domain_name , identity ]
+            [ :weblogic_domain_name , identity ]
           ]
         ],
         [
@@ -74,20 +90,6 @@ module Puppet
         ]
       ]
     end
-
-    parameter :domain
-    parameter :name
-    parameter :domain_name
-    property  :jta_transaction_timeout
-    property  :jta_max_transactions
-    property  :jpa_default_provider
-    property  :security_crossdomain
-    property  :log_file_min_size
-    property  :log_filename
-    property  :log_number_of_files_limited
-    property  :log_filecount
-    property  :log_rotationtype
-    property  :log_rotate_logon_startup
 
   end
 end

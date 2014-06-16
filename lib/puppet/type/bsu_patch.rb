@@ -5,7 +5,7 @@ module Puppet
     newproperty(:ensure) do
       desc "Whether a patch should be applied."
 
-      newvalue(:present, :event => :bsu_installed, :invalidate_refreshes => true) do
+      newvalue(:present, :event => :bsu_installed) do
         provider.present
       end
 

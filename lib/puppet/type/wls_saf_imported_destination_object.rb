@@ -36,6 +36,23 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_saf_imported_destination_object/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :jmsmodule
+    parameter :imported_destination
+    parameter :object_name
+    property  :object_type
+    property  :timetolivedefault
+    property  :usetimetolivedefault
+    property  :unitoforderrouting
+    property  :remotejndiname
+    property  :localjndiname
+    property  :nonpersistentqos
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :imported_destination, :object_name ) do 
+    #   /^((.*\/)?(.*):(.*):(.*)?)$/
+    # end
+
     def self.title_patterns
       # possible values for /^((.*\/)?(.*):(.*)?)$/
       # default/server1:channel1 with this as regex outcome 
@@ -76,19 +93,6 @@ module Puppet
         ]
       ]
     end
-
-    parameter :domain
-    parameter :name
-    parameter :jmsmodule
-    parameter :imported_destination
-    parameter :object_name
-    property  :object_type
-    property  :timetolivedefault
-    property  :usetimetolivedefault
-    property  :unitoforderrouting
-    property  :remotejndiname
-    property  :localjndiname
-    property  :nonpersistentqos
 
   end
 end

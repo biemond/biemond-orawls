@@ -37,6 +37,34 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_server/destroy.py.erb', binding)
     end
 
+    parameter :domain
+    parameter :name
+    parameter :server_name
+
+    parameter :custom_identity_keystore_passphrase
+    parameter :custom_identity_privatekey_passphrase
+    parameter :trust_keystore_passphrase
+
+    property  :custom_identity
+
+    property  :trust_keystore_file
+    property  :custom_identity_keystore_filename
+    property  :custom_identity_alias
+
+    property  :ssllistenport
+    property  :sslenabled
+    property  :listenaddress
+    property  :listenport
+    property  :machine
+    property  :classpath
+    property  :arguments
+    property  :logfilename
+    property  :sslhostnameverificationignored
+    property  :jsseenabled
+
+    # map_title_to_attributes(:name, [:domain, parse_domain_title], :server_name) do 
+    #    /^((.*\/)?(.*)?)$/
+    # end
     def self.title_patterns
       # possible values for /^((.*\/)?(.*)?)$/
       # default/testuser1 with this as regex outcome 
@@ -75,31 +103,5 @@ module Puppet
         ]
       ]
     end
-
-    parameter :domain
-    parameter :name
-    parameter :server_name
-
-    parameter :custom_identity_keystore_passphrase
-    parameter :custom_identity_privatekey_passphrase
-    parameter :trust_keystore_passphrase
-
-    property  :custom_identity
-
-    property  :trust_keystore_file
-    property  :custom_identity_keystore_filename
-    property  :custom_identity_alias
-
-    property  :ssllistenport
-    property  :sslenabled
-    property  :listenaddress
-    property  :listenport
-    property  :machine
-    property  :classpath
-    property  :arguments
-    property  :logfilename
-    property  :sslhostnameverificationignored
-    property  :jsseenabled
-
   end
 end

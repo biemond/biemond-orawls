@@ -1,6 +1,7 @@
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -8,6 +9,7 @@ module Puppet
   newtype(:wls_saf_imported_destination_object) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage a SAF imported destinations object in a JMS Module of an WebLogic domain."
 
@@ -49,7 +51,7 @@ module Puppet
     property  :localjndiname
     property  :nonpersistentqos
 
-    map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :imported_destination, :object_name ) do 
+    add_title_attributes( :jmsmodule, :imported_destination, :object_name ) do 
       /^((.*\/)?(.*):(.*):(.*)?)$/
     end
 

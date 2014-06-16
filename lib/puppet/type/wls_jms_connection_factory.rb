@@ -1,6 +1,7 @@
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -8,6 +9,7 @@ module Puppet
   newtype(:wls_jms_connection_factory) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage a CF in a JMS Module of an WebLogic domain."
 
@@ -46,7 +48,7 @@ module Puppet
     property  :transactiontimeout
     property  :xaenabled
 
-    map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :connection_factory_name) do 
+    add_title_attributes( :jmsmodule, :connection_factory_name) do 
       /^((.*\/)?(.*):(.*)?)$/
     end
 

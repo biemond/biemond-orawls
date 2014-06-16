@@ -1,6 +1,7 @@
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -8,6 +9,7 @@ module Puppet
   newtype(:wls_saf_error_handler) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage a SAF Error Handler in a JMS Module of an WebLogic domain."
 
@@ -44,7 +46,7 @@ module Puppet
     property  :logformat
     property  :policy
 
-    map_title_to_attributes(:name, [:domain, parse_domain_title], :jmsmodule, :error_handler_name ) do 
+    add_title_attributes( :jmsmodule, :error_handler_name ) do 
       /^((.*\/)?(.*):(.*)?)$/
     end
 

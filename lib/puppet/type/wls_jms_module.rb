@@ -1,6 +1,7 @@
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -8,6 +9,7 @@ module Puppet
   newtype(:wls_jms_module) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage a JMS module in an WebLogic domain."
 
@@ -42,7 +44,7 @@ module Puppet
     property  :target
     property  :targettype
 
-    map_title_to_attributes(:name, [:domain, parse_domain_title], :jms_module_name) do 
+    add_title_attributes( :jms_module_name) do 
       /^((.*\/)?(.*)?)$/
     end
 

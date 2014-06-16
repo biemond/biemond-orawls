@@ -2,6 +2,7 @@ require 'pathname'
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -9,13 +10,14 @@ module Puppet
   newtype(:wls_user) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage user in an WebLogic Secuirty Realm."
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name} "
       environment = { "action"=>"index","type"=>"wls_user"}
@@ -45,7 +47,7 @@ module Puppet
     property  :authenticationprovider
     property  :description
 
-    map_title_to_attributes(:name, [:domain, parse_domain_title], :user_name) do 
+    add_title_attributes(:user_name) do
       /^((.*\/)?(.*)?)$/
     end
 

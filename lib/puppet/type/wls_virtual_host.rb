@@ -2,6 +2,7 @@ require 'pathname'
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -9,6 +10,7 @@ module Puppet
   newtype(:wls_virtual_host) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage virtual host in an WebLogic domain."
 
@@ -45,46 +47,9 @@ module Puppet
     property  :targettype
     property  :virtual_host_names
 
-    # map_title_to_attributes(:name, [:domain, parse_domain_title], :virtual_host_name) do 
-    #   /^((.*\/)?(.*)?)$/
-    # end
-    def self.title_patterns
-      # possible values for /^((.*\/)?(.*):(.*)?)$/
-      # default/server1:channel1 with this as regex outcome 
-      #    default/server1:channel1  default/ server1 channel1
-      # server1:channel1 with this as regex outcome
-      #    server1  nil  server1 channel1
-      identity  = lambda {|x| x}
-      name      = lambda {|x| 
-          if x.include? "/"
-            x            # it contains a domain
-          else
-            'default/'+x # add the default domain
-          end
-        }
-      optional  = lambda{ |x| 
-          if x.nil?
-            'default' # when not found use default
-          else
-            x[0..-2]  # remove the last char / from domain name
-          end
-        }
-      [
-        [
-          /^((.*\/)?(.*)?)$/,
-          [
-            [ :name             , name     ],
-            [ :domain           , optional ],
-            [ :virtual_host_name, identity ]
-          ]
-        ],
-        [
-          /^([^=]+)$/,
-          [
-            [ :name, identity ]
-          ]
-        ]
-      ]
+    add_title_attributes( :virtual_host_name) do 
+      /^((.*\/)?(.*)?)$/
     end
+
   end
 end

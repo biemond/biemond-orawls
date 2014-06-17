@@ -4,19 +4,19 @@ real_domain='<%= domain %>'
 print "modify domain"
 
 name                        = '<%= weblogic_domain_name %>'
-jta_transaction_timeout     = <%= jta_transaction_timeout %>
-jta_max_transactions        = <%= jta_max_transactions %>
+jta_transaction_timeout     = '<%= jta_transaction_timeout %>'
+jta_max_transactions        = '<%= jta_max_transactions %>'
 jpa_default_provider        = '<%= jpa_default_provider %>'
-security_crossdomain        = <%= security_crossdomain %>
-log_file_min_size           = <%= log_file_min_size %>
-log_filecount               = <%= log_filecount %>
-log_rotate_logon_startup    = <%= log_rotate_logon_startup %>
+security_crossdomain        = '<%= security_crossdomain %>'
+log_file_min_size           = '<%= log_file_min_size %>'
+log_filecount               = '<%= log_filecount %>'
+log_rotate_logon_startup    = '<%= log_rotate_logon_startup %>'
 log_filename                = '<%= log_filename %>'
 log_rotationtype            = '<%= log_rotationtype %>'
-log_number_of_files_limited = <%= log_number_of_files_limited %>
+log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 
 def formatBoolean(value):
-  if value == 1:
+  if value == '1':
     return true
   else:
     return false    

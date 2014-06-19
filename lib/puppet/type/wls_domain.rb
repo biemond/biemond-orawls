@@ -38,7 +38,7 @@ module Puppet
     end
 
     on_notify do 
-      Puppet.info "restarting the admin server"
+      Puppet.info "this probably requires a restart of the admin server"
       # TODO implement restarting the domain server
     end
 
@@ -56,47 +56,9 @@ module Puppet
     property  :log_rotationtype
     property  :log_rotate_logon_startup
 
-    # map_title_to_attributes(:name, [:domain, parse_domain_title], :domain_name) do 
-    #   /^((.*\/)?(.*)?)$/
-    # end
 
-    def self.title_patterns
-      # possible values for /^((.*\/)?(.*)?)$/
-      # default/testuser1 with this as regex outcome 
-      #    default/testuser1 default/ testuser1
-      # testuser1 with this as regex outcome
-      #    testuser1  nil  testuser1
-      identity  = lambda {|x| x}
-      name      = lambda {|x| 
-          if x.include? "/"
-            x            # it contains a domain
-          else
-            'default/'+x # add the default domain
-          end
-        }
-      optional  = lambda{ |x| 
-          if x.nil?
-            'default' # when not found use default
-          else
-            x[0..-2]  # remove the last char / from domain name
-          end
-        }
-      [
-        [
-          /^((.*\/)?(.*)?)$/,
-          [
-            [ :name        , name     ],
-            [ :domain      , optional ],
-            [ :weblogic_domain_name , identity ]
-          ]
-        ],
-        [
-          /^([^=]+)$/,
-          [
-            [ :name, identity ]
-          ]
-        ]
-      ]
+    add_title_attributes( :weblogic_domain_name) do 
+      /^((.*\/)?(.*)?)$/
     end
 
   end

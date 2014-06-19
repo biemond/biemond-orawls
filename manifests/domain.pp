@@ -4,13 +4,13 @@
 ##
 define orawls::domain (
   $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'         , undef), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir                   = hiera('wls_middleware_home_dir'       , undef), # /opt/oracle/middleware11gR1
-  $jdk_home_dir                          = hiera('wls_jdk_home_dir'              , undef), # /usr/java/jdk1.7.0_45
+  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm
-  $domain_name                           = hiera('domain_name'                   , undef),
+  $domain_template                       = hiera('domain_template'               , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm|oud
+  $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,
   $adminserver_name                      = hiera('domain_adminserver'            , "AdminServer"),
   $adminserver_address                   = hiera('domain_adminserver_address'    , undef),
@@ -19,12 +19,12 @@ define orawls::domain (
   $nodemanager_address                   = undef,
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
   $weblogic_user                         = hiera('wls_weblogic_user'             , "weblogic"),
-  $weblogic_password                     = hiera('domain_wls_password'           , undef),
+  $weblogic_password                     = hiera('domain_wls_password'),
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
   $webtier_enabled                       = false,
-  $os_user                               = hiera('wls_os_user'                   , undef), # oracle
-  $os_group                              = hiera('wls_os_group'                  , undef), # dba
-  $download_dir                          = hiera('wls_download_dir'              , undef), # /data/install
+  $os_user                               = hiera('wls_os_user'), # oracle
+  $os_group                              = hiera('wls_os_group'), # dba
+  $download_dir                          = hiera('wls_download_dir'), # /data/install
   $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
   $log_output                            = false, # true|false
   $repository_database_url               = hiera('repository_database_url'       , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
@@ -79,7 +79,7 @@ define orawls::domain (
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.11.1.1_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.wsmpm_template_11.1.1.jar"
 
-    } elsif $version == 1121 or $version == 1122 {
+    } elsif $version == 1112 {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"
       $templateWS        = "${weblogic_home_dir}/common/templates/applications/wls_webservice.jar"
 
@@ -90,6 +90,8 @@ define orawls::domain (
 
       $templateOIM       = "${middleware_home_dir}/Oracle_IDM1/common/templates/applications/oracle.oim_11.1.2.0.0_template.jar"
       $templateOAM       = "${middleware_home_dir}/Oracle_IDM1/common/templates/applications/oracle.oam_ds_11.1.2.0.0_template.jar"
+
+      $templateOUD       = "${middleware_home_dir}/Oracle_OUD1/common/templates/applications/oracle.odsm_11.1.1.5.0_template.jar"
 
     } elsif $version == 1212 {
       $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
@@ -166,6 +168,10 @@ define orawls::domain (
     } elsif $domain_template == 'oim' {
       $templateFile  = "orawls/domains/domain_oim.py.erb"
       $wlstPath      = "${middleware_home_dir}/Oracle_IDM1/common/bin"
+
+    } elsif $domain_template == 'oud' {
+      $templateFile  = "orawls/domains/domain_oud.py.erb"
+      $wlstPath      = "${weblogic_home_dir}/common/bin"
 
     } elsif $domain_template == 'wc' {
       $templateFile  = "orawls/domains/domain_wc.py.erb"
@@ -354,10 +360,28 @@ define orawls::domain (
     }
     if ($domain_template == 'oim') {
 
+      file { "${download_dir}/${title}psa_opss_upgrade.rsp":
+        ensure  => present,
+        content => template("orawls/oim/psa_opss_upgrade.rsp.erb"),
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+        backup  => false,
+      }
+
+      exec { "exec PSA OPSS store upgrade ${domain_name} ${title}":
+        command     => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
+        require     => [Exec["execwlst ${domain_name} ${title}"],File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
+        timeout     => 0,
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+      }
+
       exec { "execwlst create OPSS store ${domain_name} ${title}":
         command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m create -c IAM -p ${repository_password}",
         environment => ["JAVA_HOME=${jdk_home_dir}"],
-        require     => Exec["execwlst ${domain_name} ${title}"],
+        require     => [Exec["execwlst ${domain_name} ${title}"],Exec["exec PSA OPSS store upgrade ${domain_name} ${title}"],],
         timeout     => 0,
         path        => $exec_path,
         user        => $os_user,

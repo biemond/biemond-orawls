@@ -4,10 +4,10 @@
 define orawls::utils::rcu(  
   $fmw_product                 = 'adf',
   $oracle_fmw_product_home_dir = undef,
-  $jdk_home_dir                = hiera('wls_jdk_home_dir' , undef),
-  $os_user                     = hiera('wls_os_user'      , undef), # oracle
-  $os_group                    = hiera('wls_os_group'     , undef), # dba
-  $download_dir                = hiera('wls_download_dir' , undef), # /data/install
+  $jdk_home_dir                = hiera('wls_jdk_home_dir'),
+  $os_user                     = hiera('wls_os_user'),      # oracle
+  $os_group                    = hiera('wls_os_group'),     # dba
+  $download_dir                = hiera('wls_download_dir'), # /data/install
   $rcu_action                  = 'create',
   $rcu_database_url            = undef,   #192.168.50.5:1521:XE
   $rcu_prefix                  = undef,

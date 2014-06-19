@@ -5,7 +5,7 @@ module Puppet
     newproperty(:ensure) do
       desc "Whether a Repository should be created."
 
-      newvalue(:present, :event => :rcu_installed, :invalidate_refreshes => true) do
+      newvalue(:present, :event => :rcu_installed) do
         provider.present
       end
 

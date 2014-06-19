@@ -5,17 +5,17 @@
 ##
 define orawls::fmw (
   $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'     , undef), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'   , undef), # /opt/oracle/middleware11gR1
-  $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'  , undef), # /opt/oracle
+  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'), # /opt/oracle
   $oracle_home_dir            = undef,                                      # /opt/oracle/middleware/Oracle_SOA
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'          , undef), # /usr/java/jdk1.7.0_45
-  $fmw_product                = undef,                                      # adf|soa|osb|wcc|wc|oim|web
+  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
+  $fmw_product                = undef,                                      # adf|soa|osb|wcc|wc|oim|web|webgate|oud
   $fmw_file1                  = undef,
   $fmw_file2                  = undef,
-  $os_user                    = hiera('wls_os_user'               , undef), # oracle
-  $os_group                   = hiera('wls_os_group'              , undef), # dba
-  $download_dir               = hiera('wls_download_dir'          , undef), # /data/install
+  $os_user                    = hiera('wls_os_user'), # oracle
+  $os_group                   = hiera('wls_os_group'), # dba
+  $download_dir               = hiera('wls_download_dir'), # /data/install
   $source                     = hiera('wls_source'                , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file                = true,                                       # true|false
   $log_output                 = false,                                      # true|false
@@ -138,7 +138,7 @@ define orawls::fmw (
       if $version == 1212 { 
         $oracleHome = "${middleware_home_dir}/ohs"
       } else {
-        $oracleHome = "${middleware_home_dir}/WT1"
+        $oracleHome = "${middleware_home_dir}/Oracle_WT1"
       }  
     }
     else {
@@ -146,8 +146,34 @@ define orawls::fmw (
     }
     $total_files = 1
 
+  } elsif ( $fmw_product == "webgate" ) {
+
+    $fmw_silent_response_file = "orawls/fmw_webgate.rsp.erb"
+    $createFile1              = "${download_dir}/${fmw_product}/Disk1"
+
+    if ($oracle_home_dir == undef) {
+      $oracleHome = "${middleware_home_dir}/Oracle_OAMWebGate1"
+    }
+    else {
+      $oracleHome = $oracle_home_dir
+    }
+    $total_files = 1
+
+  } elsif ( $fmw_product == "oud" ) {
+
+    $fmw_silent_response_file = "orawls/fmw_silent_oud.rsp.erb"
+    $createFile1              = "${download_dir}/${fmw_product}/Disk1"
+
+    if ($oracle_home_dir == undef) {
+      $oracleHome = "${middleware_home_dir}/Oracle_OUD1"
+    }
+    else {
+      $oracleHome = $oracle_home_dir
+    }
+    $total_files = 1
+
   } else {
-    fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc|web')
+    fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc|web|webgate|oud')
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons
@@ -317,6 +343,47 @@ define orawls::fmw (
                         Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
                         Exec["extract ${fmw_file1}"],],
       }
+
+      ## fix EditHttpConf in OHS Webgate
+      if ( $version == 1112 and $fmw_product == "webgate" ) {
+        exec { "install ${fmw_product} ${title} EditHttpConf1":
+          command     => "unzip -o -j '${download_dir}/${fmw_product}/Disk1/stage/Components/oracle.as.oam.webgate.ohs_linux64/11.1.2.2.0/1/DataFiles/filegroup1.jar' 'webgate/ohs/lib/libxmlengine.so' -d '${oracleHome}/webgate/ohs/lib/'",
+          timeout     => 0,
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => Exec["install ${fmw_product} ${title}"],
+        }
+        exec { "install ${fmw_product} ${title} EditHttpConf2":
+          command     => "unzip -o -j '${download_dir}/${fmw_product}/Disk1/stage/Components/oracle.as.oam.webgate.ohs_linux64/11.1.2.2.0/1/DataFiles/filegroup1.jar' 'webgate/ohs/lib/webgate.so' -d '${oracleHome}/webgate/ohs/lib/'",
+          timeout     => 0,
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => Exec["install ${fmw_product} ${title}"],
+        }
+        exec { "install ${fmw_product} ${title} EditHttpConf3":
+          command     => "unzip -o -j '${download_dir}/${fmw_product}/Disk1/stage/Components/oracle.as.oam.webgate.ohs_linux64/11.1.2.2.0/1/DataFiles/filegroup1.jar' 'webgate/ohs/tools/setup/InstallTools/EditHttpConf' -d '${oracleHome}/webgate/ohs/tools/setup/InstallTools/'",
+          timeout     => 0,
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => Exec["install ${fmw_product} ${title}"],
+        }
+        file { "${oracleHome}/webgate/ohs/tools/setup/InstallTools/EditHttpConf":
+          ensure   => file,
+          mode     => '0775',
+          owner    => $os_user,
+          group    => $os_group,
+          backup   => false,
+          require  => Exec["install ${fmw_product} ${title} EditHttpConf3"],
+        }
+
+      }
+
     }  
   }
 }

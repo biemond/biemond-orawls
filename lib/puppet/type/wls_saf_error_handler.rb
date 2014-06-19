@@ -1,6 +1,7 @@
 require 'easy_type'
 require 'utils/wls_access'
 require 'utils/settings'
+require 'utils/title_parser'
 require 'facter'
 
 module Puppet
@@ -8,6 +9,7 @@ module Puppet
   newtype(:wls_saf_error_handler) do
     include EasyType
     include Utils::WlsAccess
+    extend Utils::TitleParser
 
     desc "This resource allows you to manage a SAF Error Handler in a JMS Module of an WebLogic domain."
 
@@ -36,46 +38,6 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_saf_error_handler/destroy.py.erb', binding)
     end
 
-    def self.title_patterns
-      # possible values for /^((.*\/)?(.*):(.*)?)$/
-      # default/server1:channel1 with this as regex outcome 
-      #    default/server1:channel1  default/ server1 channel1
-      # server1:channel1 with this as regex outcome
-      #    server1  nil  server1 channel1
-      identity  = lambda {|x| x}
-      name      = lambda {|x| 
-          if x.include? "/"
-            x            # it contains a domain
-          else
-            'default/'+x # add the default domain
-          end
-        }
-      optional  = lambda{ |x| 
-          if x.nil?
-            'default' # when not found use default
-          else
-            x[0..-2]  # remove the last char / from domain name
-          end
-        }
-      [
-        [
-          /^((.*\/)?(.*):(.*)?)$/,
-          [
-            [ :name                , name     ],
-            [ :domain              , optional ],
-            [ :jmsmodule           , identity ],
-            [ :error_handler_name  , identity ]
-          ]
-        ],
-        [
-          /^([^=]+)$/,
-          [
-            [ :name, identity ]
-          ]
-        ]
-      ]
-    end
-
     parameter :domain
     parameter :name
     parameter :jmsmodule
@@ -83,5 +45,10 @@ module Puppet
     property  :errordestination
     property  :logformat
     property  :policy
+
+    add_title_attributes( :jmsmodule, :error_handler_name ) do 
+      /^((.*\/)?(.*):(.*)?)$/
+    end
+
   end
 end

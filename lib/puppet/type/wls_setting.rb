@@ -20,6 +20,7 @@ module Puppet
     property  :weblogic_user
     property  :connect_url
     property  :weblogic_password
+    property  :post_classpath
 
     def self.configuration
       @configuration
@@ -28,7 +29,7 @@ module Puppet
   private
 
     def self.resources_from_yaml
-      Puppet.info "0 read_from_yaml "
+      Puppet.debug "0 read_from_yaml "
       @configuration = read_from_yaml
       normalize(@configuration)
     end

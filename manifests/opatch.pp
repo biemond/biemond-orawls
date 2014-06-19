@@ -6,13 +6,13 @@
 define orawls::opatch (
   $ensure                 = 'present',  #present|absent
   $oracle_product_home_dir = undef, # /opt/oracle/middleware11gR1
-  $jdk_home_dir            = hiera('wls_jdk_home_dir' , undef), # /usr/java/jdk1.7.0_45
+  $jdk_home_dir            = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $patch_id                = undef,
   $patch_file              = undef,
-  $os_user                 = hiera('wls_os_user'      , undef), # oracle
-  $os_group                = hiera('wls_os_group'     , undef), # dba
-  $download_dir            = hiera('wls_download_dir' , undef), # /data/install
-  $source                  = hiera('wls_source'       , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
+  $os_user                 = hiera('wls_os_user'), # oracle
+  $os_group                = hiera('wls_os_group'), # dba
+  $download_dir            = hiera('wls_download_dir'), # /data/install
+  $source                  = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file             = true,  # true|false
   $log_output              = false, # true|false
 )

@@ -90,38 +90,44 @@ define orawls::resourceadapter(
 
     # download the plan and put it on the right place
     if $adapter_name == 'DbAdapter' {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template("orawls/adapter_plans/Plan_DB.xml.erb"),
-        before  => Exec["exec deployer adapter plan ${title}"],
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template("orawls/adapter_plans/Plan_DB.xml.erb"),
+          before  => Exec["exec deployer adapter plan ${title}"],
+        }
       }
     } elsif $adapter_name == 'JmsAdapter' {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template("orawls/adapter_plans/Plan_JMS.xml.erb"),
-        before  => Exec["exec deployer adapter plan ${title}"],
-      }
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template("orawls/adapter_plans/Plan_JMS.xml.erb"),
+          before  => Exec["exec deployer adapter plan ${title}"],
+        }
+      } 
     } elsif $adapter_name == 'AqAdapter' {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template("orawls/adapter_plans/Plan_AQ.xml.erb"),
-        before  => Exec["exec deployer adapter plan ${title}"],
-      }
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template("orawls/adapter_plans/Plan_AQ.xml.erb"),
+          before  => Exec["exec deployer adapter plan ${title}"],
+        }
+      } 
     } else {
       fail("adapter_name ${adapter_name} is unknown, choose for DbAdapter,JmsAdapter or AqAdapter ")
     }

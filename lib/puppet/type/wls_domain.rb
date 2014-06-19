@@ -17,6 +17,7 @@ module Puppet
 
     set_command(:wlst)
   
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
       environment = { "action"=>"index","type"=>"wls_domain"}
@@ -34,6 +35,11 @@ module Puppet
 
     on_destroy  do | command_builder |
       fail("destroy of a domain is not allowed") 
+    end
+
+    on_notify do 
+      Puppet.info "restarting the admin server"
+      # TODO implement restarting the domain server
     end
 
     parameter :domain

@@ -37,11 +37,6 @@ module Puppet
       fail("destroy of a domain is not allowed") 
     end
 
-    on_notify do 
-      Puppet.info "this probably requires a restart of the admin server"
-      # TODO implement restarting the domain server
-    end
-
     parameter :domain
     parameter :name
     parameter :weblogic_domain_name

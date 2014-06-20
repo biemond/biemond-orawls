@@ -24,6 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
+- 1.0.7 wls_adminserver,wls_managedserver type to start,stop and refresh a managed server ( or subscribe to changes ) 
 - 1.0.6 Readme with links, wls types title cleanup, multiple resource adapter entries fix, wls_domain fix, bsu & opatch also works on < puppet 3.2, hiera vars without an undef default
 - 1.0.5 wls_domain type to modify JTA,Security,Log & JPA Oracle Unified Directory install, domain, instances creation & OUD control
 - 1.0.4 wls_deployment type/provider, post_classpath param on wls_setting, WebTier for 12.1.2 and 11.1.1.7, OIM & OAM 11.1.2.1 & 11.1.2.2 support with OHS OAM Webgate
@@ -93,6 +94,8 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 ensurable -> create,modify,destroy + puppet resource support
 
 - [wls_setting](#wls_setting), set the default wls parameters for the other types and also used by puppet resource
+- [wls_adminserver](#wls_adminserver) control the adminserver or subscribe to changes
+- [wls_managedserver](#wls_managedserver) control the managed server,cluster or subscribe to changes
 - [wls_domain](#wls_domain)
 - [wls_deployment](#wls_deployment)
 - [wls_domain](#wls_domain)
@@ -956,7 +959,7 @@ or with custom identity and custom truststore
 
 
 ###control 
-__orawls::control__ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain
+__orawls::control__ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain, this will call the wls_managedserver and wls_adminserver types
 
     orawls::control{'startWLSAdminServer12c':
       domain_name                => "Wls12c",
@@ -1353,9 +1356,11 @@ required for all the weblogic type/providers
         post_classpath:     "/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar"
       }
 
+
+
 ###wls_domain
 
-it needs wls_setting and when domain is not provided it will use the 'default'. Probably you need to restart the AdminServer
+it needs wls_setting and when domain is not provided it will use the 'default'. Probably you need to restart the AdminServer or subscribe with the wls_adminserver type
 
 or use puppet resource wls_domain
 
@@ -1419,6 +1424,109 @@ in hiera
         log_rotationtype:            'byTime'
         security_crossdomain:        '1'
 
+
+###wls_adminserver
+
+type for adminserver control like start, running, abort and stop.  
+also supports subscribe with refreshonly
+
+
+    wls_adminserver{'Wls1036:AdminServer':
+      ensure                    => 'running',   #running|start|abort|stop 
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => false,
+      custom_trust              => false,
+    }
+
+with JSSE and custom trust
+
+    wls_adminserver{'Wls1036:AdminServer':
+      ensure                    => 'running',   #running|start|abort|stop 
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => hiera('wls_jsse_enabled'),
+      custom_trust              => hiera('wls_custom_trust'),
+      trust_keystore_file       => hiera('wls_trust_keystore_file'),
+      trust_keystore_passphrase => hiera('wls_trust_keystore_passphrase'),
+    }
+
+subscribe to a wls_domain or wls_authenticaton_provider event 
+
+    wls_adminserver{'Wls1036:AdminServer':
+      ensure                    => 'running',   #running|start|abort|stop 
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => hiera('wls_jsse_enabled'),
+      custom_trust              => hiera('wls_custom_trust'),
+      trust_keystore_file       => hiera('wls_trust_keystore_file'),
+      trust_keystore_passphrase => hiera('wls_trust_keystore_passphrase'),
+      refreshonly               => true,
+      subscribe                 => Wls_domain['Wls1036'],
+    }
+
+###wls_managedserver
+
+type for managed server control like start, running, abort and stop a managed server or a cluster.  
+also supports subscribe with refreshonly
+
+
+    wls_managedserver{'Wls1036:JMSServer1':
+      ensure                    => 'running',   #running|start|abort|stop 
+      target                    => 'Server', #Server|Cluster
+      server_name               => 'JMSServer1',
+      domain_name               => hiera('domain_name'),
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      adminserver_address       => hiera('domain_adminserver_address'),
+      adminserver_port          => hiera('domain_adminserver_port'),
+    }
+
+
+subscribe to a wls_domain or wls_authenticaton_provider event 
+
+    wls_managedserver{'Wls1036:JMSServer1':
+      ensure                    => 'running',   #running|start|abort|stop 
+      target                    => 'Server',    #Server|Cluster
+      server_name               => 'JMSServer1',
+      domain_name               => hiera('domain_name'),
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      adminserver_address       => hiera('domain_adminserver_address'),
+      adminserver_port          => hiera('domain_adminserver_port'),
+      refreshonly               => true,
+      subscribe                 => Wls_domain['Wls1036'],
+    }
 
 
 ###wls_deployment
@@ -1575,7 +1683,7 @@ in hiera
 
 ###wls_authentication_provider
 
-it needs wls_setting and when domain is not provided it will use the 'default' and probably needs a reboot
+it needs wls_setting and when domain is not provided it will use the 'default' and probably needs a reboot or subscribe with the wls_adminserver type
 
 only control_flag is a property, the rest are parameters and only used in a create action
 

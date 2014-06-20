@@ -39,12 +39,6 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_authentication_provider/destroy.py.erb', binding)
     end
 
-    on_notify do 
-      Puppet.info "this probably requires a restart of the admin server"
-      # TODO implement restarting the domain server
-    end
-
-
     parameter :domain
     parameter :name
     parameter :authentication_provider_name

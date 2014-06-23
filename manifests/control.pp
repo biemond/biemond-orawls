@@ -38,95 +38,39 @@ define orawls::control (
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
-  
-  case $::kernel {
-    'Linux': {
-      $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.Name=${server}' | /bin/grep ${domain_name}"
-      $nativeLib      = "linux/x86_64"
-      $java_statement = "java"
-    }
-    'SunOS': {
-      $checkCommand   = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.Name=${server}' | /bin/grep ${domain_name}"
-      $nativeLib      = "solaris/x64"
-      $java_statement = "java -d64"
-    }
-    default: {
-      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
-    }    
-  }
-
-  if ( $custom_trust == true ) {
-    $trust_env = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}"
-  } else {
-    $trust_env = ""
-  }
-
-  if $jsse_enabled == true {
-    $javaCommand = "${java_statement} ${trust_env} -Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
-  } else {
-    $javaCommand = "${java_statement} ${trust_env} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
-  }
-
-  $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
-
-  Exec {
-    logoutput => $log_output,
-  }
 
   if $server_type == 'admin' {
-    if $action == 'start' {
-      $script = 'startWlsServer2.py'
-    } elsif $action == 'stop' {
-      $script = 'stopWlsServer2.py'
-    } else {
-      fail("Unknow action")
+    wls_adminserver{"${title}:AdminServer":
+      ensure                    => $action,   #running|start|abort|stop 
+      server_name               => $server,
+      domain_name               => $domain_name,
+      domain_path               => $domain_dir,
+      os_user                   => $os_user,
+      weblogic_home_dir         => $weblogic_home_dir,
+      weblogic_user             => $weblogic_user,
+      weblogic_password         => $weblogic_password,
+      jdk_home_dir              => $jdk_home_dir,
+      nodemanager_address       => $adminserver_address,
+      nodemanager_port          => $nodemanager_port,
+      jsse_enabled              => $jsse_enabled,
+      custom_trust              => $custom_trust,
+      trust_keystore_file       => $trust_keystore_file,
+      trust_keystore_passphrase => $trust_keystore_passphrase,
     }
-  } else {
-    if $action == 'start' {
-      $script = 'startWlsManagedServer2.py'
-    } elsif $action == 'stop' {
-      $script = 'stopWlsManagedServer2.py'
-    } else {
-      fail("Unknow action")
-    }
-  }
-
-  # the py script used by the wlst
-  file { "${download_dir}/${title}${script}":
-    ensure  => present,
-    path    => "${download_dir}/${title}${script}",
-    content => template("orawls/wlst/${script}.erb"),
-    backup  => false,
-    replace => true,
-    mode    => '0775',
-    owner   => $os_user,
-    group   => $os_group,
-  }
-
-  if $action == 'start' {
-    exec { "execwlst ${title}${script} ":
-      command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", 
-                      "JAVA_HOME=${jdk_home_dir}"],
-      unless      => $checkCommand,
-      require     => File["${download_dir}/${title}${script}"],
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      timeout     => 0,
-    }
-  } elsif $action == 'stop' {
-    exec { "execwlst ${title}${script} ":
-      command     => "${javaCommand} ${download_dir}/${title}${script} ${weblogic_password}",
-      environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-                      "JAVA_HOME=${jdk_home_dir}"],
-      onlyif      => $checkCommand,
-      require     => File["${download_dir}/${title}${script}"],
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-      timeout     => 0,
+  }  
+  else { 
+    wls_managedserver{"${title}:Server":
+      ensure                    => $action,   #running|start|abort|stop 
+      target                    => $target,
+      server_name               => $server,
+      domain_name               => $domain_name,
+      os_user                   => $os_user,
+      weblogic_home_dir         => $weblogic_home_dir,
+      weblogic_user             => $weblogic_user,
+      weblogic_password         => $weblogic_password,
+      jdk_home_dir              => $jdk_home_dir,
+      adminserver_address       => $adminserver_address,
+      adminserver_port          => $nodemanager_port,
     }
   }
-
 }

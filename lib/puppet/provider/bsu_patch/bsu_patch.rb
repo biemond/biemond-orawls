@@ -25,10 +25,10 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     else 
       command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -patch_download_dir="+patch_download_dir+" -verbose"
     end 
-    environment = ["USER="+user, "HOME=/home/"+user, "LOGNAME="+user]
+    #environment = ["USER="+user, "HOME=/home/"+user, "LOGNAME="+user]
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
-
-    output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
+    output = `su - #{user} -c 'export USER="#{user}";export LOGNAME="#{user}";#{command}'`
+    #output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
     Puppet.debug "bsu_patch result: #{output}"
     
     # Check for 'Result: Success' else raise
@@ -63,7 +63,8 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     end 
 
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
-    output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
+    output = `su - #{user} -c '#{command}'`
+    # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
 
     output.each_line do |li|
       unless li.nil?

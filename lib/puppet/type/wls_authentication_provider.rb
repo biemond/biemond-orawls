@@ -39,7 +39,6 @@ module Puppet
       template('puppet:///modules/orawls/providers/wls_authentication_provider/destroy.py.erb', binding)
     end
 
-
     parameter :domain
     parameter :name
     parameter :authentication_provider_name

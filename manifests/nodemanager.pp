@@ -95,13 +95,19 @@ define orawls::nodemanager (
   Exec {
     logoutput => $log_output,
   }
+  
+  if $custom_identity == true {
+    $replaceNodemanagerProperties = false
+  } else {
+    $replaceNodemanagerProperties = true
+  }
 
   # nodemanager is part of the domain creation
   if ( $version == 1111 or $version == 1036 or $version == 1211 ){
     file { "nodemanager.properties ux ${title}":
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
-      replace => true,
+      replace => $replaceNodemanagerProperties,
       content => template("orawls/nodemgr/nodemanager.properties.erb"),
       owner   => $os_user,
       group   => $os_group,

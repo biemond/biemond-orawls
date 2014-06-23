@@ -1792,6 +1792,18 @@ or use puppet resource wls_server
         ssllistenport                  => '7002',
       }
 
+      wls_server { 'domain3/wlsServer3':
+        ensure                         => 'present',
+        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
+        listenaddress                  => '10.10.10.100',
+        listenport                     => '8002',
+        logfilename                    => '/data/logs/wlsServer3.log',
+        machine                        => 'Node1',
+        sslenabled                     => '0',
+        sslhostnameverificationignored => '1',
+        ssllistenport                  => '7002',
+      }
+
 in hiera
 
     server_instances:
@@ -1808,7 +1820,33 @@ in hiera
          sslhostnameverificationignored: '1'
       'domain2/wlsServer1':
          ensure:                         'present'
-         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+      # You can also pass server arguments as an array, as it makes it easier to use references in YAML.
+         arguments:
+          # Here we setup the reference
+           - &server_vm_args_permsize '-XX:PermSize=256m'
+           - '-XX:MaxPermSize=256m'
+           - '-Xms752m'
+           - '-Xmx752m'
+           - '-Dweblogic.Stdout=/data/logs/wlsServer1.out'
+           - '-Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+         listenaddress:                  '10.10.10.100'
+         listenport:                     '8001'
+         logfilename:                    '/data/logs/wlsServer1.log'
+         machine:                        'Node1'
+         jsseenabled:                    '0'
+         sslenabled:                     '1'
+         ssllistenport:                  '8201'
+         sslhostnameverificationignored: '1'
+      'domain3/wlsServer1':
+         ensure:                         'present'
+         arguments:
+          # And here we reuse it!
+           - *server_vm_args_permsize
+           - '-XX:MaxPermSize=256m'
+           - '-Xms752m'
+           - '-Xmx752m'
+           - '-Dweblogic.Stdout=/data/logs/wlsServer1.out'
+           - '-Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
          listenaddress:                  '10.10.10.100'
          listenport:                     '8001'
          logfilename:                    '/data/logs/wlsServer1.log'

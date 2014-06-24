@@ -24,7 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.8 wls_server pass server arguments as an array, as it makes it easier to use references in YAML
+- 1.0.8 wls_server pass server arguments as an array, as it makes it easier to use references in YAML, Added log file options to wls_server 
 - 1.0.7 wls_adminserver,wls_managedserver type to start,stop and refresh a managed server ( or subscribe to changes and do an autorestart ), bsu,opatch, resource adapter & a small nodemanager fix 
 - 1.0.6 Readme with links, wls types title cleanup, multiple resource adapter entries fix, wls_domain fix, bsu & opatch also works on < puppet 3.2, hiera vars without an undef default
 - 1.0.5 wls_domain type to modify JTA,Security,Log & JPA Oracle Unified Directory install, domain, instances creation & OUD control
@@ -1769,41 +1769,63 @@ it needs wls_setting and when domain is not provided it will use the 'default' a
 
 or use puppet resource wls_server
 
-      wls_server { 'wlsServer3':
-        ensure                         => 'present',
-        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
-        listenaddress                  => '10.10.10.100',
-        listenport                     => '8002',
-        logfilename                    => '/data/logs/wlsServer3.log',
-        machine                        => 'Node1',
-        sslenabled                     => '0',
-        sslhostnameverificationignored => '1',
-        ssllistenport                  => '7002',
-      }
+    wls_server { 'wlsServer1':
+      ensure                            => 'present',
+      arguments                         => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out',
+      jsseenabled                       => '0',
+      listenaddress                     => '10.10.10.100',
+      listenport                        => '8001',
+      machine                           => 'Node1',
+      sslenabled                        => '0',
+    }
 
-      wls_server { 'domain2/wlsServer3':
-        ensure                         => 'present',
-        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
-        listenaddress                  => '10.10.10.100',
-        listenport                     => '8002',
-        logfilename                    => '/data/logs/wlsServer3.log',
-        machine                        => 'Node1',
-        sslenabled                     => '0',
-        sslhostnameverificationignored => '1',
-        ssllistenport                  => '7002',
-      }
+or with log parameters and ssl
 
-      wls_server { 'domain3/wlsServer3':
-        ensure                         => 'present',
-        arguments                      => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out',
-        listenaddress                  => '10.10.10.100',
-        listenport                     => '8002',
-        logfilename                    => '/data/logs/wlsServer3.log',
-        machine                        => 'Node1',
-        sslenabled                     => '0',
-        sslhostnameverificationignored => '1',
-        ssllistenport                  => '7002',
-      }
+    wls_server { 'default/wlsServer2':
+      ensure                            => 'present',
+      arguments                         => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer2.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer2_err.out',
+      jsseenabled                       => '0',
+      listenaddress                     => '10.10.10.200',
+      listenport                        => '8001',
+      log_file_min_size                 => '2000',
+      log_filecount                     => '10',
+      log_number_of_files_limited       => '1',
+      log_rotate_logon_startup          => '1',
+      log_rotationtype                  => 'bySize',
+      logfilename                       => '/var/log/weblogic/wlsServer2.log',
+      machine                           => 'Node2',
+      sslenabled                        => '1',
+      sslhostnameverificationignored    => '1',
+      ssllistenport                     => '8201',
+    }
+
+or with JSSE with custom identity and trust
+
+    wls_server { 'domain2/wlsServer2':
+      ensure                                => 'present',
+      arguments                             => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer2.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer2_err.out',
+      listenaddress                         => '10.10.10.200',
+      listenport                            => '8001',
+      log_file_min_size                     => '2000',
+      log_filecount                         => '10',
+      log_number_of_files_limited           => '1',
+      log_rotate_logon_startup              => '1',
+      log_rotationtype                      => 'bySize',
+      logfilename                           => '/var/log/weblogic/wlsServer2.log',
+      machine                               => 'Node2',
+      sslenabled                            => '1',
+      sslhostnameverificationignored        => '1',
+      ssllistenport                         => '8201',
+      jsseenabled                           => '1',
+      custom_identity                       => '1',
+      custom_identity_alias                 => 'node2',
+      custom_identity_keystore_filename     => '/vagrant/identity_node2.jks',
+      custom_identity_keystore_passphrase   => 'welcome',
+      custom_identity_privatekey_passphrase => 'welcome',
+      trust_keystore_file                   => '/vagrant/truststore.jks',
+      trust_keystore_passphrase             => 'welcome',
+    }
+
 
 in hiera
 
@@ -1819,6 +1841,27 @@ in hiera
          jsseenabled:                    '0'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
+
+or with log parameters
+
+    server_instances:
+      'wlsServer1':
+        ensure:                         'present'
+        arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
+        listenaddress:                         '10.10.10.100'
+        listenport:                            '8001'
+        logfilename:                           '/var/log/weblogic/wlsServer1.log'
+        log_file_min_size:                     '2000'
+        log_filecount:                         '10'
+        log_number_of_files_limited:           '1'
+        log_rotate_logon_startup:              '1'
+        log_rotationtype:                      'bySize'
+        machine:                               'Node1'
+        sslenabled:                            '1'
+        ssllistenport:                         '8201'
+        sslhostnameverificationignored:        '1'
+        jsseenabled:                           '1' 
+
 
 You can also pass server arguments as an array, as it makes it easier to use references in YAML.
 

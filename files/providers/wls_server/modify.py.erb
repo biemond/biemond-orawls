@@ -7,7 +7,15 @@ name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
 arguments     = '''<%= arguments %>'''
 machineName   = '<%= machine %>'
-logFilename   = '<%= logfilename %>'
+
+logFilename                 = '<%= logfilename %>'
+log_file_min_size           = '<%= log_file_min_size %>'
+log_filecount               = '<%= log_filecount %>'
+log_rotate_logon_startup    = '<%= log_rotate_logon_startup %>'
+log_rotationtype            = '<%= log_rotationtype %>'
+log_number_of_files_limited = '<%= log_number_of_files_limited %>'
+
+
 listenAddress = '<%= listenaddress %>'
 listenPort    = <%= listenport %>
 sslEnabled    = <%= sslenabled %>
@@ -35,6 +43,12 @@ def formatBoolean(value):
         return 'True'
     else:
         return 'False'    
+
+def formatBoolean2(value):
+  if value == '1':
+    return true
+  else:
+    return false    
         
 edit()
 startEdit()
@@ -74,7 +88,24 @@ try:
 
     set('ListenPort', sslListenPort)
     
-    set('/Servers/'+name+'/Log/'+name+'/FileName', format(logFilename))
+    cd('/Servers/'+name+'/Log/'+name)
+    if logFilename:
+      set('FileName', logFilename)
+    if log_rotationtype:
+      print "change log 1" +log_rotationtype
+      cmo.setRotationType(log_rotationtype)
+    if log_rotate_logon_startup:
+      print "change log 2 " + str(log_rotate_logon_startup)
+      cmo.setRotateLogOnStartup(formatBoolean2(log_rotate_logon_startup))
+    if log_filecount:
+      print "change log 3" + str(log_filecount)
+      cmo.setFileCount(int(log_filecount))
+    if log_number_of_files_limited:
+      print "change log 4"
+      cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
+    if log_file_min_size:
+      print "change log 6"
+      cmo.setFileMinSize(int(log_file_min_size))
 
     save()
     activate()          

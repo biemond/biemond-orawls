@@ -60,7 +60,14 @@ module Puppet
     property  :machine
     property  :classpath
     property  :arguments
+
     property  :logfilename
+    property  :log_file_min_size
+    property  :log_number_of_files_limited
+    property  :log_filecount
+    property  :log_rotationtype
+    property  :log_rotate_logon_startup
+
     property  :sslhostnameverificationignored
     property  :jsseenabled
 

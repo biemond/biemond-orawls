@@ -44,13 +44,13 @@ module Puppet
     property  :jta_max_transactions
     property  :jpa_default_provider
     property  :security_crossdomain
-    property  :log_file_min_size
+
     property  :log_filename
+    property  :log_file_min_size
     property  :log_number_of_files_limited
     property  :log_filecount
     property  :log_rotationtype
     property  :log_rotate_logon_startup
-
 
     add_title_attributes( :weblogic_domain_name) do 
       /^((.*\/)?(.*)?)$/

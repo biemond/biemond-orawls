@@ -24,6 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
+- 1.0.9 WebLogic 12.1.3 support ( optional with infra ), wls_adminserver type fix when using no custom trust
 - 1.0.8 wls_server pass server arguments as an array, as it makes it easier to use references in YAML, Added log file options to wls_server 
 - 1.0.7 wls_adminserver,wls_managedserver type to start,stop and refresh a managed server ( or subscribe to changes and do an autorestart ), bsu,opatch, resource adapter & a small nodemanager fix 
 - 1.0.6 Readme with links, wls types title cleanup, multiple resource adapter entries fix, wls_domain fix, bsu & opatch also works on < puppet 3.2, hiera vars without an undef default
@@ -48,6 +49,9 @@ https://github.com/biemond/biemond-orawls-vagrant-12.1.2
 WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server)  
 https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra  
 
+WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example  
+https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra  
+
 Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
 https://github.com/biemond/biemond-orawls-vagrant-solaris  
 
@@ -59,16 +63,10 @@ https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
 ###Puppetmaster (vagrant box)
 Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
-- oradb (oracle database 11.2.0.4 )
-- adminwls with nodewls1 & nodewls2 (cluster 10.3.6 with JMS)
-- adminwls2 ( adminserver 10.3.6  with JMS)
-- adminwls3 ( adminserver 12.1.2 )
-- adminwls4 ( adminserver 10.3.6 + osb PS6 + soa suite PS6 ( with bpm & bam ))
-- adminwls5 ( adminserver 10.3.6 + osb PS6 )
 
 ##Orawls WebLogic Features
 
-- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1 & 12.1.2 + FMW infra )
+- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1 & 12.1.2 & 12.1.3 + FMW infra )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
 - [Create a WebLogic domain](#domain)
@@ -132,7 +130,7 @@ ensurable -> create,modify,destroy + puppet resource support
 all templates creates a WebLogic domain, logs the domain creation output 
 
 - domain 'standard'    -> a default WebLogic    
-- domain 'adf'         -> JRF + EM + Coherence (12.1.2) + OWSM (12.1.2) + JAX-WS Advanced + Soap over JMS (12.1.2)   
+- domain 'adf'         -> JRF + EM + Coherence (12.1.2 & 12.1.3) + OWSM (12.1.2 & 12.1.3) + JAX-WS Advanced + Soap over JMS (12.1.2 & 12.1.3)   
 - domain 'osb'         -> OSB + JRF + EM + OWSM 
 - domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM 
 - domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM 
@@ -410,7 +408,7 @@ these settings works for wls_121200.jar when you want to install the 12.1.2 FMW 
 use fmw_infra_121200.jar as filename and set fmw_infra parameter to true  
 
     class{'orawls::weblogic':                             
-      version              => 1212,                       # 1036|1211|1212
+      version              => 1212,                       # 1036|1211|1212|1213
       filename             => 'wls_121200.jar',           # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
       jdk_home_dir         => '/usr/java/jdk1.7.0_45',    
       oracle_base_home_dir => "/opt/oracle",              
@@ -699,7 +697,7 @@ __orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | 
 optional override the default server arguments in the domain.py template with java_arguments parameter  
 
     orawls::domain { 'wlsDomain12c':
-      version                    => 1212,  # 1036|1111|1211|1212
+      version                    => 1212,  # 1036|1111|1211|1212|1213
       weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
       middleware_home_dir        => "/opt/oracle/middleware12c",
       jdk_home_dir               => "/usr/java/jdk1.7.0_45",

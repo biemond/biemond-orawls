@@ -42,6 +42,7 @@ module Puppet
     parameter :domain
     parameter :deployment_name
     parameter :localpath
+    parameter :planpath
     property  :target
     property  :targettype
     property  :deploymenttype

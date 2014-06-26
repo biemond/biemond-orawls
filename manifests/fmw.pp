@@ -129,13 +129,19 @@ define orawls::fmw (
       $fmw_silent_response_file = "orawls/web_http_server_1212.rsp.erb"
       $binFile1                 = "ohs_121200_linux64.bin"
       $createFile1              = "${download_dir}/${fmw_product}/${binFile1}"
+    }
+    elsif $version == 1213 { 
+      $fmw_silent_response_file = "orawls/web_http_server_1213.rsp.erb"
+      $binFile1                 = "ohs_121300_linux64.bin"
+      $createFile1              = "${download_dir}/${fmw_product}/${binFile1}"
+
     } else {
       $fmw_silent_response_file = "orawls/web_http_server.rsp.erb"
       $createFile1              = "${download_dir}/${fmw_product}/Disk1"
     }  
 
     if ($oracle_home_dir == undef) {
-      if $version == 1212 { 
+      if $version == 1212 or $version == 1213 { 
         $oracleHome = "${middleware_home_dir}/ohs"
       } else {
         $oracleHome = "${middleware_home_dir}/Oracle_WT1"
@@ -177,7 +183,7 @@ define orawls::fmw (
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons
-  if $version == 1212 {
+  if $version == 1212 or $version == 1213 {
     $continue = true
   } else {
     $found = orawls_oracle_exists($oracleHome)
@@ -308,7 +314,7 @@ define orawls::fmw (
 
     #notify { "orawls::fmw ${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}": } 
     
-    if $version == 1212 {
+    if $version == 1212 or $version == 1213 {
       exec { "install ${fmw_product} ${title}":
         command     => "${download_dir}/${fmw_product}/${binFile1} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
         environment => "TMP=${temp_directory}",

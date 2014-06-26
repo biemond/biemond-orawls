@@ -108,6 +108,22 @@ define orawls::domain (
       $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.2.jar"
       $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.2.jar"
 
+    } elsif $version == 1213 {
+      $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
+      $templateWS        = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template_12.1.3.jar"
+      $templateJaxWS     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template_12.1.3.jar"
+      $templateSoapJms   = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template_12.1.3.jar"
+      $templateCoherence = "${weblogic_home_dir}/common/templates/wls/wls_coherence_template_12.1.3.jar"
+
+      $templateEM        = "${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template_12.1.3.jar"
+      $templateJRF       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template_12.1.3.jar"
+      $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.12.1.3_template.jar"
+      $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.3.jar"
+
+      $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar"
+      $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.3.jar"
+
+
     } else {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"
       $templateWS        = "${weblogic_home_dir}/common/templates/applications/wls_webservice.jar"
@@ -314,7 +330,7 @@ define orawls::domain (
       File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
-    if ( $version == "1212" and $domain_template == 'adf' ) {
+    if (( $version == 1212 or  $version == 1213 ) and $domain_template == 'adf' ) {
       # only works for a 12c middleware home
       # creates RCU for ADF
       if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ) 
@@ -464,12 +480,12 @@ define orawls::domain (
     $nodeMgrHome = "${domain_dir}/nodemanager"
 
     # set our 12.1.2 nodemanager properties
-    if ($version == 1212) {
-      file { "nodemanager.properties ux 1212 ${title}":
+    if ($version == 1212 or $version == 1213) {
+      file { "nodemanager.properties ux ${version} ${title}":
         ensure  => present,
         path    => "${nodeMgrHome}/nodemanager.properties",
         replace => true,
-        content => template("orawls/nodemgr/nodemanager.properties_1212.erb"),
+        content => template("orawls/nodemgr/nodemanager.properties_${version}.erb"),
         require => Exec["execwlst ${domain_name} ${title}"],
         mode    => '0775',
         owner   => $os_user,

@@ -32,7 +32,7 @@ define orawls::utils::webtier(
 
   $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
-  if $version == 1212 {
+  if $version == 1212 or $version == 1213{
     file { "${download_dir}/${title}_createWebtier.py":
       ensure  => present,
       content => template("orawls/wlst/wlstexec/fmw/createWebtier.py.erb"),

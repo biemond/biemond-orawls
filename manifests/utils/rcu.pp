@@ -1,5 +1,5 @@
 # == Class: orawls::utils::rcu
-#    rcu for adf 12.1.2
+#    rcu for adf 12.1.2 & 12.1.3
 #
 define orawls::utils::rcu(  
   $fmw_product                 = 'adf',

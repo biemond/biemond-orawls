@@ -182,13 +182,13 @@ dumpStack();
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION == 1212:
+if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
 
     if WEBTIER_ENABLED == true:
-        print 'Adding OHS Template'
-        addTemplate('<%= @templateOHS %>')
-        #print 'Adding EM WebTier Template'
-        #addTemplate('<%= @templateEMWebTier %>')
+      print 'Adding OHS Template'
+      addTemplate('<%= @templateOHS %>')
+      #print 'Adding EM WebTier Template'
+      #addTemplate('<%= @templateEMWebTier %>')
 
     print 'Add advanced JAX-WS Template'
     addTemplate('<%= @templateJaxWS %>')

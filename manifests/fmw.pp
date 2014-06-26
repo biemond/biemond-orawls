@@ -4,7 +4,7 @@
 #
 ##
 define orawls::fmw (
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
+  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1213
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir'), # /opt/oracle
@@ -132,7 +132,7 @@ define orawls::fmw (
     }
     elsif $version == 1213 { 
       $fmw_silent_response_file = "orawls/web_http_server_1213.rsp.erb"
-      $binFile1                 = "ohs_121300_linux64.bin"
+      $binFile1                 = "fmw_12.1.3.0.0_ohs_linux64.bin"
       $createFile1              = "${download_dir}/${fmw_product}/${binFile1}"
 
     } else {
@@ -316,7 +316,7 @@ define orawls::fmw (
     
     if $version == 1212 or $version == 1213 {
       exec { "install ${fmw_product} ${title}":
-        command     => "${download_dir}/${fmw_product}/${binFile1} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
+        command     => "${download_dir}/${fmw_product}/${binFile1} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
         environment => "TMP=${temp_directory}",
         timeout     => 0,
         creates     => $oracleHome,

@@ -38,34 +38,17 @@ Dependency with
 ##Complete examples
 see the following usages below  
 
-###Masterless (vagrant box)
+###full working vagrant boxes
 
-WebLogic 12.1.3 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-12.1.3  
-
-WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server)   
-https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra  
-
-WebLogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-12.1.2  
-
-WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server)  
-https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra  
-
-Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-solaris  
-
-Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example  
-https://github.com/biemond/biemond-orawls-vagrant-oim_oam
-
-WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example  
-https://github.com/biemond/biemond-orawls-vagrant  
-
-Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example  
-https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
-
-###Puppetmaster (vagrant box)
-Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
+- WebLogic 12.1.3 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3) 
+- WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)   
+- WebLogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example [biemond-orawls-vagrant-12.1.2](https://github.com/biemond/biemond-orawls-vagrant-12.1.2)   
+- WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.2-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra) 
+- Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example [biemond-orawls-vagrant-solaris](https://github.com/biemond/biemond-orawls-vagrant-solaris) 
+- Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example [biemond-orawls-vagrant-oim_oam](https://github.com/biemond/biemond-orawls-vagrant-oim_oam) 
+- WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example [biemond-orawls-vagrant](https://github.com/biemond/biemond-orawls-vagrant) 
+- Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example [biemond-orawls-vagrant-solaris-soa](https://github.com/biemond/biemond-orawls-vagrant-solaris-soa) 
+- Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box [vagrant-puppetmaster](https://github.com/biemond/vagrant-puppetmaster)
 
 ##Orawls WebLogic Features
 
@@ -73,7 +56,7 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
 - [Create a WebLogic domain](#domain)
-- [Pack a WebLogic domain](#pack)
+- [Pack a WebLogic domain](#packdomain)
 - [Copy a WebLogic domain](#copydomain) to a other node with SSH, unpack and enroll to a nodemanager
 - [JSSE](#jsse) Java Secure Socket Extension support
 - [Custom Identity and Trust Store support](#identity)
@@ -827,13 +810,25 @@ or with custom identity and custom truststore
         custom_identity_privatekey_passphrase: 'welcome'
 
 
-###pack 
+###packdomain 
 __orawls::packdomain__ pack a WebLogic Domain and add this to the download folder
+
+    orawls::packdomain{"Wls12c":
+      weblogic_home_dir      => "/opt/oracle/middleware12c/wlserver",
+      middleware_home_dir    => "/opt/oracle/middleware12c",
+      jdk_home_dir           => "/usr/java/jdk1.7.0_45",
+      wls_domains_dir        => "/opt/oracle/domains",
+      domain_name            => "Wls12c",
+      os_user                => "oracle",
+      os_group               => "dba",
+      download_dir           => "/data/install",
+    }
+
+or with hiera
 
     $default_params = {}
     $pack_domain_instances = hiera('pack_domain_instances', {})
     create_resources('orawls::packdomain',$pack_domain_instances, $default_params)
-
 
     # pack domains
     pack_domain_instances:
@@ -844,6 +839,28 @@ __orawls::packdomain__ pack a WebLogic Domain and add this to the download folde
 ###copydomain 
 __orawls::copydomain__ copies a WebLogic domain with SSH or from a share, unpack and enroll to a nodemanager
 
+When using ssh (use_ssh = true) you need to setup ssh so you won't need to provide a password
+
+    orawls::copydomain{"Wls12c":
+      version                => 1212,
+      weblogic_home_dir      => "/opt/oracle/middleware12c/wlserver",
+      middleware_home_dir    => "/opt/oracle/middleware12c",
+      jdk_home_dir           => "/usr/java/jdk1.7.0_45",
+      wls_domains_dir        => "/opt/oracle/domains",
+      wls_apps_dir           => "/opt/oracle/applications",
+      domain_name            => "Wls12c",
+      os_user                => "oracle",
+      os_group               => "dba",
+      download_dir           => "/data/install",
+      log_dir                => "/var/log/weblogic",
+      log_output             => true,
+      use_ssh                => false,
+      domain_pack_dir        => /mnt/fmw_share,
+      adminserver_address    => "10.10.10.10",
+      adminserver_port       => 7001,
+      weblogic_user          => "weblogic",
+      weblogic_password      => "weblogic1", 
+    }
 
 Configuration with Hiera ( need to have puppet > 3.0 )    
 

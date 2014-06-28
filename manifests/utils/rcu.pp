@@ -2,7 +2,7 @@
 #    rcu for adf 12.1.2 & 12.1.3
 #
 define orawls::utils::rcu(  
-  $fmw_product                 = 'adf',
+  $fmw_product                 = 'adf', # adf|soa
   $oracle_fmw_product_home_dir = undef,
   $jdk_home_dir                = hiera('wls_jdk_home_dir'),
   $os_user                     = hiera('wls_os_user'),      # oracle
@@ -28,6 +28,10 @@ define orawls::utils::rcu(
   if $fmw_product == 'adf' {
     $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC  '
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password]
+  }
+  elsif $fmw_product == 'soa' {
+    $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component UCSUMS -component UMS -component ESS -component SOAINFRA -component MFT '
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password]
   } else {
     fail("Unrecognized FMW fmw_product")
   }

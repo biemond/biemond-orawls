@@ -339,7 +339,7 @@ define orawls::domain (
       }
 
       orawls::utils::rcu{ "RCU_12c ${title}":
-        fmw_product                 => 'adf',
+        fmw_product                 => $domain_template,
         oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
         jdk_home_dir                => $jdk_home_dir,
         os_user                     => $os_user,

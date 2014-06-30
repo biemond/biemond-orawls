@@ -10,6 +10,9 @@ define orawls::domain (
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
   $domain_template                       = hiera('domain_template'               , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm|oud
+  $bam_enabled                           = true,  #only for SOA Suite
+  $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
+  $ess_enabled                           = true,  #only for SOA Suite 12.1.3
   $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,
   $adminserver_name                      = hiera('domain_adminserver'            , "AdminServer"),
@@ -129,18 +132,20 @@ define orawls::domain (
 
       $templateEM        = "${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template_12.1.3.jar"
       $templateJRF       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template_12.1.3.jar"
-      $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.12.1.3_template.jar"
+      $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub.1.0.0_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.3.jar"
 
       $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar"
       $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.3.jar"
+      $templateESS_EM    = "${middleware_home_dir}/em/common/templates/wls/oracle.em_ess_template_12.1.3.jar"
+      $templateESS       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.ess.basic_template_12.1.3.jar"
 
       $templateOSB          = "${middleware_home_dir}/osb/common/templates/wls/oracle.osb_template_12.1.3.jar"
       $templateSOA          = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa_template_12.1.3.jar"
-      $templateBPM          = "${middleware_home_dir}/soa/common/templates/wls/oracle.bpm_template_11.1.1.jar"
+      $templateBPM          = "${middleware_home_dir}/soa/common/templates/wls/oracle.bpm_template_12.1.3.jar"
       $templateBAM          = "${middleware_home_dir}/soa/common/templates/wls/oracle.bam.server_template_12.1.3.jar"
       $templateB2B          = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.b2b_template_12.1.3.jar"
-      $templateHEALTH       = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.b2b_template_12.1.3.jar"
+      $templateHEALTH       = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.healthcare_template_12.1.3.jar"
 
     } else {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"
@@ -357,7 +362,7 @@ define orawls::domain (
           group   => $os_group,
         }
       }
-      File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
+      # File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
     if ( $version == 1212 or $version == 1213 ) {

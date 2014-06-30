@@ -121,7 +121,7 @@ define orawls::fmw (
       $fmw_silent_response_file = "orawls/fmw_silent_b2b_1213.rsp.erb"
       $binFile1                 = "fmw_12.1.3.0.0_b2bhealthcare.jar"
       $createFile1              = "${download_dir}/${fmw_product}/${binFile1}"
-      $oracleHome               = "${middleware_home_dir}/soa/soa/applications/soa-infra-b2bui-wls.ear"
+      $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
       $type                     = "java" 
       if $healthcare == true {
         $install_type = "Healthcare"

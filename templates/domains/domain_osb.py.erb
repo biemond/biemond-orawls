@@ -299,14 +299,13 @@ setOption( "AppDir", APP_PATH )
 cd('Servers/osb_server1')
 set('Machine','LocalMachine')
 set('ListenAddress','<%= @adminserver_address %>')
-
+set('ListenPort',8011)
 
 create('osb_server1','ServerStart')
 cd('ServerStart/osb_server1')
 set('Arguments', OSB_JAVA_ARGUMENTS)
 set('JavaVendor','Sun')
 set('JavaHome', JAVA_HOME)
-
 
 cd('/Server/osb_server1')
 create('osb_server1','SSL')

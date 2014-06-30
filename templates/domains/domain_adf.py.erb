@@ -233,9 +233,9 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
     cd('Properties/NO_NAME_0/Property/user')
     set('Value',ADF_REPOS_DBUSER_PREFIX+'_MDS')
 
-    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR'
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR for AdminServer'
     serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
-    setServerGroups('AdminServer', serverGroup)                      
+    setServerGroups(ADMIN_SERVER, serverGroup)                      
 
     print 'end datasources'
 

@@ -77,9 +77,9 @@ define orawls::fmw (
       $oracleHome               = "${middleware_home_dir}/soa/bin"
       $type                     = "java" 
       if $bpm == true {
-        $install_type = "SOA Suite"
-      } else {
         $install_type = "BPM"
+      } else {
+        $install_type = "SOA Suite"
       }
 
     } else {
@@ -96,6 +96,7 @@ define orawls::fmw (
     }
 
   } elsif ( $fmw_product == "osb" ) {
+ 
     $total_files = 1
     if $version == 1213 { 
       $fmw_silent_response_file = "orawls/fmw_silent_osb_1213.rsp.erb"

@@ -10,6 +10,7 @@ DEVELOPMENT_MODE=<%= @development_mode %>
 CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
 JSSE_ENABLED=<%= @jsse_enabled %>
 WEBLOGIC_VERSION=<%= @version %>
+WEBTIER_ENABLED=<%= @webtier_enabled %>
 
 ADMIN_SERVER='<%= @adminserver_name %>'
 ADMIN_USER='<%= @weblogic_user %>'
@@ -28,6 +29,11 @@ OSB_JAVA_ARGUMENTS='<%= @java_arguments["OSB"] %>'
 <% else %>
 OSB_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
 <% end %>
+
+OSB_REPOS_DBURL='<%= @repository_database_url %>'
+OSB_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+OSB_REPOS_DBPASSWORD='<%= @repository_password %>'
+
 
 def createBootPropertiesFile(directoryPath,fileName, username, password):
   serverDir = File(directoryPath)
@@ -187,6 +193,98 @@ dumpStack();
 print('Extend...osb domain with template <%= @templateOSB %>')
 addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
+
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION == 1213:
+
+    if WEBTIER_ENABLED == true:
+      print 'Adding OHS Template'
+      addTemplate('<%= @templateOHS %>')
+
+    # print 'Add advanced JAX-WS Template'
+    # addTemplate('<%= @templateJaxWS %>')
+    # print 'Add JAX-WS SOAP over JMS Template'
+    # addTemplate('<%= @templateSoapJms %>')
+    # print 'Add WSMPM Template'
+    # addTemplate('<%= @templateWSMPM %>')
+
+
+    print 'Change datasources'
+    print 'Change datasource opss-data-source'
+    cd('/JDBCSystemResource/opss-data-source/JdbcResource/opss-data-source/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_OPSS')
+
+    print 'Change datasource opss-audit-viewDS'
+    cd('/JDBCSystemResource/opss-audit-viewDS/JdbcResource/opss-audit-viewDS/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_IAU_VIEWER')
+
+    print 'Change datasource opss-audit-DBDS'
+    cd('/JDBCSystemResource/opss-audit-DBDS/JdbcResource/opss-audit-DBDS/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_IAU_APPEND')
+
+    print 'Change datasource LocalScvTblDataSource'
+    cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_STB')
+
+    print 'Change datasource OraSDPMDataSource'
+    cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_UMS')
+
+    print 'Change datasource wlsbjmsrpDataSource'
+    cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+
+    print 'Change datasource SOALocalTxDataSource'
+    cd('/JDBCSystemResource/SOALocalTxDataSource/JdbcResource/SOALocalTxDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+
+    print 'Change datasource SOADataSource'
+    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+
+
+    print 'Change datasource mds-owsm'
+    cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_MDS')
+
+    print 'end datasources'
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
+    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
+    setServerGroups(ADMIN_SERVER, serverGroup)                      
+    print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
+    serverGroup = ["OSB-MGD-SVRS-COMBINED"]
+    setServerGroups('osb_server1', serverGroup)                      
+
+    print 'end server groups'
 
 dumpStack();
 updateDomain()

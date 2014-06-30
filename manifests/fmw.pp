@@ -96,7 +96,7 @@ define orawls::fmw (
     }
 
   } elsif ( $fmw_product == "osb" ) {
- 
+
     $total_files = 1
     if $version == 1213 { 
       $fmw_silent_response_file = "orawls/fmw_silent_osb_1213.rsp.erb"

@@ -237,7 +237,10 @@ cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDri
 set('URL',SOA_REPOS_DBURL)
 set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
 cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORASDPM')
+if WEBLOGIC_VERSION == 1213:
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_UMS')
+else:
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORASDPM')
 
 print 'Change datasource SOADataSource'
 cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')

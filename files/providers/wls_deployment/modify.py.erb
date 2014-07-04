@@ -3,6 +3,7 @@ real_domain='<%= domain %>'
 
 name              = '<%= deployment_name %>'
 localpath         = '<%= localpath %>'
+planpath          = '<%= planpath %>'
 target            = '<%= target %>'
 targettype        = '<%= targettype %>'
 deploymenttype    = '<%= deploymenttype %>'
@@ -46,10 +47,17 @@ try:
       undeploy(currentApp, timeout=60000)
       print 'deploying....'
       if versionidentifier:
-        print 'deploying with version....'
-        deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library,versionIdentifier=versionidentifier)
+        if planpath:
+          print 'deploying with version and deploymentplan....'
+          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote='true', upload='true',libraryModule=library,versionIdentifier=versionidentifier)
+        else:
+          print 'deploying with version without deploymentplan....'
+          deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library,versionIdentifier=versionidentifier)
       else: 
-        deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library)
+        if planpath:
+          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote='true', upload='true',libraryModule=library)
+        else:
+          deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library)
     else:
       print 'change targets for app '+fullApp
 

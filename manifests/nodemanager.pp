@@ -37,7 +37,7 @@ define orawls::nodemanager (
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
     $startHome   = "${weblogic_home_dir}/server/bin"
-  } elsif $version == 1212 {
+  } elsif $version == 1212 or $version == 1213 {
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
     $startHome   = "${domains_dir}/${domain_name}/bin"
   } else {

@@ -1,13 +1,13 @@
 # == Class: orawls::weblogic
 #
 class orawls::weblogic (
-  $version              = 1111,  # 1036|1111|1211|1212
-  $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
+  $version              = 1111,  # 1036|1111|1211|1212|1214
+  $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
   $wls_domains_dir      = undef, # /opt/oracle/wlsdomains/domains
   $wls_apps_dir         = undef, # /opt/oracle/wlsdomains/applications
-  $fmw_infra            = false, # true|false 12.1.2 option -> plain weblogic or fmw infra
+  $fmw_infra            = false, # true|false 12.1.2/12.1.3 option -> plain weblogic or fmw infra
   $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
   $os_group             = undef, # dba
@@ -43,7 +43,7 @@ class orawls::weblogic (
 
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = "orawls/weblogic_silent_install.xml.erb"
-  } elsif ( $version == 1212) {
+  } elsif ( $version == 1212 or $version == 1213 ) {
 
     #The oracle home location. This can be an existing Oracle Home or a new Oracle Home
     if ( $fmw_infra == true ) {
@@ -51,7 +51,7 @@ class orawls::weblogic (
     } else {
       $install_type="WebLogic Server"
     }
-    $silent_template = "orawls/weblogic_silent_install_1212.rsp.erb"
+    $silent_template = "orawls/weblogic_silent_install_${version}.rsp.erb"
 
   } else  {
     fail('unknown weblogic version parameter')
@@ -150,12 +150,12 @@ class orawls::weblogic (
     require => Orawls::Utils::Structure["weblogic structure ${version}"],
   }
 
-  if ($version == 1212) {
+  if ($version == 1212 or $version == 1213) {
 
     $command = "-silent -responseFile ${download_dir}/weblogic_silent_install.xml "
 
     exec { "install weblogic ${version}":
-      command     => "${cmd_prefix}${weblogic_jar_location} -Djava.io.tmpdir=${temp_directory} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs",
+      command     => "${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs",
       environment => ["JAVA_VENDOR=Sun", "JAVA_HOME=${jdk_home_dir}"],
       timeout     => 0,
       creates     => $middleware_home_dir,

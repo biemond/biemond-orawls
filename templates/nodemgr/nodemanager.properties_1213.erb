@@ -1,0 +1,36 @@
+#Node manager properties
+DomainsFile=<%= @domain_dir %>/nodemanager/nodemanager.domains
+LogLimit=0
+PropertiesVersion=12.1.3
+<% if @domain_template == "adf" %>
+AuthenticationEnabled=false
+<% else %>
+AuthenticationEnabled=true
+<% end %>
+NodeManagerHome=<%= @domain_dir %>/nodemanager
+JavaHome=<%= @jdk_home_dir %>
+LogLevel=INFO
+DomainsFileEnabled=true
+StartScriptName=startWebLogic.sh
+ListenAddress=<%= @nodemanager_address %>
+NativeVersionEnabled=true
+ListenPort=<%= @nodemanager_port %>
+LogToStderr=true
+SecureListener=true
+LogCount=1
+StopScriptEnabled=true
+QuitEnabled=false
+LogAppend=true
+StateCheckInterval=500
+CrashRecoveryEnabled=true
+StartScriptEnabled=true
+LogFile=<%= @nodeMgrLogDir %>
+LogFormatter=weblogic.nodemanager.server.LogFormatter
+ListenBacklog=50
+<% if @custom_identity == true %>
+KeyStores=CustomIdentityAndCustomTrust
+CustomIdentityKeyStoreFileName=<%= @custom_identity_keystore_filename %>
+CustomIdentityKeyStorePassPhrase=<%= @custom_identity_keystore_passphrase %>
+CustomIdentityAlias=<%= @custom_identity_alias %>
+CustomIdentityPrivateKeyPassPhrase=<%= @custom_identity_privatekey_passphrase %>
+<% end %>

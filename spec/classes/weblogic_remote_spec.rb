@@ -219,7 +219,7 @@ describe 'orawls::weblogic', :type => :class do
     describe "install weblogic" do
       it { 
            should contain_exec("install weblogic 1212").with({
-             'command'      => 'java  -Xmx1024m -Djava.io.tmpdir=/tmp -jar /software/wls_121200.jar -Djava.io.tmpdir=/tmp -silent -responseFile /install/weblogic_silent_install.xml  -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs',
+             'command'      => 'java  -Xmx1024m -Djava.io.tmpdir=/tmp -jar /software/wls_121200.jar -silent -responseFile /install/weblogic_silent_install.xml  -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs',
              'environment'  => ["JAVA_VENDOR=Sun","JAVA_HOME=/usr/java/jdk1.7.0_45"],
            }).that_requires('File[/install/weblogic_silent_install.xml]').that_requires('Orawls::Utils::Structure[weblogic structure 1212]').that_requires('Orawls::Utils::Orainst[weblogic orainst 1212]')    
          }  

@@ -182,13 +182,13 @@ dumpStack();
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION == 1212:
+if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
 
     if WEBTIER_ENABLED == true:
-        print 'Adding OHS Template'
-        addTemplate('<%= @templateOHS %>')
-        #print 'Adding EM WebTier Template'
-        #addTemplate('<%= @templateEMWebTier %>')
+      print 'Adding OHS Template'
+      addTemplate('<%= @templateOHS %>')
+      #print 'Adding EM WebTier Template'
+      #addTemplate('<%= @templateEMWebTier %>')
 
     print 'Add advanced JAX-WS Template'
     addTemplate('<%= @templateJaxWS %>')
@@ -233,9 +233,9 @@ if WEBLOGIC_VERSION == 1212:
     cd('Properties/NO_NAME_0/Property/user')
     set('Value',ADF_REPOS_DBUSER_PREFIX+'_MDS')
 
-    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR'
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR for AdminServer'
     serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
-    setServerGroups('AdminServer', serverGroup)                      
+    setServerGroups(ADMIN_SERVER, serverGroup)                      
 
     print 'end datasources'
 

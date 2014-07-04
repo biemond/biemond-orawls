@@ -40,7 +40,7 @@ define orawls::copydomain (
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
-  } elsif $version == 1212 {
+  } elsif $version == 1212 or $version == 1213 {
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
 
   } else {

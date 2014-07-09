@@ -11,6 +11,7 @@
 #
 define orawls::fmwlogdir (
   $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $oracle_home_dir            = undef,                            # /opt/oracle/middleware11gR1/Oracle_OSB
   $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
@@ -52,8 +53,14 @@ define orawls::fmwlogdir (
     backup  => false,
   }
 
+  if $oracle_home_dir == undef {
+    $l_cmd = "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/${title}changeFMWLogFolder.py ${weblogic_password}"
+  } else {
+    $l_cmd = "${oracle_home_dir}/common/bin/wlst.sh ${download_dir}/${title}changeFMWLogFolder.py ${weblogic_password}"
+  }
+  
   exec { "execwlst ${title}changeFMWLogFolder.py":
-    command   => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/${title}changeFMWLogFolder.py ${weblogic_password}",
+    command   => $l_cmd,
     unless    => "ls -l ${log_dir}/${server}-diagnostic.log",
     require   => File["${download_dir}/${title}changeFMWLogFolder.py"],
     path      => $execPath,

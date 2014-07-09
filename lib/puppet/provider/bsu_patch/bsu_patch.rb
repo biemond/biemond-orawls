@@ -11,6 +11,7 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     middleware_home_dir = resource[:middleware_home_dir]
     weblogic_home_dir   = resource[:weblogic_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
+    temp_directory      = resource[:temp_directory]
 
     if action == :present
       bsuaction = "-install"
@@ -18,12 +19,18 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
       bsuaction = "-remove"
     end 
 
+    if temp_directory == nil
+      tmpdir = "/tmp"
+    else
+      tmpdir = temp_directory
+    end
+    
     Puppet.debug "bsu_patch action: #{action}"
 
     if patch_download_dir == nil
-      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -verbose"
+      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -verbose"+" -Djava.io.tmpdir="+tmpdir
     else 
-      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -patch_download_dir="+patch_download_dir+" -verbose"
+      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh "+bsuaction+" -patchlist="+patchName+" -prod_dir="+weblogic_home_dir+" -patch_download_dir="+patch_download_dir+" -verbose"+" -Djava.io.tmpdir="+tmpdir
     end 
     #environment = ["USER="+user, "HOME=/home/"+user, "LOGNAME="+user]
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
@@ -56,10 +63,16 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     jdk_home_dir        = resource[:jdk_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
 
+    if temp_directory == nil
+      tmpdir = "/tmp"
+    else
+      tmpdir = temp_directory
+    end
+    
     if patch_download_dir == nil
-      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh -view -status=applied -prod_dir="+weblogic_home_dir+" -verbose"
+      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh -view -status=applied -prod_dir="+weblogic_home_dir+" -verbose"+" -Djava.io.tmpdir="+tmpdir
     else 
-      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh -view -status=applied -prod_dir="+weblogic_home_dir+" -patch_download_dir="+patch_download_dir+" -verbose"
+      command = "cd "+middleware_home_dir+"/utils/bsu;"+middleware_home_dir+"/utils/bsu/bsu.sh -view -status=applied -prod_dir="+weblogic_home_dir+" -patch_download_dir="+patch_download_dir+" -verbose"+" -Djava.io.tmpdir="+tmpdir
     end 
 
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"

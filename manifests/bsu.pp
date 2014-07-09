@@ -15,6 +15,7 @@ define orawls::bsu (
   $source                 = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file            = true,  # true|false
   $log_output             = false, # true|false
+  $temp_directory         = hiera('wls_temp_dir', '/tmp'), # /tmp directory
 )
 {
   $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${jdk_home_dir}/bin"
@@ -64,12 +65,14 @@ define orawls::bsu (
       before    => Bsu_patch[$patch_id],
     }
   }
+  
   bsu_patch{ $patch_id:
     ensure              => $ensure,
     os_user             => $os_user,
     middleware_home_dir => $middleware_home_dir,
     weblogic_home_dir   => $weblogic_home_dir,
     jdk_home_dir        => $jdk_home_dir,
+    temp_directory      => $temp_directory,
   }
 
 }

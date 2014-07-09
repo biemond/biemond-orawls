@@ -66,10 +66,15 @@ module Puppet
 
     newparam(:patch_download_dir) do
       desc <<-EOT
-        The BSU pathc download dir folder.
+        The BSU patch download dir folder.
       EOT
     end
 
+    newparam(:temp_directory) do
+      desc <<-EOT
+        The BSU temporary files directory folder.
+      EOT
+    end
 
   end
 end

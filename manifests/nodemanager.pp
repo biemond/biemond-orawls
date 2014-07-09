@@ -114,6 +114,17 @@ define orawls::nodemanager (
       before  => Exec["startNodemanager ${title}"],
     }
   }
+  if ( $version == 1111 or $version == 1036 or $version == 1211 ){
+    file { "nodemanager.domains ux ${title}":
+      ensure  => present,
+      path    => "${nodeMgrHome}/nodemanager.domains",
+      replace => true,
+      content => template("orawls/nodemgr/nodemanager.domains.erb"),
+      owner   => $os_user,
+      group   => $os_group,
+      before  => Exec["startNodemanager ${title}"],
+    }
+  }  
 
   if ( $custom_trust == true ) {
     $trust_env = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}"

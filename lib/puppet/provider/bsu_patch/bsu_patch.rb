@@ -62,6 +62,7 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     weblogic_home_dir   = resource[:weblogic_home_dir]
     jdk_home_dir        = resource[:jdk_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
+    temp_directory      = resource[:temp_directory]
 
     if temp_directory == nil
       tmpdir = "/tmp"

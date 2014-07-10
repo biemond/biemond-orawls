@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>= 3.0']
 
+gem 'coveralls', require: false
 gem 'puppet-lint'
 gem 'puppet', puppetversion
 gem 'rspec-puppet', :github =>'rodjek/rspec-puppet'

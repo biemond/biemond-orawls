@@ -1,5 +1,5 @@
 #Oracle WebLogic / Fusion Middleware puppet module V2
-[![Build Status](https://travis-ci.org/biemond/biemond-orawls.png)](https://travis-ci.org/biemond/biemond-orawls)
+[![Build Status](https://travis-ci.org/biemond/biemond-orawls.png)](https://travis-ci.org/biemond/biemond-orawls) ![Coverage Status](https://coveralls.io/repos/biemond/biemond-orawls/badge.png?branch=master)](https://coveralls.io/r/biemond/biemond-orawls?branch=master)
 
 created by Edwin Biemond email biemond at gmail dot com   
 [biemond.blogspot.com](http://biemond.blogspot.com)    

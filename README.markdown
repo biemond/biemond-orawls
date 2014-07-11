@@ -24,6 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
+- 1.0.11 target,targettype on all wls types + servers parameter on wls_domain type expects an array instead of a string with ',' String will still work but puppet will try to change it in every puppet run
 - 1.0.10 fixed WebLogic 12.1.2 & 12.1.3 standard domain bug.
 - 1.0.9 WebLogic 12.1.3 (infra) support - support for 12.1.3 SOA,OSB,B2B,MFT installation - 12.1.3 Standard, ADF, SOA, OSB domain (no cluster) - wls_adminserver type fix when using no custom trust
 - 1.0.8 wls_server pass server arguments as an array, as it makes it easier to use references in YAML, Added log file options to wls_server 

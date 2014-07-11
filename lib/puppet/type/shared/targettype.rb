@@ -10,6 +10,6 @@ newproperty(:targettype, :array_matching => :all) do
 end
 
 def targettype
-  self[:targettype].join(',')
+  self[:targettype] ? self[:targettype].join(',') : ''
 end
 

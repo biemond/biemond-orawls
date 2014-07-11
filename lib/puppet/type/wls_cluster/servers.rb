@@ -11,6 +11,6 @@ newproperty(:servers, :array_matching => :all) do
 end
 
 def servers
-  self[:servers].join(',')
+  self[:servers] ? self[:servers].join(',') : ''
 end
 

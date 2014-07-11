@@ -5,7 +5,9 @@ newproperty(:servers, :array_matching => :all) do
   desc "The nodes which are part of this cluster"
 
   to_translate_to_resource do | raw_resource|
-    raw_resource['servers'].split(',')
+    unless raw_resource['servers'].nil?
+      raw_resource['servers'].split(',')
+    end
   end
 
 end

@@ -4,11 +4,13 @@ newproperty(:target, :array_matching => :all) do
   desc "The target name"
 
   to_translate_to_resource do | raw_resource|
-    raw_resource['target'].split(',')
+    unless raw_resource['target'].nil?
+      raw_resource['target'].split(',')
+    end
   end
 
 end
 
 def target
-  self[:targettype] ? self[:target].join(',') : ''
+  self[:target] ? self[:target].join(',') : ''
 end

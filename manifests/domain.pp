@@ -9,19 +9,19 @@ define orawls::domain (
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , "standard"), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm|oud
+  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm|oud
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = true,  #only for SOA Suite 12.1.3
   $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,
-  $adminserver_name                      = hiera('domain_adminserver'            , "AdminServer"),
+  $adminserver_name                      = hiera('domain_adminserver'            , 'AdminServer'),
   $adminserver_address                   = hiera('domain_adminserver_address'    , undef),
   $adminserver_port                      = hiera('domain_adminserver_port'       , 7001),
   $java_arguments                        = hiera('domain_java_arguments'         , {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address                   = undef,
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
-  $weblogic_user                         = hiera('wls_weblogic_user'             , "weblogic"),
+  $weblogic_user                         = hiera('wls_weblogic_user'             , 'weblogic'),
   $weblogic_password                     = hiera('domain_wls_password'),
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
   $webtier_enabled                       = false,
@@ -32,8 +32,8 @@ define orawls::domain (
   $log_output                            = false, # true|false
   $repository_database_url               = hiera('repository_database_url'       , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
   $rcu_database_url                      = undef,                                      #localhost:1521:XE"
-  $repository_prefix                     = hiera('repository_prefix'             , "DEV"),
-  $repository_password                   = hiera('repository_password'           , "Welcome01"),
+  $repository_prefix                     = hiera('repository_prefix'             , 'DEV'),
+  $repository_password                   = hiera('repository_password'           , 'Welcome01'),
   $repository_sys_password               = undef,
   $custom_trust                          = hiera('wls_custom_trust'              , false),
   $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
@@ -48,16 +48,16 @@ define orawls::domain (
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_dir =  $wls_domains_dir 
+    $domains_dir = $wls_domains_dir
   }
   if ( $wls_apps_dir == undef ) {
     $apps_dir = "${middleware_home_dir}/user_projects/applications"
   } else {
-    $apps_dir =  $wls_apps_dir 
+    $apps_dir = $wls_apps_dir
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
-  
+
   # check if the domain already exists
   $found = domain_exists($domain_dir)
 
@@ -175,11 +175,11 @@ define orawls::domain (
 
 
     if $domain_template == 'standard' {
-      $templateFile   = "orawls/domains/domain.py.erb"
+      $templateFile   = 'orawls/domains/domain.py.erb'
       $wlstPath       = "${weblogic_home_dir}/common/bin"
 
     } elsif $domain_template == 'osb' {
-      $templateFile  = "orawls/domains/domain_osb.py.erb"
+      $templateFile  = 'orawls/domains/domain_osb.py.erb'
       if ( $version == 1213 ) {
         $wlstPath      = "${middleware_home_dir}/osb/common/bin"
       } else {
@@ -187,7 +187,7 @@ define orawls::domain (
       }
 
     } elsif $domain_template == 'osb_soa' or $domain_template == 'osb_soa_bpm' {
-      $templateFile  = "orawls/domains/domain_osb_soa_bpm.py.erb"
+      $templateFile  = 'orawls/domains/domain_osb_soa_bpm.py.erb'
       if ( $version == 1213 ) {
         $wlstPath      = "${middleware_home_dir}/soa/common/bin"
       } else {
@@ -200,7 +200,7 @@ define orawls::domain (
       }
 
     } elsif $domain_template == 'soa' or $domain_template == 'soa_bpm' {
-      $templateFile  = "orawls/domains/domain_soa_bpm.py.erb"
+      $templateFile  = 'orawls/domains/domain_soa_bpm.py.erb'
       if ( $version == 1213 ) {
         $wlstPath      = "${middleware_home_dir}/soa/common/bin"
       } else {
@@ -213,27 +213,27 @@ define orawls::domain (
       }
 
     } elsif $domain_template == 'adf' {
-      $templateFile  = "orawls/domains/domain_adf.py.erb"
+      $templateFile  = 'orawls/domains/domain_adf.py.erb'
       $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
 
     } elsif $domain_template == 'oim' {
-      $templateFile  = "orawls/domains/domain_oim.py.erb"
+      $templateFile  = 'orawls/domains/domain_oim.py.erb'
       $wlstPath      = "${middleware_home_dir}/Oracle_IDM1/common/bin"
 
     } elsif $domain_template == 'oud' {
-      $templateFile  = "orawls/domains/domain_oud.py.erb"
+      $templateFile  = 'orawls/domains/domain_oud.py.erb'
       $wlstPath      = "${weblogic_home_dir}/common/bin"
 
     } elsif $domain_template == 'wc' {
-      $templateFile  = "orawls/domains/domain_wc.py.erb"
+      $templateFile  = 'orawls/domains/domain_wc.py.erb'
       $wlstPath      = "${middleware_home_dir}/Oracle_WC1/common/bin"
 
     } elsif $domain_template == 'wc_wcc_bpm' {
-      $templateFile  = "orawls/domains/domain_wc_wcc_bpm.py.erb"
+      $templateFile  = 'orawls/domains/domain_wc_wcc_bpm.py.erb'
       $wlstPath      = "${middleware_home_dir}/Oracle_WCC1/common/bin"
 
     } else {
-      $templateFile   = "orawls/domains/domain.py.erb"
+      $templateFile   = 'orawls/domains/domain.py.erb'
       $wlstPath       = "${weblogic_home_dir}/common/bin"
     }
 
@@ -307,8 +307,8 @@ define orawls::domain (
           owner   => $os_user,
           group   => $os_group,
       }
-    } 
-    
+    }
+
     # the domain.py used by the wlst
     file { "domain.py ${domain_name} ${title}":
       ensure  => present,
@@ -323,9 +323,9 @@ define orawls::domain (
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
-      if !defined(File["weblogic_domain_folder"]) {
+      if !defined(File['weblogic_domain_folder']) {
           # check oracle install folder
-          file { "weblogic_domain_folder":
+          file { 'weblogic_domain_folder':
             ensure  => directory,
             path    => "${middleware_home_dir}/user_projects",
             recurse => false,
@@ -334,7 +334,7 @@ define orawls::domain (
             owner   => $os_user,
             group   => $os_group,
           }
-        File["weblogic_domain_folder"] -> File[$domains_dir]  
+        File['weblogic_domain_folder'] -> File[$domains_dir]
       }
     }
 
@@ -365,20 +365,23 @@ define orawls::domain (
       # File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
-    if ( $version == 1212 or $version == 1213 ) {
+    # FMW RCU only for wls 12.1.2 or higher and when template is not standard
+    if ( $version >= 1212 and $domain_template != 'standard' ) {
+
       if ( $domain_template == 'adf' ) {
         $rcu_domain_template = 'adf'
-      } elsif ( $domain_template == 'soa' or $domain_template == 'osb' or $domain_template == 'osb_soa_bpm' or $domain_template == 'osb_soa' or $domain_template == 'soa_bpm' ){
+
+      } elsif ( $domain_template in ['soa','osb','osb_soa_bpm','osb_soa','soa_bpm'] ){
         $rcu_domain_template = 'soa'
+
       } else {
-        fail("unkown domain_template for rcu with version 1212 or 1213") 
+        fail('unkown domain_template for rcu with version 1212 or 1213')
       }
 
       # only works for a 12c middleware home
       # creates RCU for ADF
-      if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ) 
-      {
-        fail("Not all RCU parameters are provided")
+      if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ){
+        fail('Not all RCU parameters are provided')
       }
 
       orawls::utils::rcu{ "RCU_12c ${title}":
@@ -413,15 +416,16 @@ define orawls::domain (
     }
 
     yaml_setting { "domain ${title}":
-      target =>  "/etc/wls_domains.yaml",
+      target =>  '/etc/wls_domains.yaml',
       key    =>  "domains/${domain_name}",
       value  =>  $domain_dir,
     }
+
     if ($domain_template == 'oim') {
 
       file { "${download_dir}/${title}psa_opss_upgrade.rsp":
         ensure  => present,
-        content => template("orawls/oim/psa_opss_upgrade.rsp.erb"),
+        content => template('orawls/oim/psa_opss_upgrade.rsp.erb'),
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
@@ -460,7 +464,7 @@ define orawls::domain (
 
     }
 
-    if $::kernel == "SunOS" {
+    if $::kernel == 'SunOS' {
 
       if ($domain_template == 'osb' or
           $domain_template == 'osb_soa' or

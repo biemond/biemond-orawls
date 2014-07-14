@@ -27,7 +27,7 @@ def getFirstClusterServer(cluster):
         token=token.strip().lstrip().rstrip()
         path="/Server/"+token
         cd(path)
-        if not token == 'AdminServer' and not token == '':
+        if not token == Admin and not token == '':
             clustername = get('Cluster')
             searchClusterStr = cluster+":"
             clusterNameStr = str(clustername)

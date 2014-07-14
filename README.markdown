@@ -1416,11 +1416,11 @@ __orawls::oud::control__ Stop or start an OUD (Oracle Unified Directory) ldap in
 
 ##Types and providers
 
-All wls types needs a wls_setting definition and you need to create one for every WebLogic domain. When you don't provide a wls_setting identifier in the title of the weblogic type then it will use default as identifier.
+All wls types needs a wls_setting definition, this is a pointer to an WebLogic AdminServer and you need to create one for every WebLogic domain. When you don't provide a wls_setting identifier in the title of the weblogic type then it will use default as identifier.
 
 ###wls_setting
 
-required for all the weblogic type/providers
+required for all the weblogic type/providers, this is a pointer to an WebLogic AdminServer.
 
       wls_setting { 'default':
         user               => 'oracle',

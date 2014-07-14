@@ -249,7 +249,7 @@ def get_domain(domain_path,n)
       if earName == "soa-infra" 
          soaTargets = apps.elements['target'].text
       end 
-      if earName == "ALSB Routing" 
+      if earName == "ALSB Routing" or earName == "Service Bus Routing"
          osbTargets = apps.elements['target'].text
       end  
     end

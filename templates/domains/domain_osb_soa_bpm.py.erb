@@ -20,7 +20,7 @@ JAVA_HOME='<%= @jdk_home_dir %>'
 <% if @java_arguments["ADM"] %>
 ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
 <% else %>
-ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
 
 <% if @java_arguments["OSB"] %>
@@ -38,7 +38,7 @@ SOA_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -
 <% if @java_arguments["BAM"] %>
 BAM_JAVA_ARGUMENTS='<%= @java_arguments["BAM"] %>'
 <% else %>
-BAM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @bam_nodemanager_log_dir %>/bam_server1.out -Dweblogic.Stderr=<%= @bam_nodemanager_log_dir %>/bam_server1_err.out'
+BAM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @bam_nodemanager_log_dir %>/bam_server1.out -Dweblogic.Stderr=<%= @bam_nodemanager_log_dir %>/bam_server1_err.out'
 <% end %>
 
 SOA_REPOS_DBURL='<%= @repository_database_url %>'
@@ -230,68 +230,66 @@ if WEBLOGIC_VERSION == 1213:
 
 dumpStack();
 
-print 'Change datasources'
-print 'Change datasource EDNDataSource'
-cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+if WEBLOGIC_VERSION != 1213:
 
-print 'Change datasource EDNLocalTxDataSource'
-cd('/JDBCSystemResource/EDNLocalTxDataSource/JdbcResource/EDNLocalTxDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  print 'Change datasources'
+  print 'Change datasource EDNDataSource'
+  cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
 
-print 'Change datasource OraSDPMDataSource'
-cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-if WEBLOGIC_VERSION == 1213:
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_UMS')
-else:
+  print 'Change datasource EDNLocalTxDataSource'
+  cd('/JDBCSystemResource/EDNLocalTxDataSource/JdbcResource/EDNLocalTxDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+
+  print 'Change datasource OraSDPMDataSource'
+  cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
   set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORASDPM')
 
-print 'Change datasource SOADataSource'
-cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  print 'Change datasource SOADataSource'
+  cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
 
-print 'Change datasource SOALocalTxDataSource'
-cd('/JDBCSystemResource/SOALocalTxDataSource/JdbcResource/SOALocalTxDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  print 'Change datasource SOALocalTxDataSource'
+  cd('/JDBCSystemResource/SOALocalTxDataSource/JdbcResource/SOALocalTxDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
 
-print 'Change datasource mds-owsm'
-cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
+  print 'Change datasource mds-owsm'
+  cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
 
-print 'Change datasource mds-soa'
-cd('/JDBCSystemResource/mds-soa/JdbcResource/mds-soa/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
+  print 'Change datasource mds-soa'
+  cd('/JDBCSystemResource/mds-soa/JdbcResource/mds-soa/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
 
-print 'Change datasource wlsbjmsrpDataSource'
-cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
-set('URL',SOA_REPOS_DBURL)
-set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  print 'Change datasource wlsbjmsrpDataSource'
+  cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
 
-if BAM_ENABLED == true:
-  if WEBLOGIC_VERSION != 1213:
+  if BAM_ENABLED == true:
     print 'Change datasource BAMDataSource'
     cd('/JDBCSystemResource/BAMDataSource/JdbcResource/BAMDataSource/JDBCDriverParams/NO_NAME_0')
     set('URL',SOA_REPOS_DBURL)
@@ -299,53 +297,12 @@ if BAM_ENABLED == true:
     cd('Properties/NO_NAME_0/Property/user')
     set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORABAM')
 
-  if WEBLOGIC_VERSION == 1213:
-    print 'Change datasource mds-bam'
-    cd('/JDBCSystemResource/mds-bam/JdbcResource/mds-bam/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
-
-    print 'Change datasource BamJobSchedDataSource'
-    cd('/JDBCSystemResource/BamJobSchedDataSource/JdbcResource/BamJobSchedDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_WLS')
-
-    print 'Change datasource BamDataSource'
-    cd('/JDBCSystemResource/BamDataSource/JdbcResource/BamDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 if WEBLOGIC_VERSION == 1213:
 
     print 'Change datasources'
-    print 'Change datasource opss-data-source'
-    cd('/JDBCSystemResource/opss-data-source/JdbcResource/opss-data-source/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_OPSS')
-
-    print 'Change datasource opss-audit-viewDS'
-    cd('/JDBCSystemResource/opss-audit-viewDS/JdbcResource/opss-audit-viewDS/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_IAU_VIEWER')
-
-    print 'Change datasource opss-audit-DBDS'
-    cd('/JDBCSystemResource/opss-audit-DBDS/JdbcResource/opss-audit-DBDS/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_IAU_APPEND')
 
     print 'Change datasource LocalScvTblDataSource'
     cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
@@ -354,42 +311,14 @@ if WEBLOGIC_VERSION == 1213:
     cd('Properties/NO_NAME_0/Property/user')
     set('Value',SOA_REPOS_DBUSER_PREFIX+'_STB')
 
-    if ESS_ENABLED == true:
-      print 'Change datasource EssDS'
-      cd('/JDBCSystemResource/EssDS/JdbcResource/EssDS/JDBCDriverParams/NO_NAME_0')
-      set('URL',SOA_REPOS_DBURL)
-      set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-      cd('Properties/NO_NAME_0/Property/user')
-      set('Value',SOA_REPOS_DBUSER_PREFIX+'_ESS')
-
-      print 'Change datasource EssXADS'
-      cd('/JDBCSystemResource/EssXADS/JdbcResource/EssXADS/JDBCDriverParams/NO_NAME_0')
-      set('URL',SOA_REPOS_DBURL)
-      set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-      cd('Properties/NO_NAME_0/Property/user')
-      set('Value',SOA_REPOS_DBUSER_PREFIX+'_ESS')
-
-      print 'Change datasource EssInternalDS'
-      cd('/JDBCSystemResource/EssInternalDS/JdbcResource/EssInternalDS/JDBCDriverParams/NO_NAME_0')
-      set('URL',SOA_REPOS_DBURL)
-      set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-      cd('Properties/NO_NAME_0/Property/user')
-      set('Value',SOA_REPOS_DBUSER_PREFIX+'_ESS')
-
-      print 'Change datasource mds-ESS_MDS_DS'
-      cd('/JDBCSystemResource/mds-ESS_MDS_DS/JdbcResource/mds-ESS_MDS_DS/JDBCDriverParams/NO_NAME_0')
-      set('URL',SOA_REPOS_DBURL)
-      set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-      cd('Properties/NO_NAME_0/Property/user')
-      set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
-
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()    
 
     print 'end datasources'
 
     print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
     serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
     setServerGroups(ADMIN_SERVER, serverGroup)                      
-
 
     if ESS_ENABLED == true:
       print 'Add server group SOA-MGD-SVRS,ESS-MGD-SVRS to soa_server1'
@@ -406,15 +335,12 @@ if WEBLOGIC_VERSION == 1213:
       print 'Add server group BAM12-MGD-SVRS to bam_server1'
       serverGroup = ["BAM12-MGD-SVRS"]
       setServerGroups('bam_server1', serverGroup)                      
-      
 
     print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
     serverGroup = ["OSB-MGD-SVRS-COMBINED"]
     setServerGroups('osb_server1', serverGroup)                      
 
     print 'end server groups'
-
-
 
 updateDomain()
 closeDomain();

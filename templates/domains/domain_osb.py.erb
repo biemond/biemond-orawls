@@ -54,8 +54,6 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.flush()
   fileNew.close()
 
-
-
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
 
@@ -206,80 +204,25 @@ if WEBLOGIC_VERSION == 1213:
     # addTemplate('<%= @templateJaxWS %>')
     # print 'Add JAX-WS SOAP over JMS Template'
     # addTemplate('<%= @templateSoapJms %>')
-    # print 'Add WSMPM Template'
-    # addTemplate('<%= @templateWSMPM %>')
-
 
     print 'Change datasources'
-    print 'Change datasource opss-data-source'
-    cd('/JDBCSystemResource/opss-data-source/JdbcResource/opss-data-source/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_OPSS')
 
-    print 'Change datasource opss-audit-viewDS'
-    cd('/JDBCSystemResource/opss-audit-viewDS/JdbcResource/opss-audit-viewDS/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_IAU_VIEWER')
-
-    print 'Change datasource opss-audit-DBDS'
-    cd('/JDBCSystemResource/opss-audit-DBDS/JdbcResource/opss-audit-DBDS/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_IAU_APPEND')
-
-    print 'Change datasource LocalScvTblDataSource'
+    print 'Change datasource LocalScvTblDataSource for service table'
     cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
     set('URL',OSB_REPOS_DBURL)
     set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
     cd('Properties/NO_NAME_0/Property/user')
     set('Value',OSB_REPOS_DBUSER_PREFIX+'_STB')
 
-    print 'Change datasource OraSDPMDataSource'
-    cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_UMS')
-
-    print 'Change datasource wlsbjmsrpDataSource'
-    cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-    print 'Change datasource SOALocalTxDataSource'
-    cd('/JDBCSystemResource/SOALocalTxDataSource/JdbcResource/SOALocalTxDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-    print 'Change datasource SOADataSource'
-    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-
-    print 'Change datasource mds-owsm'
-    cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_MDS')
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()    
 
     print 'end datasources'
 
     print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
     serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
     setServerGroups(ADMIN_SERVER, serverGroup)                      
+
     print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
     serverGroup = ["OSB-MGD-SVRS-COMBINED"]
     setServerGroups('osb_server1', serverGroup)                      

@@ -13,7 +13,7 @@ end
 
 PuppetLint.configuration.send("disable_80chars")
 # PuppetLint.configuration.send("disable_right_to_left_relationship")
-# PuppetLint.configuration.send("disable_autoloader_layout")
+PuppetLint.configuration.send("disable_autoloader_layout")
 # PuppetLint.configuration.send("disable_names_containing_dash")
 PuppetLint.configuration.send("disable_class_inherits_from_params_class")
 # PuppetLint.configuration.send("disable_parameter_order")

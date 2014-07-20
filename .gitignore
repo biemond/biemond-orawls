@@ -1,2 +1,6 @@
 
 *.lock
+
+coverage/.last_run.json
+
+coverage/.resultset.json

@@ -15,11 +15,11 @@ define orawls::control (
   $server_type                = 'admin',  # admin|managed
   $target                     = 'Server', # Server|Cluster
   $server                     = 'AdminServer',
-  $adminserver_address        = hiera('domain_adminserver_address'    , "localhost"),
+  $adminserver_address        = hiera('domain_adminserver_address'    , 'localhost'),
   $adminserver_port           = hiera('domain_adminserver_port'       , 7001),
   $nodemanager_port           = hiera('domain_nodemanager_port'       , 5556),
   $action                     = 'start', # start|stop
-  $weblogic_user              = hiera('wls_weblogic_user'             , "weblogic"),
+  $weblogic_user              = hiera('wls_weblogic_user'             , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),
   $jsse_enabled               = hiera('wls_jsse_enabled'              , false),
   $custom_trust               = hiera('wls_custom_trust'              , false),
@@ -34,14 +34,14 @@ define orawls::control (
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_dir =  $wls_domains_dir 
+    $domains_dir =  $wls_domains_dir
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
 
   if $server_type == 'admin' {
     wls_adminserver{"${title}:AdminServer":
-      ensure                    => $action,   #running|start|abort|stop 
+      ensure                    => $action,   #running|start|abort|stop
       server_name               => $server,
       domain_name               => $domain_name,
       domain_path               => $domain_dir,
@@ -57,10 +57,10 @@ define orawls::control (
       trust_keystore_file       => $trust_keystore_file,
       trust_keystore_passphrase => $trust_keystore_passphrase,
     }
-  }  
-  else { 
+  }
+  else {
     wls_managedserver{"${title}:Server":
-      ensure                    => $action,   #running|start|abort|stop 
+      ensure                    => $action,   #running|start|abort|stop
       target                    => $target,
       server_name               => $server,
       domain_name               => $domain_name,

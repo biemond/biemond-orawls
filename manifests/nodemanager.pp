@@ -31,7 +31,7 @@ define orawls::nodemanager (
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_dir =  $wls_domains_dir 
+    $domains_dir =  $wls_domains_dir
   }
 
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
@@ -77,15 +77,15 @@ define orawls::nodemanager (
   case $::kernel {
     'Linux': {
       $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-      $nativeLib      = "linux/x86_64"
+      $nativeLib      = 'linux/x86_64'
       $suCommand      = "su -l ${os_user}"
-      $java_statement = "java"
+      $java_statement = 'java'
     }
     'SunOS': {
       $checkCommand   = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-      $nativeLib      = "solaris/x64"
+      $nativeLib      = 'solaris/x64'
       $suCommand      = "su - ${os_user}"
-      $java_statement = "java -d64"
+      $java_statement = 'java -d64'
     }
     default: {
       fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
@@ -95,7 +95,7 @@ define orawls::nodemanager (
   Exec {
     logoutput => $log_output,
   }
-  
+
   if $custom_identity == true {
     $replaceNodemanagerProperties = false
   } else {
@@ -108,7 +108,7 @@ define orawls::nodemanager (
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
       replace => $replaceNodemanagerProperties,
-      content => template("orawls/nodemgr/nodemanager.properties.erb"),
+      content => template('orawls/nodemgr/nodemanager.properties.erb'),
       owner   => $os_user,
       group   => $os_group,
       before  => Exec["startNodemanager ${title}"],
@@ -118,7 +118,7 @@ define orawls::nodemanager (
   if ( $custom_trust == true ) {
     $trust_env = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}"
   } else {
-    $trust_env = ""
+    $trust_env = ''
   }
 
   if $jsse_enabled == true {
@@ -129,7 +129,7 @@ define orawls::nodemanager (
 
   exec { "startNodemanager ${title}":
     command     => "nohup ${startHome}/startNodeManager.sh &",
-    environment => [ $env, "JAVA_HOME=${jdk_home_dir}", "JAVA_VENDOR=Oracle" ],
+    environment => [ $env, "JAVA_HOME=${jdk_home_dir}", 'JAVA_VENDOR=Oracle' ],
     unless      => $checkCommand,
     path        => $exec_path,
     user        => $os_user,
@@ -138,7 +138,7 @@ define orawls::nodemanager (
   }
 
   exec { "sleep 20 sec for wlst exec ${title}":
-      command     => "/bin/sleep 20",
+      command     => '/bin/sleep 20',
       subscribe   => Exec["startNodemanager ${title}"],
       refreshonly => true,
       path        => $exec_path,

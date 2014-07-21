@@ -15,18 +15,18 @@ define orawls::utils::oimconfig(
   $soaserver_name             = 'soa_server1',
   $oimserver_name             = 'oim_server1',
   $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
-  $repository_prefix          = hiera('repository_prefix'         , "DEV"),
-  $repository_password        = hiera('repository_password'       , "Welcome01"),
+  $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
+  $repository_password        = hiera('repository_password'       , 'Welcome01'),
   $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $domain_name                = hiera('domain_name'),
-  $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
-  $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
+  $adminserver_name           = hiera('domain_adminserver'        , 'AdminServer'),
+  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
-  $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
+  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),
   $os_user                    = hiera('wls_os_user'), # oracle
   $os_group                   = hiera('wls_os_group'), # dba
@@ -37,7 +37,7 @@ define orawls::utils::oimconfig(
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_dir =  $wls_domains_dir 
+    $domains_dir =  $wls_domains_dir
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
@@ -48,7 +48,7 @@ define orawls::utils::oimconfig(
   if ( $remote_config == true ) {
     file { "${download_dir}/${title}config_oim_remote.rsp":
       ensure  => present,
-      content => template("orawls/oim/oim_remote.rsp.erb"),
+      content => template('orawls/oim/oim_remote.rsp.erb'),
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
@@ -70,7 +70,7 @@ define orawls::utils::oimconfig(
   if ( $design_config == true  ) {
     file { "${download_dir}/${title}config_oim_design.rsp":
       ensure  => present,
-      content => template("orawls/oim/oim_design.rsp.erb"),
+      content => template('orawls/oim/oim_design.rsp.erb'),
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
@@ -95,13 +95,13 @@ define orawls::utils::oimconfig(
       # check if oim is already configured in this weblogic domain
       $oimValue = oim_configured( $domain_dir )
     } else {
-      fail("domain parameters are empty ")
+      fail('domain parameters are empty ')
     }
     #$oimValue = false
     if ( $oimValue == false ) {
       file { "${download_dir}/${title}config_oim_server.rsp":
         ensure  => present,
-        content => template("orawls/oim/oim_server.rsp.erb"),
+        content => template('orawls/oim/oim_server.rsp.erb'),
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
@@ -117,7 +117,7 @@ define orawls::utils::oimconfig(
         logoutput => true,
       }
 
-      orawls::control{"stopOIMOimServer1AfterConfig":
+      orawls::control{'stopOIMOimServer1AfterConfig':
         weblogic_home_dir          => $weblogic_home_dir,
         jdk_home_dir               => $jdk_home_dir,
         wls_domains_dir            => $domains_dir,
@@ -138,7 +138,7 @@ define orawls::utils::oimconfig(
         require                    => Exec["config oim server ${title}"],
       }
 
-      orawls::control{"stopOIMSoaServer1AfterConfig":
+      orawls::control{'stopOIMSoaServer1AfterConfig':
         weblogic_home_dir          => $weblogic_home_dir,
         jdk_home_dir               => $jdk_home_dir,
         wls_domains_dir            => $domains_dir,
@@ -159,7 +159,7 @@ define orawls::utils::oimconfig(
         require                    => [Orawls::Control['stopOIMOimServer1AfterConfig'],Exec["config oim server ${title}"]],
       }
 
-      orawls::control{"stopOIMAdminServerAfterConfig":
+      orawls::control{'stopOIMAdminServerAfterConfig':
         weblogic_home_dir          => $weblogic_home_dir,
         jdk_home_dir               => $jdk_home_dir,
         wls_domains_dir            => $domains_dir,
@@ -180,7 +180,7 @@ define orawls::utils::oimconfig(
         require                    => [Orawls::Control['stopOIMOimServer1AfterConfig'],Orawls::Control['stopOIMSoaServer1AfterConfig'],Exec["config oim server ${title}"]],
       }
 
-      orawls::control{"startOIMAdminServerAfterConfig":
+      orawls::control{'startOIMAdminServerAfterConfig':
         weblogic_home_dir          => $weblogic_home_dir,
         jdk_home_dir               => $jdk_home_dir,
         wls_domains_dir            => $domains_dir,

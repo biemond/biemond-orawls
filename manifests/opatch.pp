@@ -20,12 +20,12 @@ define orawls::opatch (
   $exec_path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
   if $source == undef {
-    $mountPoint = "puppet:///modules/orawls/"
+    $mountPoint = 'puppet:///modules/orawls/'
   } else {
     $mountPoint = $source
   }
 
-  if $ensure == "present" {
+  if $ensure == 'present' {
     if $remote_file == true {
       file { "${download_dir}/${patch_file}":
         ensure   => file,
@@ -39,7 +39,7 @@ define orawls::opatch (
       $disk1_file = "${download_dir}/${patch_file}"
     } else {
       $disk1_file = "${source}/${patch_file}"
-    }  
+    }
 
     exec { "extract opatch ${patch_file} ${title}":
       command   => "unzip -n ${disk1_file} -d ${download_dir}",
@@ -54,10 +54,10 @@ define orawls::opatch (
 
   case $::kernel {
     'Linux': {
-      $oraInstPath        = "/etc"
+      $oraInstPath        = '/etc'
     }
     'SunOS': {
-      $oraInstPath        = "/var/opt/oracle"
+      $oraInstPath        = '/var/opt/oracle'
     }
     default: {
         fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")

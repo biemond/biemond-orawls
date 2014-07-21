@@ -52,7 +52,7 @@ define orawls::bsu (
       $disk1_file = "${download_dir}/${patch_file}"
     } else {
       $disk1_file = "${source}/${patch_file}"
-    }      
+    }
 
     exec { "extract ${patch_file}":
       command   => "unzip -n ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",

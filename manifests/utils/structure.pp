@@ -14,7 +14,7 @@ define orawls::utils::structure (
   $download_dir         = undef,
   $log_output           = false,) {
 
-  $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
   Exec {
     logoutput => $log_output,
@@ -114,7 +114,7 @@ define orawls::utils::structure (
         require => Exec["create ${wls_domains_dir} directory"],
       }
     }
-  } 
+  }
   if $wls_apps_dir != undef {
     # also set permissions on apps_dir
     if !defined(File[$wls_apps_dir]) {
@@ -130,4 +130,3 @@ define orawls::utils::structure (
     }
   }
 }
-

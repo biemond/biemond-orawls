@@ -15,28 +15,30 @@
 class orawls::urandomfix() {
   $path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
-  package { "rng-tools": ensure => present, }
+  package { 'rng-tools':
+    ensure => present,
+  }
 
   case $::operatingsystem {
     'CentOS', 'RedHat', 'OracleLinux' : {
-      exec { "set urandom /etc/sysconfig/rngd":
+      exec { 'set urandom /etc/sysconfig/rngd':
         command => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
         unless  => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
-        require => Package["rng-tools"],
+        require => Package['rng-tools'],
         user    => 'root',
         path    => $path,
       }
 
-      service { "start rngd service":
+      service { 'start rngd service':
         ensure  => true,
-        name    => "rngd",
+        name    => 'rngd',
         enable  => true,
-        require => Exec["set urandom /etc/sysconfig/rngd"],
+        require => Exec['set urandom /etc/sysconfig/rngd'],
       }
 
-      exec { "chkconfig rngd":
-        command => "chkconfig --add rngd",
-        require => Service["start rngd service"],
+      exec { 'chkconfig rngd':
+        command => 'chkconfig --add rngd',
+        require => Service['start rngd service'],
         user    => 'root',
         unless  => "chkconfig | /bin/grep 'rngd'",
         path    => $path,
@@ -44,23 +46,23 @@ class orawls::urandomfix() {
 
     }
     'Ubuntu', 'Debian', 'SLES': {
-      exec { "set urandom /etc/default/rng-tools":
+      exec { 'set urandom /etc/default/rng-tools':
         command => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
         unless  => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",
-        require => Package["rng-tools"],
+        require => Package['rng-tools'],
         user    => 'root',
         path    => $path,
       }
 
-      service { "start rng-tools service":
+      service { 'start rng-tools service':
         ensure  => true,
-        name    => "rng-tools",
+        name    => 'rng-tools',
         enable  => true,
-        require => Exec["set urandom /etc/default/rng-tools"],
+        require => Exec['set urandom /etc/default/rng-tools'],
       }
     }
     default: {
       fail("Unrecognized operating system ${::operatingsystem}, please use it on a Linux host")
-    }    
+    }
   }
 }

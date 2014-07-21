@@ -1,6 +1,6 @@
 #
 #
-define orawls::resourceadapter( 
+define orawls::resourceadapter(
   $middleware_home_dir       = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $weblogic_home_dir         = hiera('wls_weblogic_home_dir'),
   $jdk_home_dir              = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
@@ -13,33 +13,33 @@ define orawls::resourceadapter(
   $adapter_entry             = undef,
   $adapter_entry_property    = undef,
   $adapter_entry_value       = undef,
-  $adminserver_address       = hiera('domain_adminserver_address', "localhost"),
+  $adminserver_address       = hiera('domain_adminserver_address', 'localhost'),
   $adminserver_port          = hiera('domain_adminserver_port'   , 7001),
   $userConfigFile            = hiera('domain_user_config_file'   , undef),
   $userKeyFile               = hiera('domain_user_key_file'      , undef),
-  $weblogic_user             = hiera('wls_weblogic_user'         , "weblogic"),
+  $weblogic_user             = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password         = hiera('domain_wls_password'       , undef),
   $os_user                   = hiera('wls_os_user'), # oracle
   $os_group                  = hiera('wls_os_group'), # dba
   $download_dir              = hiera('wls_download_dir'), # /data/install
   $log_output                = false, # true|false
-) 
+)
 {
 
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
-    $domains_dir =  $wls_domains_dir 
+    $domains_dir =  $wls_domains_dir
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
 
   # if these params are empty always continue
   if $domain_name == undef or $adapter_name == undef or $adapter_plan_dir == undef or $adapter_plan == undef {
-    fail("domain, adapter_name,adapter_plan_dir or adapter_plan is nill")
+    fail('domain, adapter_name,adapter_plan_dir or adapter_plan is nill')
   } else {
     # check if the object already exists on the weblogic domain
-    $found = artifact_exists($domain_dir ,"resource",$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
+    $found = artifact_exists($domain_dir,'resource',$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
     if $found == undef {
       $continuePlan = true
       notify {"wls::resourceadapter ${title} continue cause nill":}
@@ -55,10 +55,10 @@ define orawls::resourceadapter(
 
   # if these params are empty always continue
   if $domain_name == undef or $adapter_name == undef or $adapter_entry == undef {
-    fail("domain, adapter_name or adapter_entry is nill")
+    fail('domain, adapter_name or adapter_entry is nill')
   } else {
     # check if the object already exists on the weblogic domain
-    $foundEntry = artifact_exists($domain_dir ,"resource_entry",$adapter_name,$adapter_entry )
+    $foundEntry = artifact_exists($domain_dir ,'resource_entry',$adapter_name,$adapter_entry )
     if $foundEntry == undef {
       $continueEntry = true
       notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue cause nill":}
@@ -82,7 +82,7 @@ define orawls::resourceadapter(
     $credentials =   " -user ${weblogic_user} -password ${weblogic_password}"
     $useStoreConfig = false
   } else {
-    fail("userConfigFile or wlsUser parameter is empty ")
+    fail('userConfigFile or wlsUser parameter is empty')
   }
 
   # download the plan and put it on the right place
@@ -96,7 +96,7 @@ define orawls::resourceadapter(
         group   => $os_group,
         backup  => false,
         path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template("orawls/adapter_plans/Plan_DB.xml.erb"),
+        content => template('orawls/adapter_plans/Plan_DB.xml.erb'),
       }
     }
   } elsif $adapter_name == 'JmsAdapter' {
@@ -109,9 +109,9 @@ define orawls::resourceadapter(
         group   => $os_group,
         backup  => false,
         path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template("orawls/adapter_plans/Plan_JMS.xml.erb"),
+        content => template('orawls/adapter_plans/Plan_JMS.xml.erb'),
       }
-    } 
+    }
   } elsif $adapter_name == 'AqAdapter' {
     if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
       file { "${adapter_plan_dir}/${adapter_plan}":
@@ -122,9 +122,9 @@ define orawls::resourceadapter(
         group   => $os_group,
         backup  => false,
         path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template("orawls/adapter_plans/Plan_AQ.xml.erb"),
+        content => template('orawls/adapter_plans/Plan_AQ.xml.erb'),
       }
-    } 
+    }
   } else {
     fail("adapter_name ${adapter_name} is unknown, choose for DbAdapter,JmsAdapter or AqAdapter ")
   }
@@ -134,10 +134,10 @@ define orawls::resourceadapter(
 
     case $::kernel {
       'Linux': {
-        $java_statement = "java weblogic.Deployer"
+        $java_statement = 'java weblogic.Deployer'
       }
       'SunOS': {
-        $java_statement = "java -d64 weblogic.Deployer"
+        $java_statement = 'java -d64 weblogic.Deployer'
       }
     }
 
@@ -185,7 +185,7 @@ define orawls::resourceadapter(
       group   => $os_group,
       backup  => false,
       path    => "${download_dir}/${title}redeployResourceAdapter.py",
-      content => template("orawls/adapter_plans/redeployResourceAdapter.py.erb"),
+      content => template('orawls/adapter_plans/redeployResourceAdapter.py.erb'),
       before  => Exec["exec redeploy adapter plan ${title}"],
     }
 
@@ -196,7 +196,7 @@ define orawls::resourceadapter(
       group   => $os_group,
       backup  => false,
       path    => "${download_dir}/${title}createResourceAdapterEntry.py",
-      content => template("orawls/adapter_plans/createResourceAdapterEntry.py.erb"),
+      content => template('orawls/adapter_plans/createResourceAdapterEntry.py.erb'),
       before  => Exec["exec create resource adapter entry ${title}"],
     }
 

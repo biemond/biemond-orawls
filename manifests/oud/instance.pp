@@ -1,6 +1,6 @@
 # == Define: orawls::oud::instance
 #
-# create an Oracle Unified Directory LDAP instance 
+# create an Oracle Unified Directory LDAP instance
 ##
 define orawls::oud::instance (
   $version                    = undef,
@@ -19,7 +19,7 @@ define orawls::oud::instance (
   $log_output                 = false, # true|false
 ){
 
-  $instances_home = "${oracle_base_home_dir}/oud_instances" 
+  $instances_home = "${oracle_base_home_dir}/oud_instances"
 
   if !defined(File[$instances_home]) {
     file { $instances_home:
@@ -67,6 +67,4 @@ define orawls::oud::instance (
     group     => $os_group,
     logoutput => true,
   }
-    
-
 }

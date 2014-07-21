@@ -3,7 +3,7 @@
 # start or stop an Oracle Unified Directory LDAP instance
 ##
 define orawls::oud::control(
-  $oud_instances_home_dir     = undef, 
+  $oud_instances_home_dir     = undef,
   $oud_instance_name          = undef,
   $action                     = 'start', # start|stop
   $os_user                    = hiera('wls_os_user'), # oracle
@@ -11,7 +11,7 @@ define orawls::oud::control(
   $log_output                 = false, # true|false
 ){
 
-  $exec_path   = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
+  $exec_path   = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
 
   case $::kernel {
     'Linux': {
@@ -22,7 +22,7 @@ define orawls::oud::control(
     }
     default: {
       fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
-    }    
+    }
   }
 
   if $action == 'start' {
@@ -45,5 +45,5 @@ define orawls::oud::control(
       timeout     => 0,
       logoutput   => $log_output,
     }
-  }  
+  }
 }

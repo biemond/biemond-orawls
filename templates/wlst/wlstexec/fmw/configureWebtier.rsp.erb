@@ -63,7 +63,7 @@ OHS_COMPONENT_NAME=<%= @instance_name %>
 [RELATIONSHIPS]
 
 #If set to true, the instance and components will be registered with an existing weblogic server
-ASSOCIATE_WEBTIER_WITH_DOMAIN=true
+ASSOCIATE_WEBTIER_WITH_DOMAIN=<%= @domain_configure %>
 
 #Provide an existing domain host name. Required only if ASSOCIATE_WEBTIER_WITH_DOMAIN is set to true
 DOMAIN_HOST_NAME=<%= @adminserver_address %>

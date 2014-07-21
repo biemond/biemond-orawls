@@ -9,13 +9,14 @@ define orawls::utils::webtier(
   $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
   $domain_name                = hiera('domain_name'),
-  $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
+  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $action_name                = 'create', #create|delete
   $webgate_configure          = false,
+  $domain_configure           = true, # 11g register ohs instance with a domain
   $instance_name              = undef,
   $machine_name               = undef,
-  $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
+  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),
   $os_user                    = hiera('wls_os_user'), # oracle
   $os_group                   = hiera('wls_os_group'), # dba
@@ -35,7 +36,7 @@ define orawls::utils::webtier(
   if $version == 1212 or $version == 1213{
     file { "${download_dir}/${title}_createWebtier.py":
       ensure  => present,
-      content => template("orawls/wlst/wlstexec/fmw/createWebtier.py.erb"),
+      content => template('orawls/wlst/wlstexec/fmw/createWebtier.py.erb'),
       backup  => false,
       replace => true,
       mode    => '0775',
@@ -73,7 +74,7 @@ define orawls::utils::webtier(
 
     file { "${download_dir}/${title}_configureWebtier.rsp":
       ensure  => present,
-      content => template("orawls/wlst/wlstexec/fmw/configureWebtier.rsp.erb"),
+      content => template('orawls/wlst/wlstexec/fmw/configureWebtier.rsp.erb'),
       backup  => false,
       replace => true,
       mode    => '0775',
@@ -119,5 +120,4 @@ define orawls::utils::webtier(
     }
 
   }
-
-}    
+}

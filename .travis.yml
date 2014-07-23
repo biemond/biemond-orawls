@@ -6,9 +6,9 @@ bundler_args: --without development
 before_install:
   -  gem update --system 2.1.11
 script:
-  - bundle exec rake spec
   - bundle exec rake syntax
   - bundle exec rake lint
+  - bundle exec rake ci:setup:rspec spec
 notifications:
   email:
     - biemond@gmail.com

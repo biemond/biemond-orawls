@@ -1,6 +1,5 @@
-
+.bundle
 *.lock
-
-coverage/.last_run.json
-
-coverage/.resultset.json
+coverage
+coverage
+spec/reports

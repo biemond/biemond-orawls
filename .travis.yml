@@ -13,7 +13,6 @@ notifications:
   email:
     - biemond@gmail.com
 env:
-  - PUPPET_VERSION=3.1.1
   - PUPPET_VERSION=3.3.2
   - PUPPET_VERSION=3.4.3
   - PUPPET_VERSION=3.6.2

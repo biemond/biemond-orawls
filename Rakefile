@@ -34,7 +34,7 @@ PuppetLint.configuration.send("disable_double_quoted_strings")
 #--no-puppet_url_without_modules
 # PuppetLint.configuration.send("disable_variable_contains_dash")
 # PuppetLint.configuration.send("disable_hard_tabs")
-PuppetLint.configuration.send("disable_trailing_whitespace")
+#PuppetLint.configuration.send("disable_trailing_whitespace")
 # PuppetLint.configuration.send("disable_2sp_soft_tabs")
 # PuppetLint.configuration.send("disable_arrow_alignment")
 # PuppetLint.configuration.send("disable_unquoted_resource_title")

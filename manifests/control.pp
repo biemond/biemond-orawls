@@ -70,7 +70,7 @@ define orawls::control (
       weblogic_password         => $weblogic_password,
       jdk_home_dir              => $jdk_home_dir,
       adminserver_address       => $adminserver_address,
-      adminserver_port          => $nodemanager_port,
+      adminserver_port          => $adminserver_port,
     }
   }
 }

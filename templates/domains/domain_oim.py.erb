@@ -266,6 +266,13 @@ set('PasswordEncrypted',OIM_REPOS_DBPASSWORD)
 cd('Properties/NO_NAME_0/Property/user')
 set('Value',OIM_REPOS_DBUSER_PREFIX+'_MDS')
 
+print 'Change soaOIMLookupDB'
+cd('/JDBCSystemResource/soaOIMLookupDB/JdbcResource/soaOIMLookupDB/JDBCDriverParams/NO_NAME_0')
+set('URL',OIM_REPOS_DBURL)
+set('PasswordEncrypted',OIM_REPOS_DBPASSWORD)
+cd('Properties/NO_NAME_0/Property/user')
+set('Value',OIM_REPOS_DBUSER_PREFIX+'_OIM')
+
 print 'Change oimJMSStoreDS'
 cd('/JDBCSystemResource/oimJMSStoreDS/JdbcResource/oimJMSStoreDS/JDBCDriverParams/NO_NAME_0')
 set('URL',OIM_REPOS_DBURL)

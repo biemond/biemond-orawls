@@ -1,5 +1,4 @@
 .bundle
 *.lock
 coverage
-coverage
 spec/reports

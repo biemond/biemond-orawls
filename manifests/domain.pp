@@ -436,6 +436,7 @@ define orawls::domain (
         command     => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
         require     => [Exec["execwlst ${domain_name} ${title}"],File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
         timeout     => 0,
+        cwd         => $download_dir, # Added since psa binary saves and changes to current dir
         path        => $exec_path,
         user        => $os_user,
         group       => $os_group,

@@ -322,7 +322,6 @@ if WEBLOGIC_VERSION == 1213:
       cd('/JDBCSystemResource/BamDataSource/JdbcResource/BamDataSource/JDBCDataSourceParams/NO_NAME_0')
       set('GlobalTransactionsProtocol','TwoPhaseCommit')
 
-
     print 'end datasources'
 
     print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
@@ -361,6 +360,16 @@ readDomain(DOMAIN_PATH)
 
 
 if WEBLOGIC_VERSION == 1213:
+  if BAM_ENABLED == true:
+    print 'change BAM/BPM ForeignJNDIProviders'
+    cd('/')
+    cd('/ForeignJNDIProvider/BAMForeignJndiProvider')
+    set('ProviderURL','t3://<%= @adminserver_address %>:9001')
+
+    cd('/ForeignJNDIProvider/BPMForeignJndiProvider')
+    set('ProviderURL','t3://<%= @adminserver_address %>:8001')
+    print 'end BAM/BPM ForeignJNDIProviders'
+
   print('Create machine LocalMachine with type UnixMachine')
   cd('/')
   create('LocalMachine','UnixMachine')

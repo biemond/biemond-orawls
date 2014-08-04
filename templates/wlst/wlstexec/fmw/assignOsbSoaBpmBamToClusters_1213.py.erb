@@ -1,6 +1,6 @@
 
-WLHOME='<%= @weblogic_home_dir %>'
-DOMAIN_PATH='<%= @domain_dir %>'
+WLHOME      ='<%= @weblogic_home_dir %>'
+DOMAIN_PATH ='<%= @domain_dir %>'
 
 bpmEnabled     = <%= @bpm_enabled %>
 bamEnabled     = <%= @bam_enabled %>
@@ -13,6 +13,17 @@ SOAClusterName = '<%= @soa_cluster_name %>'
 BAMClusterName = '<%= @bam_cluster_name %>'
 OSBClusterName = '<%= @osb_cluster_name %>'
 Admin          = '<%= @adminserver_name %>'
+
+if   bamEnabled == true and soaEnabled == true and osbEnabled == true:
+    AllClusters = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @bam_cluster_name %>'
+elif bamEnabled == true and soaEnabled == true and osbEnabled == false:
+    AllClusters = '<%= @soa_cluster_name %>,<%= @bam_cluster_name %>'
+elif bamEnabled == false and soaEnabled == true and osbEnabled == true:
+    AllClusters = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>'
+elif bamEnabled == false and soaEnabled == true and osbEnabled == false:
+    AllClusters = '<%= @soa_cluster_name %>'
+elif bamEnabled == false and soaEnabled == false and osbEnabled == true:
+    AllClusters = '<%= @osb_cluster_name %>'
 
 def getFirstClusterServer(cluster):
     s = ls('/Server')
@@ -161,11 +172,22 @@ print "updateDomain"
 updateDomain()
 dumpStack()
 
-if bamEnabled == true:
-    print "to do fix BAM foreign jndi"
+print "change Coherence"
+if soaEnabled == true:
     cd('/')
-    delete('BAMForeignJndiProvider','ForeignJNDIProvider')
-    delete('BPMForeignJndiProvider','ForeignJNDIProvider')
+    assign('Cluster',SOAClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+if osbEnabled == true:
+    cd('/')
+    assign('Cluster',OSBClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+if bamEnabled == true:
+    cd('/')
+    assign('Cluster',BAMClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+
+cd('/')
+cd('/CoherenceClusterSystemResource/defaultCoherenceCluster')
+set('Target',AllClusters)
+cd('CoherenceResource/defaultCoherenceCluster/CoherenceClusterParams/NO_NAME_0')
+set('UnicastListenPort',9991) 
 
 if soaEnabled == true:
     print "fix SOA"
@@ -177,6 +199,27 @@ if osbEnabled == true:
     delete('OSBAQJMSServer'        ,'JMSSystemResource')
     delete('UMSAQJMSSystemResource','JMSSystemResource')
     createSAFAgents(OSBClusterName, 1)
+
+if bamEnabled == true:
+    print "to do fix BAM foreign jndi"
+    cd('/')
+    cd('/ForeignJNDIProvider/BAMForeignJndiProvider')
+    set('Target',SOAClusterName)
+    cd('/ForeignJNDIProvider/BPMForeignJndiProvider')
+    set('Target',BAMClusterName)
+    
+    print "re-create BAM JMS"
+    cd('/')
+    delete('BamCQServiceJmsSystemResource_bam_server1','JMSSystemResource')
+    delete('BamServerJmsSystemResource'               ,'JMSSystemResource')
+
+    delete('BamCQServiceJmsServer_bam_server1'   ,'JMSServer')
+    delete('BamServerJmsServer_bam_server1'      ,'JMSServer')
+
+    delete('BamCQServiceJmsFileStore_bam_server1','FileStore')
+    delete('BamServerJmsFileStore_bam_server1'   ,'FileStore')
+
+
 
 print "last updateDomain"
 updateDomain()

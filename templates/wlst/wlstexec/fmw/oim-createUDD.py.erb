@@ -199,7 +199,7 @@ udd.setJNDIName('oracle.j2ee.ws.server.async.DefaultRequestErrorQueue')
 udd.setJMSCreateDestinationIdentifier('oracle.j2ee.ws.server.async.DefaultRequestErrorQueue')
 udd.setSubDeploymentName('JRFJMSSubDM')
 
-udd=create('JRFWSAsyncRequestErrorQueue','UniformDistributedQueue')
+udd=create('JRFWSAsyncRequestQueue','UniformDistributedQueue')
 udd.setJNDIName('oracle.j2ee.ws.server.async.DefaultRequestQueue')
 udd.setJMSCreateDestinationIdentifier('oracle.j2ee.ws.server.async.DefaultRequestQueue')
 udd.setSubDeploymentName('JRFJMSSubDM')

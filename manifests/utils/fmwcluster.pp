@@ -323,6 +323,35 @@ define orawls::utils::fmwcluster (
         }
       }
 
+      if( $oim_enabled == true ) {
+
+        # the py script used by the wlst
+        file { "${download_dir}/oim-createUDD${title}.py":
+          ensure  => present,
+          content => template('orawls/wlst/wlstexec/fmw/oim-createUDD.py.erb'),
+          backup  => false,
+          replace => true,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
+
+        # execute WLST script
+        exec { "execwlst oim-createUDD.py ${title}":
+          command     => "${javaCommand} ${download_dir}/oim-createUDD${title}.py",
+          environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                          "JAVA_HOME=${jdk_home_dir}"],
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => [File["${download_dir}/oim-createUDD${title}.py"],
+                          Orawls::Control["ShutdownAdminServerForSoa${title}"],
+                          Exec[$last_soa_step]],
+        }
+
+      }
+
       #startup adminserver for offline WLST scripts
       orawls::control{"StartupAdminServerForSoa${title}":
         weblogic_home_dir          => $weblogic_home_dir,

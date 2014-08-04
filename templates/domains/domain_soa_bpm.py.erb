@@ -26,7 +26,7 @@ ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -
 <% if @java_arguments["SOA"] %>
 SOA_JAVA_ARGUMENTS='<%= @java_arguments["SOA"] %>'
 <% else %>
-SOA_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
+SOA_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=752m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
 <% end %>
 
 <% if @java_arguments["BAM"] %>
@@ -293,6 +293,35 @@ if WEBLOGIC_VERSION == 1213:
     print 'Call getDatabaseDefaults which reads the service table'
     getDatabaseDefaults()    
 
+    print 'Change datasource EDNDataSource'
+    cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDriverParams/NO_NAME_0')
+    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+    set('UseXADataSourceInterface','True') 
+    cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDataSourceParams/NO_NAME_0')
+    set('GlobalTransactionsProtocol','TwoPhaseCommit')
+
+    print 'Change datasource OraSDPMDataSource'
+    cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
+    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+    set('UseXADataSourceInterface','True') 
+    cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDataSourceParams/NO_NAME_0')
+    set('GlobalTransactionsProtocol','TwoPhaseCommit')
+
+    print 'Change datasource SOADataSource'
+    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
+    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+    set('UseXADataSourceInterface','True') 
+    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDataSourceParams/NO_NAME_0')
+    set('GlobalTransactionsProtocol','TwoPhaseCommit')
+
+    if BAM_ENABLED == true:
+      print 'Change datasource BamDataSource'
+      cd('/JDBCSystemResource/BamDataSource/JdbcResource/BamDataSource/JDBCDriverParams/NO_NAME_0')
+      set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+      set('UseXADataSourceInterface','True') 
+      cd('/JDBCSystemResource/BamDataSource/JdbcResource/BamDataSource/JDBCDataSourceParams/NO_NAME_0')
+      set('GlobalTransactionsProtocol','TwoPhaseCommit')
+
     print 'end datasources'
 
     print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
@@ -331,6 +360,16 @@ readDomain(DOMAIN_PATH)
 
 
 if WEBLOGIC_VERSION == 1213:
+  if BAM_ENABLED == true:
+    print 'change BAM/BPM ForeignJNDIProviders'
+    cd('/')
+    cd('/ForeignJNDIProvider/BAMForeignJndiProvider')
+    set('ProviderURL','t3://<%= @adminserver_address %>:9001')
+
+    cd('/ForeignJNDIProvider/BPMForeignJndiProvider')
+    set('ProviderURL','t3://<%= @adminserver_address %>:8001')
+    print 'end BAM/BPM ForeignJNDIProviders'
+
   print('Create machine LocalMachine with type UnixMachine')
   cd('/')
   create('LocalMachine','UnixMachine')

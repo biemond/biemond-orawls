@@ -24,6 +24,8 @@ define orawls::utils::fmwcluster (
   $soa_enabled                = false, # true|false
   $oam_enabled                = false, # true|false
   $oim_enabled                = false, # true|false
+  $b2b_enabled                = false, # true|false
+  $ess_enabled                = false, # true|false
   $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
   $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),

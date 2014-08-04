@@ -6,6 +6,8 @@ bpmEnabled     = <%= @bpm_enabled %>
 bamEnabled     = <%= @bam_enabled %>
 soaEnabled     = <%= @soa_enabled %>
 osbEnabled     = <%= @osb_enabled %>
+b2bEnabled     = <%= @b2b_enabled %>
+essEnabled     = <%= @ess_enabled %>
 
 SOAClusterName = '<%= @soa_cluster_name %>'
 BAMClusterName = '<%= @bam_cluster_name %>'
@@ -25,6 +27,23 @@ def getFirstClusterServer(cluster):
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
                 return token    
+
+def getClusterServers(cluster):
+    servers = []
+    s = ls('/Server')
+    clustername = " "
+    for token in s.split("drw-"):
+        token=token.strip().lstrip().rstrip()
+        path="/Server/"+token
+        cd(path)
+        if not token == Admin and not token == '':
+            clustername = get('Cluster')
+            searchClusterStr = cluster+":"
+            clusterNameStr = str(clustername)
+            if not clusterNameStr.find(searchClusterStr) == -1:
+                servers.append(token)
+
+    return servers   
 
 def createSAFAgents(cluster, currentServerCnt):
     print ' '
@@ -61,12 +80,17 @@ def createSAFAgents(cluster, currentServerCnt):
     
                 serverCnt = serverCnt + 1
 
-osbServerGroup  = ["OSB-MGD-SVRS-COMBINED"]
-serverGroupNone = []
-
 readDomain(DOMAIN_PATH)
 
 cd('/')
+
+if soaEnabled == true:
+    cd('/Servers/soa_server1')
+    set('ListenAddress','')
+
+if bamEnabled == true:
+    cd('/Servers/bam_server1')
+    set('ListenAddress','')
 
 if osbEnabled == true:
     cd('/Servers/osb_server1')
@@ -74,26 +98,87 @@ if osbEnabled == true:
 
 updateDomain()
 
+serverGroupNone = []
+
+if bamEnabled == true:
+    print "change bam"
+    bamServerGroup = ["BAM12-MGD-SVRS"]
+
+    cd('/')
+    setServerGroups('bam_server1', serverGroupNone)
+
+    bamServers = getClusterServers(BAMClusterName)
+    cd('/')
+    for i in range(len(bamServers)):
+      print "change servergroups for " + bamServers[i]
+      setServerGroups(bamServers[i] , bamServerGroup)                      
+
+    print "delete old bam"
+    delete('bam_server1', 'Server')
+
+if soaEnabled == true:
+    print "change soa"
+
+    if essEnabled == true:
+        soaServerGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
+    else:
+        soaServerGroup = ["SOA-MGD-SVRS"]
+
+    cd('/')
+    setServerGroups('soa_server1', serverGroupNone)                      
+
+    soaServers = getClusterServers(SOAClusterName)
+    cd('/')
+    for i in range(len(soaServers)):
+      print "change servergroups for " + soaServers[i]
+      setServerGroups(soaServers[i] , soaServerGroup)                      
+
+    print "delete old soa"
+    delete('soa_server1', 'Server')
+
 if osbEnabled == true:
+    print "change osb"
+    osbServerGroup  = ["OSB-MGD-SVRS-COMBINED"]
+
     cd('/')
     setServerGroups('osb_server1', serverGroupNone)                      
-    setServerGroups('OsbServer1' , osbServerGroup)                      
+
+    osbServers = getClusterServers(OSBClusterName)
+    cd('/')
+    for i in range(len(osbServers)):
+      print "change servergroups for " + osbServers[i]
+      setServerGroups(osbServers[i] , osbServerGroup)                      
+
+    print "delete old osb"
     delete('osb_server1', 'Server')
     OSBServer1Name = getFirstClusterServer(OSBClusterName)
     cd('/')
+    print "osb old Singleton"
     assign('AppDeployment', 'Service Bus Cluster Singleton Marker Application', 'Target', OSBServer1Name)
     assign('AppDeployment', 'Service Bus Domain Singleton Marker Application' , 'Target', OSBServer1Name)
 
+print "updateDomain"
 updateDomain()
 dumpStack()
 
+if bamEnabled == true:
+    print "to do fix BAM foreign jndi"
+    cd('/')
+    delete('BAMForeignJndiProvider','ForeignJNDIProvider')
+    delete('BPMForeignJndiProvider','ForeignJNDIProvider')
+
+if soaEnabled == true:
+    print "fix SOA"
+
 if osbEnabled == true:
+    print "fix OSB jms"
     cd('/')
     delete('ReliableWseeSAFAgent'  ,'SAFAgent')
     delete('OSBAQJMSServer'        ,'JMSSystemResource')
     delete('UMSAQJMSSystemResource','JMSSystemResource')
     createSAFAgents(OSBClusterName, 1)
 
+print "last updateDomain"
 updateDomain()
 dumpStack()
 

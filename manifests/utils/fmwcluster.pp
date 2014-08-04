@@ -348,8 +348,7 @@ define orawls::utils::fmwcluster (
           group       => $os_group,
           logoutput   => $log_output,
           require     => [File["${download_dir}/oim-createUDD${title}.py"],
-                          Orawls::Control["ShutdownAdminServerForSoa${title}"],
-                          Exec[$last_soa_step]],
+                          Orawls::Control["ShutdownAdminServerForSoa${title}"]]
         }
 
       }

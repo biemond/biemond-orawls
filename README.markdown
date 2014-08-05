@@ -24,7 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.12 SOA 12.1.3 Cluster support, 12.1.3 FMW BAM Foreign JNDI + XA datasource fixes, 11g option to associate WebTier with a domain
+- 1.0.12 SOA 12.1.3 Cluster support, 12.1.3 FMW fixes, OAM & OIM cluster support, 11g option to associate WebTier with a domain
 - 1.0.11 OSB 12.1.3 Cluster support + FMW domains update for datasources based on servicetable, target & targettype on all wls types expects an array, same for servers parameter on wls_domain type + users parameter on wls_group type + virtualhostnames parameter on wls_virtual_host + jndinames, extraproperties, extrapropertiesvalues parameters on wls_datasource & wls_foreign_server 
 - 1.0.10 fixed WebLogic 12.1.2 & 12.1.3 standard domain bug.
 - 1.0.9 WebLogic 12.1.3 (infra) support - support for 12.1.3 SOA,OSB,B2B,MFT installation - 12.1.3 Standard, ADF, SOA, OSB domain (no cluster) - wls_adminserver type fix when using no custom trust
@@ -73,9 +73,9 @@ see the following usages below
 ###Fusion Middleware Features 11g & 12.1.3
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - [WebTier](#webtier) Oracle HTTP server
-- [OSB, SOA Suite](#fmwcluster) ( with BPM ) and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
+- [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
-- [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate
+- [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate, Also Cluster support for OIM OAM 
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
@@ -874,6 +874,83 @@ or with custom identity and custom truststore
         custom_identity_alias:                 'admin'
         custom_identity_privatekey_passphrase: 'welcome'
 
+FMW 11g, 12.1.2 , 12.1.3 ADF domain with webtier 
+
+    # create a standard domain
+    domain_instances:
+      'adf_domain':
+         domain_template:          "adf"
+         development_mode:         true
+         log_output:               *logoutput
+         nodemanager_address:      "10.10.10.21"
+         repository_database_url:  "jdbc:oracle:thin:@wlsdb.example.com:1521/wlsrepos.example.com"
+         repository_prefix:        "DEV"
+         repository_password:      "Welcome01"
+         repository_sys_password:  "Welcome01"
+         rcu_database_url:         "wlsdb.example.com:1521:wlsrepos.example.com"
+         webtier_enabled:          true
+
+FMW 11g WebLogic SOA Suite domain
+
+    # create a standard domain
+    domain_instances:
+      'wlsDomain':
+         domain_template:          "osb_soa_bpm"
+         development_mode:         false
+         log_output:               *logoutput
+         repository_database_url:  "jdbc:oracle:thin:@10.10.10.5:1521/test.oracle.com"
+         repository_prefix:        "DEV"
+         repository_password:      "Welcome01"
+
+FMW 11g WebLogic OIM / OAM domain
+
+    domain_instances:
+      'oimDomain':
+        version:                  1112
+        domain_template:          "oim"
+        development_mode:         true
+        log_output:               *logoutput
+        repository_database_url:  "jdbc:oracle:thin:@oimdb.example.com:1521/oimrepos.example.com"
+        repository_prefix:        "DEV"
+        repository_password:      "Welcome01"
+        repository_sys_password:  "Welcome01"
+        rcu_database_url:         "oimdb.example.com:1521/oimrepos.example.com"
+
+FMW 12.1.3 WebLogic SOA Suite domain
+
+    # create a soa domain
+    domain_instances:
+      'soa_domain':
+        version:                  1213
+        domain_template:          "osb_soa_bpm"
+        bam_enabled:              true
+        b2b_enabled:              true
+        ess_enabled:              true
+        development_mode:         true
+        log_output:               *logoutput
+        nodemanager_address:      "10.10.10.21"
+        repository_database_url:  "jdbc:oracle:thin:@soadb.example.com:1521/soarepos.example.com"
+        repository_prefix:        "DEV"
+        repository_password:      "Welcome01"
+        repository_sys_password:  "Welcome01"
+        rcu_database_url:         "soadb.example.com:1521:soarepos.example.com"
+
+FMW 12.1.3 WebLogic OSB domain
+
+    domain_instances:
+      'osb_domain':
+         version:                  *wls_version
+         domain_template:          "osb"
+         development_mode:         true
+         log_output:               *logoutput
+         nodemanager_address:      *domain_adminserver_address
+         repository_database_url:  "jdbc:oracle:thin:@osbdb.example.com:1521/osbrepos.example.com"
+         repository_prefix:        "DEV"
+         repository_password:      "Welcome01"
+         repository_sys_password:  "Welcome01"
+         rcu_database_url:         "osbdb.example.com:1521:osbrepos.example.com"
+
+
 
 ###packdomain 
 __orawls::packdomain__ pack a WebLogic Domain and add this to the download folder
@@ -1286,10 +1363,10 @@ or when you set the defaults hiera variables
 
 
 ###fmwcluster
-__orawls::utils::fmwcluster__ convert existing cluster to a osb or soa suite cluster (BPM is optional) and also convert BAM to a BAM cluster  
-see this for an example https://github.com/biemond/biemond-orawls-vagrant-solaris-soa  
-you need to create a osb, soa or bam cluster with some managed servers first 
-for the osb or soa suite managed servers make sure to set the coherence arguments parameters  
+__orawls::utils::fmwcluster__ convert existing cluster to a OSB or SOA suite cluster (BPM is optional) and also convert BAM to a BAM cluster. This will also work for OIM / OAM cluster   
+
+You first need to create some OSB, SOA or BAM clusters and add some managed servers to these clusters 
+for OSB 11g or SOA Suite 11g managed servers make sure to also set the coherence arguments parameters  
 
 
     $default_params = {}
@@ -1298,17 +1375,36 @@ for the osb or soa suite managed servers make sure to set the coherence argument
 
 hiera configuration
 
+    # FMW 11g cluster 
     fmw_cluster_instances:
       'soaCluster':
-         domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/soa_basedomain"
+         domain_name:          "soa_domain"
          soa_cluster_name:     "SoaCluster"
          bam_cluster_name:     "BamCluster"
          osb_cluster_name:     "OsbCluster"
-         log_output:           true
+         log_output:           *logoutput
          bpm_enabled:          true
          bam_enabled:          true
          soa_enabled:          true
          osb_enabled:          true
+         repository_prefix:    "DEV"
+
+    # FMW 12.1.3 cluster 
+    fmw_cluster_instances:
+      'soaCluster':
+        domain_name:          "soa_domain"
+        soa_cluster_name:     "SoaCluster"
+        bam_cluster_name:     "BamCluster"
+        osb_cluster_name:     "OsbCluster"
+        log_output:           *logoutput
+        bpm_enabled:          true
+        bam_enabled:          true
+        soa_enabled:          true
+        osb_enabled:          true
+        b2b_enabled:          true
+        ess_enabled:          true
+        repository_prefix:    "DEV"
+
 
 ###fmwclusterjrf
 __orawls::utils::fmwclusterjrf__ convert existing cluster to a ADF/JRF cluster

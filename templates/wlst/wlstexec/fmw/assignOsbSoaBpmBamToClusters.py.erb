@@ -98,14 +98,16 @@ cd('/')
 
 if soaEnabled == true:
     delete('SOAJMSModule'           , 'JMSSystemResource')
-    delete('UMSJMSSystemResource'   , 'JMSSystemResource')
-    delete('UMSJMSServer'           , 'JMSServer')
     delete('SOAJMSServer'           , 'JMSServer')
-#    delete('soa_server1'            , 'Server')
+    delete('UMSJMSSystemResource'   , 'JMSSystemResource')
+    delete('UMSJMSServer_auto_1'    , 'JMSServer')
+    delete('soa_server1'            , 'Server')
+
 if bamEnabled == true:
-    delete('bam_server1'            , 'Server')
     delete('BAMJmsSystemResource'   , 'JMSSystemResource')
     delete('BAMJMSServer'           , 'JMSServer')
+    delete('UMSJMSServer_auto_2'    , 'JMSServer')
+    delete('bam_server1'            , 'Server')
 
 if osbEnabled == true:
     delete('osb_server1'            , 'Server')
@@ -473,4 +475,4 @@ dumpStack();
 
 print 'Successfully Updated SOA Domain.'
 
-closeDomain() 
+closeDomain()

@@ -1,0 +1,224 @@
+import sys
+import getopt
+import string
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>'
+
+oimcluster = '<%= @oim_cluster_name %>'
+
+def createFileStore(storeName, serverName):
+    create(storeName, 'FileStore')
+    cd('/FileStore/'+storeName)
+    set ('Target', serverName)
+    set ('Directory', storeName)
+    cd('/')
+
+
+def createJMSServers(cluster, track, currentServerCnt):
+    print ' '
+    print "Creating JMS Servers for the cluster :- ", cluster
+    s = ls('/Server')
+    print ' '
+    clustername = " "
+    serverCnt = currentServerCnt
+    for token in s.split("drw-"):
+        token=token.strip().lstrip().rstrip()
+        path="/Server/"+token
+        cd(path)
+        if not token == 'AdminServer' and not token == '':
+            clustername = get('Cluster')
+            print "Cluster Associated with the Server [",token,"] :- ",clustername
+            print ' '
+            searchClusterStr = cluster+":"
+            clusterNameStr = str(clustername)
+            print "searchClusterStr = ",searchClusterStr
+            print "clusterNameStr = ",clusterNameStr
+            if not clusterNameStr.find(searchClusterStr) == -1:
+                print token, " is associated with ", cluster    
+                print ' '
+                print "Creating JMS Servers for ", track
+                print ' '
+                cd('/')
+
+                if track == 'oim':
+                    jmsServerName = 'OIMJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'OIMJMSServerFileStore_auto_'+str(serverCnt)
+                elif track == 'jrf':
+                    jmsServerName = 'JRFWSAsyncJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'JRFWSAsyncJMSServerFileStore_auto_'+str(serverCnt)
+
+                createFileStore(fileStoreName, token)
+                print "Created File Store :- ", fileStoreName
+
+                create(jmsServerName, 'JMSServer')
+                print "Created JMS Server :- ", jmsServerName
+                print ' '
+                assign('JMSServer', jmsServerName, 'Target', token)
+                print jmsServerName, " assigned to server :- ", token 
+                print ' '
+                cd('/JMSServer/'+jmsServerName)
+                set ('PersistentStore', fileStoreName)
+
+                serverCnt = serverCnt + 1
+
+
+readDomain(DOMAIN_PATH)
+
+cd('/')
+delete('OIMJMSModule'   ,'JMSSystemResource')
+#delete('BPMJMSServer'   ,'JMSServer')
+
+createJMSServers(oimcluster, 'oim', 1)
+
+cd('/')
+create('OIMJMSModuleUDDs','JMSSystemResource')
+     
+cd('/')
+cd('JMSSystemResource/OIMJMSModuleUDDs')
+assign('JMSSystemResource', 'OIMJMSModuleUDDs', 'Target', oimcluster)
+
+cd('/')
+cd('JMSSystemResource/OIMJMSModuleUDDs')
+create('OIMSubDeployment', 'SubDeployment')
+
+cd('/')
+cd('JMSSystemResource/OIMJMSModuleUDDs/SubDeployments/OIMSubDeployment')
+
+print ' '
+print ("*** Listing OIM JMS Servers ***")
+s = ls('/JMSServers')
+oimJMSServerStr=''
+for token in s.split("drw-"):
+    token=token.strip().lstrip().rstrip()
+    if not token.find("OIMJMSServer_auto") == -1:
+        oimJMSServerStr = oimJMSServerStr + token +","
+    print token
+
+oimJMSSrvCnt=string.count(s, 'OIMJMSServer_auto')
+print ' '
+print "Number of OIM JMS Servers := ", oimJMSSrvCnt
+print ' '
+print "oimJMSServerStr := ", oimJMSServerStr
+print ' '
+
+print ("*** Setting JMS SubModule for OIM JMS Server's target***")
+assign('JMSSystemResource.SubDeployment', 'OIMJMSModuleUDDs.OIMSubDeployment', 'Target', oimJMSServerStr) 
+
+cd('/')
+cd('JMSSystemResource/OIMJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+udd=create('oimAttestationQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimAttestationQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimAttestationQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+udd=create('oimAuditQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimAuditQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimAuditQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+udd=create('oimDefaultQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimDefaultQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimDefaultQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+udd=create('oimKernelQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimKernelQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimKernelQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+udd=create('oimProcessQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimProcessQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimProcessQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+udd=create('oimReconQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimReconQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimReconQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+udd=create('oimSODQueue','UniformDistributedQueue')
+udd.setJNDIName('queue/oimSODQueue')
+udd.setJMSCreateDestinationIdentifier('queue/oimSODQueue')
+udd.setSubDeploymentName('OIMSubDeployment')
+
+soacf=create('oimQueueConnectionFactory','ConnectionFactory')
+soacf.setJNDIName('jms/QueueConnectionFactory')
+cd('/JMSSystemResource/OIMJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/oimQueueConnectionFactory')
+set('DefaultTargetingEnabled', 'true')
+create('TransactionParams', 'TransactionParams')
+cd('TransactionParams/NO_NAME_0')
+cmo.setXAConnectionFactoryEnabled(true)
+
+cd('/')
+delete('JRFWSAsyncJmsModule'    ,'JMSSystemResource')
+dumpStack()
+
+createJMSServers(oimcluster, 'jrf', 1)
+
+cd('/')
+create('JRFWSAsyncJmsModuleUDDs','JMSSystemResource')
+         
+cd('/')
+cd('JMSSystemResource/JRFWSAsyncJmsModuleUDDs')
+assign('JMSSystemResource', 'JRFWSAsyncJmsModuleUDDs', 'Target', oimcluster)
+
+cd('/')
+cd('JMSSystemResource/JRFWSAsyncJmsModuleUDDs')
+create('JRFJMSSubDM', 'SubDeployment')
+
+cd('/')
+cd('JMSSystemResource/JRFWSAsyncJmsModuleUDDs/SubDeployments/JRFJMSSubDM')
+
+print ' '
+print ("*** Listing OIM JMS Servers ***")
+s = ls('/JMSServers')
+soaJMSServerStr=''
+for token in s.split("drw-"):
+    token=token.strip().lstrip().rstrip()
+    if not token.find("JRFWSAsyncJMSServer_auto") == -1:
+        soaJMSServerStr = soaJMSServerStr + token +","
+    print token
+
+soaJMSSrvCnt=string.count(s, 'JRFWSAsyncJMSServer_auto')
+print ' '
+print "Number of JRF JMS Servers := ", soaJMSSrvCnt
+print ' '
+print "soaJMSServerStr := ", soaJMSServerStr
+print ' '
+
+print ("*** Setting JMS SubModule for OIM JMS Server's target***")
+assign('JMSSystemResource.SubDeployment', 'JRFWSAsyncJmsModuleUDDs.JRFJMSSubDM', 'Target', soaJMSServerStr) 
+
+cd('/')
+cd('JMSSystemResource/JRFWSAsyncJmsModuleUDDs/JmsResource/NO_NAME_0')
+
+udd=create('JRFWSAsyncRequestErrorQueue','UniformDistributedQueue')
+udd.setJNDIName('oracle.j2ee.ws.server.async.DefaultRequestErrorQueue')
+udd.setJMSCreateDestinationIdentifier('oracle.j2ee.ws.server.async.DefaultRequestErrorQueue')
+udd.setSubDeploymentName('JRFJMSSubDM')
+
+udd=create('JRFWSAsyncRequestQueue','UniformDistributedQueue')
+udd.setJNDIName('oracle.j2ee.ws.server.async.DefaultRequestQueue')
+udd.setJMSCreateDestinationIdentifier('oracle.j2ee.ws.server.async.DefaultRequestQueue')
+udd.setSubDeploymentName('JRFJMSSubDM')
+
+udd=create('JRFWSAsyncResponseErrorQueue','UniformDistributedQueue')
+udd.setJNDIName('oracle.j2ee.ws.server.async.DefaultResponseErrorQueue')
+udd.setJMSCreateDestinationIdentifier('oracle.j2ee.ws.server.async.DefaultResponseErrorQueue')
+udd.setSubDeploymentName('JRFJMSSubDM')
+
+udd=create('JRFWSAsyncResponseQueue','UniformDistributedQueue')
+udd.setJNDIName('oracle.j2ee.ws.server.async.DefaultResponseQueue')
+udd.setJMSCreateDestinationIdentifier('oracle.j2ee.ws.server.async.DefaultResponseQueue')
+udd.setSubDeploymentName('JRFJMSSubDM')
+
+dumpStack()
+
+updateDomain()
+dumpStack();
+
+print 'Successfully Updated OIM Domain.'
+
+closeDomain() 

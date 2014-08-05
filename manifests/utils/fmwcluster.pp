@@ -16,10 +16,14 @@ define orawls::utils::fmwcluster (
   $soa_cluster_name           = undef,
   $bam_cluster_name           = undef,
   $osb_cluster_name           = undef,
+  $oam_cluster_name           = undef,
+  $oim_cluster_name           = undef,
   $bpm_enabled                = false, # true|false
   $bam_enabled                = false, # true|false
   $osb_enabled                = false, # true|false
   $soa_enabled                = false, # true|false
+  $oam_enabled                = false, # true|false
+  $oim_enabled                = false, # true|false
   $b2b_enabled                = false, # true|false
   $ess_enabled                = false, # true|false
   $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
@@ -159,8 +163,8 @@ define orawls::utils::fmwcluster (
         $last_step = "execwlst soa-bpm-createUDD.py ${title}"
       }
 
-      # only for soa suite 1036 or 1111
-      if ( $soa_enabled  == true ) {
+      # only for soa suite 1036 or 1111 and not if OAM is already installed
+      if ( $soa_enabled  == true and $oam_enabled == false) {
         # the domain.py used by the wlst
         file { "migrateSecurityStore.py ${domain_name} ${title}":
           ensure  => present,
@@ -319,6 +323,34 @@ define orawls::utils::fmwcluster (
                           Orawls::Control["ShutdownAdminServerForSoa${title}"],
                           Exec[$last_soa_step]],
         }
+      }
+
+      if( $oim_enabled == true ) {
+
+        # the py script used by the wlst
+        file { "${download_dir}/oim-createUDD${title}.py":
+          ensure  => present,
+          content => template('orawls/wlst/wlstexec/fmw/oim-createUDD.py.erb'),
+          backup  => false,
+          replace => true,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
+
+        # execute WLST script
+        exec { "execwlst oim-createUDD.py ${title}":
+          command     => "${javaCommand} ${download_dir}/oim-createUDD${title}.py",
+          environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                          "JAVA_HOME=${jdk_home_dir}"],
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => [File["${download_dir}/oim-createUDD${title}.py"],
+                          Orawls::Control["ShutdownAdminServerForSoa${title}"]]
+        }
+
       }
 
       #startup adminserver for offline WLST scripts

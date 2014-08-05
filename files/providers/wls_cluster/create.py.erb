@@ -30,7 +30,9 @@ try:
 
     cmo.setMigrationBasis(migrationbasis)
     if migrationbasis == 'database':
-      cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
+    
+      if migration_datasource:
+        cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
 
       if migration_table_name:
          cmo.setAutoMigrationTableName(migration_table_name)

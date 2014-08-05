@@ -264,6 +264,11 @@ if bamEnabled == true:
     set('Target',SOAClusterName)
     cd('/ForeignJNDIProvider/BPMForeignJndiProvider')
     set('Target',BAMClusterName)
+
+    print "Define the BAM scheduler datasource to the BAM cluster "
+    cd('/')
+    cd('/Cluster/'+BAMClusterName)
+    set('DataSourceForJobScheduler','BamJobSchedDataSource')
     
     print "re-create BAM JMS"
     cd('/')

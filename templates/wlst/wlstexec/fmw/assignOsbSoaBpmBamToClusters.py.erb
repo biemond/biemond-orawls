@@ -30,6 +30,31 @@ SoaBamOimAdmin = '<%= @bam_cluster_name %>,<%= @oim_cluster_name %>,<%= @soa_clu
 SoaOimOamAdmin = '<%= @oam_cluster_name %>,<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 Admin          = '<%= @adminserver_name %>'
 
+AllArray = []
+AdapterArray = []
+
+AdapterArray.append('<%= @adminserver_name %>')
+AllArray.append('<%= @adminserver_name %>')
+
+if bamEnabled == true:
+    AllArray.append('<%= @bam_cluster_name %>')
+
+if soaEnabled == true:
+    AdapterArray.append('<%= @soa_cluster_name %>')
+    AllArray.append('<%= @soa_cluster_name %>')
+
+if osbEnabled == true:
+    AdapterArray.append('<%= @osb_cluster_name %>')
+    AllArray.append('<%= @osb_cluster_name %>')
+
+if oamEnabled == true:    
+    AllArray.append('<%= @oam_cluster_name %>')
+
+if oimEnabled == true:
+    AllArray.append('<%= @oim_cluster_name %>')
+
+All       = ','.join(AllArray)
+Adapters  = ','.join(AdapterArray)
 
 def getFirstClusterServer(cluster):
     s = ls('/Server')
@@ -44,32 +69,6 @@ def getFirstClusterServer(cluster):
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
                 return token    
-
-### Must fix this table in a better way
-if bamEnabled == true and soaEnabled == true and osbEnabled == true and oamEnabled == true and oimEnabled == true:
-    All            = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @bam_cluster_name %>,<%= @oam_cluster_name %>,<%= @oim_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == true and soaEnabled == true and osbEnabled == true:
-    All            = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @bam_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == true and soaEnabled == true and osbEnabled == false:
-    All            = '<%= @soa_cluster_name %>,<%= @bam_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @soa_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == false and soaEnabled == true and osbEnabled == true:
-    All            = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @soa_cluster_name %>,<%= @osb_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == false and soaEnabled == true and osbEnabled == false:
-    All            = '<%= @soa_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @soa_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == false and soaEnabled == true and osbEnabled == false and oamEnabled == true and oimEnabled == true:
-    All            = '<%= @soa_cluster_name %>,<%= @oam_cluster_name %>,<%= @oim_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @soa_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == false and soaEnabled == false and osbEnabled == true:
-    All            = '<%= @osb_cluster_name %>,<%= @adminserver_name %>'
-    Adapters       = '<%= @osb_cluster_name %>,<%= @adminserver_name %>'
-elif bamEnabled == false and soaEnabled == false and osbEnabled == false:
-    All            = '<%= @adminserver_name %>'
-    Adapters       = '<%= @adminserver_name %>'
 
 readDomain(DOMAIN_PATH)
 
@@ -252,6 +251,7 @@ if oamEnabled == true:
     assign('AppDeployment', 'oamsso_logout#11.1.2.0.0', 'Target', OamAdmin)
 
 assign('Library', 'emai'                                   , 'Target', Admin)
+
 if oimEnabled == true:
     assign('Library', 'oracle.webcenter.skin#11.1.1@11.1.1'    , 'Target', OimAdmin)
 else:
@@ -317,10 +317,6 @@ if oimEnabled == true:
         assign('Library', 'oracle.sdp.client#11.1.1@11.1.1'                , 'Target', SoaOimOamAdmin)
         assign('Library', 'oracle.soa.rules_dict_dc.webapp#11.1.1@11.1.1'  , 'Target', SoaOimCluster)
         assign('Library', 'oracle.rules#11.1.1@11.1.1'                     , 'Target', SoaOimAdmin)
-        assign('Library', 'oracle.soa.workflow.wc#11.1.1@11.1.1'           , 'Target', SoaOimCluster)
-        assign('Library', 'oracle.soa.worklist.webapp#11.1.1@11.1.1'       , 'Target', SoaOimCluster)
-        assign('Library', 'oracle.soa.rules_editor_dc.webapp#11.1.1@11.1.1', 'Target', SoaOimCluster)
-        assign('Library', 'oracle.soa.workflow#11.1.1@11.1.1'              , 'Target', SoaOimCluster)
 
 elif bamEnabled == true:
     assign('Library', 'oracle.sdp.client#11.1.1@11.1.1'                , 'Target', SoaBam)
@@ -331,10 +327,6 @@ elif soaEnabled == true:
     assign('Library', 'oracle.sdp.client#11.1.1@11.1.1'                , 'Target', SOAClusterName)
     assign('Library', 'oracle.rules#11.1.1@11.1.1'                     , 'Target', SoaAdmin)
     assign('Library', 'oracle.soa.rules_dict_dc.webapp#11.1.1@11.1.1'  , 'Target', SOAClusterName)
-    assign('Library', 'oracle.soa.workflow.wc#11.1.1@11.1.1'           , 'Target', SOAClusterName)
-    assign('Library', 'oracle.soa.worklist.webapp#11.1.1@11.1.1'       , 'Target', SOAClusterName)
-    assign('Library', 'oracle.soa.rules_editor_dc.webapp#11.1.1@11.1.1', 'Target', SOAClusterName)
-    assign('Library', 'oracle.soa.workflow#11.1.1@11.1.1'              , 'Target', SOAClusterName)
 
 if soaEnabled == true:
     assign('Library', 'oracle.sdp.messaging#11.1.1@11.1.1'             , 'Target', All)
@@ -347,6 +339,18 @@ if soaEnabled == true:
     assign('Library', 'oracle.soa.ext#11.1.1@11.1.1'                   , 'Target', SOAClusterName)
     assign('Library', 'oracle.soa.mediator#11.1.1@11.1.1'              , 'Target', SOAClusterName)
     assign('Library', 'oracle.soa.worklist#11.1.1@11.1.1'              , 'Target', SOAClusterName)
+
+    if oimEnabled == true:
+        assign('Library', 'oracle.soa.workflow.wc#11.1.1@11.1.1'           , 'Target', SoaOimCluster)
+        assign('Library', 'oracle.soa.worklist.webapp#11.1.1@11.1.1'       , 'Target', SoaOimCluster)
+        assign('Library', 'oracle.soa.rules_editor_dc.webapp#11.1.1@11.1.1', 'Target', SoaOimCluster)
+        assign('Library', 'oracle.soa.workflow#11.1.1@11.1.1'              , 'Target', SoaOimCluster)
+    else:
+        assign('Library', 'oracle.soa.workflow.wc#11.1.1@11.1.1'           , 'Target', SOAClusterName)
+        assign('Library', 'oracle.soa.worklist.webapp#11.1.1@11.1.1'       , 'Target', SOAClusterName)
+        assign('Library', 'oracle.soa.rules_editor_dc.webapp#11.1.1@11.1.1', 'Target', SOAClusterName)
+        assign('Library', 'oracle.soa.workflow#11.1.1@11.1.1'              , 'Target', SOAClusterName)
+
 
 if bamEnabled == true:
     assign('Library', 'oracle.bam.library#11.1.1@11.1.1'       , 'Target', BamAdmin)

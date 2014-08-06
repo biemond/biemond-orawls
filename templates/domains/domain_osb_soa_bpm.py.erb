@@ -285,6 +285,7 @@ if WEBLOGIC_VERSION != 1213:
   print 'Change datasource wlsbjmsrpDataSource'
   cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
   set('URL',SOA_REPOS_DBURL)
+  set('DriverName','oracle.jdbc.OracleDriver')
   set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
   cd('Properties/NO_NAME_0/Property/user')
   set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')

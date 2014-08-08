@@ -2,11 +2,7 @@
 DomainsFile=<%= @domain_dir %>/nodemanager/nodemanager.domains
 LogLimit=0
 PropertiesVersion=12.1.2
-<% if @domain_template == "adf" %>
-AuthenticationEnabled=false
-<% else %>
 AuthenticationEnabled=true
-<% end %>
 NodeManagerHome=<%= @domain_dir %>/nodemanager
 JavaHome=<%= @jdk_home_dir %>
 LogLevel=INFO

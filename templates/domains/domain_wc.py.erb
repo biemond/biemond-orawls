@@ -64,6 +64,47 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.flush()
   fileNew.close()
 
+def changeDatasource(datasource, username):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('URL',WC_REPOS_DBURL)
+  set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',username)
+  cd('/')
+
+
+def changeManagedServer(server,java_arguments,log_folder):
+  cd('/Servers/'+server)
+  set('Machine'      ,'LocalMachine')
+  set('ListenAddress','<%= @adminserver_address %>')
+
+  create(server,'ServerStart')
+  cd('ServerStart/'+server)
+  set('Arguments' , java_arguments)
+  set('JavaVendor','Sun')
+  set('JavaHome'  , JAVA_HOME)
+
+  cd('/Server/'+server)
+  create(server,'SSL')
+  cd('SSL/'+server)
+  set('Enabled'                    , 'False')
+  set('HostNameVerificationIgnored', 'True')
+
+  if JSSE_ENABLED == true:
+    set('JSSEEnabled','True')
+  else:
+    set('JSSEEnabled','False')  
+
+  cd('/Server/'+server)
+  create(server,'Log')
+  cd('/Server/'+server+'/Log/'+server)
+  set('FileName'     , log_folder+'/'+server+'.log')
+  set('FileCount'    , 10)
+  set('FileMinSize'  , 5000)
+  set('RotationType' ,'byTime')
+  set('FileTimeSpan' , 24)  
 
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
@@ -205,62 +246,6 @@ addTemplate('<%= @templateDiscussion %>')
 
 dumpStack();
 
-print 'Change datasources'
-
-print 'Change datasource mds-owsm'
-cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
-set('URL',WC_REPOS_DBURL)
-set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',WC_REPOS_DBUSER_PREFIX+'_MDS')
-
-print 'Change datasource WebCenterDS'
-cd('/JDBCSystemResource/WebCenterDS/JdbcResource/WebCenterDS/JDBCDriverParams/NO_NAME_0')
-set('URL',WC_REPOS_DBURL)
-set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',WC_REPOS_DBUSER_PREFIX+'_WEBCENTER')
-
-print 'Change datasource mds-SpacesDS'
-cd('/JDBCSystemResource/mds-SpacesDS/JdbcResource/mds-SpacesDS/JDBCDriverParams/NO_NAME_0')
-set('URL',WC_REPOS_DBURL)
-set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',WC_REPOS_DBUSER_PREFIX+'_MDS')
-
-print 'Change datasource PortletDS'
-cd('/JDBCSystemResource/PortletDS/JdbcResource/PortletDS/JDBCDriverParams/NO_NAME_0')
-set('URL',WC_REPOS_DBURL)
-set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',WC_REPOS_DBUSER_PREFIX+'_PORTLET')
-
-print 'Change datasource mds-PageletProducerDS'
-cd('/JDBCSystemResource/mds-PageletProducerDS/JdbcResource/mds-PageletProducerDS/JDBCDriverParams/NO_NAME_0')
-set('URL',WC_REPOS_DBURL)
-set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',WC_REPOS_DBUSER_PREFIX+'_MDS')
-
-print 'Change datasource OWC_DiscussionDS'
-cd('/JDBCSystemResource/OWC_DiscussionDS/JdbcResource/OWC_DiscussionDS/JDBCDriverParams/NO_NAME_0')
-set('URL',WC_REPOS_DBURL)
-set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-cd('Properties/NO_NAME_0/Property/user')
-set('Value',WC_REPOS_DBUSER_PREFIX+'_DISCUSSIONS')
-
-
-print 'Finished datasources'
-
-dumpStack();
-updateDomain()
-dumpStack();
-
-closeDomain();
-
-
-readDomain(DOMAIN_PATH)
-
 setOption( "AppDir", APP_PATH )
 
 print('change the default machine LocalMachine with type Machine')
@@ -276,101 +261,36 @@ set('Machine','LocalMachine')
 
 
 print 'Change wc_collaboration'
-
-cd('/Servers/WC_Collaboration')
-set('Machine','LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
-
-create('WC_Collaboration','ServerStart')
-cd('ServerStart/WC_Collaboration')
-set('Arguments', WC_COLLABORATION_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/WC_Collaboration')
-create('WC_Collaboration','SSL')
-cd('SSL/WC_Collaboration')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-
-
-cd('/Server/WC_Collaboration')
-create('WC_Collaboration','Log')
-cd('/Server/WC_Collaboration/Log/WC_Collaboration')
-set('FileName','<%= @wcCollaboration_nodemanager_log_dir %>/WC_Collaboration.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
+cd('/')
+changeManagedServer('WC_Collaboration',WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>')
 
 print 'Change wc_portlet'
-setOption( "AppDir", APP_PATH )
-
-cd('/Servers/WC_Portlet')
-set('Machine','LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
-
-create('WC_Portlet','ServerStart')
-cd('ServerStart/WC_Portlet')
-set('Arguments', WC_PORTLET_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/WC_Portlet')
-create('WC_Portlet','SSL')
-cd('SSL/WC_Portlet')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-
-
-cd('/Server/WC_Portlet')
-create('WC_Portlet','Log')
-cd('/Server/WC_Portlet/Log/WC_Portlet')
-set('FileName','<%= @wcPortlet_nodemanager_log_dir %>/WC_Portlet.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
+cd('/')
+changeManagedServer('WC_Portlet',WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>')
 
 print 'Change WC_Spaces'
-setOption( "AppDir", APP_PATH )
+cd('/')
+changeManagedServer('WC_Spaces',WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>')
 
-cd('/Servers/WC_Spaces')
-set('Machine','LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
+print 'Change datasources'
 
-create('WC_Spaces','ServerStart')
-cd('ServerStart/WC_Spaces')
-set('Arguments', WC_SPACES_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
+changeDatasource('mds-owsm', WC_REPOS_DBUSER_PREFIX+'_MDS')
+changeDatasource('WebCenterDS', WC_REPOS_DBUSER_PREFIX+'_WEBCENTER')
+changeDatasource('mds-SpacesDS', WC_REPOS_DBUSER_PREFIX+'_MDS')
+changeDatasource('PortletDS', WC_REPOS_DBUSER_PREFIX+'_PORTLET')
+changeDatasource('mds-PageletProducerDS',WC_REPOS_DBUSER_PREFIX+'_MDS')
+changeDatasource('OWC_DiscussionDS', WC_REPOS_DBUSER_PREFIX+'_DISCUSSIONS')
 
-cd('/Server/WC_Spaces')
-create('WC_Spaces','SSL')
-cd('SSL/WC_Spaces')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-
-
-cd('/Server/WC_Spaces')
-create('WC_Spaces','Log')
-cd('/Server/WC_Spaces/Log/WC_Spaces')
-set('FileName','<%= @wcSpaces_nodemanager_log_dir %>/WC_Spaces.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
+print 'Finished datasources'
 
 dumpStack();
 updateDomain()
-closeDomain()
+dumpStack();
+closeDomain();
 
 createBootPropertiesFile(DOMAIN_PATH+'/servers/WC_Collaboration/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/WC_Spaces/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/WC_Portlet/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-
 
 print('Exiting...')
 exit()

@@ -69,6 +69,58 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.flush()
   fileNew.close()
 
+def changeDatasource(datasource, username):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',username)
+  cd('/')
+
+def changeDatasourceToXA(datasource):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+  set('UseXADataSourceInterface','True') 
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDataSourceParams/NO_NAME_0')
+  set('GlobalTransactionsProtocol','TwoPhaseCommit')
+  cd('/')
+
+def changeManagedServer(server,port,java_arguments,log_folder):
+  cd('/Servers/'+server)
+  set('Machine'      ,'LocalMachine')
+  set('ListenAddress','<%= @adminserver_address %>')
+  set('ListenPort'   ,port)
+
+  create(server,'ServerStart')
+  cd('ServerStart/'+server)
+  set('Arguments' , java_arguments)
+  set('JavaVendor','Sun')
+  set('JavaHome'  , JAVA_HOME)
+
+  cd('/Server/'+server)
+  create(server,'SSL')
+  cd('SSL/'+server)
+  set('Enabled'                    , 'False')
+  set('HostNameVerificationIgnored', 'True')
+
+  if JSSE_ENABLED == true:
+    set('JSSEEnabled','True')
+  else:
+    set('JSSEEnabled','False')  
+
+  cd('/Server/'+server)
+  create(server,'Log')
+  cd('/Server/'+server+'/Log/'+server)
+  set('FileName'     , log_folder+'/'+server+'.log')
+  set('FileCount'    , 10)
+  set('FileMinSize'  , 5000)
+  set('RotationType' ,'byTime')
+  set('FileTimeSpan' , 24)
+
 
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
@@ -166,7 +218,6 @@ closeTemplate()
 
 createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
@@ -230,171 +281,7 @@ if WEBLOGIC_VERSION == 1213:
 
 dumpStack();
 
-if WEBLOGIC_VERSION != 1213:
-
-  print 'Change datasources'
-  print 'Change datasource EDNDataSource'
-  cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-  print 'Change datasource EDNLocalTxDataSource'
-  cd('/JDBCSystemResource/EDNLocalTxDataSource/JdbcResource/EDNLocalTxDataSource/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-  print 'Change datasource OraSDPMDataSource'
-  cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORASDPM')
-
-  print 'Change datasource SOADataSource'
-  cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-  print 'Change datasource SOALocalTxDataSource'
-  cd('/JDBCSystemResource/SOALocalTxDataSource/JdbcResource/SOALocalTxDataSource/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-  print 'Change datasource mds-owsm'
-  cd('/JDBCSystemResource/mds-owsm/JdbcResource/mds-owsm/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
-
-  print 'Change datasource mds-soa'
-  cd('/JDBCSystemResource/mds-soa/JdbcResource/mds-soa/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_MDS')
-
-  print 'Change datasource wlsbjmsrpDataSource'
-  cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
-  set('URL',SOA_REPOS_DBURL)
-  set('DriverName','oracle.jdbc.OracleDriver')
-  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-
-  if BAM_ENABLED == true:
-    print 'Change datasource BAMDataSource'
-    cd('/JDBCSystemResource/BAMDataSource/JdbcResource/BAMDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_ORABAM')
-
-
-print 'weblogic version' + str(WEBLOGIC_VERSION)
-
 if WEBLOGIC_VERSION == 1213:
-
-    print 'Change datasources'
-
-    print 'Change datasource LocalScvTblDataSource'
-    cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',SOA_REPOS_DBURL)
-    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',SOA_REPOS_DBUSER_PREFIX+'_STB')
-
-    print 'Call getDatabaseDefaults which reads the service table'
-    getDatabaseDefaults()    
-
-    print 'Change datasource EDNDataSource'
-    cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDriverParams/NO_NAME_0')
-    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-    set('UseXADataSourceInterface','True') 
-    cd('/JDBCSystemResource/EDNDataSource/JdbcResource/EDNDataSource/JDBCDataSourceParams/NO_NAME_0')
-    set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    print 'Change datasource wlsbjmsrpDataSource'
-    cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
-    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-    set('UseXADataSourceInterface','True') 
-    cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDataSourceParams/NO_NAME_0')
-    set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    print 'Change datasource OraSDPMDataSource'
-    cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDriverParams/NO_NAME_0')
-    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-    set('UseXADataSourceInterface','True') 
-    cd('/JDBCSystemResource/OraSDPMDataSource/JdbcResource/OraSDPMDataSource/JDBCDataSourceParams/NO_NAME_0')
-    set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    print 'Change datasource SOADataSource'
-    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
-    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-    set('UseXADataSourceInterface','True') 
-    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDataSourceParams/NO_NAME_0')
-    set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    if BAM_ENABLED == true:
-      print 'Change datasource BamDataSource'
-      cd('/JDBCSystemResource/BamDataSource/JdbcResource/BamDataSource/JDBCDriverParams/NO_NAME_0')
-      set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-      set('UseXADataSourceInterface','True') 
-      cd('/JDBCSystemResource/BamDataSource/JdbcResource/BamDataSource/JDBCDataSourceParams/NO_NAME_0')
-      set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    print 'end datasources'
-
-    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
-    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
-    setServerGroups(ADMIN_SERVER, serverGroup)                      
-
-    if ESS_ENABLED == true:
-      print 'Add server group SOA-MGD-SVRS,ESS-MGD-SVRS to soa_server1'
-      cd('/')
-      delete('ess_server1', 'Server')
-      serverGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
-    else:
-      print 'Add server group SOA-MGD-SVRS to soa_server1'
-      serverGroup = ["SOA-MGD-SVRS"]
-
-    setServerGroups('soa_server1', serverGroup)                      
-
-    if BAM_ENABLED == true:
-      print 'Add server group BAM12-MGD-SVRS to bam_server1'
-      serverGroup = ["BAM12-MGD-SVRS"]
-      setServerGroups('bam_server1', serverGroup)                      
-
-    print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
-    serverGroup = ["OSB-MGD-SVRS-COMBINED"]
-    setServerGroups('osb_server1', serverGroup)                      
-
-    print 'end server groups'
-
-updateDomain()
-closeDomain();
-
-
-readDomain(DOMAIN_PATH)
-
-if WEBLOGIC_VERSION == 1213:
-  if BAM_ENABLED == true:
-    print 'change BAM/BPM ForeignJNDIProviders'
-    cd('/')
-    cd('/ForeignJNDIProvider/BAMForeignJndiProvider')
-    set('ProviderURL','t3://<%= @adminserver_address %>:9001')
-
-    cd('/ForeignJNDIProvider/BPMForeignJndiProvider')
-    set('ProviderURL','t3://<%= @adminserver_address %>:8001')
-    print 'end BAM/BPM ForeignJNDIProviders'
 
   print('Create machine LocalMachine with type UnixMachine')
   cd('/')
@@ -407,6 +294,7 @@ if WEBLOGIC_VERSION == 1213:
 if WEBLOGIC_VERSION != 1213:
   print('change the default machine LocalMachine with type Machine')
   cd('/')
+  create('LocalMachine','Machine')
   cd('Machine/LocalMachine')
   create('LocalMachine','NodeManager')
   cd('NodeManager/LocalMachine')
@@ -417,107 +305,22 @@ cd('/Servers/'+ADMIN_SERVER)
 set('Machine','LocalMachine')
 
 
-print 'Change soa_server1'
 <% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
 <% end %>
-cd('/Servers/soa_server1')
-set('Machine','LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
-set('ListenPort',8001)
 
-create('soa_server1','ServerStart')
-cd('ServerStart/soa_server1')
-set('Arguments', SOA_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/soa_server1')
-create('soa_server1','SSL')
-cd('SSL/soa_server1')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-
-if JSSE_ENABLED == true:
-  set('JSSEEnabled','True')
-else:
-  set('JSSEEnabled','False')
-
-cd('/Server/soa_server1')
-create('soa_server1','Log')
-cd('/Server/soa_server1/Log/soa_server1')
-set('FileName','<%= @soa_nodemanager_log_dir %>/soa_server1.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
+print 'change soa_server1'
+cd('/')
+changeManagedServer('soa_server1',8001,SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>')
 
 if BAM_ENABLED == true:
-  print 'Change bam_server1'
-  cd('/Servers/bam_server1')
-  set('Machine','LocalMachine')
-  set('ListenAddress','<%= @adminserver_address %>')
-  set('ListenPort',9001)
+  print 'change bam_server1'
+  cd('/')
+  changeManagedServer('bam_server1',9001,BAM_JAVA_ARGUMENTS,'<%= @bam_nodemanager_log_dir %>')
 
-  create('bam_server1','ServerStart')
-  cd('ServerStart/bam_server1')
-  set('Arguments', BAM_JAVA_ARGUMENTS)
-  set('JavaVendor','Sun')
-  set('JavaHome', JAVA_HOME)
-
-  cd('/Server/bam_server1')
-  create('bam_server1','SSL')
-  cd('SSL/bam_server1')
-  set('Enabled', 'False')
-  set('HostNameVerificationIgnored', 'True')
-
-  if JSSE_ENABLED == true:
-    set('JSSEEnabled','True')
-  else:
-    set('JSSEEnabled','False')
-
-
-  cd('/Server/bam_server1')
-  create('bam_server1','Log')
-  cd('/Server/bam_server1/Log/bam_server1')
-  set('FileName','<%= @bam_nodemanager_log_dir %>/bam_server1.log')
-  set('FileCount',10)
-  set('FileMinSize',5000)
-  set('RotationType','byTime')
-  set('FileTimeSpan',24)
-
-
-print 'Change osb_server1'
-cd('/Servers/osb_server1')
-set('Machine','LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
-set('ListenPort',8011)
-
-create('osb_server1','ServerStart')
-cd('ServerStart/osb_server1')
-set('Arguments', OSB_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/osb_server1')
-create('osb_server1','SSL')
-cd('SSL/osb_server1')
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-
-if JSSE_ENABLED == true:
-  set('JSSEEnabled','True')
-else:
-  set('JSSEEnabled','False')
-
-cd('/Server/osb_server1')
-create('osb_server1','Log')
-cd('/Server/osb_server1/Log/osb_server1')
-set('FileName','<%= @osb_nodemanager_log_dir %>/osb_server1.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
+print 'change osb_server1'
+cd('/')
+changeManagedServer('osb_server1',8011,OSB_JAVA_ARGUMENTS,'<%= @osb_nodemanager_log_dir %>')
 
 
 ### only for 11g
@@ -564,10 +367,85 @@ if WEBLOGIC_VERSION != 1213:
   cd('JDBCConnectionPoolParams/NO_NAME_0')
   set('TestTableName','SQL SELECT 1 FROM DUAL')
 
-dumpStack();
-updateDomain()
-closeDomain()
 
+if WEBLOGIC_VERSION != 1213:
+
+  print 'Change datasources'
+  changeDatasource('EDNDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  changeDatasource('EDNLocalTxDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  changeDatasource('OraSDPMDataSource', SOA_REPOS_DBUSER_PREFIX+'_ORASDPM')
+  changeDatasource('SOADataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  changeDatasource('SOALocalTxDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+  changeDatasource('mds-owsm', SOA_REPOS_DBUSER_PREFIX+'_MDS')
+  changeDatasource('mds-soa', SOA_REPOS_DBUSER_PREFIX+'_MDS')
+
+  print 'Change datasource wlsbjmsrpDataSource'
+  cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
+  set('URL',SOA_REPOS_DBURL)
+  set('DriverName','oracle.jdbc.OracleDriver')
+  set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA')
+
+  if BAM_ENABLED == true:
+    changeDatasource('BAMDataSource', SOA_REPOS_DBUSER_PREFIX+'_ORABAM')
+
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION == 1213:
+
+    print 'Change datasources'
+
+    print 'Change datasource LocalScvTblDataSource'
+    cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',SOA_REPOS_DBURL)
+    set('PasswordEncrypted',SOA_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',SOA_REPOS_DBUSER_PREFIX+'_STB')
+
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()    
+
+    changeDatasourceToXA('EDNDataSource')
+    changeDatasourceToXA('wlsbjmsrpDataSource')
+    changeDatasourceToXA('OraSDPMDataSource')
+    changeDatasourceToXA('SOADataSource')
+
+    if BAM_ENABLED == true:
+      changeDatasourceToXA('BamDataSource')
+
+    print 'end datasources'
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
+    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
+    setServerGroups(ADMIN_SERVER, serverGroup)                      
+
+    if ESS_ENABLED == true:
+      print 'Add server group SOA-MGD-SVRS,ESS-MGD-SVRS to soa_server1'
+      cd('/')
+      delete('ess_server1', 'Server')
+      serverGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
+    else:
+      print 'Add server group SOA-MGD-SVRS to soa_server1'
+      serverGroup = ["SOA-MGD-SVRS"]
+
+    setServerGroups('soa_server1', serverGroup)                      
+
+    if BAM_ENABLED == true:
+      print 'Add server group BAM12-MGD-SVRS to bam_server1'
+      serverGroup = ["BAM12-MGD-SVRS"]
+      setServerGroups('bam_server1', serverGroup)                      
+
+    print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
+    serverGroup = ["OSB-MGD-SVRS-COMBINED"]
+    setServerGroups('osb_server1', serverGroup)                      
+
+    print 'end server groups'
+
+updateDomain()
+closeDomain();
+
+createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 if BAM_ENABLED == true:

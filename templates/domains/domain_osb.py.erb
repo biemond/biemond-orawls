@@ -54,6 +54,16 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.flush()
   fileNew.close()
 
+def changeDatasourceToXA(datasource):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+  set('UseXADataSourceInterface','True') 
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDataSourceParams/NO_NAME_0')
+  set('GlobalTransactionsProtocol','TwoPhaseCommit')
+  cd('/')
+
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
 
@@ -164,7 +174,6 @@ closeTemplate()
 
 createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
@@ -193,61 +202,6 @@ addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
-
-if WEBLOGIC_VERSION == 1213:
-
-    if WEBTIER_ENABLED == true:
-      print 'Adding OHS Template'
-      addTemplate('<%= @templateOHS %>')
-
-    # print 'Add advanced JAX-WS Template'
-    # addTemplate('<%= @templateJaxWS %>')
-    # print 'Add JAX-WS SOAP over JMS Template'
-    # addTemplate('<%= @templateSoapJms %>')
-
-    print 'Change datasources'
-
-    print 'Change datasource LocalScvTblDataSource for service table'
-    cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
-    set('URL',OSB_REPOS_DBURL)
-    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
-    cd('Properties/NO_NAME_0/Property/user')
-    set('Value',OSB_REPOS_DBUSER_PREFIX+'_STB')
-
-    print 'Call getDatabaseDefaults which reads the service table'
-    getDatabaseDefaults()    
-
-    print 'Change datasource wlsbjmsrpDataSource'
-    cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDriverParams/NO_NAME_0')
-    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-    set('UseXADataSourceInterface','True') 
-    cd('/JDBCSystemResource/wlsbjmsrpDataSource/JdbcResource/wlsbjmsrpDataSource/JDBCDataSourceParams/NO_NAME_0')
-    set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    print 'Change datasource SOADataSource'
-    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDriverParams/NO_NAME_0')
-    set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
-    set('UseXADataSourceInterface','True') 
-    cd('/JDBCSystemResource/SOADataSource/JdbcResource/SOADataSource/JDBCDataSourceParams/NO_NAME_0')
-    set('GlobalTransactionsProtocol','TwoPhaseCommit')
-
-    print 'end datasources'
-
-    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
-    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
-    setServerGroups(ADMIN_SERVER, serverGroup)                      
-
-    print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
-    serverGroup = ["OSB-MGD-SVRS-COMBINED"]
-    setServerGroups('osb_server1', serverGroup)                      
-
-    print 'end server groups'
-
-dumpStack();
-updateDomain()
-
-closeDomain();
-readDomain(DOMAIN_PATH)
 
 <% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
@@ -284,10 +238,50 @@ set('FileMinSize',5000)
 set('RotationType','byTime')
 set('FileTimeSpan',24)
 
+if WEBLOGIC_VERSION == 1213:
+
+    if WEBTIER_ENABLED == true:
+      print 'Adding OHS Template'
+      addTemplate('<%= @templateOHS %>')
+
+    # print 'Add advanced JAX-WS Template'
+    # addTemplate('<%= @templateJaxWS %>')
+    # print 'Add JAX-WS SOAP over JMS Template'
+    # addTemplate('<%= @templateSoapJms %>')
+
+    print 'Change datasources'
+
+    print 'Change datasource LocalScvTblDataSource for service table'
+    cd('/JDBCSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JDBCDriverParams/NO_NAME_0')
+    set('URL',OSB_REPOS_DBURL)
+    set('PasswordEncrypted',OSB_REPOS_DBPASSWORD)
+    cd('Properties/NO_NAME_0/Property/user')
+    set('Value',OSB_REPOS_DBUSER_PREFIX+'_STB')
+
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()    
+
+    changeDatasourceToXA('wlsbjmsrpDataSource')
+    changeDatasourceToXA('SOADataSource')
+
+    print 'end datasources'
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
+    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
+    setServerGroups(ADMIN_SERVER, serverGroup)                      
+
+    print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
+    serverGroup = ["OSB-MGD-SVRS-COMBINED"]
+    setServerGroups('osb_server1', serverGroup)                      
+
+    print 'end server groups'
+
 dumpStack();
 updateDomain()
-closeDomain()
 
+closeDomain();
+
+createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/osb_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 print('Exiting...')

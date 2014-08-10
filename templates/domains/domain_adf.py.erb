@@ -136,10 +136,6 @@ cd('Security/base_domain/User/weblogic')
 set('Name',ADMIN_USER)
 cmo.setPassword(ADMIN_PASSWORD)
 
-# Set domain save options:
-# - ServerStartMode: Set mode to development.
-# - JavaHome: Sets home directory for the JVM used when starting the server.
-
 if DEVELOPMENT_MODE == true:
   setOption('ServerStartMode', 'dev')
 else:
@@ -154,7 +150,6 @@ closeTemplate()
 
 createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
@@ -222,6 +217,7 @@ dumpStack();
 
 closeDomain();
 
+createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 print('Exiting...')
 exit()

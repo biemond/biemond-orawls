@@ -31,7 +31,7 @@ SOA_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -
 <% if @java_arguments["OAM"] %>
 OAM_JAVA_ARGUMENTS='<%= @java_arguments["OAM"] %>'
 <% else %>
-OAM_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oam_nodemanager_log_dir %>/oam_server1.out -Dweblogic.Stderr=<%= @oam_nodemanager_log_dir %>/oam_server1_err.out'
+OAM_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dwlspatch=wls_patch1036 -Dweblogic.Stdout=<%= @oam_nodemanager_log_dir %>/oam_server1.out -Dweblogic.Stderr=<%= @oam_nodemanager_log_dir %>/oam_server1_err.out'
 <% end %>
 
 <% if @java_arguments["OIM"] %>

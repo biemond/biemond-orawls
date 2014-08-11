@@ -4,6 +4,7 @@
 ##
 define orawls::bsu (
   $ensure                 = 'present',  #present|absent
+  $version                = hiera('wls_version', 1036),  # 1036|1111|1211
   $middleware_home_dir    = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $weblogic_home_dir      = hiera('wls_weblogic_home_dir'),
   $jdk_home_dir           = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
@@ -63,7 +64,24 @@ define orawls::bsu (
       logoutput => false,
       before    => Bsu_patch[$patch_id],
     }
+
+    if ( $version == 1111 ) {
+      $patch_version = 1036
+    } else {
+      $patch_version = $version
+    }
+
+    exec { "patch policy for ${patch_file}":
+      command   => "bash -c \"{ echo 'grant codeBase \\\"file:/opt/oracle/middleware11g/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> /opt/oracle/middleware11g/wlserver_10.3/server/lib/weblogic.policy\"",
+      unless    => "grep 'file:${middleware_home_dir}/patch_wls1036/patch_jars/-' ${weblogic_home_dir}/server/lib/weblogic.policy",
+      path      => $exec_path,
+      user      => $os_user,
+      group     => $os_group,
+      logoutput => $log_output,
+      require   => Bsu_patch[$patch_id],
+    }
   }
+
   bsu_patch{ $patch_id:
     ensure              => $ensure,
     os_user             => $os_user,

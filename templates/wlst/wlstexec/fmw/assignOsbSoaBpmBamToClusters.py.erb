@@ -105,7 +105,7 @@ if soaEnabled == true:
     else:
         delete('UMSJMSServer'       , 'JMSServer')
 
-    delete('soa_server1'            , 'Server')
+#    delete('soa_server1'            , 'Server')
 
 if bamEnabled == true:
     delete('BAMJmsSystemResource'   , 'JMSSystemResource')
@@ -260,14 +260,17 @@ else:
 if oimEnabled == true and oamEnabled == true:
     assign('Library', 'oracle.webcenter.composer#11.1.1@11.1.1', 'Target', OimOamAdmin)
     assign('Library', 'oracle.idm.common.model#11.1.1@11.1.1'  , 'Target', OimOamAdmin)
+    assign('Library', 'oracle.idm.ids.config.ui#11.1.2@11.1.2' , 'Target', OimOamAdmin)
     assign('Library', 'oracle.idm.uishell#11.1.1@11.1.1'       , 'Target', OimOamAdmin)
 elif oimEnabled == false and oamEnabled == true:
     assign('Library', 'oracle.webcenter.composer#11.1.1@11.1.1', 'Target', OamAdmin)
     assign('Library', 'oracle.idm.common.model#11.1.1@11.1.1'  , 'Target', OamAdmin)
+    assign('Library', 'oracle.idm.ids.config.ui#11.1.2@11.1.2' , 'Target', OamAdmin)
     assign('Library', 'oracle.idm.uishell#11.1.1@11.1.1'       , 'Target', OamAdmin)
 elif oimEnabled == true and oamEnabled == false:
     assign('Library', 'oracle.webcenter.composer#11.1.1@11.1.1', 'Target', OimAdmin)
     assign('Library', 'oracle.idm.common.model#11.1.1@11.1.1'  , 'Target', OimAdmin)
+    assign('Library', 'oracle.idm.ids.config.ui#11.1.2@11.1.2' , 'Target', OimAdmin)
     assign('Library', 'oracle.idm.uishell#11.1.1@11.1.1'       , 'Target', OimAdmin)
 else:
     assign('Library', 'oracle.webcenter.composer#11.1.1@11.1.1', 'Target', Admin)
@@ -459,7 +462,7 @@ if soaEnabled == true:
     assign('JdbcSystemResource', 'SOALocalTxDataSource', 'Target', SOAClusterName)
 
 if oamEnabled == true:
-    assign('JdbcSystemResource', 'oamDS'               , 'Target', OAMClusterName)
+    assign('JdbcSystemResource', 'oamDS'               , 'Target', OamAdmin)
     
 if oimEnabled == true:
     assign('JdbcSystemResource', 'oimOperationsDB'     , 'Target', OIMClusterName)

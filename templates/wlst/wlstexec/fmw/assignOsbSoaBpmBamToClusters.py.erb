@@ -105,7 +105,8 @@ if soaEnabled == true:
     else:
         delete('UMSJMSServer'       , 'JMSServer')
 
-#    delete('soa_server1'            , 'Server')
+    if oimEnabled == false:
+        delete('soa_server1'        , 'Server')
 
 if bamEnabled == true:
     delete('BAMJmsSystemResource'   , 'JMSSystemResource')

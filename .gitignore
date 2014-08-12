@@ -2,3 +2,4 @@
 *.lock
 coverage
 spec/reports
+pkg

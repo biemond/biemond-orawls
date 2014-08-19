@@ -47,7 +47,7 @@ define orawls::utils::fmwclusterjrf (
   if ($continue) {
 
     #shutdown adminserver for offline WLST scripts
-    orawls::control{"ShutdownAdminServerForJRF":
+    orawls::control{"ShutdownAdminServerForJRF${title}":
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
       domain_name                => $domain_name,
@@ -69,7 +69,7 @@ define orawls::utils::fmwclusterjrf (
 
     file { "${download_dir}/${title}_assignJrfToCluster.py":
       ensure  => present,
-      content => template("orawls/wlst/wlstexec/fmw/assignJrfToCluster.py.erb"),
+      content => template('orawls/wlst/wlstexec/fmw/assignJrfToCluster.py.erb'),
       backup  => false,
       replace => true,
       mode    => '0775',
@@ -88,12 +88,12 @@ define orawls::utils::fmwclusterjrf (
       group       => $os_group,
       logoutput   => $log_output,
       require     => [ File["${download_dir}/${title}_assignJrfToCluster.py"],
-        Orawls::Control["ShutdownAdminServerForJRF"],
+        Orawls::Control["ShutdownAdminServerForJRF${title}"],
       ]
     }
 
     #startup adminserver for offline WLST scripts
-    orawls::control{"StartupAdminServerForJSF":
+    orawls::control{"StartupAdminServerForJSF${title}":
       weblogic_home_dir          => $weblogic_home_dir,
       jdk_home_dir               => $jdk_home_dir,
       domain_name                => $domain_name,

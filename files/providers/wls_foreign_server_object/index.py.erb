@@ -18,21 +18,15 @@ for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
 
-    n = ls('ForeignServers')
-    for token2 in n.split("dr--"):
-        token2=token2.strip().lstrip().rstrip()
-        if not token2 == '':
+    n = ls('ForeignServers',returnMap='true')
+    for token2 in n:
             cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
-            l = ls('ForeignDestinations')
-            for token3 in l.split("dr--"):
-                token3=token3.strip().lstrip().rstrip()
-                if not token3 == '':
+            l = ls('ForeignDestinations',returnMap='true')
+            for token3 in l:
                    object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignDestinations/'+token3,"destination") 
             cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
-            l = ls('ForeignConnectionFactories')
-            for token3 in l.split("dr--"):
-                token3=token3.strip().lstrip().rstrip()
-                if not token3 == '':
+            l = ls('ForeignConnectionFactories',returnMap='true')
+            for token3 in l:
                    object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignConnectionFactories/'+token3,"connectionfactory") 
 
  

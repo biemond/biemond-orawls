@@ -14,17 +14,13 @@ for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token)
 
-    n = ls('SubDeployments')
-    for token2 in n.split("dr--"):
-        token2=token2.strip().lstrip().rstrip()
-        if not token2 == '':
+    n = ls('SubDeployments',returnMap='true')
+    for token2 in n:
 
-            m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets')
+            m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets',returnMap='true')
             target     = []
             targetType = []
-            for token3 in m.split("dr--"):
-                token3=token3.strip().lstrip().rstrip()
-                if not token3 == '':
+            for token3 in m:
                    target.append(token3)
                    cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
                    targetType.append(get('Type'))

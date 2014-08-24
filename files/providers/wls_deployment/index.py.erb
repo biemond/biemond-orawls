@@ -21,13 +21,11 @@ for appName in myapps:
   deploymenttype    = get('Type')
   versionidentifier = get('VersionIdentifier')
 
-  n = ls('/AppDeployments/'+appName.getName()+'/Targets')
+  n = ls('/AppDeployments/'+appName.getName()+'/Targets',returnMap='true')
 
   target     = []
   targetType = []
-  for token2 in n.split("dr--"):
-      token2=token2.strip().lstrip().rstrip()
-      if not token2 == '':
+  for token2 in n:
          target.append(token2)
          cd('/AppDeployments/'+appName.getName()+'/Targets/'+token2)
          targetType.append(get('Type'))
@@ -44,13 +42,11 @@ for libName in mylibs:
   deploymenttype    = get('Type')
   versionidentifier = get('VersionIdentifier')
 
-  n = ls('/Libraries/'+libName.getName()+'/Targets')
+  n = ls('/Libraries/'+libName.getName()+'/Targets',returnMap='true')
 
   target     = []
   targetType = []
-  for token2 in n.split("dr--"):
-      token2=token2.strip().lstrip().rstrip()
-      if not token2 == '':
+  for token2 in n:
          target.append(token2)
          cd('/Libraries/'+libName.getName()+'/Targets/'+token2)
          targetType.append(get('Type'))

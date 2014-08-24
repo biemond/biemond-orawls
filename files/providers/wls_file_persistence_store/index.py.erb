@@ -16,12 +16,10 @@ for token in m:
 
     directory = get('Directory')
 
-    n = ls('/FileStores/'+token+'/Targets')
+    n = ls('/FileStores/'+token+'/Targets',returnMap='true')
     target     = []
     targetType = []
-    for token2 in n.split("dr--"):
-        token2=token2.strip().lstrip().rstrip()
-        if not token2 == '':
+    for token2 in n:
            target.append(token2)
            cd('/FileStores/'+token+'/Targets/'+token2)
            targetType.append(get('Type'))

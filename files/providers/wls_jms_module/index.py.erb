@@ -14,12 +14,10 @@ for token in m:
     print '___'+token+'___'
     cd('/JMSSystemResources/'+token)
 
-    n = ls('/JMSSystemResources/'+token+'/Targets')
+    n = ls('/JMSSystemResources/'+token+'/Targets',returnMap='true')
     target     = []
     targetType = []
-    for token2 in n.split("dr--"):
-        token2=token2.strip().lstrip().rstrip()
-        if not token2 == '':
+    for token2 in n:
            target.append(token2)
            cd('/JMSSystemResources/'+token+'/Targets/'+token2)
            targetType.append(get('Type'))

@@ -1,0 +1,74 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name          = '<%= server_template %>'
+classpath     = '<%= classpath %>'
+arguments     = '''<%= arguments %>'''
+
+listenAddress = '<%= listenaddress %>'
+listenPort    = <%= listenport %>
+sslEnabled    = <%= sslenabled %>
+sslListenPort = <%= ssllistenport %>
+
+edit()
+startEdit()
+
+
+def formatBoolean(value):
+    if value == 1:
+        return 'True'
+    else:
+        return 'False'    
+
+def formatBoolean2(value):
+  if value == '1':
+    return true
+  else:
+    return false    
+
+
+try:
+
+    cd('/ServerTemplates/'+name)
+    
+    if listenAddress:
+        set('ListenAddress',listenAddress)
+
+    set('ListenPort', listenPort)
+
+    if classpath:    
+        set('ServerStart/'+name+'/ClassPath', classpath)
+
+    if arguments:    
+        set('ServerStart/'+name+'/Arguments', arguments)
+
+    
+    cd('/ServerTemplates/'+name+'/SSL/'+name)
+
+    set('Enabled', formatBoolean(sslEnabled))
+
+    set('ListenPort', sslListenPort)
+
+
+    cd('/')
+
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+
+
+

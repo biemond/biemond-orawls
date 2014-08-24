@@ -24,7 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
-- 1.0.13 support for multiple jrf clusters
+- 1.0.13 support for multiple jrf clusters, new WLS 12c types like wls_server_template, wls_coherence_cluster
 - 1.0.12 SOA 12.1.3 Cluster support, 12.1.3 FMW fixes, BSU policy patch, OAM & OIM cluster support, 11g option to associate WebTier with a domain
 - 1.0.11 OSB 12.1.3 Cluster support + FMW domains update for datasources based on servicetable, target & targettype on all wls types expects an array, same for servers parameter on wls_domain type + users parameter on wls_group type + virtualhostnames parameter on wls_virtual_host + jndinames, extraproperties, extrapropertiesvalues parameters on wls_datasource & wls_foreign_server 
 - 1.0.10 fixed WebLogic 12.1.2 & 12.1.3 standard domain bug.
@@ -96,6 +96,8 @@ ensurable -> create,modify,destroy + puppet resource support
 - [wls_server](#wls_server)
 - [wls_server_channel](#wls_server_channel)
 - [wls_cluster](#wls_cluster)
+- [wls_coherence_cluster](#wls_coherence_cluster)
+- [wls_server_template](#wls_server_template)
 - [wls_virtual_host](#wls_virtual_host)
 - [wls_workmanager_constraint](#wls_workmanager_constraint)
 - [wls_workmanager](#wls_workmanager)
@@ -2248,6 +2250,84 @@ in hiera
         servers:
           - 'wlsServer1'
           - 'wlsServer2'
+
+###wls_coherence_cluster
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_coherence_cluster
+
+    # this will use default as wls_setting identifier
+    wls_coherence_cluster { 'WebCoherenceCluster':
+      ensure         => 'present',
+      clusteringmode => 'unicast',
+      multicastport  => '33389',
+      target         => ['WebCluster'],
+      targettype     => ['Cluster'],
+      unicastport    => '9999',
+    }
+    wls_coherence_cluster { 'defaultCoherenceCluster':
+      ensure         => 'present',
+      clusteringmode => 'unicast',
+      multicastport  => '33387',
+      unicastport    => '8888',
+    }
+
+in hiera
+
+    $default_params = {}
+    $coherence_cluster_instances = hiera('coherence_cluster_instances', {})
+    create_resources('wls_coherence_cluster',$coherence_cluster_instances, $default_params)
+
+
+    coherence_cluster_instances:
+      'WebCoherenceCluster':
+        ensure:         'present'
+        clusteringmode: 'unicast'
+        multicastport:  '33389'
+        target:         ['WebCluster']
+        targettype:     ['Cluster']
+        unicastport:    '9999'
+
+
+
+###wls_server_template
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_server_template
+
+    wls_server_template { 'default/ServerTemplateWeb':
+      ensure        => 'present',
+      arguments     => ['-XX:PermSize=256m','-XX:MaxPermSize=256m'],
+      listenport    => '9101',
+      sslenabled    => '1',
+      ssllistenport => '9102',
+    }
+
+in hiera
+
+    $default_params = {}
+    $server_template_instances = hiera('server_template_instances', {})
+    create_resources('wls_server_template',$server_template_instances, $default_params)
+
+
+    server_vm_args_permsize:      &server_vm_args_permsize     '-XX:PermSize=256m' 
+    server_vm_args_max_permsize:  &server_vm_args_max_permsize '-XX:MaxPermSize=256m' 
+    server_vm_args_memory:        &server_vm_args_memory       '-Xms752m' 
+    server_vm_args_max_memory:    &server_vm_args_max_memory   '-Xmx752m' 
+
+
+    server_template_instances:
+     'ServerTemplateWeb':
+      ensure:        'present'
+      arguments:
+                     - *server_vm_args_permsize
+                     - *server_vm_args_max_permsize
+                     - *server_vm_args_memory
+                     - *server_vm_args_max_memory
+      listenport:    '9101'
+      sslenabled:    '1'
+      ssllistenport: '9102'
 
 ###wls_virtual_host
 

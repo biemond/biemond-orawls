@@ -6,20 +6,16 @@ def quote(text):
 	else: 
 		return ""
 
-m = ls('/Servers')
+m = ls('/Servers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicaddress;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '___'+token+'___'
         cd('/Servers/'+token)
 
-        n = ls('/Servers/'+token+'/NetworkAccessPoints')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if token2:
+        n = ls('/Servers/'+token+'/NetworkAccessPoints',returnMap='true')
+        for token2 in n:
                cd('/Servers/'+token+'/NetworkAccessPoints/'+token2)
                protocol         = get('Protocol')
                enabled          = str(get('Enabled'))

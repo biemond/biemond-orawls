@@ -6,23 +6,21 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/Machines')
+m = ls('/Machines',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;machinetype;nmtype;listenaddress;listenport;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
-        print '___'+token+'___'
-        cd('/Machines/'+token)
-        type = get('Type')
-        cd('NodeManager/'+token)
+for token in m:
+    print '___'+token+'___'
+    cd('/Machines/'+token)
+    type = get('Type')
+    cd('NodeManager/'+token)
 
-        listenAddress = get('ListenAddress')
-        if not (listenAddress):
-           listenAddress = '' 
+    listenAddress = get('ListenAddress')
+    if not (listenAddress):
+       listenAddress = '' 
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain]))
+    print >>f, ";".join(map(quote, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

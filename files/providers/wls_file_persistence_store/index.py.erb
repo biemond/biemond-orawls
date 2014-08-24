@@ -6,29 +6,27 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/FileStores')
+m = ls('/FileStores',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;directory;target;targettype;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
-        print '___'+token+'___'
-        cd('/FileStores/'+token)
+for token in m:
+    print '___'+token+'___'
+    cd('/FileStores/'+token)
 
-        directory = get('Directory')
+    directory = get('Directory')
 
-        n = ls('/FileStores/'+token+'/Targets')
-        target     = []
-        targetType = []
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
-               target.append(token2)
-               cd('/FileStores/'+token+'/Targets/'+token2)
-               targetType.append(get('Type'))
+    n = ls('/FileStores/'+token+'/Targets')
+    target     = []
+    targetType = []
+    for token2 in n.split("dr--"):
+        token2=token2.strip().lstrip().rstrip()
+        if not token2 == '':
+           target.append(token2)
+           cd('/FileStores/'+token+'/Targets/'+token2)
+           targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,directory,','.join(target),','.join(targetType),domain]))
+    print >>f, ";".join(map(quote, [domain+'/'+token,directory,','.join(target),','.join(targetType),domain]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
 

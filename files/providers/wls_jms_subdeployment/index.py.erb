@@ -6,32 +6,30 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/JMSSystemResources')
+m = ls('/JMSSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;jmsmodule;target;targettype;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
-        print '_jmsmodule_'+token+'___'
-        cd('/JMSSystemResources/'+token)
+for token in m:
+    print '_jmsmodule_'+token+'___'
+    cd('/JMSSystemResources/'+token)
 
-        n = ls('SubDeployments')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+    n = ls('SubDeployments')
+    for token2 in n.split("dr--"):
+        token2=token2.strip().lstrip().rstrip()
+        if not token2 == '':
 
-                m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets')
-                target     = []
-                targetType = []
-                for token3 in m.split("dr--"):
-                    token3=token3.strip().lstrip().rstrip()
-                    if not token3 == '':
-                       target.append(token3)
-                       cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
-                       targetType.append(get('Type'))
+            m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets')
+            target     = []
+            targetType = []
+            for token3 in m.split("dr--"):
+                token3=token3.strip().lstrip().rstrip()
+                if not token3 == '':
+                   target.append(token3)
+                   cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
+                   targetType.append(get('Type'))
 
-                print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
+            print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
         
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

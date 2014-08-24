@@ -6,20 +6,16 @@ def quote(text):
 	else: 
 		return ""
 
-m = ls('/SelfTuning')
+m = ls('/SelfTuning',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity"
-for token in m.split("drw-"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '___'+token+'___'
         cd('/SelfTuning/'+token)
 
-        n = ls('WorkManagers')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+        n = ls('WorkManagers',returnMap='true')
+        for token2 in n:
                 cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
 
                 stuckthreads = str(cmo.getIgnoreStuckThreads())
@@ -51,12 +47,10 @@ for token in m.split("drw-"):
                    capacity = ''
 
                 cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
-                t = ls('Targets')
+                t = ls('Targets',returnMap='true')
                 target     = []
                 targetType = []
-                for token3 in t.split("dr--"):
-                     token3=token3.strip().lstrip().rstrip()
-                     if not token3 == '':
+                for token3 in t:
                         target.append(token3)
                         cd('/SelfTuning/'+token+'/WorkManagers/'+token2+'/Targets/'+token3)
                         targetType.append(get('Type'))

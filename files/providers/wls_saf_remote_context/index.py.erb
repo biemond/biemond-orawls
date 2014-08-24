@@ -6,20 +6,16 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/JMSSystemResources')
+m = ls('/JMSSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;jmsmodule;connect_url;weblogic_user;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '_jmsmodule_'+token+'___'
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
 
-        n = ls('SAFRemoteContexts')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+        n = ls('SAFRemoteContexts',returnMap='true')
+        for token2 in n:
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFRemoteContexts/'+token2+'/SAFLoginContext/'+token2)
                 print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,cmo.getLoginURL(),cmo.getUsername(),domain]))
  

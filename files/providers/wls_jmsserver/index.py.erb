@@ -6,38 +6,32 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/JMSServers')
+m = ls('/JMSServers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;target;targettype;persistentstore;persistentstoretype;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
-        print '___'+token+'___'
-        cd('/JMSServers/'+token)
+for token in m:
+  print '___'+token+'___'
+  cd('/JMSServers/'+token)
 
-        n = ls('/JMSServers/'+token+'/Targets')
-        target = ''
+  n = ls('/JMSServers/'+token+'/Targets',returnMap='true')
+  target = ''
 
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
-               target = token2
-               cd('/JMSServers/'+token+'/Targets/'+token2)
-               targetType = get('Type')
+  for token2 in n:
+     target = token2
+     cd('/JMSServers/'+token+'/Targets/'+token2)
+     targetType = get('Type')
 
-        l = ls('/JMSServers/'+token+'/PersistentStore')
+  l = ls('/JMSServers/'+token+'/PersistentStore',returnMap='true')
 
-        persistentStore     = ''
-        persistentStoreType = ''
-        for token3 in l.split("drw-"):
-            token3=token3.strip().lstrip().rstrip()
-            if not token3 == '':
-               persistentStore = token3
-               cd('/JMSServers/'+token+'/PersistentStore/'+token3)
-               persistentStoreType = get('Type')
+  persistentStore     = ''
+  persistentStoreType = ''
+  for token3 in l:
+     persistentStore = token3
+     cd('/JMSServers/'+token+'/PersistentStore/'+token3)
+     persistentStoreType = get('Type')
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,domain]))
+  print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,domain]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
 

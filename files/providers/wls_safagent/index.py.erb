@@ -6,36 +6,30 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/SAFAgents')
+m = ls('/SAFAgents',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;target;targettype;persistentstore;persistentstoretype;servicetype;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '___'+token+'___'
         cd('/SAFAgents/'+token)
 
         serviceType = get('ServiceType')
 
-        n = ls('/SAFAgents/'+token+'/Targets')
+        n = ls('/SAFAgents/'+token+'/Targets',returnMap='true')
         target     = ''
         targetType = ''
 
-        for token2 in n.split("dr--"):
-             token2=token2.strip().lstrip().rstrip()
-             if not token2 == '':
+        for token2 in n:
                 target     = token2
                 cd('/SAFAgents/'+token+'/Targets/'+token2)
                 targetType = get('Type')
 
-        l = ls('/SAFAgents/'+token+'/Store')
+        l = ls('/SAFAgents/'+token+'/Store',returnMap='true')
 
         persistentStore     = ''
         persistentStoreType = ''
-        for token3 in l.split("drw-"):
-            token3=token3.strip().lstrip().rstrip()
-            if not token3 == '':
+        for token3 in l:
                persistentStore = token3
                cd('/SAFAgents/'+token+'/Store/'+token3)
                persistentStoreType = get('Type')

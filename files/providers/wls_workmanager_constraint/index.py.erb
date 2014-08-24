@@ -10,12 +10,10 @@ def constraint(token2,location,type):
     cd(location)
 
     count = get('Count')
-    t = ls('Targets')
+    t = ls('Targets',returnMap='true')
     target     = []
     targetType = []
-    for token3 in t.split("dr--"):
-         token3=token3.strip().lstrip().rstrip()
-         if not token3 == '':
+    for token3 in t:
             target.append(token3)
             cd(location+'/Targets/'+token3)
             targetType.append(get('Type'))
@@ -23,34 +21,26 @@ def constraint(token2,location,type):
     print >>f, ";".join(map(quote, [domain+'/'+token2,type,','.join(target),','.join(targetType),domain,count]))
 
 
-m = ls('/SelfTuning')
+m = ls('/SelfTuning',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;constrainttype;target;targettype;domain;constraintvalue"
-for token in m.split("drw-"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '___'+token+'___'
         cd('/SelfTuning/'+token)
 
-        n = ls('MaxThreadsConstraints')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+        n = ls('MaxThreadsConstraints',returnMap='true')
+        for token2 in n:
                 constraint(token2,'/SelfTuning/'+token+'/MaxThreadsConstraints/'+token2,'MaxThreadsConstraint')
 
         cd('/SelfTuning/'+token)
-        n = ls('MinThreadsConstraints')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+        n = ls('MinThreadsConstraints',returnMap='true')
+        for token2 in n:
                 constraint(token2,'/SelfTuning/'+token+'/MinThreadsConstraints/'+token2,'MinThreadsConstraint')
 
         cd('/SelfTuning/'+token)
-        n = ls('Capacities')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+        n = ls('Capacities',returnMap='true')
+        for token2 in n:
                 constraint(token2,'/SelfTuning/'+token+'/Capacities/'+token2,'Capacity')
 
 

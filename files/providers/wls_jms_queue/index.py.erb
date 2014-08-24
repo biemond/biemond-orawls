@@ -54,25 +54,19 @@ def queue(token,token2,location,distributed):
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;domain"
 
-m = ls('/JMSSystemResources')
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
-        print '_jmsmodule_'+token+'___'
-        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+m = ls('/JMSSystemResources',returnMap='true')
+for token in m:
+  print '_jmsmodule_'+token+'___'
+  cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
 
-        n = ls('UniformDistributedQueues')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
-                queue(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/UniformDistributedQueues/'+token2,'1')
+  n = ls('UniformDistributedQueues',returnMap='true')
+  for token2 in n:
+    queue(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/UniformDistributedQueues/'+token2,'1')
 
-        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
-        n = ls('Queues')
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
-                queue(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Queues/'+token2,'0')
+  cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+  n = ls('Queues',returnMap='true')
+  for token2 in n:
+    queue(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Queues/'+token2,'0')
 
         
 f.close()

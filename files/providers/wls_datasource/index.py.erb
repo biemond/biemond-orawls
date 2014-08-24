@@ -6,13 +6,11 @@ def quote(text):
     else: 
         return ""
 
-m = ls('/JDBCSystemResources')
+m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;extrapropertiesvalues;maxcapacity;initialcapacity;domain"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '___'+token+'___'
         cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
 
@@ -40,22 +38,19 @@ for token in m.split("dr--"):
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token)
         globalTransactionsProtocol = get('GlobalTransactionsProtocol')
 
-        p = ls('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties')
+        p = ls('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties',returnMap='true')
         properties     = []
         propertyValues = []
-        for token3 in p.split("dr--"):
-            token3=token3.strip().lstrip().rstrip()
-            if not token3 == '' and not token3 == 'user':
+        for token3 in p:
+            if not token3 == 'user':
                properties.append(token3)
                cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties/'+token3)
                propertyValues.append(get('Value'))
 
-        n = ls('/SystemResources/'+token+'/Targets')
+        n = ls('/SystemResources/'+token+'/Targets',returnMap='true')
         target     = []
         targetType = []
-        for token2 in n.split("dr--"):
-            token2=token2.strip().lstrip().rstrip()
-            if not token2 == '':
+        for token2 in n:
                target.append(token2)
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))

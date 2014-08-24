@@ -6,25 +6,21 @@ def quote(text):
 	else: 
 		return ""
 
-m = ls('/VirtualHosts')
+m = ls('/VirtualHosts',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;channelname;target;targettype;domain;virtualhostnames"
-for token in m.split("dr--"):
-    token=token.strip().lstrip().rstrip()
-    if token:
+for token in m:
         print '___'+token+'___'
         cd('/VirtualHosts/'+token)
         channelname = get('NetworkAccessPoint')
 
         hosts = get('VirtualHostNames')
 
-        n = ls('Targets')
+        n = ls('Targets',returnMap='true')
         target     = []
         targetType = []
-        for token2 in n.split("dr--"):
-             token2=token2.strip().lstrip().rstrip()
-             if not token2 == '':
+        for token2 in n:
                 target.append(token2)
                 cd('/VirtualHosts/'+token+'/Targets/'+token2)
                 targetType.append(get('Type'))

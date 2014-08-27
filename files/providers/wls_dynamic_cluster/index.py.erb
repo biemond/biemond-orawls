@@ -1,0 +1,23 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+m = ls('/Clusters',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;domain;nodemanager_match;maximum_server_count;server_name_prefix;server_template_name"
+for token in m:
+  print '___'+token+'___'
+  d = ls('/Clusters/'+token+'/DynamicServers/'+token+'/ServerTemplate',returnMap='true')
+  for token2 in d:
+    print '___'+token2+'___'
+    
+    cd('/Clusters/'+token+'/DynamicServers/'+token) 
+
+    print >>f, ";".join(map(quote, [domain+'/'+token,domain,get('MachineNameMatchExpression'),str(get('MaximumDynamicServerCount')),get('ServerNamePrefix'),token2]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

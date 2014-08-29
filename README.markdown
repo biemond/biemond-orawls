@@ -24,6 +24,7 @@ Dependency with
 - reidmv/yamlfile >=0.2.0
 
 ##History
+- 1.0.14
 - 1.0.13 support for multiple jrf clusters, new WLS 12c types like wls_server_template, wls_coherence_cluster, wls_dynamic_cluster
 - 1.0.12 SOA 12.1.3 Cluster support, 12.1.3 FMW fixes, BSU policy patch, OAM & OIM cluster support, 11g option to associate WebTier with a domain
 - 1.0.11 OSB 12.1.3 Cluster support + FMW domains update for datasources based on servicetable, target & targettype on all wls types expects an array, same for servers parameter on wls_domain type + users parameter on wls_group type + virtualhostnames parameter on wls_virtual_host + jndinames, extraproperties, extrapropertiesvalues parameters on wls_datasource & wls_foreign_server 

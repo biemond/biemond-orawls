@@ -11,7 +11,7 @@
   "project_page": "https://github.com/biemond/biemond-orawls",
   "source": "https://github.com/biemond/biemond-orawls",
   "summary": "Oracle WebLogic puppet module v2, wls type/provider, optimized for Hiera ( Puppet 3.X ) and for Linux,Solaris",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "tags": ["weblogic", "java", "oracle","fmw", "middleware", "fusion","osb", "soa"],
   "operatingsystem_support": [
     {

@@ -1,4 +1,4 @@
-#Oracle WebLogic / Fusion Middleware puppet module V2
+# Oracle WebLogic / Fusion Middleware puppet module V2
 [![Build Status](https://travis-ci.org/biemond/biemond-orawls.svg?branch=master)](https://travis-ci.org/biemond/biemond-orawls) [![Coverage Status](https://coveralls.io/repos/biemond/biemond-orawls/badge.png?branch=master)](https://coveralls.io/r/biemond/biemond-orawls?branch=master)
 
 created by Edwin Biemond email biemond at gmail dot com   
@@ -23,11 +23,7 @@ Dependency with
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
 
-##Complete examples
-see the following usages below  
-
-###full working vagrant boxes
-
+## Complete examples
 - WebLogic 12.1.3 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3) 
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
 - WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
@@ -40,7 +36,7 @@ see the following usages below
 - Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example [biemond-orawls-vagrant-solaris-soa](https://github.com/biemond/biemond-orawls-vagrant-solaris-soa) 
 - Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box [vagrant-puppetmaster](https://github.com/biemond/vagrant-puppetmaster)
 
-##Orawls WebLogic Features
+## Orawls WebLogic Features
 
 - [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1 & 12.1.2 & 12.1.3 + FMW infra )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
@@ -55,7 +51,7 @@ see the following usages below
 - [start or stop AdminServer, Managed or a Cluster](#control)
 - [StoreUserConfig](#storeuserconfig) for storing WebLogic Credentials and using in WLST
 
-###Fusion Middleware Features 11g & 12.1.3
+### Fusion Middleware Features 11g & 12.1.3
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - [WebTier](#webtier) Oracle HTTP server
 - [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
@@ -65,7 +61,7 @@ see the following usages below
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
 
-##Wls types and providers
+## Wls types and providers
 ensurable -> create,modify,destroy + puppet resource support
 
 - [wls_setting](#wls_setting), set the default wls parameters for the other types and also used by puppet resource
@@ -104,7 +100,7 @@ ensurable -> create,modify,destroy + puppet resource support
 - [wls_foreign_server_object](#wls_foreign_server_object)
 
 
-##Domain creation options (Dev or Prod mode)
+## Domain creation options (Dev or Prod mode)
 
 all templates creates a WebLogic domain, logs the domain creation output 
 
@@ -121,7 +117,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'oud'         -> OUD (Oracle Unified Directory)  
 
 
-##Orawls WebLogic Facter
+## Orawls WebLogic Facter
 
 Contains WebLogic Facter which displays the following
 - Middleware homes
@@ -130,12 +126,12 @@ Contains WebLogic Facter which displays the following
 - Domain configuration ( everything of a WebLogic Domain like deployments, datasource, JMS, SAF)
 
 
-##Override the default Oracle operating system user
+## Override the default Oracle operating system user
 
 default this orawls module uses oracle as weblogic install user  
 you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls  
 
-##Override the default WebLogic domain folder
+## Override the default WebLogic domain folder
 
 Set the following hiera parameters for weblogic.pp
 
@@ -156,7 +152,7 @@ or hiera parameters of weblogic.pp
     orawls::weblogic::wls_domains_dir:      *wls_domains_dir
     orawls::weblogic::wls_apps_dir:         *wls_apps_dir
 
-##<a name="jsse">Java Secure Socket Extension support</a> 
+## <a name="jsse">Java Secure Socket Extension support</a> 
 
 Requires the JDK 7 or 8 JCE extension 
 
@@ -181,7 +177,7 @@ or set the following hiera parameter
      
      wls_jsse_enabled:         true
 
-##<a name="identity">Enterprise security with Custom Identity and Trust store</a>
+## <a name="identity">Enterprise security with Custom Identity and Trust store</a>
 
 in combination with JDK7 JCE policy, ORAUTILS and WebLogic JSSE you can use your own certificates 
 
@@ -240,7 +236,7 @@ just generates all the certificates and set the following hiera variables.
             trust_keystore_passphrase:             *wls_trust_keystore_passphrase
 
 
-##<a name="urandom">Linux low on entropy or urandom fix</a> 
+## <a name="urandom">Linux low on entropy or urandom fix</a> 
 
 can cause certain operations to be very slow. Encryption operations need entropy to ensure randomness. Entropy is generated by the OS when you use the keyboard, the mouse or the disk.
 
@@ -251,7 +247,7 @@ three options
 -  set java.security in JDK ( jre/lib/security in my jdk7 module )  
 -  set -Djava.security.egd=file:/dev/./urandom param 
 
-##Oracle binaries files and alternate download location
+## Oracle binaries files and alternate download location
 
 Some manifests like orawls:weblogic bsu opatch fmw supports an alternative mountpoint for the big oracle setup/install files.  
 When not provided it uses the files folder located in the orawls puppet module  
@@ -263,7 +259,7 @@ else you can use $source =>
 
 when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install 
 
-##WebLogic requirements
+## WebLogic requirements
 
 Operating System settings like User, Group, ULimits and kernel parameters requirements
 
@@ -311,7 +307,7 @@ create a WebLogic user and group
     }
 
 
-##Necessary Hiera setup for global vars and Facter
+## Necessary Hiera setup for global vars and Facter
 
 if you don't want to provide the same parameters in all the defines and classes 
 
@@ -379,9 +375,9 @@ common.yaml
     orawls::weblogic::source:               *wls_source
         
 
-##WebLogic Module Usage
+## WebLogic Module Usage
 
-###weblogic
+### weblogic
 __orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2 & 12.1.3  
 
     class{'orawls::weblogic':                             
@@ -453,7 +449,7 @@ vagrantcentos64.example.com.yaml
 
 
 
-###opatch 
+### opatch 
 __orawls::opatch__ apply an OPatch on a Middleware home or a Oracle product home
 
     orawls::opatch {'16175470':
@@ -517,7 +513,7 @@ or when you set the defaults hiera variables
          patch_file:               "p16175470_121200_Generic.zip"
         
 
-###bsu 
+### bsu 
 __orawls::bsu__ apply or remove a WebLogic BSU Patch ( ensure = present or absent )
 
     orawls::bsu {'BYJ1':
@@ -582,7 +578,7 @@ or when you set the defaults hiera variables
          log_output:              false
 
 
-###fmw 
+### fmw 
 __orawls::fmw__ installs FMW software (add-on) to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center + Content
 
 

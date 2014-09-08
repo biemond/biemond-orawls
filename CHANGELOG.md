@@ -1,9 +1,10 @@
 #History
 
 ##1.0.15
+- RCU support for MFT 
 
 ##1.0.14
-- Change log Tab for forge
+- Change log Tab for puppetlabs forge
 
 ##1.0.13 
 - Support for multiple jrf clusters

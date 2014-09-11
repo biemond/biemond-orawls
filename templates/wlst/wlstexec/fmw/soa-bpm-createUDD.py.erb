@@ -5,10 +5,11 @@ import string
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
 
-soacluster = '<%= @soa_cluster_name %>'
-Admin      = '<%= @adminserver_name %>'
+soacluster  = '<%= @soa_cluster_name %>'
+Admin       = '<%= @adminserver_name %>'
 
-bpmEnabled = <%= @bpm_enabled %>
+bpmEnabled  = <%= @bpm_enabled %>
+ofm_version = int(<%= @ofm_version %>)
 
 def createFileStore(storeName, serverName):
     create(storeName, 'FileStore')
@@ -50,10 +51,10 @@ def createJMSServers(cluster, track, currentServerCnt):
                 elif track == 'ag':
                     jmsServerName = 'AGJMSServer_auto_'+str(serverCnt)
                     fileStoreName = 'AGJMSServerFileStore_auto_'+str(serverCnt)
-                elif track == 'ps6soa':
+                elif track == 'ps6soa' and ofm_version > 1116:
                     jmsServerName = 'PS6SOAJMSServer_auto_'+str(serverCnt)
                     fileStoreName = 'PS6SOAJMSServerFileStore_auto_'+str(serverCnt)
-
+                        
                 createFileStore(fileStoreName, token)
                 print "Created File Store :- ", fileStoreName
 
@@ -235,26 +236,24 @@ if bpmEnabled == true:
     cmo.setXAConnectionFactoryEnabled(true)
 
 cd('/')
-delete('PS6SOAJMSModule','JMSSystemResource')
-dumpStack()
+if ofm_version > 1116:
+    delete('PS6SOAJMSModule','JMSSystemResource')
+    dumpStack()
+    createJMSServers(soacluster, 'ps6soa', 1)
+    cd('/')
+    create('PS6SOAJMSModuleUDDs','JMSSystemResource')
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs')
+    assign('JMSSystemResource', 'PS6SOAJMSModuleUDDs', 'Target', soacluster)
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs')
+    create('PS6SOAJMSSubDM', 'SubDeployment')
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs/SubDeployments/PS6SOAJMSSubDM')
+else:
+    print "Warning: PS6 components not created. This is expected behaviour for versions of OFM 11.1.1.6 and below."
 
-#delete('PS6SOAJMSServer','JMSServer')
-createJMSServers(soacluster, 'ps6soa', 1)
 
-
-cd('/')
-create('PS6SOAJMSModuleUDDs','JMSSystemResource')
-     
-cd('/')
-cd('JMSSystemResource/PS6SOAJMSModuleUDDs')
-assign('JMSSystemResource', 'PS6SOAJMSModuleUDDs', 'Target', soacluster)
-
-cd('/')
-cd('JMSSystemResource/PS6SOAJMSModuleUDDs')
-create('PS6SOAJMSSubDM', 'SubDeployment')
-
-cd('/')
-cd('JMSSystemResource/PS6SOAJMSModuleUDDs/SubDeployments/PS6SOAJMSSubDM')
 
 print ' '
 print ("*** Listing SOA JMS Servers ***")
@@ -274,24 +273,25 @@ print "soaJMSServerStr := ", soaJMSServerStr
 print ' '
 
 print ("*** Setting JMS SubModule for SOA JMS Server's target***")
-assign('JMSSystemResource.SubDeployment', 'PS6SOAJMSModuleUDDs.PS6SOAJMSSubDM', 'Target', soaJMSServerStr) 
+if ofm_version > 1116:
+    assign('JMSSystemResource.SubDeployment', 'PS6SOAJMSModuleUDDs.PS6SOAJMSSubDM', 'Target', soaJMSServerStr)
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs/JmsResource/NO_NAME_0') 
 
-cd('/')
-cd('JMSSystemResource/PS6SOAJMSModuleUDDs/JmsResource/NO_NAME_0')
-
-udd=create('CaseEventQueue','UniformDistributedQueue')
-udd.setJNDIName('jms/bpm/CaseEventQueue')
-udd.setJMSCreateDestinationIdentifier('jms/bpm/CaseEventQueue')
-udd.setSubDeploymentName('PS6SOAJMSSubDM')
-
-soacf=create('CaseEventConnectionFactory','ConnectionFactory')
-soacf.setJNDIName('jms/bpm/CaseEventConnectionFactory')
-cd('/JMSSystemResource/PS6SOAJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/CaseEventConnectionFactory')
-set('DefaultTargetingEnabled', 'true')
-create('TransactionParams', 'TransactionParams')
-cd('TransactionParams/NO_NAME_0')
-cmo.setXAConnectionFactoryEnabled(true)
-
+    udd=create('CaseEventQueue','UniformDistributedQueue')
+    udd.setJNDIName('jms/bpm/CaseEventQueue')
+    udd.setJMSCreateDestinationIdentifier('jms/bpm/CaseEventQueue')
+    udd.setSubDeploymentName('PS6SOAJMSSubDM')
+    
+    soacf=create('CaseEventConnectionFactory','ConnectionFactory')
+    soacf.setJNDIName('jms/bpm/CaseEventConnectionFactory')
+    cd('/JMSSystemResource/PS6SOAJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/CaseEventConnectionFactory')
+    set('DefaultTargetingEnabled', 'true')
+    create('TransactionParams', 'TransactionParams')
+    cd('TransactionParams/NO_NAME_0')
+    cmo.setXAConnectionFactoryEnabled(true)
+else:
+    print "Warning: PS6 components not created. This is expected behaviour for versions of OFM 11.1.1.6 and below."
 
 dumpStack()
 

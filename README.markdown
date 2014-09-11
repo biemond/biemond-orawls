@@ -1880,6 +1880,8 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 
 only control_flag is a property, the rest are parameters and only used in a create action
 
+to provide a list of token types to create provide a "::" seperated list for attribute 'ActiveTypes'
+
 or use puppet resource wls_authentication_provider
 
 
@@ -1887,6 +1889,12 @@ or use puppet resource wls_authentication_provider
     wls_authentication_provider { 'DefaultAuthenticator':
       ensure       => 'present',
       control_flag => 'SUFFICIENT',
+    }
+    wls_authentication_provider { 'DefaultIdentityAsserter':
+      ensure            => 'present',
+      providerclassname => 'weblogic.security.providers.authentication.DefaultIdentityAsserter',
+      attributes:       =>  'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes',
+      attributesvalues  =>  '1;1;CN;AuthenticatedUser::X.509',
     }
     # this will use default as wls_setting identifier
     wls_authentication_provider { 'ldap':
@@ -1904,18 +1912,22 @@ in hiera
     $authentication_provider_instances = hiera('authentication_provider_instances', {})
     create_resources('wls_authentication_provider',$authentication_provider_instances, $default_params)
 
-
     # this will use default as wls_setting identifier
     authentication_provider_instances:
       'DefaultAuthenticator':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
+      'DefaultIdentityAsserter':
+        ensure:             'present'
+        providerclassname:  'weblogic.security.providers.authentication.DefaultIdentityAsserter'
+        attributes:         'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes'
+        attributesvalues:   '1;1;CN;AuthenticatedUser::X.509'
       'ldap':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
         providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
-        attributes:         'Principal,Host,Port,CacheTTL,CacheSize,MaxGroupMembershipSearchLevel,SSLEnabled'
-        attributesvalues:   'ldapuser,ldapserver,389,60,1024,4,true'
+        attributes:         'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled'
+        attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;true'
 
 
 

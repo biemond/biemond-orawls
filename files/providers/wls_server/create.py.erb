@@ -20,6 +20,8 @@ listenAddress = '<%= listenaddress %>'
 listenPort    = <%= listenport %>
 sslEnabled    = <%= sslenabled %>
 sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
+two_way_ssl = <%= two_way_ssl %>
+client_certificate_enforced = <%= client_certificate_enforced %>
 sslListenPort = <%= ssllistenport %>
 
 jsseenabled   = <%= jsseenabled %>
@@ -96,6 +98,8 @@ try:
     set('JSSEEnabled', formatBoolean(jsseenabled))
     
     set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
+    set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
+    set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
 
     set('ListenPort', sslListenPort)
 

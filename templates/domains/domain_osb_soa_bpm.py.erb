@@ -333,9 +333,9 @@ if WEBLOGIC_VERSION != 1213:
   create('opssDataSource', 'JDBCSystemResource')
   cd('/JDBCSystemResource/opssDataSource')
   if BAM_ENABLED == true:
-    set('Target','AdminServer,osb_server1,soa_server1,bam_server1')
+    set('Target',str(ADMIN_SERVER)+',soa_server1,bam_server1')
   else:
-    set('Target','AdminServer,osb_server1,soa_server1')
+    set('Target',str(ADMIN_SERVER)+',soa_server1')
 
    
   cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')

@@ -2010,6 +2010,8 @@ or with log parameters and ssl
       sslenabled                        => '1',
       sslhostnameverificationignored    => '1',
       ssllistenport                     => '8201',
+      two_way_ssl                       => '0'
+      client_certificate_enforced       => '0'
     }
 
 or with JSSE with custom identity and trust
@@ -2030,6 +2032,8 @@ or with JSSE with custom identity and trust
       sslenabled                            => '1',
       sslhostnameverificationignored        => '1',
       ssllistenport                         => '8201',
+      two_way_ssl                           => '0'
+      client_certificate_enforced           => '0'
       jsseenabled                           => '1',
       custom_identity                       => '1',
       custom_identity_alias                 => 'node2',
@@ -2056,6 +2060,8 @@ in hiera
          jsseenabled:                    '0'
          ssllistenport:                  '8201'
          sslhostnameverificationignored: '1'
+         two_way_ssl:                    '0'
+         client_certificate_enforced:    '0'
 
 or with log parameters
 

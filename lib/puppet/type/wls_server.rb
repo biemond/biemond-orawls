@@ -69,6 +69,8 @@ module Puppet
     property  :log_rotate_logon_startup
 
     property  :sslhostnameverificationignored
+    property  :two_way_ssl
+    property  :client_certificate_enforced
     property  :jsseenabled
 
     add_title_attributes( :server_name) do 

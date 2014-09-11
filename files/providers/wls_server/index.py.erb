@@ -10,7 +10,7 @@ cd("/")
 m = ls('/Servers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;machine;logfilename;log_file_min_size;log_filecount;log_rotate_logon_startup;log_rotationtype;log_number_of_files_limited;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias"
+print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;two_way_ssl;client_certificate_enforced;machine;logfilename;log_file_min_size;log_filecount;log_rotate_logon_startup;log_rotationtype;log_number_of_files_limited;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias"
 for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token)
@@ -30,6 +30,8 @@ for token in m:
   sslListenPort                     = str(get('ListenPort'))
   sslEnabled                        = str(get('Enabled'))
   sslHostnameVerificationIgnored    = str(get('HostnameVerificationIgnored'))
+  two_way_ssl                       = str(get('TwoWaySSLEnabled'))
+  client_certificate_enforced       = str(get('ClientCertificateEnforced'))
   jsseEnabled                       = str(get('JSSEEnabled'))
 
   custom_identity_alias             = get("ServerPrivateKeyAlias")
@@ -58,7 +60,7 @@ for token in m:
       if token2:
          machine = token2
 
-  print >>f, ";".join(map(quote, [domain+'/'+token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, machine, logfilename,log_file_min_size,log_filecount,log_rotate_logon_startup,log_rotationtype,log_number_of_files_limited, classpath, arguments,jsseEnabled,domain,custom_identity,custom_identity_keystore_filename,trust_keystore_file,custom_identity_alias]))
+  print >>f, ";".join(map(quote, [domain+'/'+token, listenAddress, listenPort, sslListenPort, sslEnabled, sslHostnameVerificationIgnored, two_way_ssl, client_certificate_enforced, machine, logfilename,log_file_min_size,log_filecount,log_rotate_logon_startup,log_rotationtype,log_number_of_files_limited, classpath, arguments,jsseEnabled,domain,custom_identity,custom_identity_keystore_filename,trust_keystore_file,custom_identity_alias]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

@@ -1,4 +1,3 @@
-
 #http://docs.oracle.com/cd/E28280_01/core.1111/e12036/target_appendix_soa.htm
 
 WLHOME='<%= @weblogic_home_dir %>'
@@ -29,6 +28,8 @@ SoaOimAdmin    = '<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminse
 SoaBamOimAdmin = '<%= @bam_cluster_name %>,<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 SoaOimOamAdmin = '<%= @oam_cluster_name %>,<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 Admin          = '<%= @adminserver_name %>'
+
+ofm_version    = int(<%= @ofm_version %>)
 
 AllArray = []
 AdapterArray = []
@@ -137,9 +138,10 @@ assign('AppDeployment', 'OracleAppsAdapter'          , 'Target', Adapters)
 assign('AppDeployment', 'OracleBamAdapter'           , 'Target', Adapters)
 assign('AppDeployment', 'SocketAdapter'              , 'Target', Adapters)
 
-if soaEnabled == true:
+if soaEnabled == true and ofm_version > 1116:
     assign('AppDeployment', 'UMSAdapter' , 'Target', Adapters)
-
+else:
+    print "Warning: UMSAdapter Adapter not deployed. This is expected behaviour for versions of OFM 11.1.1.6 and below."
 
 # apps
 assign('AppDeployment', 'DMS Application#11.1.1.1.0'             , 'Target', All)
@@ -157,7 +159,10 @@ if soaEnabled == true:
 #bpm
 if bpmEnabled == true:
     assign('AppDeployment', 'BPMComposer'                , 'Target', SOAClusterName)
-    assign('AppDeployment', 'frevvo'                     , 'Target', SOAClusterName)
+    if ofm_version > 1116:
+        assign('AppDeployment', 'frevvo'                     , 'Target', SOAClusterName)
+    else:
+        print "Warning: frevvo not deployed. This is expected behaviour for versions of OFM 11.1.1.6 and below."
     assign('AppDeployment', 'OracleBPMComposerRolesApp'  , 'Target', SOAClusterName)
     assign('AppDeployment', 'OracleBPMProcessRolesApp'   , 'Target', SOAClusterName)
     assign('AppDeployment', 'OracleBPMWorkspace'         , 'Target', SOAClusterName)

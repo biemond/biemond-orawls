@@ -1890,7 +1890,7 @@ or use puppet resource wls_authentication_provider
       ensure       => 'present',
       control_flag => 'SUFFICIENT',
     }
-    wls_authentication_provider { 'ldap':
+    wls_authentication_provider { 'DefaultIdentityAsserter':
       ensure            => 'present',
       providerclassname => 'weblogic.security.providers.authentication.DefaultIdentityAsserter',
       attributes:       =>  'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes',

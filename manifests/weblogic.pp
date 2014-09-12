@@ -5,6 +5,7 @@ class orawls::weblogic (
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
+  $weblogic_home_dir    = undef, # /opt/oracle/middleware11gR1/wlserver
   $wls_domains_dir      = undef, # /opt/oracle/wlsdomains/domains
   $wls_apps_dir         = undef, # /opt/oracle/wlsdomains/applications
   $fmw_infra            = false, # true|false 12.1.2/12.1.3 option -> plain weblogic or fmw infra
@@ -150,6 +151,13 @@ class orawls::weblogic (
     require => Orawls::Utils::Structure["weblogic structure ${version}"],
   }
 
+  # if weblogic home dir is specified then check that for creates
+  if ( $weblogic_home_dir != undef ) {
+    $created_dir = $weblogic_home_dir
+  } else {
+    $created_dir = $middleware_home_dir
+  }
+
   if ($version == 1212 or $version == 1213) {
 
     $command = "-silent -responseFile ${download_dir}/weblogic_silent_install.xml "
@@ -158,7 +166,7 @@ class orawls::weblogic (
       command     => "${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs",
       environment => ['JAVA_VENDOR=Sun', "JAVA_HOME=${jdk_home_dir}"],
       timeout     => 0,
-      creates     => $middleware_home_dir,
+      creates     => $created_dir,
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
@@ -184,7 +192,7 @@ class orawls::weblogic (
     exec {"install weblogic ${version}":
       command     => "${cmd_prefix}${weblogic_jar_location} -Djava.io.tmpdir=${temp_directory} -mode=silent -silent_xml=${download_dir}/weblogic_silent_install.xml",
       environment => ['JAVA_VENDOR=Sun',"JAVA_HOME=${jdk_home_dir}"],
-      creates     => $middleware_home_dir,
+      creates     => $created_dir,
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,

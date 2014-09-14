@@ -302,10 +302,10 @@ define orawls::domain (
 
     if !defined(File[$download_dir]) {
       file { $download_dir:
-          ensure  => directory,
-          mode    => '0775',
-          owner   => $os_user,
-          group   => $os_group,
+        ensure => directory,
+        mode   => '0775',
+        owner  => $os_user,
+        group  => $os_group,
       }
     }
 
@@ -433,13 +433,13 @@ define orawls::domain (
       }
 
       exec { "exec PSA OPSS store upgrade ${domain_name} ${title}":
-        command     => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
-        require     => [Exec["execwlst ${domain_name} ${title}"],File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
-        timeout     => 0,
-        cwd         => $download_dir, # Added since psa binary saves and changes to current dir
-        path        => $exec_path,
-        user        => $os_user,
-        group       => $os_group,
+        command => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
+        require => [Exec["execwlst ${domain_name} ${title}"],File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
+        timeout => 0,
+        cwd     => $download_dir, # Added since psa binary saves and changes to current dir
+        path    => $exec_path,
+        user    => $os_user,
+        group   => $os_group,
       }
 
       exec { "execwlst create OPSS store ${domain_name} ${title}":

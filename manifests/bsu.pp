@@ -3,19 +3,19 @@
 # installs WebLogic BSU patch
 ##
 define orawls::bsu (
-  $ensure                 = 'present',  #present|absent
-  $version                = hiera('wls_version', 1036),  # 1036|1111|1211
-  $middleware_home_dir    = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir      = hiera('wls_weblogic_home_dir'),
-  $jdk_home_dir           = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $patch_id               = undef,
-  $patch_file             = undef,
-  $os_user                = hiera('wls_os_user'), # oracle
-  $os_group               = hiera('wls_os_group'), # dba
-  $download_dir           = hiera('wls_download_dir'), # /data/install
-  $source                 = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file            = true,  # true|false
-  $log_output             = false, # true|false
+  $ensure              = 'present',  #present|absent
+  $version             = hiera('wls_version', 1036),  # 1036|1111|1211
+  $middleware_home_dir = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $weblogic_home_dir   = hiera('wls_weblogic_home_dir'),
+  $jdk_home_dir        = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
+  $patch_id            = undef,
+  $patch_file          = undef,
+  $os_user             = hiera('wls_os_user'), # oracle
+  $os_group            = hiera('wls_os_group'), # dba
+  $download_dir        = hiera('wls_download_dir'), # /data/install
+  $source              = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
+  $remote_file         = true,  # true|false
+  $log_output          = false, # true|false
 )
 {
   $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${jdk_home_dir}/bin"
@@ -41,14 +41,14 @@ define orawls::bsu (
     # the patch used by the bsu
     if $remote_file == true {
       file { "${download_dir}/${patch_file}":
-        ensure   => file,
-        source   => "${mountPoint}/${patch_file}",
-        require  => File["${middleware_home_dir}/utils/bsu/cache_dir"],
-        backup   => false,
-        mode     => '0775',
-        owner    => $os_user,
-        group    => $os_group,
-        before   => Exec["extract ${patch_file}"],
+        ensure  => file,
+        source  => "${mountPoint}/${patch_file}",
+        require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
+        backup  => false,
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+        before  => Exec["extract ${patch_file}"],
       }
       $disk1_file = "${download_dir}/${patch_file}"
     } else {

@@ -22,49 +22,48 @@ define orawls::utils::fmwclusterjrf (
   $log_output                 = false, # true|false
 )
 {
-    if ( $wls_domains_dir == undef ) {
-      $domains_dir = "${middleware_home_dir}/user_projects/domains"
-    } else {
-      $domains_dir =  $wls_domains_dir
-    }
-    $domain_dir = "${domains_dir}/${domain_name}"
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = "${middleware_home_dir}/user_projects/domains"
+  } else {
+    $domains_dir =  $wls_domains_dir
+  }
+  $domain_dir = "${domains_dir}/${domain_name}"
 
-    # check if the adf is already targeted to the cluster on this weblogic domain
-    $found = jrf_cluster_configured($domain_dir, $jrf_target_name)
+  # check if the adf is already targeted to the cluster on this weblogic domain
+  $found = jrf_cluster_configured($domain_dir, $jrf_target_name)
 
-    if $found == undef {
+  if $found == undef {
+    $continue = false
+    notify { "orawls::utils::fmwclusterjrf ${title} ${version} continue false cause nill": }
+  } else {
+    if ($found) {
       $continue = false
-      notify { "orawls::utils::fmwclusterjrf ${title} ${version} continue false cause nill": }
     } else {
-      if ($found) {
-        $continue = false
-      } else {
-        notify { "orawls::utils::fmwclusterjrf ${title} ${version} continue true cause not exists": }
-        $continue = true
-      }
+      notify { "orawls::utils::fmwclusterjrf ${title} ${version} continue true cause not exists": }
+      $continue = true
     }
+  }
 
   if ($continue) {
-
     #shutdown adminserver for offline WLST scripts
     orawls::control{"ShutdownAdminServerForJRF${title}":
-      weblogic_home_dir          => $weblogic_home_dir,
-      jdk_home_dir               => $jdk_home_dir,
-      domain_name                => $domain_name,
-      wls_domains_dir            => $domains_dir,
-      server_type                => 'admin',
-      target                     => 'Server',
-      server                     => $adminserver_name,
-      adminserver_address        => $adminserver_address,
-      adminserver_port           => $adminserver_port,
-      nodemanager_port           => $nodemanager_port,
-      action                     => 'stop',
-      weblogic_user              => $weblogic_user,
-      weblogic_password          => $weblogic_password,
-      os_user                    => $os_user,
-      os_group                   => $os_group,
-      download_dir               => $download_dir,
-      log_output                 => $log_output,
+      weblogic_home_dir   => $weblogic_home_dir,
+      jdk_home_dir        => $jdk_home_dir,
+      domain_name         => $domain_name,
+      wls_domains_dir     => $domains_dir,
+      server_type         => 'admin',
+      target              => 'Server',
+      server              => $adminserver_name,
+      adminserver_address => $adminserver_address,
+      adminserver_port    => $adminserver_port,
+      nodemanager_port    => $nodemanager_port,
+      action              => 'stop',
+      weblogic_user       => $weblogic_user,
+      weblogic_password   => $weblogic_password,
+      os_user             => $os_user,
+      os_group            => $os_group,
+      download_dir        => $download_dir,
+      log_output          => $log_output,
     }
 
     file { "${download_dir}/${title}_assignJrfToCluster.py":
@@ -87,33 +86,30 @@ define orawls::utils::fmwclusterjrf (
       user        => $os_user,
       group       => $os_group,
       logoutput   => $log_output,
-      require     => [ File["${download_dir}/${title}_assignJrfToCluster.py"],
-        Orawls::Control["ShutdownAdminServerForJRF${title}"],
-      ]
+      require     => [File["${download_dir}/${title}_assignJrfToCluster.py"],
+                      Orawls::Control["ShutdownAdminServerForJRF${title}"],]
     }
 
     #startup adminserver for offline WLST scripts
     orawls::control{"StartupAdminServerForJSF${title}":
-      weblogic_home_dir          => $weblogic_home_dir,
-      jdk_home_dir               => $jdk_home_dir,
-      domain_name                => $domain_name,
-      wls_domains_dir            => $domains_dir,
-      server_type                => 'admin',
-      target                     => 'Server',
-      server                     => $adminserver_name,
-      adminserver_address        => $adminserver_address,
-      adminserver_port           => $adminserver_port,
-      nodemanager_port           => $nodemanager_port,
-      action                     => 'start',
-      weblogic_user              => $weblogic_user,
-      weblogic_password          => $weblogic_password,
-      os_user                    => $os_user,
-      os_group                   => $os_group,
-      download_dir               => $download_dir,
-      log_output                 => $log_output,
-      require                    => Exec["execwlst assignJrfToCluster.py ${title}"],
+      weblogic_home_dir   => $weblogic_home_dir,
+      jdk_home_dir        => $jdk_home_dir,
+      domain_name         => $domain_name,
+      wls_domains_dir     => $domains_dir,
+      server_type         => 'admin',
+      target              => 'Server',
+      server              => $adminserver_name,
+      adminserver_address => $adminserver_address,
+      adminserver_port    => $adminserver_port,
+      nodemanager_port    => $nodemanager_port,
+      action              => 'start',
+      weblogic_user       => $weblogic_user,
+      weblogic_password   => $weblogic_password,
+      os_user             => $os_user,
+      os_group            => $os_group,
+      download_dir        => $download_dir,
+      log_output          => $log_output,
+      require             => Exec["execwlst assignJrfToCluster.py ${title}"],
     }
-
   }
-
 }

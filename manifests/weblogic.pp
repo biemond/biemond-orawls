@@ -127,15 +127,15 @@ class orawls::weblogic (
   if $remote_file == true {
     # put weblogic generic jar
     file { "${download_dir}/${filename}":
-      ensure   => file,
-      source   => "${mountPoint}/${filename}",
-      replace  => false,
-      backup   => false,
-      mode     => '0775',
-      owner    => $os_user,
-      group    => $os_group,
-      before   => Exec["install weblogic ${version}"],
-      require  => Orawls::Utils::Structure["weblogic structure ${version}"],
+      ensure  => file,
+      source  => "${mountPoint}/${filename}",
+      replace => false,
+      backup  => false,
+      mode    => '0775',
+      owner   => $os_user,
+      group   => $os_group,
+      before  => Exec["install weblogic ${version}"],
+      require => Orawls::Utils::Structure["weblogic structure ${version}"],
     }
   }
 

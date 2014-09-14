@@ -3,8 +3,8 @@
 # installs oracle patches for Oracle products
 #
 ##
-define orawls::opatch (
-  $ensure                 = 'present',  #present|absent
+define orawls::opatch(
+  $ensure                  = 'present',  #present|absent
   $oracle_product_home_dir = undef, # /opt/oracle/middleware11gR1
   $jdk_home_dir            = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $patch_id                = undef,
@@ -28,13 +28,13 @@ define orawls::opatch (
   if $ensure == 'present' {
     if $remote_file == true {
       file { "${download_dir}/${patch_file}":
-        ensure   => file,
-        source   => "${mountPoint}/${patch_file}",
-        backup   => false,
-        mode     => '0775',
-        owner    => $os_user,
-        group    => $os_group,
-        before   => Exec["extract opatch ${patch_file} ${title}"],
+        ensure => file,
+        source => "${mountPoint}/${patch_file}",
+        backup => false,
+        mode   => '0775',
+        owner  => $os_user,
+        group  => $os_group,
+        before => Exec["extract opatch ${patch_file} ${title}"],
       }
       $disk1_file = "${download_dir}/${patch_file}"
     } else {
@@ -54,10 +54,10 @@ define orawls::opatch (
 
   case $::kernel {
     'Linux': {
-      $oraInstPath        = '/etc'
+      $oraInstPath = '/etc'
     }
     'SunOS': {
-      $oraInstPath        = '/var/opt/oracle'
+      $oraInstPath = '/var/opt/oracle'
     }
     default: {
         fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")

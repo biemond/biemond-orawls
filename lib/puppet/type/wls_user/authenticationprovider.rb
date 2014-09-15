@@ -4,7 +4,7 @@ newproperty(:authenticationprovider) do
   desc 'The security authentication providers of the domain'
 
   defaultto 'DefaultAuthenticator'
-  
+
   to_translate_to_resource do | raw_resource|
     raw_resource['authenticationprovider']
   end

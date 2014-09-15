@@ -1,24 +1,24 @@
 module Puppet
   newtype(:wls_managedserver) do
-    desc "control a managed server or cluster state like running,stop,restart"
+    desc 'control a managed server or cluster state like running,stop,restart'
 
     newproperty(:ensure) do
-      desc "Whether to do something."
+      desc 'Whether to do something.'
 
       newvalue(:start, :event => :managedserver_running) do
         unless :refreshonly == true
           provider.start
-        end 
+        end
       end
 
       newvalue(:stop, :event => :managedserver_running) do
         unless :refreshonly == true
           provider.stop
-        end 
+        end
       end
 
       aliasvalue(:running, :start)
-      aliasvalue(:abort  , :stop)
+      aliasvalue(:abort, :stop)
 
       def retrieve
         provider.status
@@ -27,7 +27,7 @@ module Puppet
       def sync
         event = super()
 
-        if property = @resource.property(:enable)
+        if property == @resource.property(:enable)
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
@@ -106,7 +106,7 @@ module Puppet
     newparam(:refreshonly) do
       desc <<-EOT
         The command should only be run as a
-        refresh mechanism for when a dependent object is changed. 
+        refresh mechanism for when a dependent object is changed.
       EOT
 
       newvalues(:true, :false)
@@ -115,7 +115,7 @@ module Puppet
     end
 
     def refresh
-      Puppet.info "wls_managedserver refresh"
+      Puppet.info 'wls_managedserver refresh'
       provider.restart
     end
 

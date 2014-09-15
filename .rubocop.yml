@@ -13,7 +13,15 @@ Style/Documentation:
 
 AllCops:
   Exclude:
-    - 'spec/**'
+    - 'spec/**/*'
+    - 'pkg/**/*'
+    - 'coverage/**/*'
+    - 'files/**/*'
+    - 'manifests/**/*'
+    - 'Rakefile'
+    - 'Gemfile'
+    - '*.markdown'
+    - '*.md'
 
 Eval:
   Enabled: false

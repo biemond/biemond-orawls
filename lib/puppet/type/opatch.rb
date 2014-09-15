@@ -1,9 +1,9 @@
 module Puppet
   newtype(:opatch) do
-    desc "This is the Oracle Patch process called OPatch"
+    desc 'This is the Oracle Patch process called OPatch'
 
     newproperty(:ensure) do
-      desc "Whether a patch should be applied."
+      desc 'Whether a patch should be applied.'
 
       newvalue(:present, :event => :opatch_installed) do
         provider.present
@@ -14,7 +14,7 @@ module Puppet
       end
 
       aliasvalue(:installed, :present)
-      aliasvalue(:purged   , :absent)
+      aliasvalue(:purged, :absent)
 
       def retrieve
         provider.status
@@ -23,7 +23,7 @@ module Puppet
       def sync
         event = super()
 
-        if property = @resource.property(:enable)
+        if property == @resource.property(:enable)
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
@@ -69,7 +69,6 @@ module Puppet
         The extracted patch folder.
       EOT
     end
-
 
   end
 end

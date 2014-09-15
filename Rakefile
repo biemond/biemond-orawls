@@ -62,3 +62,12 @@ task :default => [
 	:spec_clean
 ]
 
+begin
+  require 'rubocop/rake_task'
+  desc 'Run RuboCop on the lib directory'
+  Rubocop::RakeTask.new(:rubocop) do |task|
+    task.patterns = ['lib/**/*.rb']
+    task.fail_on_error = true
+  end
+rescue LoadError, NameError
+end

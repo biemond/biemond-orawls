@@ -1,0 +1,45 @@
+
+Style/Encoding:
+  Enabled: false
+
+Style/VariableName:
+  Description: 'Use the configured style when naming variables.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars'
+  Enabled: false
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - 'spec/**'
+
+Eval:
+  Enabled: false
+
+HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Lambda:
+  Enabled: false
+
+LineLength:
+  Enabled: false
+
+AccessorMethodName:
+  Enabled: false
+
+MethodLength:
+  Max: 40
+
+Metrics/ParameterLists:
+  Max: 8
+  CountKeywordArgs: true  
+
+Lint/UnusedMethodArgument:
+  Description: 'Checks for unused method arguments.'
+  Enabled: false
+
+BlockNesting:
+  Enabled: false

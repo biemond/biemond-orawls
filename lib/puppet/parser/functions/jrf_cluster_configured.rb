@@ -20,30 +20,30 @@ begin
       end
       log "jrf_cluster_configured target is #{target}"
 
-      prefix = "ora_mdw_domain"
+      prefix = 'ora_mdw_domain'
 
       # check the middleware home
-      domain_count = lookupWlsVar(prefix+'_cnt')
-      if domain_count == "empty"
+      domain_count = lookup_wls_var(prefix + '_cnt')
+      if domain_count == 'empty'
         return art_exists
       else
         n = 0
-        while ( n < domain_count.to_i )
+        while n < domain_count.to_i
 
           # lookup up domain
-          domain = lookupWlsVar(prefix+'_'+n.to_s)
+          domain = lookup_wls_var(prefix + '_' + n.to_s)
           log "jrf_cluster_configured found domain is #{domain}"
-          unless domain == "empty"
+          unless domain == 'empty'
             domain = domain.strip.downcase
             # do we found the right domain
             log "jrf_cluster_configured compare domain #{domain} with #{fullDomainPath}"
             if domain == fullDomainPath
-              jrf =  lookupWlsVar(prefix+'_'+n.to_s+'_jrf')
+              jrf =  lookup_wls_var(prefix + '_' + n.to_s + '_jrf')
               log "jrf_cluster_configured jrf target is #{jrf}"
-              unless jrf == "empty"
-                jrf = jrf.strip.downcase   
+              unless jrf == 'empty'
+                jrf = jrf.strip.downcase
                 if jrf.include? target
-                  log "jrf_cluster_configured return true"
+                  log 'jrf_cluster_configured return true'
                   return true
                 end
               end
@@ -57,29 +57,29 @@ begin
     end
   end
 
-  def lookupWlsVar(name)
-    if wlsVarExists(name)
+  def lookup_wls_var(name)
+    if wls_var_exists(name)
       return lookupvar(name).to_s
     end
-    return "empty"
+    'empty'
   end
 
-  def wlsVarExists(name)
+  def wls_var_exists(name)
     if lookupvar(name) != :undefined
       if lookupvar(name).nil?
         return false
       end
-      return true 
+      return true
     end
-    return false 
-  end   
+    false
+  end
 
   def log(msg)
     Puppet::Util::Log.create(
       :level   => :info,
       :message => msg,
       :source  => 'jrf_cluster_configured'
-    )  
+    )
   end
 
 end

@@ -1,6 +1,4 @@
 class WlsDaemon < EasyType::Daemon
-
-
   def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
     daemon = super("wls-#{domain}")
     if daemon
@@ -21,11 +19,10 @@ class WlsDaemon < EasyType::Daemon
     identity = "wls-#{domain}"
     Puppet.info "Starting the wls daemon for domain #{@domain}"
     command =  "export POST_CLASSPATH='#{@postClasspath}';. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning"
-    super(identity, command, user )
+    super(identity, command, user)
     pass_domain
     pass_credentials
     connect_to_wls
-
   end
 
   def execute_script(script, debug = false)
@@ -39,20 +36,19 @@ class WlsDaemon < EasyType::Daemon
 
   private
 
-    def connect_to_wls
-      Puppet.info "Connecting to wls on url #{@weblogicConnectUrl}"
-      execute_command "connect('#{@weblogicUser}','#{@weblogicPassword}','#{@weblogicConnectUrl}')"
-    end
+  def connect_to_wls
+    Puppet.info "Connecting to wls on url #{@weblogicConnectUrl}"
+    execute_command "connect('#{@weblogicUser}','#{@weblogicPassword}','#{@weblogicConnectUrl}')"
+  end
 
-    def pass_credentials
-      Puppet.debug "Passing credintials to WLST"
-      execute_command "weblogicUser = '#{@weblogicUser}'"
-      execute_command "weblogicPassword = '#{@weblogicPassword}'"
-    end   
+  def pass_credentials
+    Puppet.debug 'Passing credintials to WLST'
+    execute_command "weblogicUser = '#{@weblogicUser}'"
+    execute_command "weblogicPassword = '#{@weblogicPassword}'"
+  end
 
-    def pass_domain
-      Puppet.debug "Passing domain #{@domain}"
-      execute_command "domain = '#{@domain}'"
-    end
-
+  def pass_domain
+    Puppet.debug "Passing domain #{@domain}"
+    execute_command "domain = '#{@domain}'"
+  end
 end

@@ -1,7 +1,6 @@
 require 'yaml'
 
 module Settings
-
   def self.included(parent)
     parent.extend(Settings)
   end
@@ -15,16 +14,14 @@ module Settings
   end
 
   def settings
-    configuration[ environment ]
+    configuration[environment]
   end
 
   def read_from_yaml
-    if File.exists?(config_file)
-      open(config_file){|f| YAML.load(f)}
+    if File.exist?(config_file)
+      open(config_file) { |f| YAML.load(f) }
     else
       Hash['default', {}]
     end
   end
-
-
 end

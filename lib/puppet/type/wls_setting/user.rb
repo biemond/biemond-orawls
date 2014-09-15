@@ -1,7 +1,7 @@
 newproperty(:user) do
   include EasyType
 
-  desc "Operating System user"
+  desc 'Operating System user'
   defaultto 'oracle'
 
   to_translate_to_resource do | raw_resource|

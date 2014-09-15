@@ -4,6 +4,6 @@ newparam(:topic_name) do
 
   isnamevar
 
-  desc "The topic name"
+  desc 'The topic name'
 
 end

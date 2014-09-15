@@ -4,6 +4,6 @@ newparam(:server_name) do
 
   isnamevar
 
-  desc "The server name"
+  desc 'The server name'
 
 end

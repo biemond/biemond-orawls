@@ -1,7 +1,7 @@
 newproperty(:unitoforderrouting) do
   include EasyType
 
-  desc "The unit of order routing of the SAF imported destination object "
+  desc 'The unit of order routing of the SAF imported destination object'
 
   newvalues(:Hash, :PathService)
 

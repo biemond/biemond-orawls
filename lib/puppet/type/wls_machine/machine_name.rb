@@ -4,6 +4,6 @@ newparam(:machine_name) do
 
   isnamevar
 
-  desc "The machine name"
+  desc 'The machine name'
 
 end

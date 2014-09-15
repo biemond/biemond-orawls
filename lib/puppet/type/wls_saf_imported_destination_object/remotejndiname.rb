@@ -1,7 +1,7 @@
 newproperty(:remotejndiname) do
   include EasyType
 
-  desc "The Remote JNDI of the SAF imported destination object "
+  desc 'The Remote JNDI of the SAF imported destination object'
 
   to_translate_to_resource do | raw_resource|
     raw_resource['remotejndiname']

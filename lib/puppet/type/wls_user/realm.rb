@@ -1,7 +1,7 @@
 newproperty(:realm) do
   include EasyType
 
-  desc "The security realm of the domain"
+  desc 'The security realm of the domain'
 
   defaultto 'myrealm'
   

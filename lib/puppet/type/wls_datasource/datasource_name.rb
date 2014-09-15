@@ -4,6 +4,6 @@ newparam(:datasource_name) do
 
   isnamevar
 
-  desc "The datasource  name"
+  desc 'The datasource name'
 
 end

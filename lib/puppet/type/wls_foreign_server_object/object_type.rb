@@ -1,7 +1,7 @@
 newproperty(:object_type) do
   include EasyType
 
-  desc "The object_type of a Foreign Server object "
+  desc 'The object_type of a Foreign Server object'
 
   newvalues(:destination, :connectionfactory)
 

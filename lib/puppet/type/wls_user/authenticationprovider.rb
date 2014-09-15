@@ -1,7 +1,7 @@
 newproperty(:authenticationprovider) do
   include EasyType
 
-  desc "The security authentication providers of the domain"
+  desc 'The security authentication providers of the domain'
 
   defaultto 'DefaultAuthenticator'
   

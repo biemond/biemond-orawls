@@ -1,9 +1,9 @@
 newproperty(:policy) do
   include EasyType
 
-  desc "policy of the SAF imported destination"
+  desc 'policy of the SAF imported destination'
 
-  newvalues(:'Discard', :'Log',:'Redirect',:'Always-forward')
+  newvalues(:'Discard', :'Log', :'Redirect', :'Always-forward')
 
   defaultto 'Discard'
 

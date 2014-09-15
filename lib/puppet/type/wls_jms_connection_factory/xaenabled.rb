@@ -1,7 +1,7 @@
 newproperty(:xaenabled) do
   include EasyType
 
-  desc "xa enabled on the cf"
+  desc 'xa enabled on the cf'
   newvalues(1, 0)
   defaultto 1
 

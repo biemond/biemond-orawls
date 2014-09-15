@@ -1,9 +1,9 @@
 newproperty(:expirationpolicy) do
   include EasyType
 
-  desc "expirationpolicy of the queue"
+  desc 'expirationpolicy of the queue'
 
-  newvalues(:'Discard', :'Log',:'Redirect')
+  newvalues(:'Discard', :'Log', :'Redirect')
 
   defaultto 'Discard'
 

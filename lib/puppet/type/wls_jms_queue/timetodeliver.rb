@@ -4,7 +4,7 @@ newproperty(:timetodeliver) do
 
   defaultto -1
 
-  desc "timetodeliver of the queue"
+  desc 'timetodeliver of the queue'
 
   to_translate_to_resource do | raw_resource|
     raw_resource['timetodeliver'].to_f.to_i

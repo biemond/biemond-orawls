@@ -4,7 +4,6 @@ newparam(:workmanager_constraint_name) do
 
   isnamevar
 
-  desc "The workmanager constraint name"
-
+  desc 'The workmanager constraint name'
 
 end

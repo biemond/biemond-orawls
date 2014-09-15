@@ -4,6 +4,6 @@ newparam(:remote_context_name) do
 
   isnamevar
 
-  desc "SAF remote context name"
+  desc 'SAF remote context name'
 
 end

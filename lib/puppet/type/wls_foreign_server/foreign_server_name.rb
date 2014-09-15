@@ -4,6 +4,6 @@ newparam(:foreign_server_name) do
 
   isnamevar
 
-  desc "Foreign Server name"
+  desc 'Foreign Server name'
 
 end

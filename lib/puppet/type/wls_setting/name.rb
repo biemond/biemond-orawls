@@ -1,7 +1,7 @@
 newparam(:name) do
   include EasyType
 
-  desc "The name of the setting"
+  desc 'The name of the setting'
 
   isnamevar
 

@@ -1,5 +1,5 @@
 newparam(:setting) do
 
-	defaultto 'default'
+  defaultto 'default'
 
 end

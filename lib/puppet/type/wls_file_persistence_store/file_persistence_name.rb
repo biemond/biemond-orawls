@@ -4,6 +4,6 @@ newparam(:file_persistence_name) do
 
   isnamevar
 
-  desc "The file persistence name"
+  desc 'The file persistence name'
 
 end

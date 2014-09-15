@@ -5,7 +5,6 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
   end
 
   def adminserver_control(action)
-
     Puppet.debug "adminserver action: #{action}"
 
     domain_name               = resource[:domain_name]
@@ -15,7 +14,6 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     weblogic_home_dir         = resource[:weblogic_home_dir]
     weblogic_user             = resource[:weblogic_user]
     weblogic_password         = resource[:weblogic_password]
-    jdk_home_dir              = resource[:jdk_home_dir]
     nodemanager_address       = resource[:nodemanager_address]
     nodemanager_port          = resource[:nodemanager_port]
     jsse_enabled              = resource[:jsse_enabled]
@@ -24,8 +22,8 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     trust_keystore_passphrase = resource[:trust_keystore_passphrase]
 
     Puppet.debug "adminserver custom trust: #{custom_trust}"
-    
-    if ( "#{custom_trust}" == "true" )
+
+    if "#{custom_trust}" == 'true'
       config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{trust_keystore_passphrase}"
     else
       config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled}"
@@ -35,23 +33,21 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       wls_action = "nmStart(\"#{name}\")"
     else
       wls_action = "nmKill(\"#{name}\")"
-    end 
+    end
 
     command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
 nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"ssl\")
 #{wls_action}
-nmDisconnect() 
+nmDisconnect()
 EOF"
 
     Puppet.debug "adminserver action: #{action} with command #{command} and CONFIG_JVM_ARGS=#{config}"
 
     output = `su - #{user} -c 'export CONFIG_JVM_ARGS="#{config}";#{command}'`
     Puppet.debug "adminserver result: #{output}"
-
   end
 
   def adminserver_status
-
     domain_name    = resource[:domain_name]
     name           = resource[:server_name]
 
@@ -66,14 +62,14 @@ EOF"
 
     output.each_line do |li|
       unless li.nil?
-        Puppet.debug "line #{li}" 
+        Puppet.debug "line #{li}"
         if li.include? name
-          Puppet.debug "found server"
-          return "Found"
+          Puppet.debug 'found server'
+          return 'Found'
         end
-      end 
+      end
     end
-    return "NotFound"
+    'NotFound'
   end
 
   def start
@@ -92,7 +88,7 @@ EOF"
   def status
     output  = adminserver_status
     Puppet.debug "adminserver_status output #{output}"
-    if output == "Found"
+    if output == 'Found'
       return :start
     else
       return :stop

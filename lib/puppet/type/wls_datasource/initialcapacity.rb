@@ -1,7 +1,7 @@
 newproperty(:initialcapacity) do
   include EasyType
 
-  desc "The initial capacity of the datasource"
+  desc 'The initial capacity of the datasource'
 
   defaultto '1'
 

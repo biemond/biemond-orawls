@@ -4,6 +4,6 @@ newparam(:quota_name) do
 
   isnamevar
 
-  desc "The quota name"
+  desc 'The quota name'
 
 end

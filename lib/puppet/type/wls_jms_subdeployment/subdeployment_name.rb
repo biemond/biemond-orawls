@@ -4,6 +4,6 @@ newparam(:subdeployment_name) do
 
   isnamevar
 
-  desc "The subdeployment name"
+  desc 'The subdeployment name'
 
 end

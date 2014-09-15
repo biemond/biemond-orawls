@@ -4,6 +4,6 @@ newparam(:weblogic_domain_name) do
 
   isnamevar
 
-  desc "Domain name"
+  desc 'Domain name'
 
 end

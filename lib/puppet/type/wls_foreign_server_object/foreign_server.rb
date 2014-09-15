@@ -8,6 +8,6 @@ newparam(:foreign_server) do
     raw_resource['foreign_server']
   end
 
-  desc "Foreign server name"
+  desc 'Foreign server name'
 
 end

@@ -1,7 +1,7 @@
 newproperty(:usetimetolivedefault) do
   include EasyType
 
-  desc "use time to live default of this SAF imported destination"
+  desc 'use time to live default of this SAF imported destination'
 
   newvalues(1, 0)
 

@@ -4,6 +4,6 @@ newparam(:imported_destination_name) do
 
   isnamevar
 
-  desc "SAF imported destination name"
+  desc 'SAF imported destination name'
 
 end

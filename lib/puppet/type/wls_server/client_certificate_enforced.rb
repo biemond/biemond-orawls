@@ -1,7 +1,7 @@
 newproperty(:client_certificate_enforced) do
   include EasyType
 
-  desc "Should client certificate be enforced on the server."
+  desc 'Should client certificate be enforced on the server.'
   newvalues(1, 0)
 
   defaultto '0'

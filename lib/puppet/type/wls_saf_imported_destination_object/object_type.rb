@@ -1,7 +1,7 @@
 newproperty(:object_type) do
   include EasyType
 
-  desc "The object_type of the SAF imported destination object "
+  desc 'The object_type of the SAF imported destination object'
 
   newvalues(:queue, :topic)
 

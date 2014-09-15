@@ -1,7 +1,7 @@
 newproperty(:custom_identity) do
   include EasyType
 
-  desc "The custom_identity true or false"
+  desc 'The custom_identity true or false'
   newvalues('1', '0')
 
   defaultto '0'
@@ -9,6 +9,5 @@ newproperty(:custom_identity) do
   to_translate_to_resource do | raw_resource|
     raw_resource['custom_identity']
   end
-
 
 end

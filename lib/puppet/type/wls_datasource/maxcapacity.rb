@@ -1,7 +1,7 @@
 newproperty(:maxcapacity) do
   include EasyType
 
-  desc "The max capacity of the datasource"
+  desc 'The max capacity of the datasource'
 
   defaultto '15'
 

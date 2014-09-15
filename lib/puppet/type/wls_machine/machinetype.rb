@@ -1,8 +1,7 @@
 newproperty(:machinetype) do
   include EasyType
 
-
-  desc "The machine type"
+  desc 'The machine type'
   defaultto 'UnixMachine'
 
   newvalues(:Machine, :UnixMachine)

@@ -4,6 +4,6 @@ newparam(:error_handler_name) do
 
   isnamevar
 
-  desc "SAF error handler name"
+  desc 'SAF error handler name'
 
 end

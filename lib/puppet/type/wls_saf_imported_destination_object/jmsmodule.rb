@@ -4,9 +4,9 @@ newparam(:jmsmodule) do
 
   isnamevar
 
-  desc "The JMS module name"
+  desc 'The JMS module name'
 
-  to_translate_to_resource do | raw_resource|
+  to_translate_to_resource do |raw_resource|
     raw_resource['jmsmodule']
   end
 

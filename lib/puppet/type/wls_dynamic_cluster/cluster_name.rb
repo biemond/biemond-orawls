@@ -4,6 +4,6 @@ newparam(:cluster_name) do
 
   isnamevar
 
-  desc "The cluster name"
+  desc 'The cluster name'
 
 end

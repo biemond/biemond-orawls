@@ -4,6 +4,6 @@ newparam(:group_name) do
 
   isnamevar
 
-  desc "The group name"
+  desc 'The group name'
 
 end

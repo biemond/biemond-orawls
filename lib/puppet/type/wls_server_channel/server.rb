@@ -4,7 +4,7 @@ newparam(:server) do
 
   isnamevar
 
-  desc "The server name"
+  desc 'The server name'
 
   to_translate_to_resource do | raw_resource|
     raw_resource['server']

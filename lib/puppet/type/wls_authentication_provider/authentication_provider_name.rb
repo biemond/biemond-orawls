@@ -3,6 +3,6 @@ newparam(:authentication_provider_name) do
 
   isnamevar
 
-  desc "The authentication provider name"
+  desc 'The authentication provider name'
 
 end

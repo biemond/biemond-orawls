@@ -4,6 +4,6 @@ newparam(:object_name) do
 
   isnamevar
 
-  desc "Foreign Server Object name"
+  desc 'Foreign Server Object name'
 
 end

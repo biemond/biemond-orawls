@@ -1,7 +1,7 @@
 newproperty(:nmtype) do
   include EasyType
 
-  desc "The nmtype of the machine"
+  desc 'The nmtype of the machine'
   defaultto 'SSL'
 
   newvalues(:SSL, :Plain, :SSH, :RSH)

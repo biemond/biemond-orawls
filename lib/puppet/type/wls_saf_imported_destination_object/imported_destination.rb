@@ -8,7 +8,6 @@ newparam(:imported_destination) do
     raw_resource['imported_destination']
   end
 
-
-  desc "SAF imported destination name"
+  desc 'SAF imported destination name'
 
 end

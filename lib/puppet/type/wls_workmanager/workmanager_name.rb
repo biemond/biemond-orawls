@@ -4,7 +4,6 @@ newparam(:workmanager_name) do
 
   isnamevar
 
-  desc "The workmanager name"
-
+  desc 'The workmanager name'
 
 end

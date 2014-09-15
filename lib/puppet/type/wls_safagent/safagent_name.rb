@@ -4,6 +4,6 @@ newparam(:safagent_name) do
 
   isnamevar
 
-  desc "The SAF agent name"
+  desc 'The SAF agent name'
 
 end

@@ -4,6 +4,6 @@ newparam(:user_name) do
 
   isnamevar
 
-  desc "The user name"
+  desc 'The user name'
 
 end

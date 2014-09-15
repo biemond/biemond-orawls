@@ -1,7 +1,7 @@
 newproperty(:jsseenabled) do
   include EasyType
 
-  desc "The JSSE eenabled enabled on the server"
+  desc 'The JSSE eenabled enabled on the server'
   newvalues('1', '0')
 
   defaultto '0'

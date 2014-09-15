@@ -4,6 +4,6 @@ newparam(:queue_name) do
 
   isnamevar
 
-  desc "The queue name"
+  desc 'The queue name'
 
 end

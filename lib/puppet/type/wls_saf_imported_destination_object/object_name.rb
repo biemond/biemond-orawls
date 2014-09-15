@@ -4,6 +4,6 @@ newparam(:object_name) do
 
   isnamevar
 
-  desc "SAF imported destination Object name"
+  desc 'SAF imported destination Object name'
 
 end

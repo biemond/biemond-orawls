@@ -47,7 +47,6 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     patchName           = resource[:name]
     middleware_home_dir = resource[:middleware_home_dir]
     weblogic_home_dir   = resource[:weblogic_home_dir]
-    jdk_home_dir        = resource[:jdk_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
 
     if patch_download_dir == nil

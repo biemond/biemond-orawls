@@ -4,7 +4,6 @@ newparam(:virtual_host_name) do
 
   isnamevar
 
-  desc "The virtual host name"
-
+  desc 'The virtual host name'
 
 end

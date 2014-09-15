@@ -4,7 +4,7 @@ newproperty(:timetolive) do
 
   defaultto -1
 
-  desc "timetolive of the queue"
+  desc 'timetolive of the queue'
 
   to_translate_to_resource do | raw_resource|
     raw_resource['timetolive'].to_f.to_i

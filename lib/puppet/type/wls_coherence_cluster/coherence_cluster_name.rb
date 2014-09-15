@@ -4,6 +4,6 @@ newparam(:coherence_cluster_name) do
 
   isnamevar
 
-  desc "The coherence cluster name"
+  desc 'The coherence cluster name'
 
 end

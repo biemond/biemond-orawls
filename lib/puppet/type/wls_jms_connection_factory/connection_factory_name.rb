@@ -4,6 +4,6 @@ newparam(:connection_factory_name) do
 
   isnamevar
 
-  desc "The Connection Factory name"
+  desc 'The Connection Factory name'
 
 end

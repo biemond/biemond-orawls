@@ -14,41 +14,39 @@ Puppet::Type.type(:opatch).provide(:opatch) do
 
     if action == :present
       command = "#{oracle_product_home_dir}/OPatch/opatch apply -silent -jre #{jdk_home_dir}/jre -oh #{oracle_product_home_dir} #{extracted_patch_dir}"
-    else 
+    else
       command = "#{oracle_product_home_dir}/OPatch/opatch rollback -id #{patchName} -silent -jre #{jdk_home_dir}/jre -oh #{oracle_product_home_dir}"
-    end 
+    end
 
     Puppet.debug "opatch action: #{action} with command #{command}"
     output = `su - #{user} -c '#{command}'`
     # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
     Puppet.debug "opatch result: #{output}"
-
   end
 
   def opatch_status
-
     user                    = resource[:os_user]
     patchName               = resource[:name]
     oracle_product_home_dir = resource[:oracle_product_home_dir]
     orainst_dir             = resource[:orainst_dir]
 
-    command  = oracle_product_home_dir+"/OPatch/opatch lsinventory -patch_id -oh "+oracle_product_home_dir+" -invPtrLoc "+orainst_dir+"/oraInst.loc"
+    command  = oracle_product_home_dir + '/OPatch/opatch lsinventory -patch_id -oh ' + oracle_product_home_dir + ' -invPtrLoc ' + orainst_dir + '/oraInst.loc'
     Puppet.debug "opatch_status for patch #{patchName} command: #{command}"
 
-    #output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
+    # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
     output = `su - #{user} -c '#{command}'`
 
     output.each_line do |li|
-      opatch = li[5, li.index(':')-5 ].strip + ";" if (li['Patch'] and li[': applied on'] )
+      opatch = li[5, li.index(':') - 5].strip + ';' if li['Patch'] && li[': applied on']
       unless opatch.nil?
-        Puppet.debug "line #{opatch}" 
+        Puppet.debug "line #{opatch}"
         if opatch.include? patchName
-          Puppet.debug "found patch"
+          Puppet.debug 'found patch'
           return patchName
         end
-      end 
+      end
     end
-    return "NotFound"
+    'NotFound'
   end
 
   def present

@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;extrapropertiesvalues;maxcapacity;initialcapacity;domain"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;extrapropertiesvalues;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist"
 for token in m:
         print '___'+token+'___'
         cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -38,6 +38,12 @@ for token in m:
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token)
         globalTransactionsProtocol = get('GlobalTransactionsProtocol')
 
+        cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCOracleParams/' + token )
+        fanenabled = str(get('FanEnabled'))
+        onsnodelist = ''
+        if fanenabled == '1':
+            onsnodelist = get('OnsNodeList')
+
         p = ls('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties',returnMap='true')
         properties     = []
         propertyValues = []
@@ -55,6 +61,6 @@ for token in m:
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),','.join(propertyValues),maxcapacity,initialcapacity,domain]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),','.join(propertyValues),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

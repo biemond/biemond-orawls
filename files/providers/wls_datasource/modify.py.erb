@@ -17,8 +17,7 @@ extraproperties            = '<%= extraproperties %>'
 extrapropertiesvalues      = '<%= extrapropertiesvalues %>'
 maxcapacity                = '<%= maxcapacity %>'
 initialcapacity            = '<%= initialcapacity %>'
-fanenabled                 = '<%= fanenabled %>'
-onsnodelist                = '<%= onsnodelist %>'
+
 
 edit()
 startEdit()
@@ -74,11 +73,6 @@ try:
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
     cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)
-
-    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCOracleParams/' + name )
-    if fanenabled == '1':
-        cmo.setFanEnabled(true)
-        cmo.setOnsNodeList(onsnodelist)
 
     cd('/SystemResources/' + name )
 

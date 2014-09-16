@@ -21,7 +21,20 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     Puppet.debug "opatch action: #{action} with command #{command}"
     output = `su - #{user} -c '#{command}'`
     # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
-    Puppet.debug "opatch result: #{output}"
+    Puppet.info "opatch result: #{output}"
+
+    result = false
+    output.each_line do |li|
+      unless li.nil?
+        if li.include? "OPatch completed" or li.include? "OPatch succeeded"
+          result = true
+        end
+      end 
+    end
+    if result == false
+      fail(output)
+    end 
+
   end
 
   def opatch_status

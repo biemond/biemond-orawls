@@ -11,15 +11,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a CF in a JMS Module of an WebLogic domain."
+    desc 'This resource allows you to manage a CF in a JMS Module of an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_jms_connection_factory"}
+      environment = { 'action' => 'index', 'type' => 'wls_jms_connection_factory' }
       wlst template('puppet:///modules/orawls/providers/wls_jms_connection_factory/index.py.erb', binding), environment
     end
 
@@ -42,13 +42,13 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :connection_factory_name
-    property  :jndiname
-    property  :subdeployment
-    property  :defaulttargeting
-    property  :transactiontimeout
-    property  :xaenabled
+    property :jndiname
+    property :subdeployment
+    property :defaulttargeting
+    property :transactiontimeout
+    property :xaenabled
 
-    add_title_attributes( :jmsmodule, :connection_factory_name) do 
+    add_title_attributes(:jmsmodule, :connection_factory_name) do
       /^((.*\/)?(.*):(.*)?)$/
     end
 

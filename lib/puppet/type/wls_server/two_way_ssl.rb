@@ -3,7 +3,7 @@ newproperty(:two_way_ssl) do
 
   desc 'Should Two Way SSL be used on the server.'
   newvalues(1, 0)
-  
+
   defaultto 0
 
   to_translate_to_resource do |raw_resource|

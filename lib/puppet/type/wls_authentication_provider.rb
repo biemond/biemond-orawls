@@ -12,15 +12,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage authentication providers in an WebLogic domain."
+    desc 'This resource allows you to manage authentication providers in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name} "
-      environment = { "action"=>"index","type"=>"wls_authentication_provider"}
+      environment = { 'action' => 'index', 'type' => 'wls_authentication_provider' }
       wlst template('puppet:///modules/orawls/providers/wls_authentication_provider/index.py.erb', binding), environment
     end
 
@@ -43,12 +43,12 @@ module Puppet
     parameter :name
     parameter :authentication_provider_name
 
-    property  :control_flag
+    property :control_flag
     parameter :providerclassname
     parameter :attributes
     parameter :attributesvalues
 
-    add_title_attributes( :authentication_provider_name) do 
+    add_title_attributes(:authentication_provider_name) do
       /^((.*\/)?(.*)?)$/
     end
 

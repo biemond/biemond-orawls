@@ -11,15 +11,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage foreign servers in a JMS Module of an WebLogic domain."
+    desc 'This resource allows you to manage foreign servers in a JMS Module of an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_foreign_server"}
+      environment = { 'action' => 'index', 'type' => 'wls_foreign_server' }
       wlst template('puppet:///modules/orawls/providers/wls_foreign_server/index.py.erb', binding), environment
     end
 
@@ -43,14 +43,14 @@ module Puppet
     parameter :jmsmodule
     parameter :foreign_server_name
     parameter :password
-    property  :subdeployment
-    property  :defaulttargeting
-    property  :extraproperties
-    property  :extrapropertiesvalues
-    property  :initialcontextfactory
-    property  :connectionurl
+    property :subdeployment
+    property :defaulttargeting
+    property :extraproperties
+    property :extrapropertiesvalues
+    property :initialcontextfactory
+    property :connectionurl
 
-    add_title_attributes( :jmsmodule, :foreign_server_name) do 
+    add_title_attributes(:jmsmodule, :foreign_server_name) do
       /^((.*\/)?(.*):(.*)?)$/
     end
 

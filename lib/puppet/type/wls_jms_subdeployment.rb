@@ -5,21 +5,20 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  #
   newtype(:wls_jms_subdeployment) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a JMS subdeployment in a JMS module of an WebLogic domain."
+    desc 'This resource allows you to manage a JMS subdeployment in a JMS module of an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_jms_subdeployment"}
+      environment = { 'action' => 'index', 'type' => 'wls_jms_subdeployment' }
       wlst template('puppet:///modules/orawls/providers/wls_jms_subdeployment/index.py.erb', binding), environment
     end
 
@@ -42,10 +41,10 @@ module Puppet
     parameter :name
     parameter :subdeployment_name
     parameter :jmsmodule
-    property  :target
-    property  :targettype
+    property :target
+    property :targettype
 
-    add_title_attributes( :jmsmodule, :subdeployment_name) do 
+    add_title_attributes(:jmsmodule, :subdeployment_name) do
       /^((.*\/)?(.*):(.*)?)$/
     end
 

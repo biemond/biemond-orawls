@@ -26,15 +26,12 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     result = false
     output.each_line do |li|
       unless li.nil?
-        if li.include? "OPatch completed" or li.include? "OPatch succeeded"
+        if li.include? 'OPatch completed' or li.include? 'OPatch succeeded'
           result = true
         end
-      end 
+      end
     end
-    if result == false
-      fail(output)
-    end 
-
+    fail(output) if result == false
   end
 
   def opatch_status

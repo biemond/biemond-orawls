@@ -5,7 +5,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_safagent) do | command_builder |
+  newtype(:wls_safagent) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -47,7 +47,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:safagent_name) do
-       /^((.*\/)?(.*)?)$/
+      /^((.*\/)?(.*)?)$/
     end
 
   end

@@ -16,7 +16,7 @@ module Puppet
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name} "
       environment = { 'action' => 'index', 'type' => 'wls_server_channel' }

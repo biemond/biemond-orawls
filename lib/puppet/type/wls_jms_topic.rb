@@ -5,21 +5,20 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  #
   newtype(:wls_jms_topic) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a Topic in a JMS module of an WebLogic domain."
+    desc 'This resource allows you to manage a Topic in a JMS module of an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_jms_topic"}
+      environment = { 'action' => 'index', 'type' => 'wls_jms_topic' }
       wlst template('puppet:///modules/orawls/providers/wls_jms_topic/index.py.erb', binding), environment
     end
 
@@ -42,22 +41,22 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :topic_name
-    property  :distributed
-    property  :jndiname
-    property  :subdeployment
-    property  :balancingpolicy
-    property  :quota
-    property  :defaulttargeting
+    property :distributed
+    property :jndiname
+    property :subdeployment
+    property :balancingpolicy
+    property :quota
+    property :defaulttargeting
     parameter :errordestinationtype
-    property  :errordestination
-    property  :expirationloggingpolicy
-    property  :redeliverylimit
-    property  :expirationpolicy
-    property  :redeliverydelay
-    property  :timetodeliver
-    property  :timetolive
+    property :errordestination
+    property :expirationloggingpolicy
+    property :redeliverylimit
+    property :expirationpolicy
+    property :redeliverydelay
+    property :timetodeliver
+    property :timetolive
 
-    add_title_attributes( :jmsmodule, :topic_name) do 
+    add_title_attributes(:jmsmodule, :topic_name) do
       /^((.*\/)?(.*):(.*)?)$/
     end
 

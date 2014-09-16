@@ -11,15 +11,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a cluster in an WebLogic domain."
+    desc 'This resource allows you to manage a cluster in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_cluster"}
+      environment = { 'action' => 'index', 'type' => 'wls_cluster' }
       wlst template('puppet:///modules/orawls/providers/wls_cluster/index.py.erb', binding), environment
     end
 
@@ -41,17 +41,17 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :cluster_name
-    property  :servers
-    property  :migrationbasis
-    property  :migration_datasource
-    property  :migration_table_name
-    property  :messagingmode
-    property  :datasourceforjobscheduler
-    property  :unicastbroadcastchannel
-    property  :multicastaddress
-    property  :multicastport
+    property :servers
+    property :migrationbasis
+    property :migration_datasource
+    property :migration_table_name
+    property :messagingmode
+    property :datasourceforjobscheduler
+    property :unicastbroadcastchannel
+    property :multicastaddress
+    property :multicastport
 
-    add_title_attributes( :cluster_name) do 
+    add_title_attributes(:cluster_name) do
       /^((.*\/)?(.*)?)$/
     end
 

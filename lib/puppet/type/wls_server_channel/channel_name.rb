@@ -4,6 +4,6 @@ newparam(:channel_name) do
 
   isnamevar
 
-  desc "Server channel name"
+  desc 'Server channel name'
 
 end

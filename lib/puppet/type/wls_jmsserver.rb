@@ -5,21 +5,20 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  #
   newtype(:wls_jmsserver) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a jmsserver in an WebLogic domain."
+    desc 'This resource allows you to manage a jmsserver in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_jmsserver"}
+      environment = { 'action' => 'index', 'type' => 'wls_jmsserver' }
       wlst template('puppet:///modules/orawls/providers/wls_jmsserver/index.py.erb', binding), environment
     end
 
@@ -41,12 +40,12 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :jmsserver_name
-    property  :persistentstore
-    property  :persistentstoretype
-    property  :target
-    property  :targettype
+    property :persistentstore
+    property :persistentstoretype
+    property :target
+    property :targettype
 
-    add_title_attributes( :jmsserver_name) do 
+    add_title_attributes(:jmsserver_name) do
       /^((.*\/)?(.*)?)$/
     end
 

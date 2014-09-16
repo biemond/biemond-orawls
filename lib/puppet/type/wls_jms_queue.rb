@@ -5,21 +5,20 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  #
   newtype(:wls_jms_queue) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a Queue in a JMS Module of an WebLogic domain."
+    desc 'This resource allows you to manage a Queue in a JMS Module of an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_jms_queue"}
+      environment = { 'action' => 'index', 'type' => 'wls_jms_queue' }
       wlst template('puppet:///modules/orawls/providers/wls_jms_queue/index.py.erb', binding), environment
     end
 
@@ -42,22 +41,21 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :queue_name
-    property  :distributed
-    property  :jndiname
-    property  :subdeployment
-    property  :balancingpolicy
-    property  :quota
-    property  :defaulttargeting
-    property  :errordestination
-    property  :expirationloggingpolicy
-    property  :redeliverylimit
-    property  :expirationpolicy
-    property  :redeliverydelay
-    property  :timetodeliver
-    property  :timetolive
+    property :distributed
+    property :jndiname
+    property :subdeployment
+    property :balancingpolicy
+    property :quota
+    property :defaulttargeting
+    property :errordestination
+    property :expirationloggingpolicy
+    property :redeliverylimit
+    property :expirationpolicy
+    property :redeliverydelay
+    property :timetodeliver
+    property :timetolive
 
-
-    add_title_attributes( :jmsmodule, :queue_name) do 
+    add_title_attributes(:jmsmodule, :queue_name) do
       /^((.*\/)?(.*):(.*)?)$/
     end
 

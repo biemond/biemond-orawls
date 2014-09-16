@@ -16,7 +16,7 @@ module Puppet
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name} "
       environment = { 'action' => 'index', 'type' => 'wls_server' }
@@ -73,7 +73,7 @@ module Puppet
     property :jsseenabled
 
     add_title_attributes(:server_name) do
-       /^((.*\/)?(.*)?)$/
+      /^((.*\/)?(.*)?)$/
     end
 
   end

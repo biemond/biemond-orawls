@@ -29,17 +29,20 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
     output = `su - #{user} -c 'export USER="#{user}";export LOGNAME="#{user}";#{command}'`
     # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
-    Puppet.debug "bsu_patch result: #{output}"
+    Puppet.info "bsu_patch result: #{output}"
 
     # Check for 'Result: Success' else raise
 
     result = false
     output.each_line do |li|
       unless li.nil?
-        result = true if li.include? 'Result: Success'
+        if li.include? 'Result: Success'
+          result = true
+        end
       end
     end
     fail(output) if result == false
+    Puppet.info 'bsu_patch done'
   end
 
   def bsu_status

@@ -11,15 +11,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a file persistence stores in an WebLogic domain."
+    desc 'This resource allows you to manage a file persistence stores in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_file_persistence_store"}
+      environment = { 'action' => 'index', 'type' => 'wls_file_persistence_store' }
       wlst template('puppet:///modules/orawls/providers/wls_file_persistence_store/index.py.erb', binding), environment
     end
 
@@ -41,11 +41,11 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :file_persistence_name
-    property  :directory
-    property  :target
-    property  :targettype
+    property :directory
+    property :target
+    property :targettype
 
-    add_title_attributes( :file_persistence_name) do 
+    add_title_attributes(:file_persistence_name) do
       /^((.*\/)?(.*)?)$/
     end
 

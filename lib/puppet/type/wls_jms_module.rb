@@ -11,15 +11,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a JMS module in an WebLogic domain."
+    desc 'This resource allows you to manage a JMS module in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_jms_module"}
+      environment = { 'action' => 'index', 'type' => 'wls_jms_module' }
       wlst template('puppet:///modules/orawls/providers/wls_jms_module/index.py.erb', binding), environment
     end
 
@@ -41,10 +41,10 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :jms_module_name
-    property  :target
-    property  :targettype
+    property :target
+    property :targettype
 
-    add_title_attributes( :jms_module_name) do 
+    add_title_attributes(:jms_module_name) do
       /^((.*\/)?(.*)?)$/
     end
 

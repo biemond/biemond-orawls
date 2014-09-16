@@ -75,9 +75,7 @@ module Utils
 
       wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
       wls_daemon.execute_script(tmpFile.path)
-      if action == 'index'
-        File.read('/tmp/' + script + '.out')
-      end
+      File.read('/tmp/' + script + '.out') if action == 'index'
     end
   end
 end

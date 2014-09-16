@@ -6,21 +6,20 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  #
   newtype(:wls_machine) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage machine in an WebLogic domain."
+    desc 'This resource allows you to manage machine in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name} "
-      environment = { "action"=>"index","type"=>"wls_machine"}
+      environment = { 'action' => 'index', 'type' => 'wls_machine' }
       wlst template('puppet:///modules/orawls/providers/wls_machine/index.py.erb', binding), environment
     end
 
@@ -43,14 +42,14 @@ module Puppet
     parameter :name
     parameter :machine_name
 
-    property  :machinetype
-    property  :nmtype
-    property  :listenaddress
-    property  :listenport
+    property :machinetype
+    property :nmtype
+    property :listenaddress
+    property :listenport
 
-    add_title_attributes( :machine_name) do 
+    add_title_attributes(:machine_name) do
       /^((.*\/)?(.*)?)$/
     end
-    
+
   end
 end

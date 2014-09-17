@@ -2,7 +2,6 @@
 real_domain='<%= domain %>'
 
 
-
 name                       = '<%= datasource_name %>'
 target                     = '<%= target %>'
 targettype                 = '<%= targettype %>'
@@ -17,7 +16,8 @@ extraproperties            = '<%= extraproperties %>'
 extrapropertiesvalues      = '<%= extrapropertiesvalues %>'
 maxcapacity                = '<%= maxcapacity %>'
 initialcapacity            = '<%= initialcapacity %>'
-
+fanenabled                 = '<%= fanenabled %>'
+onsnodelist                = '<%= onsnodelist %>'
 
 edit()
 startEdit()
@@ -46,15 +46,23 @@ try:
     set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
 
-
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/user')
     cmo.setValue(user)
 
+
+    # Remove Existing Properties First
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/')
+    existing_properties = ls('', returnMap='true')
+    for existing_prop in existing_properties:
+        if existing_prop.lower() != 'user':
+            cmo.destroyProperty(cmo.lookupProperty(existing_prop))
+
     if extraproperties:
       if extrapropertiesvalues:
+          # Create Properties From Config
           properties=String(extraproperties).split(",")
           values=String(extrapropertiesvalues).split(",")
 
@@ -73,6 +81,16 @@ try:
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
     cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)
+
+    try:
+        cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCOracleParams/' + name )
+        if fanenabled == '1':
+            cmo.setFanEnabled(true)
+        else:
+            cmo.setFanEnabled(false)
+        cmo.setOnsNodeList(onsnodelist)
+    except:
+        print "Datasource Driver %s does not support ONS parameters." % drivername
 
     cd('/SystemResources/' + name )
 

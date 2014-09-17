@@ -2660,6 +2660,9 @@ or use puppet resource wls_datasource
       url                        => 'jdbc:mysql://10.10.10.10:3306/jms',
       user                       => 'jms',
       usexa                      => '1',
+      # To Optionally Configure as Gridlink Datasource
+      fanenabled:                => '1',
+      onsnodelist:               => '10.10.10.110:6200,10.10.10.111:6200',
     }
 
 in hiera
@@ -2707,7 +2710,9 @@ in hiera
           url:                         'jdbc:mysql://10.10.10.10:3306/jms'
           user:                        'jms'
           usexa:                       '1'
-
+          # To Optionally Configure as Gridlink Datasource
+          fanenabled:                  '1'
+          onsnodelist:                 '10.10.10.110:6200,10.10.10.111:6200'
 
 ### wls_jms_module
 

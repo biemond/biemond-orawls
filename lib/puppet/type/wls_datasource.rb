@@ -56,6 +56,8 @@ module Puppet
     property  :extrapropertiesvalues
     property  :maxcapacity
     property  :initialcapacity
+    property  :fanenabled
+    property  :onsnodelist
 
     add_title_attributes( :datasource_name) do 
       /^((.*\/)?(.*)?)$/

@@ -62,8 +62,6 @@ Dependency with
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
 
 ## Wls types and providers
-ensurable -> create,modify,destroy + puppet resource support
-
 - [wls_setting](#wls_setting), set the default wls parameters for the other types and also used by puppet resource
 - [wls_adminserver](#wls_adminserver) control the adminserver or subscribe to changes
 - [wls_managedserver](#wls_managedserver) control the managed server,cluster or subscribe to changes

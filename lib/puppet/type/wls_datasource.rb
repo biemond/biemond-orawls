@@ -41,8 +41,8 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :datasource_name
-
     parameter :password
+
     property :target
     property :targettype
     property :jndinames
@@ -56,6 +56,8 @@ module Puppet
     property :extrapropertiesvalues
     property :maxcapacity
     property :initialcapacity
+    property :fanenabled
+    property :onsnodelist
 
     add_title_attributes(:datasource_name) do
       /^((.*\/)?(.*)?)$/

@@ -1,3 +1,5 @@
+# load common defs
+execfile('utils.py')
 
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
@@ -24,27 +26,6 @@ ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
 <% else %>
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=378m -Xms752m -Xmx752m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
-
-def createBootPropertiesFile(directoryPath,fileName, username, password):
-  serverDir = File(directoryPath)
-  bool = serverDir.mkdirs()
-  fileNew=open(directoryPath + '/'+fileName, 'w')
-  fileNew.write('username=%s\n' % username)
-  fileNew.write('password=%s\n' % password)
-  fileNew.flush()
-  fileNew.close()
-
-def createAdminStartupPropertiesFile(directoryPath, args):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
-  fileNew=open(directoryPath + '/startup.properties', 'w')
-  args=args.replace(':','\\:')
-  args=args.replace('=','\\=')
-  fileNew.write('Arguments=%s\n' % args)
-  fileNew.flush()
-  fileNew.close()
-
-
 
 print('Start normal domain... with template <%= @template %>')
 readTemplate('<%= @template %>')
@@ -162,7 +143,7 @@ es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
 readDomain(DOMAIN_PATH)
 
-print('set domain password...') 
+print('set domain password...')
 cd('/SecurityConfiguration/'+DOMAIN)
 set('CredentialEncrypted',es)
 print('Set nodemanager password')

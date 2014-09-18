@@ -1,0 +1,142 @@
+
+
+def createBootPropertiesFile(directoryPath,fileName, username, password):
+  serverDir = File(directoryPath)
+  bool = serverDir.mkdirs()
+  fileNew=open(directoryPath + '/'+fileName, 'w')
+  fileNew.write('username=%s\n' % username)
+  fileNew.write('password=%s\n' % password)
+  fileNew.flush()
+  fileNew.close()
+
+def createAdminStartupPropertiesFile(directoryPath, args):
+  adminserverDir = File(directoryPath)
+  bool = adminserverDir.mkdirs()
+  fileNew=open(directoryPath + '/startup.properties', 'w')
+  args=args.replace(':','\\:')
+  args=args.replace('=','\\=')
+  fileNew.write('Arguments=%s\n' % args)
+  fileNew.flush()
+  fileNew.close()
+
+def changeLog(type, name, log_folder):
+  if type == 'server':
+    cd('/Server/'+name)
+    create(name,'Log')
+    cd('/Server/' + name + '/Log/' + name)
+  else:
+    cd('/')
+    create('base_domain','Log')
+    cd('/Log/base_domain')
+
+  set('FileName',log_folder + '/' + name +'.log')
+  set('FileCount',10)
+  set('FileMinSize',5000)
+  set('RotationType','byTime')
+  set('FileTimeSpan',24)
+
+def createMachine(type, name, address):
+  cd('/')
+  create(name,type)
+  cd(type + '/' + name)
+  create(name,'NodeManager')
+  cd('NodeManager/' + name)
+  set('ListenAddress',address)
+
+def changeDatasource(datasource, username, password, db_url):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('URL',db_url)
+  set('PasswordEncrypted',password)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',username)
+  cd('/')
+
+def changeDatasourceDriver(datasource, username, password, db_url, driver):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('URL',db_url)
+  set('DriverName','oracle.jdbc.OracleDriver')
+  set('PasswordEncrypted',password)
+  cd('Properties/NO_NAME_0/Property/user')
+  set('Value',username)
+  cd('/')
+
+def changeDatasourceToXA(datasource):
+  print 'Change datasource '+datasource
+  cd('/')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
+  set('DriverName','oracle.jdbc.xa.client.OracleXADataSource')
+  set('UseXADataSourceInterface','True')
+  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDataSourceParams/NO_NAME_0')
+  set('GlobalTransactionsProtocol','TwoPhaseCommit')
+  cd('/')
+
+def createOPSSDataSource(target, prefix, password, db_url):
+  cd('/')
+  create('opssDataSource', 'JDBCSystemResource')
+  cd('/JDBCSystemResource/opssDataSource')
+  set('Target',target)
+
+  cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+  cmo.setName('opssDataSource')
+
+  cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+  create('myJdbcDataSourceParams','JDBCDataSourceParams')
+  cd('JDBCDataSourceParams/NO_NAME_0')
+  set('JNDIName', 'jdbc/opssDataSource')
+  set('GlobalTransactionsProtocol', 'None')
+
+  cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+  create('myJdbcDriverParams','JDBCDriverParams')
+  cd('JDBCDriverParams/NO_NAME_0')
+  set('DriverName','oracle.jdbc.OracleDriver')
+  set('URL',db_url)
+  set('PasswordEncrypted',password)
+  set('UseXADataSourceInterface', 'false')
+
+  create('myProperties','Properties')
+  cd('Properties/NO_NAME_0')
+  create('user','Property')
+  cd('Property')
+  cd('user')
+  set('Value', prefix + '_OPSS')
+
+  cd('/JDBCSystemResource/opssDataSource/JdbcResource/opssDataSource')
+  create('myJdbcConnectionPoolParams','JDBCConnectionPoolParams')
+  cd('JDBCConnectionPoolParams/NO_NAME_0')
+  set('TestTableName','SQL SELECT 1 FROM DUAL')
+
+def changeManagedServer(server, address, port, java_arguments, log_folder, java_home, jsse_enabled):
+  cd('/Servers/'+server)
+  set('Machine'      ,'LocalMachine')
+  set('ListenAddress',address)
+  set('ListenPort'   ,port)
+
+  create(server,'ServerStart')
+  cd('ServerStart/'+server)
+  set('Arguments' , java_arguments)
+  set('JavaVendor','Sun')
+  set('JavaHome'  , java_home)
+
+  cd('/Server/'+server)
+  create(server,'SSL')
+  cd('SSL/'+server)
+  set('Enabled'                    , 'False')
+  set('HostNameVerificationIgnored', 'True')
+
+  if jsse_enabled == true:
+    set('JSSEEnabled','True')
+  else:
+    set('JSSEEnabled','False')
+
+  cd('/Server/'+server)
+  create(server,'Log')
+  cd('/Server/'+server+'/Log/'+server)
+  set('FileName'     , log_folder+'/'+server+'.log')
+  set('FileCount'    , 10)
+  set('FileMinSize'  , 5000)
+  set('RotationType' ,'byTime')
+  set('FileTimeSpan' , 24)

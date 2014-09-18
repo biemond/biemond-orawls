@@ -1,3 +1,6 @@
+# load common defs
+execfile('utils.py')
+
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
 DOMAIN='<%= @domain_name %>'
@@ -45,67 +48,6 @@ WC_REPOS_DBURL='<%= @repository_database_url %>'
 WC_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
 WC_REPOS_DBPASSWORD='<%= @repository_password %>'
 
-def createBootPropertiesFile(directoryPath,fileName, username, password):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
-  fileNew=open(directoryPath + '/'+fileName, 'w')
-  fileNew.write('username=%s\n' % username)
-  fileNew.write('password=%s\n' % password)
-  fileNew.flush()
-  fileNew.close()
-
-def createAdminStartupPropertiesFile(directoryPath, args):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
-  fileNew=open(directoryPath + '/startup.properties', 'w')
-  args=args.replace(':','\\:')
-  args=args.replace('=','\\=')
-  fileNew.write('Arguments=%s\n' % args)
-  fileNew.flush()
-  fileNew.close()
-
-def changeDatasource(datasource, username):
-  print 'Change datasource '+datasource
-  cd('/')
-  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
-  set('URL',WC_REPOS_DBURL)
-  set('PasswordEncrypted',WC_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',username)
-  cd('/')
-
-
-def changeManagedServer(server,java_arguments,log_folder):
-  cd('/Servers/'+server)
-  set('Machine'      ,'LocalMachine')
-  set('ListenAddress','<%= @adminserver_address %>')
-
-  create(server,'ServerStart')
-  cd('ServerStart/'+server)
-  set('Arguments' , java_arguments)
-  set('JavaVendor','Sun')
-  set('JavaHome'  , JAVA_HOME)
-
-  cd('/Server/'+server)
-  create(server,'SSL')
-  cd('SSL/'+server)
-  set('Enabled'                    , 'False')
-  set('HostNameVerificationIgnored', 'True')
-
-  if JSSE_ENABLED == true:
-    set('JSSEEnabled','True')
-  else:
-    set('JSSEEnabled','False')  
-
-  cd('/Server/'+server)
-  create(server,'Log')
-  cd('/Server/'+server+'/Log/'+server)
-  set('FileName'     , log_folder+'/'+server+'.log')
-  set('FileCount'    , 10)
-  set('FileMinSize'  , 5000)
-  set('RotationType' ,'byTime')
-  set('FileTimeSpan' , 24)  
-
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
 
@@ -117,22 +59,10 @@ set('CrossDomainSecurityEnabled',true)
 
 cd('/')
 print('Set domain log')
-create('base_domain','Log')
-cd('/Log/base_domain')
-set('FileName','<%= @admin_nodemanager_log_dir %>/'+DOMAIN+'.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
+changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 
 print('Create machine LocalMachine with type UnixMachine')
-cd('/')
-create('LocalMachine','UnixMachine')
-cd('UnixMachine/LocalMachine')
-create('LocalMachine','NodeManager')
-cd('NodeManager/LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
+createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
 
 cd('/Servers/AdminServer')
 # name of adminserver
@@ -175,15 +105,8 @@ if CUSTOM_IDENTITY_ENABLED == true:
   set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
   set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
 
-cd('/Server/'+ADMIN_SERVER)
-create(ADMIN_SERVER,'Log')
-cd('/Server/'+ADMIN_SERVER+'/Log/'+ADMIN_SERVER)
-set('FileName','<%= @admin_nodemanager_log_dir %>/'+ADMIN_SERVER+'.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
+print('Change AdminServer log')
+changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
 
 print('Set password...')
 cd('/')
@@ -217,7 +140,7 @@ es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
 readDomain(DOMAIN_PATH)
 
-print('set domain password...') 
+print('set domain password...')
 cd('/SecurityConfiguration/'+DOMAIN)
 set('CredentialEncrypted',es)
 print('Set nodemanager password')
@@ -262,24 +185,24 @@ set('Machine','LocalMachine')
 
 print 'Change wc_collaboration'
 cd('/')
-changeManagedServer('WC_Collaboration',WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>')
+changeManagedServer('WC_Collaboration','<%= @adminserver_address %>',WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change wc_portlet'
 cd('/')
-changeManagedServer('WC_Portlet',WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>')
+changeManagedServer('WC_Portlet','<%= @adminserver_address %>',WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change WC_Spaces'
 cd('/')
-changeManagedServer('WC_Spaces',WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>')
+changeManagedServer('WC_Spaces','<%= @adminserver_address %>',WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change datasources'
 
-changeDatasource('mds-owsm', WC_REPOS_DBUSER_PREFIX+'_MDS')
-changeDatasource('WebCenterDS', WC_REPOS_DBUSER_PREFIX+'_WEBCENTER')
-changeDatasource('mds-SpacesDS', WC_REPOS_DBUSER_PREFIX+'_MDS')
-changeDatasource('PortletDS', WC_REPOS_DBUSER_PREFIX+'_PORTLET')
-changeDatasource('mds-PageletProducerDS',WC_REPOS_DBUSER_PREFIX+'_MDS')
-changeDatasource('OWC_DiscussionDS', WC_REPOS_DBUSER_PREFIX+'_DISCUSSIONS')
+changeDatasource('mds-owsm', WC_REPOS_DBUSER_PREFIX+'_MDS', WC_REPOS_DBPASSWORD, WC_REPOS_DBURL)
+changeDatasource('WebCenterDS', WC_REPOS_DBUSER_PREFIX+'_WEBCENTER', WC_REPOS_DBPASSWORD, WC_REPOS_DBURL)
+changeDatasource('mds-SpacesDS', WC_REPOS_DBUSER_PREFIX+'_MDS', WC_REPOS_DBPASSWORD, WC_REPOS_DBURL)
+changeDatasource('PortletDS', WC_REPOS_DBUSER_PREFIX+'_PORTLET', WC_REPOS_DBPASSWORD, WC_REPOS_DBURL)
+changeDatasource('mds-PageletProducerDS',WC_REPOS_DBUSER_PREFIX+'_MDS', WC_REPOS_DBPASSWORD, WC_REPOS_DBURL)
+changeDatasource('OWC_DiscussionDS', WC_REPOS_DBUSER_PREFIX+'_DISCUSSIONS', WC_REPOS_DBPASSWORD, WC_REPOS_DBURL)
 
 print 'Finished datasources'
 

@@ -1,3 +1,6 @@
+# load common defs
+execfile('utils.py')
+
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
 DOMAIN='<%= @domain_name %>'
@@ -44,67 +47,6 @@ OIM_REPOS_DBURL='<%= @repository_database_url %>'
 OIM_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
 OIM_REPOS_DBPASSWORD='<%= @repository_password %>'
 
-def createBootPropertiesFile(directoryPath,fileName, username, password):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
-  fileNew=open(directoryPath + '/'+fileName, 'w')
-  fileNew.write('username=%s\n' % username)
-  fileNew.write('password=%s\n' % password)
-  fileNew.flush()
-  fileNew.close()
-
-def createAdminStartupPropertiesFile(directoryPath, args):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
-  fileNew=open(directoryPath + '/startup.properties', 'w')
-  args=args.replace(':','\\:')
-  args=args.replace('=','\\=')
-  fileNew.write('Arguments=%s\n' % args)
-  fileNew.flush()
-  fileNew.close()
-
-def changeDatasource(datasource, username):
-  print 'Change datasource '+datasource
-  cd('/')
-  cd('/JDBCSystemResource/'+datasource+'/JdbcResource/'+datasource+'/JDBCDriverParams/NO_NAME_0')
-  set('URL',OIM_REPOS_DBURL)
-  set('PasswordEncrypted',OIM_REPOS_DBPASSWORD)
-  cd('Properties/NO_NAME_0/Property/user')
-  set('Value',username)
-  cd('/')
-
-
-def changeManagedServer(server,java_arguments,log_folder):
-  cd('/Servers/'+server)
-  set('Machine'      ,'LocalMachine')
-  set('ListenAddress','<%= @adminserver_address %>')
-
-  create(server,'ServerStart')
-  cd('ServerStart/'+server)
-  set('Arguments' , java_arguments)
-  set('JavaVendor','Sun')
-  set('JavaHome'  , JAVA_HOME)
-
-  cd('/Server/'+server)
-  create(server,'SSL')
-  cd('SSL/'+server)
-  set('Enabled'                    , 'False')
-  set('HostNameVerificationIgnored', 'True')
-
-  if JSSE_ENABLED == true:
-    set('JSSEEnabled','True')
-  else:
-    set('JSSEEnabled','False')  
-
-  cd('/Server/'+server)
-  create(server,'Log')
-  cd('/Server/'+server+'/Log/'+server)
-  set('FileName'     , log_folder+'/'+server+'.log')
-  set('FileCount'    , 10)
-  set('FileMinSize'  , 5000)
-  set('RotationType' ,'byTime')
-  set('FileTimeSpan' , 24)  
-
 
 print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
@@ -116,13 +58,7 @@ set('CrossDomainSecurityEnabled',true)
 
 cd('/')
 print('Set domain log')
-create('base_domain','Log')
-cd('/Log/base_domain')
-set('FileName','<%= @admin_nodemanager_log_dir %>/'+DOMAIN+'.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
+changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 
 cd('/Servers/AdminServer')
 # name of adminserver
@@ -167,14 +103,8 @@ if CUSTOM_IDENTITY_ENABLED == true:
   set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
   set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
 
-cd('/Server/'+ADMIN_SERVER)
-create(ADMIN_SERVER,'Log')
-cd('/Server/'+ADMIN_SERVER+'/Log/'+ADMIN_SERVER)
-set('FileName','<%= @admin_nodemanager_log_dir %>/'+ADMIN_SERVER+'.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
+print('Change AdminServer log')
+changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
 
 print('Set password...')
 cd('/')
@@ -208,7 +138,7 @@ es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
 readDomain(DOMAIN_PATH)
 
-print('set domain password...') 
+print('set domain password...')
 cd('/SecurityConfiguration/'+DOMAIN)
 set('CredentialEncrypted',es)
 print('Set nodemanager password')
@@ -241,12 +171,7 @@ dumpStack();
 setOption( "AppDir", APP_PATH )
 
 print('change the default machine LocalMachine with type Machine')
-cd('/')
-create('LocalMachine','Machine')
-cd('Machine/LocalMachine')
-create('LocalMachine','NodeManager')
-cd('NodeManager/LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
+createMachine('Machine', 'LocalMachine', '<%= @adminserver_address %>')
 
 print 'Change AdminServer'
 cd('/Servers/'+ADMIN_SERVER)
@@ -254,32 +179,32 @@ set('Machine','LocalMachine')
 
 print 'change soa_server1'
 cd('/')
-changeManagedServer('soa_server1',SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>')
+changeManagedServer('soa_server1','<%= @adminserver_address %>',SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change oam_server1'
 cd('/')
-changeManagedServer('oam_server1',OAM_JAVA_ARGUMENTS,'<%= @oam_nodemanager_log_dir %>')
+changeManagedServer('oam_server1','<%= @adminserver_address %>',OAM_JAVA_ARGUMENTS,'<%= @oam_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change oim_server1'
 cd('/')
-changeManagedServer('oim_server1',OIM_JAVA_ARGUMENTS,'<%= @oim_nodemanager_log_dir %>')
+changeManagedServer('oim_server1','<%= @adminserver_address %>',OIM_JAVA_ARGUMENTS,'<%= @oim_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change datasources'
 
-changeDatasource('EDNDataSource'       , OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-changeDatasource('EDNLocalTxDataSource', OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-changeDatasource('OraSDPMDataSource'   , OIM_REPOS_DBUSER_PREFIX+'_ORASDPM')
-changeDatasource('SOADataSource'       , OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-changeDatasource('SOALocalTxDataSource', OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA')
-changeDatasource('mds-owsm'            , OIM_REPOS_DBUSER_PREFIX+'_MDS')
-changeDatasource('mds-soa'             , OIM_REPOS_DBUSER_PREFIX+'_MDS')
-changeDatasource('oamDS'               , OIM_REPOS_DBUSER_PREFIX+'_OAM')
-changeDatasource('opss-DBDS'           , OIM_REPOS_DBUSER_PREFIX+'_OPSS')
-changeDatasource('mds-oim'             , OIM_REPOS_DBUSER_PREFIX+'_MDS')
-changeDatasource('soaOIMLookupDB'      , OIM_REPOS_DBUSER_PREFIX+'_OIM')
-changeDatasource('oimJMSStoreDS'       , OIM_REPOS_DBUSER_PREFIX+'_OIM')
-changeDatasource('ApplicationDB'       , OIM_REPOS_DBUSER_PREFIX+'_OIM')
-changeDatasource('oimOperationsDB'     , OIM_REPOS_DBUSER_PREFIX+'_OIM')
+changeDatasource('EDNDataSource'       , OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('EDNLocalTxDataSource', OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('OraSDPMDataSource'   , OIM_REPOS_DBUSER_PREFIX+'_ORASDPM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('SOADataSource'       , OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('SOALocalTxDataSource', OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('mds-owsm'            , OIM_REPOS_DBUSER_PREFIX+'_MDS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('mds-soa'             , OIM_REPOS_DBUSER_PREFIX+'_MDS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('oamDS'               , OIM_REPOS_DBUSER_PREFIX+'_OAM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('opss-DBDS'           , OIM_REPOS_DBUSER_PREFIX+'_OPSS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('mds-oim'             , OIM_REPOS_DBUSER_PREFIX+'_MDS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('soaOIMLookupDB'      , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('oimJMSStoreDS'       , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('ApplicationDB'       , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('oimOperationsDB'     , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
 
 print 'Finished datasources'
 

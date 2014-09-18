@@ -1,3 +1,5 @@
+# load common defs
+execfile('utils.py')
 
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
@@ -25,27 +27,6 @@ ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
 ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
 
-def createBootPropertiesFile(directoryPath,fileName, username, password):
-  serverDir = File(directoryPath)
-  bool = serverDir.mkdirs()
-  fileNew=open(directoryPath + '/'+fileName, 'w')
-  fileNew.write('username=%s\n' % username)
-  fileNew.write('password=%s\n' % password)
-  fileNew.flush()
-  fileNew.close()
-
-def createAdminStartupPropertiesFile(directoryPath, args):
-  adminserverDir = File(directoryPath)
-  bool = adminserverDir.mkdirs()
-  fileNew=open(directoryPath + '/startup.properties', 'w')
-  args=args.replace(':','\\:')
-  args=args.replace('=','\\=')
-  fileNew.write('Arguments=%s\n' % args)
-  fileNew.flush()
-  fileNew.close()
-
-
-
 print('Start normal domain... with template <%= @template %>')
 readTemplate('<%= @template %>')
 
@@ -56,23 +37,10 @@ set('CrossDomainSecurityEnabled',true)
 
 cd('/')
 print('Set domain log')
-create('base_domain','Log')
-cd('/Log/base_domain')
-set('FileName','<%= @admin_nodemanager_log_dir %>/'+DOMAIN+'.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
+changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 
 print('Create machine LocalMachine with type UnixMachine')
-cd('/')
-create('LocalMachine','UnixMachine')
-cd('UnixMachine/LocalMachine')
-create('LocalMachine','NodeManager')
-cd('NodeManager/LocalMachine')
-set('ListenAddress','<%= @adminserver_address %>')
-
+createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
 
 cd('/Servers/AdminServer')
 # name of adminserver
@@ -114,16 +82,8 @@ if CUSTOM_IDENTITY_ENABLED == true:
   set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
   set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
 
-print('Set adminserver log')
-cd('/Server/'+ADMIN_SERVER)
-create(ADMIN_SERVER,'Log')
-cd('/Server/'+ADMIN_SERVER+'/Log/'+ADMIN_SERVER)
-set('FileName','<%= @admin_nodemanager_log_dir %>/'+ADMIN_SERVER+'.log')
-set('FileCount',10)
-set('FileMinSize',5000)
-set('RotationType','byTime')
-set('FileTimeSpan',24)
-
+print('Change AdminServer log')
+changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
 
 print('Set password...')
 cd('/')
@@ -163,7 +123,7 @@ es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
 readDomain(DOMAIN_PATH)
 
-print('set domain password...') 
+print('set domain password...')
 cd('/SecurityConfiguration/'+DOMAIN)
 set('CredentialEncrypted',es)
 print('Set nodemanager password')

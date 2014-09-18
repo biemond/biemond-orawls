@@ -1,0 +1,299 @@
+# load common defs
+execfile('utils.py')
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>'
+DOMAIN='<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED=<%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
+DEVELOPMENT_MODE=<%= @development_mode %>
+WEBLOGIC_VERSION=<%= @version %>
+WEBTIER_ENABLED=<%= @webtier_enabled %>
+
+ADMIN_SERVER='<%= @adminserver_name %>'
+ADMIN_USER='<%= @weblogic_user %>'
+ADMIN_PASSWORD='<%= @weblogic_password %>'
+
+JAVA_HOME='<%= @jdk_home_dir %>'
+
+<% if @java_arguments["ADM"] %>
+ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments["SOA"] %>
+SOA_JAVA_ARGUMENTS='<%= @java_arguments["SOA"] %>'
+<% else %>
+SOA_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=752m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
+<% end %>
+
+<% if @java_arguments["BAM"] %>
+BAM_JAVA_ARGUMENTS='<%= @java_arguments["BAM"] %>'
+<% else %>
+BAM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @bam_nodemanager_log_dir %>/bam_server1.out -Dweblogic.Stderr=<%= @bam_nodemanager_log_dir %>/bam_server1_err.out'
+<% end %>
+
+SOA_REPOS_DBURL='<%= @repository_database_url %>'
+SOA_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+SOA_REPOS_DBPASSWORD='<%= @repository_password %>'
+
+BPM_ENABLED=<%= @bpm %>
+BAM_ENABLED=<%= @bam_enabled %>
+B2B_ENABLED=<%= @b2b_enabled %>
+ESS_ENABLED=<%= @ess_enabled %>
+
+print('Start...wls domain with template <%= @template %>')
+readTemplate('<%= @template %>')
+
+print('Set crossdomain')
+create('base_domain','SecurityConfiguration')
+cd('/SecurityConfiguration/base_domain')
+set('CrossDomainSecurityEnabled',true)
+
+cd('/')
+print('Set domain log')
+changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
+
+cd('/Servers/AdminServer')
+# name of adminserver
+set('Name',ADMIN_SERVER )
+
+cd('/Servers/'+ADMIN_SERVER)
+
+# address and port
+set('ListenAddress','<%= @adminserver_address %>')
+set('ListenPort',<%= @adminserver_port %>)
+
+<% if @apps_dir %>
+setOption( "AppDir", APP_PATH )
+<% end %>
+
+create(ADMIN_SERVER,'ServerStart')
+cd('ServerStart/'+ADMIN_SERVER)
+set('Arguments', ADM_JAVA_ARGUMENTS)
+set('JavaVendor','Sun')
+set('JavaHome', JAVA_HOME)
+
+cd('/Server/'+ADMIN_SERVER)
+create(ADMIN_SERVER,'SSL')
+cd('SSL/'+ADMIN_SERVER)
+set('Enabled', 'False')
+set('HostNameVerificationIgnored', 'True')
+if JSSE_ENABLED == true:
+  set('JSSEEnabled','True')
+else:
+  set('JSSEEnabled','False')
+
+if CUSTOM_IDENTITY_ENABLED == true:
+  print('Set adminserver custom identity')
+  cd('/Server/'+ADMIN_SERVER)
+  set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
+  set('CustomIdentityKeyStoreFileName'           ,'<%= @custom_identity_keystore_filename %>')
+  set('CustomIdentityKeyStorePassPhraseEncrypted','<%= @custom_identity_keystore_passphrase %>')
+  set('CustomTrustKeyStoreFileName'              ,'<%= @trust_keystore_file %>')
+  set('CustomTrustKeyStorePassPhraseEncrypted'   ,'<%= @trust_keystore_passphrase %>')
+  cd('SSL/'+ADMIN_SERVER)
+  set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
+  set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
+
+
+print('Change AdminServer log')
+changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
+
+print('Set password...')
+cd('/')
+cd('Security/base_domain/User/weblogic')
+
+# weblogic user name + password
+set('Name',ADMIN_USER)
+cmo.setPassword(ADMIN_PASSWORD)
+
+# Set domain save options:
+# - ServerStartMode: Set mode to development.
+# - JavaHome: Sets home directory for the JVM used when starting the server.
+
+if DEVELOPMENT_MODE == true:
+  setOption('ServerStartMode', 'dev')
+else:
+  setOption('ServerStartMode', 'prod')
+
+setOption('JavaHome', JAVA_HOME)
+
+print('write domain...')
+# write path + domain name
+writeDomain(DOMAIN_PATH)
+closeTemplate()
+
+createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
+createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+
+readDomain(DOMAIN_PATH)
+
+print('set domain password...')
+cd('/SecurityConfiguration/'+DOMAIN)
+set('CredentialEncrypted',es)
+print('Set nodemanager password')
+set('NodeManagerUsername',ADMIN_USER )
+set('NodeManagerPasswordEncrypted',es )
+
+cd('/')
+
+<% if @apps_dir %>
+setOption( "AppDir", APP_PATH )
+<% end %>
+
+print 'Adding SOA Template'
+addTemplate('<%= @templateApplCore %>')
+addTemplate('<%= @templateJRF %>')
+addTemplate('<%= @templateWSMPM %>')
+addTemplate('<%= @templateSOA %>')
+
+if BAM_ENABLED == true:
+  print 'Adding BAM Template'
+  addTemplate('<%= @templateBAM %>')
+
+if BPM_ENABLED == true:
+  print 'Adding BPM Template'
+  addTemplate('<%= @templateBPM %>')
+
+if WEBLOGIC_VERSION != 1213:
+  print 'Adding EM Template'
+  addTemplate('<%= @templateEM %>')
+
+if WEBLOGIC_VERSION == 1213:
+
+    if WEBTIER_ENABLED == true:
+      print 'Adding OHS Template'
+      addTemplate('<%= @templateOHS %>')
+
+    if B2B_ENABLED == true:
+      print 'Adding B2B Template'
+      addTemplate('<%= @templateB2B %>')
+
+    if ESS_ENABLED == true:
+      print 'Adding ESS Template'
+      addTemplate('<%= @templateESS %>')
+      addTemplate('<%= @templateESS_EM %>')
+
+
+dumpStack();
+
+<% if @apps_dir %>
+setOption( "AppDir", APP_PATH )
+<% end %>
+
+if WEBLOGIC_VERSION == 1213:
+
+  print('Create machine LocalMachine with type UnixMachine')
+  createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
+
+if WEBLOGIC_VERSION != 1213:
+  print('change the default machine LocalMachine with type Machine')
+  createMachine('Machine', 'LocalMachine', '<%= @adminserver_address %>')
+
+print 'Change AdminServer'
+cd('/Servers/'+ADMIN_SERVER)
+set('Machine','LocalMachine')
+
+
+print 'change soa_server1'
+cd('/')
+changeManagedServer('soa_server1','<%= @adminserver_address %>',8001,SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+if BAM_ENABLED == true:
+  print 'change bam_server1'
+  cd('/')
+  changeManagedServer('bam_server1','<%= @adminserver_address %>',9001,BAM_JAVA_ARGUMENTS,'<%= @bam_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+### only for 11g
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION != 1213:
+
+  print 'create opss datasource'
+
+  if BAM_ENABLED == true:
+    target = ADMIN_SERVER + ',soa_server1,bam_server1'
+  else:
+    target = ADMIN_SERVER + ',soa_server1'
+
+  createOPSSDataSource(target, SOA_REPOS_DBUSER_PREFIX, SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+
+
+if WEBLOGIC_VERSION != 1213:
+
+  print 'Change datasources'
+
+  changeDatasource('EDNDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('EDNLocalTxDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('OraSDPMDataSource', SOA_REPOS_DBUSER_PREFIX+'_ORASDPM', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('SOADataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('SOALocalTxDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('mds-owsm', SOA_REPOS_DBUSER_PREFIX+'_MDS', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('mds-soa', SOA_REPOS_DBUSER_PREFIX+'_MDS', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+
+  if BAM_ENABLED == true:
+    changeDatasource('BAMDataSource', SOA_REPOS_DBUSER_PREFIX+'_ORABAM', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION == 1213:
+
+    print 'Change datasources'
+
+    print 'Change datasource LocalScvTblDataSource'
+    changeDatasource('LocalSvcTblDataSource', SOA_REPOS_DBUSER_PREFIX+'_STB', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()
+
+    changeDatasourceToXA('EDNDataSource')
+    changeDatasourceToXA('OraSDPMDataSource')
+    changeDatasourceToXA('SOADataSource')
+
+    if BAM_ENABLED == true:
+      changeDatasourceToXA('BamDataSource')
+
+    print 'end datasources'
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
+    serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
+    setServerGroups(ADMIN_SERVER, serverGroup)
+
+    if ESS_ENABLED == true:
+      print 'Add server group SOA-MGD-SVRS,ESS-MGD-SVRS to soa_server1'
+      cd('/')
+      delete('ess_server1', 'Server')
+      serverGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
+    else:
+      print 'Add server group SOA-MGD-SVRS to soa_server1'
+      serverGroup = ["SOA-MGD-SVRS"]
+
+    setServerGroups('soa_server1', serverGroup)
+
+    if BAM_ENABLED == true:
+      print 'Add server group BAM-MGD-SVRS to bam_server1'
+      serverGroup = ["BAM12-MGD-SVRS"]
+      setServerGroups('bam_server1', serverGroup)
+
+    print 'end server groups'
+
+updateDomain()
+closeDomain();
+
+createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+if BAM_ENABLED == true:
+  createBootPropertiesFile(DOMAIN_PATH+'/servers/bam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+
+print('Exiting...soa_bpm')
+exit()

@@ -3,6 +3,7 @@
 ## 1.0.16
 - Gridlink support for the Datasource type
 - Extra properties can now be removed in a update of the Datasource
+- Refactor domain py scripts and use a utils.py script for common functions
 
 ## 1.0.15
 - RCU 12.1.3 support for MFT

@@ -140,3 +140,35 @@ def changeManagedServer(server, address, port, java_arguments, log_folder, java_
   set('FileMinSize'  , 5000)
   set('RotationType' ,'byTime')
   set('FileTimeSpan' , 24)
+
+def changeManagedServer2(server, address, java_arguments, log_folder, java_home, jsse_enabled):
+  cd('/Servers/'+server)
+  set('Machine'      ,'LocalMachine')
+  set('ListenAddress',address)
+
+  create(server,'ServerStart')
+  cd('ServerStart/'+server)
+  set('Arguments' , java_arguments)
+  set('JavaVendor','Sun')
+  set('JavaHome'  , java_home)
+
+  cd('/Server/'+server)
+  create(server,'SSL')
+  cd('SSL/'+server)
+  set('Enabled'                    , 'False')
+  set('HostNameVerificationIgnored', 'True')
+
+  if jsse_enabled == true:
+    set('JSSEEnabled','True')
+  else:
+    set('JSSEEnabled','False')
+
+  cd('/Server/'+server)
+  create(server,'Log')
+  cd('/Server/'+server+'/Log/'+server)
+  set('FileName'     , log_folder+'/'+server+'.log')
+  set('FileCount'    , 10)
+  set('FileMinSize'  , 5000)
+  set('RotationType' ,'byTime')
+  set('FileTimeSpan' , 24)
+

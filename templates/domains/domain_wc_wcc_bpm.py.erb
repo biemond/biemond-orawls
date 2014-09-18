@@ -196,20 +196,20 @@ set('Machine','LocalMachine')
 
 print 'Change wc_collaboration'
 cd('/')
-changeManagedServer('WC_Collaboration','<%= @adminserver_address %>',WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer2('WC_Collaboration','<%= @adminserver_address %>',WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change wc_portlet'
 cd('/')
-changeManagedServer('WC_Portlet','<%= @adminserver_address %>',WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer2('WC_Portlet','<%= @adminserver_address %>',WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change WC_Spaces'
 cd('/')
-changeManagedServer('WC_Spaces','<%= @adminserver_address %>',WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer2('WC_Spaces','<%= @adminserver_address %>',WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 
 print 'Change UCM_server1'
 cd('/')
-changeManagedServer('UCM_server1','<%= @adminserver_address %>',UMC_JAVA_ARGUMENTS,'<%= @umc_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer2('UCM_server1','<%= @adminserver_address %>',UMC_JAVA_ARGUMENTS,'<%= @umc_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 
 print 'Change datasources'

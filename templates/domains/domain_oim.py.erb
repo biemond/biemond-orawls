@@ -179,15 +179,15 @@ set('Machine','LocalMachine')
 
 print 'change soa_server1'
 cd('/')
-changeManagedServer('soa_server1','<%= @adminserver_address %>',SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer('soa_server1','<%= @adminserver_address %>',8001,SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change oam_server1'
 cd('/')
-changeManagedServer('oam_server1','<%= @adminserver_address %>',OAM_JAVA_ARGUMENTS,'<%= @oam_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer2('oam_server1','<%= @adminserver_address %>',OAM_JAVA_ARGUMENTS,'<%= @oam_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change oim_server1'
 cd('/')
-changeManagedServer('oim_server1','<%= @adminserver_address %>',OIM_JAVA_ARGUMENTS,'<%= @oim_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer2('oim_server1','<%= @adminserver_address %>',OIM_JAVA_ARGUMENTS,'<%= @oim_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change datasources'
 

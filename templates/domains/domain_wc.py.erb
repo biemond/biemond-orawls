@@ -52,10 +52,7 @@ print('Start...wls domain with template <%= @template %>')
 readTemplate('<%= @template %>')
 
 print('Set crossdomain')
-create('base_domain','SecurityConfiguration')
-cd('/SecurityConfiguration/base_domain')
-set('CrossDomainSecurityEnabled',true)
-
+setCrossDomain()
 
 cd('/')
 print('Set domain log')
@@ -64,57 +61,21 @@ changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 print('Create machine LocalMachine with type UnixMachine')
 createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
 
-cd('/Servers/AdminServer')
-# name of adminserver
-set('Name',ADMIN_SERVER )
+changeAdminServer(ADMIN_SERVER, 'LocalMachine', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
 
-cd('/Servers/'+ADMIN_SERVER)
-
-# address and port
-set('ListenAddress','<%= @adminserver_address %>')
-set('ListenPort',<%= @adminserver_port %>)
-
-
-setOption( "AppDir", APP_PATH )
-
-create(ADMIN_SERVER,'ServerStart')
-cd('ServerStart/'+ADMIN_SERVER)
-set('Arguments', ADM_JAVA_ARGUMENTS)
-set('JavaVendor','Sun')
-set('JavaHome', JAVA_HOME)
-
-cd('/Server/'+ADMIN_SERVER)
-create(ADMIN_SERVER,'SSL')
-cd('SSL/'+ADMIN_SERVER)
-set('Enabled', 'False')
-set('HostNameVerificationIgnored', 'True')
-if JSSE_ENABLED == true:
-  set('JSSEEnabled','True')
-else:
-  set('JSSEEnabled','False')
+changeSSL(ADMIN_SERVER, JSSE_ENABLED)
 
 if CUSTOM_IDENTITY_ENABLED == true:
   print('Set adminserver custom identity')
-  cd('/Server/'+ADMIN_SERVER)
-  set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
-  set('CustomIdentityKeyStoreFileName'           ,'<%= @custom_identity_keystore_filename %>')
-  set('CustomIdentityKeyStorePassPhraseEncrypted','<%= @custom_identity_keystore_passphrase %>')
-  set('CustomTrustKeyStoreFileName'              ,'<%= @trust_keystore_file %>')
-  set('CustomTrustKeyStorePassPhraseEncrypted'   ,'<%= @trust_keystore_passphrase %>')
-  cd('SSL/'+ADMIN_SERVER)
-  set('ServerPrivateKeyAlias'                    ,'<%= @custom_identity_alias %>')
-  set('ServerPrivateKeyPassPhraseEncrypted'      ,'<%= @custom_identity_privatekey_passphrase %>')
+  changeCustomIdentityStore(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
 
 print('Change AdminServer log')
 changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
 
 print('Set password...')
-cd('/')
-cd('Security/base_domain/User/weblogic')
+setWebLogicPassword(ADMIN_USER, ADMIN_PASSWORD)
 
-# weblogic user name + password
-set('Name',ADMIN_USER)
-cmo.setPassword(ADMIN_PASSWORD)
+setOption( "AppDir", APP_PATH )
 
 # Set domain save options:
 # - ServerStartMode: Set mode to development.
@@ -140,15 +101,9 @@ es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
 
 readDomain(DOMAIN_PATH)
 
-print('set domain password...')
-cd('/SecurityConfiguration/'+DOMAIN)
-set('CredentialEncrypted',es)
-print('Set nodemanager password')
-set('NodeManagerUsername',ADMIN_USER )
-set('NodeManagerPasswordEncrypted',es )
+setDomainPassword(DOMAIN,es,ADMIN_USER)
 
 cd('/')
-
 
 setOption( "AppDir", APP_PATH )
 
@@ -185,15 +140,15 @@ set('Machine','LocalMachine')
 
 print 'Change wc_collaboration'
 cd('/')
-changeManagedServer2('WC_Collaboration','<%= @adminserver_address %>',WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer('WC_Collaboration','LocalMachine','<%= @adminserver_address %>',None,WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change wc_portlet'
 cd('/')
-changeManagedServer2('WC_Portlet','<%= @adminserver_address %>',WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer('WC_Portlet','LocalMachine','<%= @adminserver_address %>',None,WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change WC_Spaces'
 cd('/')
-changeManagedServer2('WC_Spaces','<%= @adminserver_address %>',WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+changeManagedServer('WC_Spaces','LocalMachine','<%= @adminserver_address %>',None,WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
 
 print 'Change datasources'
 

@@ -19,22 +19,6 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.flush()
   fileNew.close()
 
-def changeLog(type, name, log_folder):
-  if type == 'server':
-    cd('/Server/'+name)
-    create(name,'Log')
-    cd('/Server/' + name + '/Log/' + name)
-  else:
-    cd('/')
-    create('base_domain','Log')
-    cd('/Log/base_domain')
-
-  set('FileName',log_folder + '/' + name +'.log')
-  set('FileCount',10)
-  set('FileMinSize',5000)
-  set('RotationType','byTime')
-  set('FileTimeSpan',24)
-
 def createMachine(type, name, address):
   cd('/')
   create(name,type)
@@ -109,18 +93,23 @@ def createOPSSDataSource(target, prefix, password, db_url):
   cd('JDBCConnectionPoolParams/NO_NAME_0')
   set('TestTableName','SQL SELECT 1 FROM DUAL')
 
-def changeManagedServer(server, address, port, java_arguments, log_folder, java_home, jsse_enabled):
-  cd('/Servers/'+server)
-  set('Machine'      ,'LocalMachine')
-  set('ListenAddress',address)
-  set('ListenPort'   ,port)
+def changeLog(type, name, log_folder):
+  if type == 'server':
+    cd('/Server/'+name)
+    create(name,'Log')
+    cd('/Server/' + name + '/Log/' + name)
+  else:
+    cd('/')
+    create('base_domain','Log')
+    cd('/Log/base_domain')
 
-  create(server,'ServerStart')
-  cd('ServerStart/'+server)
-  set('Arguments' , java_arguments)
-  set('JavaVendor','Sun')
-  set('JavaHome'  , java_home)
+  set('FileName',log_folder + '/' + name +'.log')
+  set('FileCount'   ,10)
+  set('FileMinSize' ,5000)
+  set('RotationType','byTime')
+  set('FileTimeSpan',24)
 
+def changeSSL(server, jsse_enabled):
   cd('/Server/'+server)
   create(server,'SSL')
   cd('SSL/'+server)
@@ -132,43 +121,63 @@ def changeManagedServer(server, address, port, java_arguments, log_folder, java_
   else:
     set('JSSEEnabled','False')
 
-  cd('/Server/'+server)
-  create(server,'Log')
-  cd('/Server/'+server+'/Log/'+server)
-  set('FileName'     , log_folder+'/'+server+'.log')
-  set('FileCount'    , 10)
-  set('FileMinSize'  , 5000)
-  set('RotationType' ,'byTime')
-  set('FileTimeSpan' , 24)
+def changeDefaultServerAttributes(server, machine, address, port, java_arguments, java_home):
+  print "changeDefaultServerAttributes for server " + server
+  cd('/Servers/' + server)
 
-def changeManagedServer2(server, address, java_arguments, log_folder, java_home, jsse_enabled):
-  cd('/Servers/'+server)
-  set('Machine'      ,'LocalMachine')
-  set('ListenAddress',address)
+  if machine:
+    set('Machine', machine)
+  if address:
+    set('ListenAddress', address)
+  if port:
+    set('ListenPort', port)
 
-  create(server,'ServerStart')
-  cd('ServerStart/'+server)
+  create(server, 'ServerStart')
+  cd('ServerStart/' + server)
   set('Arguments' , java_arguments)
-  set('JavaVendor','Sun')
+  set('JavaVendor', 'Sun')
   set('JavaHome'  , java_home)
 
+def changeManagedServer(server, machine, address, port, java_arguments, log_folder, java_home, jsse_enabled):
+  changeDefaultServerAttributes(server, machine, address, port, java_arguments, java_home)
+  changeSSL(server, jsse_enabled)
+  changeLog('server', server, log_folder)
+
+def changeAdminServer(adminserver, machine, address, port, java_arguments, java_home):
+  cd('/Servers/AdminServer')
+  set('Name',adminserver )
+  changeDefaultServerAttributes(adminserver, machine, address, port, java_arguments, java_home)
+
+def changeCustomIdentityStore(server, ks_filename, ks_passphrase, trust_ks_filename, trust_ks_passphrase, alias, alias_passphrase):
+  print('Set custom identity')
   cd('/Server/'+server)
-  create(server,'SSL')
+  set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
+  set('CustomIdentityKeyStoreFileName'           ,ks_filename)
+  set('CustomIdentityKeyStorePassPhraseEncrypted',ks_passphrase)
+  set('CustomTrustKeyStoreFileName'              ,trust_ks_filename)
+  set('CustomTrustKeyStorePassPhraseEncrypted'   ,trust_ks_passphrase)
   cd('SSL/'+server)
-  set('Enabled'                    , 'False')
-  set('HostNameVerificationIgnored', 'True')
+  set('ServerPrivateKeyAlias'                    ,alias)
+  set('ServerPrivateKeyPassPhraseEncrypted'      ,alias_passphrase)
 
-  if jsse_enabled == true:
-    set('JSSEEnabled','True')
-  else:
-    set('JSSEEnabled','False')
+def setDomainPassword(domain,password,adminUser):
+  print('set domain password...')
+  cd('/SecurityConfiguration/'+domain)
+  set('CredentialEncrypted', password)
+  print('Set nodemanager password')
+  set('NodeManagerUsername', adminUser)
+  set('NodeManagerPasswordEncrypted', password)
 
-  cd('/Server/'+server)
-  create(server,'Log')
-  cd('/Server/'+server+'/Log/'+server)
-  set('FileName'     , log_folder+'/'+server+'.log')
-  set('FileCount'    , 10)
-  set('FileMinSize'  , 5000)
-  set('RotationType' ,'byTime')
-  set('FileTimeSpan' , 24)
+def setWebLogicPassword(user,password):
+  print('Set password...')
+  cd('/')
+  cd('Security/base_domain/User/weblogic')
+  # weblogic user name + password
+  set('Name',user)
+  cmo.setPassword(password)
 
+def setCrossDomain():
+  print('Set crossdomain')
+  create('base_domain','SecurityConfiguration')
+  cd('/SecurityConfiguration/base_domain')
+  set('CrossDomainSecurityEnabled',true)

@@ -321,7 +321,6 @@ define orawls::domain (
         owner   => $os_user,
         group   => $os_group,
         require => File[$download_dir],
-        before  => File["domain.py ${domain_name} ${title}"],
       }
     }
 
@@ -335,7 +334,8 @@ define orawls::domain (
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
-      require => File[$download_dir],
+      require => [File[$download_dir],
+                  File['utils.py'],],
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
@@ -425,7 +425,8 @@ define orawls::domain (
       creates     => $domain_dir,
       cwd         => $download_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
-                      File[$domains_dir]],
+                      File['utils.py'],
+                      File[$domains_dir],],
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,

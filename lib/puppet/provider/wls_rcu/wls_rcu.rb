@@ -49,7 +49,7 @@ EOS
 
     Puppet.debug "rcu for prefix #{prefix} execute SQL"
     output = `su - #{user} -c 'export ORACLE_HOME=#{oracle_home};LD_LIBRARY_PATH=#{oracle_home}/lib;#{oracle_home}/bin/sqlplus \"sys/#{sys_password}@//#{db_server}/#{db_service} as sysdba\" @#{tmpFile.path}'`
-    fail ArgumentError, "Error executing puppet code, #{output}" if $? != 0
+    fail ArgumentError, "Error executing puppet code, #{output}" if $CHILD_STATUS != 0
 
     if FileTest.exists?("/tmp/check_rcu_#{prefix}2.txt")
       File.open("/tmp/check_rcu_#{prefix}2.txt") do |rcu_output|

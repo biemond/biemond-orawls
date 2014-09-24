@@ -14,7 +14,7 @@ newproperty(:arguments) do
 
   def should
     return nil unless defined?(@should)
-    return @should
+    @should
   end
 
   def insync?(is)

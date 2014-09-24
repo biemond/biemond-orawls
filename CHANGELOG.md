@@ -1,6 +1,8 @@
 # History
 
 ## 1.0.17
+- utils.py fix for multiple domains
+- Refactor for rubocop warnings
 
 ## 1.0.16
 - Gridlink support for the Datasource type

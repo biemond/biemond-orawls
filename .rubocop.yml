@@ -66,7 +66,7 @@ AccessorMethodName:
   Enabled: false
 
 MethodLength:
-  Max: 40
+  Enabled: false
 
 Metrics/ParameterLists:
   Max: 8

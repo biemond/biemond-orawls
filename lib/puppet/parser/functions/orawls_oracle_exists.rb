@@ -1,25 +1,29 @@
 begin
   require 'puppet/util/log'
 
-  module Puppet::Parser::Functions
-    newfunction(:orawls_oracle_exists, :type => :rvalue) do |args|
+  module Puppet
+    module Parser
+      module Functions
+        newfunction(:orawls_oracle_exists, :type => :rvalue) do |args|
 
-      ora = lookup_wls_var('ora_inst_products')
-      log "oracle_exists #{args[0]} #{ora}"
-      if ora == 'empty'
-        return false
-      else
-        software = args[0].strip
-        log "oracle_exists compare #{ora} with #{software}"
+          ora = lookup_wls_var('ora_inst_products')
+          log "oracle_exists #{args[0]} #{ora}"
+          if ora == 'empty'
+            return false
+          else
+            software = args[0].strip
+            log "oracle_exists compare #{ora} with #{software}"
 
-        if ora.include? software
-          log 'oracle_exists return true'
-          return true
+            if ora.include? software
+              log 'oracle_exists return true'
+              return true
+            end
+          end
+          log 'oracle_exists return false'
+          return false
+
         end
       end
-      log 'oracle_exists return false'
-      return false
-
     end
   end
 

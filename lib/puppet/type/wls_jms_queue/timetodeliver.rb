@@ -2,7 +2,7 @@ newproperty(:timetodeliver) do
   include EasyType
   include EasyType::Mungers::Integer
 
-  defaultto -1
+  defaultto(-1)
 
   desc 'timetodeliver of the queue'
 

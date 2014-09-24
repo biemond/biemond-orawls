@@ -2,7 +2,7 @@ newproperty(:redeliverydelay) do
   include EasyType
   include EasyType::Mungers::Integer
 
-  defaultto -1
+  defaultto(-1)
 
   desc 'redeliverydelay of the queue'
 

@@ -2,7 +2,7 @@ newproperty(:timetolive) do
   include EasyType
   include EasyType::Mungers::Integer
 
-  defaultto -1
+  defaultto(-1)
 
   desc 'timetolive of the queue'
 

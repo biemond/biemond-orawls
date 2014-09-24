@@ -2,7 +2,7 @@ newproperty(:redeliverylimit) do
   include EasyType
   include EasyType::Mungers::Integer
 
-  defaultto -1
+  defaultto(-1)
 
   desc 'redeliverylimit of the queue'
 

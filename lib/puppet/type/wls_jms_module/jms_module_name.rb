@@ -4,6 +4,6 @@ newparam(:jms_module_name) do
 
   isnamevar
 
-  desc "The jms module name"
+  desc 'The jms module name'
 
 end

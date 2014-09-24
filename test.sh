@@ -25,7 +25,11 @@ gem update --system 2.1.11
 bundle exec rake syntax
 bundle exec rake lint
 bundle exec rake ci:setup:rspec spec
+bundle exec rubocop
 #bundle exec rake spec
+
+#ruby syntax check
+rubocop
 
 
 # for windows

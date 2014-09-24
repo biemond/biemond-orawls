@@ -2,7 +2,7 @@ newproperty(:fanenabled) do
   include EasyType
   include EasyType::Validators::Name
 
-  desc "Enables the data source to subscribe to and process Oracle FAN events."
+  desc 'Enables the data source to subscribe to and process Oracle FAN events.'
   newvalues(1, 0)
 
   defaultto '0'

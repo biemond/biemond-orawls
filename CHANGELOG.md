@@ -1,5 +1,7 @@
 # History
 
+## 1.0.18
+
 ## 1.0.17
 - utils.py fix for multiple domains
 - Refactor for rubocop warnings

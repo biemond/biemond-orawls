@@ -1,5 +1,7 @@
 # History
 
+## 1.0.17
+
 ## 1.0.16
 - Gridlink support for the Datasource type
 - Extra properties can now be removed in a update of the Datasource

@@ -1,6 +1,7 @@
 # History
 
 ## 1.0.18
+- small fix for the server_template type with the arguments parameter
 
 ## 1.0.17
 - utils.py fix for multiple domains

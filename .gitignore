@@ -3,3 +3,4 @@
 coverage
 spec/reports
 pkg
+.project

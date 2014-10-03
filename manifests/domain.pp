@@ -43,6 +43,7 @@ define orawls::domain (
   $custom_identity_keystore_passphrase   = undef,
   $custom_identity_alias                 = undef,
   $custom_identity_privatekey_passphrase = undef,
+  $create_rcu                            = hiera('create_rcu', true),
 )
 {
   if ( $wls_domains_dir == undef ) {
@@ -394,26 +395,30 @@ define orawls::domain (
         fail('unkown domain_template for rcu with version 1212 or 1213')
       }
 
-      # only works for a 12c middleware home
-      # creates RCU for ADF
-      if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ){
-        fail('Not all RCU parameters are provided')
-      }
+      if ( $create_rcu == undef or $create_rcu == true)
+      {
 
-      orawls::utils::rcu{ "RCU_12c ${title}":
-        fmw_product                 => $rcu_domain_template,
-        oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
-        jdk_home_dir                => $jdk_home_dir,
-        os_user                     => $os_user,
-        os_group                    => $os_group,
-        download_dir                => $download_dir,
-        rcu_action                  => 'create',
-        rcu_database_url            => $rcu_database_url,
-        rcu_sys_password            => $repository_sys_password,
-        rcu_prefix                  => $repository_prefix,
-        rcu_password                => $repository_password,
-        log_output                  => $log_output,
-        before                      => Exec["execwlst ${domain_name} ${title}"],
+        # only works for a 12c middleware home
+        # creates RCU for ADF
+        if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ){
+          fail('Not all RCU parameters are provided')
+        }
+
+        orawls::utils::rcu{ "RCU_12c ${title}":
+          fmw_product                 => $rcu_domain_template,
+          oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
+          jdk_home_dir                => $jdk_home_dir,
+          os_user                     => $os_user,
+          os_group                    => $os_group,
+          download_dir                => $download_dir,
+          rcu_action                  => 'create',
+          rcu_database_url            => $rcu_database_url,
+          rcu_sys_password            => $repository_sys_password,
+          rcu_prefix                  => $repository_prefix,
+          rcu_password                => $repository_password,
+          log_output                  => $log_output,
+          before                      => Exec["execwlst ${domain_name} ${title}"],
+        }
       }
     }
 

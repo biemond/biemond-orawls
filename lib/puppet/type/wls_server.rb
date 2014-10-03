@@ -71,7 +71,8 @@ module Puppet
     property :two_way_ssl
     property :client_certificate_enforced
     property :jsseenabled
-
+    property :default_file_store
+    
     add_title_attributes(:server_name) do
       /^((.*\/)?(.*)?)$/
     end

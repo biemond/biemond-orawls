@@ -1,0 +1,58 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+name                  = '<%= mailsession_name %>'
+jndiname              = '<%= jndiname %>'
+
+mailpropertynames     = '<%= mailpropertynames %>'
+mailpropertyvalue     = '<%= mailpropertyvalues %>'
+target                = '<%= target %>'
+targettype            = '<%= targettype %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/MailSessions/' + name)
+
+    if mailpropertynames:
+        properties  = String(mailpropertynames).split(",")
+        propvals    = String(mailpropertyvalue).split(",")
+
+        if len(properties) != len(propvals):
+            print "ERROR: Inconsistent number of Mail Properties and Mail Values"
+            raise
+        else:
+            proplist  = []
+            for i in range(len(properties)):
+                proplist.append(properties[i]+"="+propvals[i])
+            
+            final_properties = "{" + ",".join(proplist) + "}"
+            set('Properties', final_properties)
+    else:
+        set('Properties', None)
+
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
+    targetList  = []
+    for i in range(len(targets)):
+      print "target "+targets[i] + " " + targettypes[i]
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
+    
+    set('Targets',jarray.array(targetList, ObjectName))
+
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+
+

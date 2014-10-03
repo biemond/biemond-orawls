@@ -8,7 +8,7 @@ newproperty(:arguments) do
   end
 
   def should=(values)
-    values = values.flatten.join('\n') if values.is_a?(Array)
+    values = values.flatten.join("\n") if values.is_a?(Array)
     @should = values
   end
 

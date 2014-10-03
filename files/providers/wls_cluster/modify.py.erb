@@ -24,7 +24,7 @@ try:
 
     cmo = cd('/')
     cl  = cmo.lookupCluster(name)
-    editService.getConfigurationManager().removeReferencesToBean(cl)
+    # editService.getConfigurationManager().removeReferencesToBean(cl)
 
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
@@ -47,14 +47,14 @@ try:
       cmo.setMulticastPort(multicastport)
 
     if datasourceforjobscheduler:
-      cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))   
+      cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))
 
     for node in clusterNodesTargets:
       cd('/Servers/'+node)
       cmo.setCluster(getMBean('/Clusters/'+name))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

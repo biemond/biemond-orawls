@@ -12,9 +12,13 @@ migration_datasource      = '<%= migration_datasource %>'
 
 datasourceforjobscheduler = '<%= datasourceforjobscheduler %>'
 
-unicastbroadcastchannel = '<%= unicastbroadcastchannel %>'
-multicastaddress        = '<%= multicastaddress %>'
-multicastport           = '<%= multicastport %>'
+unicastbroadcastchannel   = '<%= unicastbroadcastchannel %>'
+multicastaddress          = '<%= multicastaddress %>'
+multicastport             = '<%= multicastport %>'
+
+frontendhost              = '<%= frontendhost %>'
+frontendhttpport          = '<%= frontendhttpport %>'
+frontendhttpsport         = '<%= frontendhttpsport %>'
 
 edit()
 startEdit()
@@ -28,10 +32,20 @@ try:
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
 
+    if frontendhost:
+      print "1"
+      cmo.setFrontendHost(frontendhost)
+    if frontendhttpport:
+      print "2"
+      cmo.setFrontendHTTPPort(int(frontendhttpport))
+    if frontendhttpsport:
+      print "3"
+      cmo.setFrontendHTTPSPort(int(frontendhttpsport))
+
     cmo.setMigrationBasis(migrationbasis)
     if migrationbasis == 'database':
     
-      if migration_datasource:
+     if migration_datasource:
         cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
 
       if migration_table_name:

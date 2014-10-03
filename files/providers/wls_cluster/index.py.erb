@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/Clusters',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name"
+print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport"
 for token in m:
   print '___'+token+'___'
   cd('/Clusters/'+token)
@@ -39,6 +39,9 @@ for token in m:
     servers.append(token2)
 
   cd('/Clusters/'+token)
-  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName')]))
+  pwd()
+  ls()
+  print ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
+  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

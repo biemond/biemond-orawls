@@ -50,6 +50,9 @@ module Puppet
     property :unicastbroadcastchannel
     property :multicastaddress
     property :multicastport
+    property :frontendhost
+    property :frontendhttpport
+    property :frontendhttpsport
 
     add_title_attributes(:cluster_name) do
       /^((.*\/)?(.*)?)$/

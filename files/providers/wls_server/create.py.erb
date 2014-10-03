@@ -34,6 +34,8 @@ custom_identity_privatekey_passphrase  = '<%= custom_identity_privatekey_passphr
 trust_keystore_file                    = '<%= trust_keystore_file %>'
 trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
+default_file_store                     = '<%= default_file_store %>'
+
 edit()
 startEdit()
 
@@ -121,6 +123,9 @@ try:
     if log_file_min_size:
       print "change log 6"
       cmo.setFileMinSize(int(log_file_min_size))
+
+    cd('/Servers/'+name+'/DefaultFileStore/'+name)
+    cmo.setDirectory(default_file_store)
 
     cd('/')
     DOMAIN_PATH = get('RootDirectory')

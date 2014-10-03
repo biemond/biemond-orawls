@@ -1,0 +1,36 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else: 
+        return ""
+
+m = ls('/MailSessions',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;target;targettype;jndiname;mailpropertyname;mailpropertyvalue"
+for token in m:
+        print '___'+token+'___'
+        cd('/MailSessions/'+token)
+
+        jndiname = get('JNDIName')
+        mailproperties = get('Properties').toString()[1:-1].split(", ")
+        properties     = []
+        propertyValues = []
+        for pair in mailproperties:
+            propname, val = pair.split("=")
+            properties.append(propname)
+            propertyValues.append(val)
+
+        n = ls('/MailSessions/'+token+'/Targets',returnMap='true')
+        target     = []
+        targetType = []
+        for token2 in n:
+            target.append(token2)
+            cd('/MailSessions/'+token+'/Targets/'+token2)
+            targetType.append(get('Type'))
+
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),jndiname,','.join(properties),','.join(propertyValues)]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

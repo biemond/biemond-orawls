@@ -11,15 +11,15 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc "This resource allows you to manage a mail_session in an WebLogic domain."
+    desc 'This resource allows you to manage a mail_session in an WebLogic domain.'
 
     ensurable
 
     set_command(:wlst)
-  
+
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { "action"=>"index","type"=>"wls_mail_session"}
+      environment = { 'action' => 'index', 'type' => 'wls_mail_session' }
       wlst template('puppet:///modules/orawls/providers/wls_mail_session/index.py.erb', binding), environment
     end
 
@@ -43,14 +43,14 @@ module Puppet
     parameter :mailsession_name
 
     # Shared
-    property  :target
-    property  :targettype
-    property  :jndiname
-    
-    property  :mailpropertynames
-    property  :mailpropertyvalues
+    property :target
+    property :targettype
+    property :jndiname
 
-    add_title_attributes( :mailsession_name) do 
+    property :mailpropertynames
+    property :mailpropertyvalues
+
+    add_title_attributes(:mailsession_name) do
       /^((.*\/)?(.*)?)$/
     end
 

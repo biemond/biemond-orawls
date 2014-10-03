@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/Clusters',returnMap='true')
@@ -17,7 +17,7 @@ for token in m:
   datasourceforMigrationMbean = get('DataSourceForAutomaticMigration')
   if datasourceforMigrationMbean:
      path = getPath(datasourceforMigrationMbean)
-     cd("/"+path) 
+     cd("/"+path)
      datasourceMigration = get('Name')
      cd('/Clusters/'+token)
   else:
@@ -27,7 +27,7 @@ for token in m:
   datasourceforjobschedulerMbean = cmo.getDataSourceForJobScheduler()
   if datasourceforjobschedulerMbean:
      path = getPath(datasourceforjobschedulerMbean)
-     cd("/"+path) 
+     cd("/"+path)
      datasourceforjobscheduler = get('Name')
      cd('/Clusters/'+token)
   else:
@@ -41,7 +41,7 @@ for token in m:
   cd('/Clusters/'+token)
   pwd()
   ls()
-  print ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
+  # print ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
   print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

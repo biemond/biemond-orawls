@@ -871,6 +871,7 @@ FMW 11g, 12.1.2 , 12.1.3 ADF domain with webtier
          repository_sys_password:  "Welcome01"
          rcu_database_url:         "wlsdb.example.com:1521:wlsrepos.example.com"
          webtier_enabled:          true
+         create_rcu:               true
 
 FMW 11g WebLogic SOA Suite domain
 
@@ -2236,6 +2237,9 @@ or use puppet resource wls_cluster
       unicastbroadcastchannel => 'channel',
       multicastaddress        => '239.192.0.0',
       multicastport           => '7001',
+      frontendhost            => '10.10.10.10'
+      frontendhttpport        => '1001'
+      frontendhttpsport       => '1002'
     }
 
 in hiera
@@ -3237,7 +3241,7 @@ in hiera
       'myMailSession':
         ensure:  present
         jndiname: 'myMailSession'
-        target:                   
+        target:
          - 'ManagedServer1'
          - 'WebCluster'
         targettype:

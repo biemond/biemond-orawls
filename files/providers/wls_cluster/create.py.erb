@@ -2,6 +2,7 @@
 real_domain='<%= domain %>'
 
 
+print "1"
 
 name                      = '<%= cluster_name %>'
 clusterNodesTargets       = String('<%= servers %>').split(",")
@@ -20,62 +21,59 @@ frontendhost              = '<%= frontendhost %>'
 frontendhttpport          = '<%= frontendhttpport %>'
 frontendhttpsport         = '<%= frontendhttpsport %>'
 
+print "2"
+
 edit()
 startEdit()
 
 try:
 
-    cd('/')
-    print 'Create Cluster';
-    cmo.createCluster(name)
+  cd('/')
+  print 'Create Cluster';
+  cmo.createCluster(name)
 
-    cd('/Clusters/'+name)
-    cmo.setClusterMessagingMode(messagingmode)
+  cd('/Clusters/'+name)
+  cmo.setClusterMessagingMode(messagingmode)
 
-    if frontendhost:
-      print "1"
-      cmo.setFrontendHost(frontendhost)
-    if frontendhttpport:
-      print "2"
-      cmo.setFrontendHTTPPort(int(frontendhttpport))
-    if frontendhttpsport:
-      print "3"
-      cmo.setFrontendHTTPSPort(int(frontendhttpsport))
+  if frontendhost:
+    cmo.setFrontendHost(frontendhost)
+  if frontendhttpport:
+    cmo.setFrontendHTTPPort(int(frontendhttpport))
+  if frontendhttpsport:
+    cmo.setFrontendHTTPSPort(int(frontendhttpsport))
 
-    cmo.setMigrationBasis(migrationbasis)
-    if migrationbasis == 'database':
-    
-     if migration_datasource:
-        cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
+  cmo.setMigrationBasis(migrationbasis)
+  if migrationbasis == 'database':
 
-      if migration_table_name:
-         cmo.setAutoMigrationTableName(migration_table_name)
+    if migration_datasource:
+      cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
 
-    if unicastbroadcastchannel:
-       cmo.setClusterBroadcastChannel(unicastbroadcastchannel)
+    if migration_table_name:
+      cmo.setAutoMigrationTableName(migration_table_name)
 
-    if multicastaddress:
-       cmo.setMulticastAddress(multicastaddress)
+  if unicastbroadcastchannel:
+    cmo.setClusterBroadcastChannel(unicastbroadcastchannel)
 
-    if multicastport:
-      cmo.setMulticastPort(multicastport)
+  if multicastaddress:
+    cmo.setMulticastAddress(multicastaddress)
 
-    if datasourceforjobscheduler:
-      cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))   
+  if multicastport:
+    cmo.setMulticastPort(multicastport)
 
-    for node in clusterNodesTargets:
-      cd('/Servers/'+node)
-      cmo.setCluster(getMBean('/Clusters/'+name))
+  if datasourceforjobscheduler:
+    cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))
 
-    save()
-    activate()          
-    print "~~~~COMMAND SUCCESFULL~~~~"
+  for node in clusterNodesTargets:
+    cd('/Servers/'+node)
+    cmo.setCluster(getMBean('/Clusters/'+name))
+
+  save()
+  activate()
+  print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
-
-
+  print "Unexpected error:", sys.exc_info()[0]
+  undo('true','y')
+  stopEdit('y')
+  print "~~~~COMMAND FAILED~~~~"
+  raise

@@ -4,6 +4,6 @@ newparam(:mailsession_name) do
 
   isnamevar
 
-  desc "The mail session name"
+  desc 'The mail session name'
 
 end

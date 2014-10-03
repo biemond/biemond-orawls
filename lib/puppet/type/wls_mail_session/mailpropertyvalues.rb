@@ -1,7 +1,7 @@
 newproperty(:mailpropertyvalues, :array_matching => :all) do
   include EasyType
 
-  desc "The mail property names"
+  desc 'The mail property names'
 
   to_translate_to_resource do | raw_resource|
     unless raw_resource['mailpropertyvalues'].nil?

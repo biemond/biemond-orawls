@@ -10,22 +10,22 @@ startEdit()
 
 try:
 
-    cmo = cd('/')
-    cl  = cmo.lookupCluster(name)
- 
-    editService.getConfigurationManager().removeReferencesToBean(cl)
+  cmo = cd('/')
+  cl  = cmo.lookupCluster(name)
 
-    cmo = cd('/')
-    cmo.destroyCluster(cl)
+  editService.getConfigurationManager().removeReferencesToBean(cl)
 
-    save()
-    activate()
-    print "~~~~COMMAND SUCCESFULL~~~~"
+  cmo = cd('/')
+  cmo.destroyCluster(cl)
+
+  save()
+  activate()
+  print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
+  print "Unexpected error:", sys.exc_info()[0]
+  undo('true','y')
+  stopEdit('y')
+  print "~~~~COMMAND FAILED~~~~"
+  raise
 

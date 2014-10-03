@@ -26,7 +26,7 @@ startEdit()
 try:
 
     cmo = cd('/')
-    cl  = cmo.lookupCluster(name)
+    # cl  = cmo.lookupCluster(name)
     # editService.getConfigurationManager().removeReferencesToBean(cl)
 
     cd('/Clusters/'+name)
@@ -34,28 +34,26 @@ try:
 
     pwd()
     if frontendhost:
-      print "1"
       cmo.setFrontendHost(frontendhost)
     if frontendhttpport:
-      print "2"
       cmo.setFrontendHTTPPort(int(frontendhttpport))
     if frontendhttpsport:
-      print "3"
       cmo.setFrontendHTTPSPort(int(frontendhttpsport))
 
     cmo.setMigrationBasis(migrationbasis)
     if migrationbasis == 'database':
-      cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
+
+      if migration_datasource:
+        cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
 
       if migration_table_name:
-         cmo.setAutoMigrationTableName(migration_table_name)
-
+        cmo.setAutoMigrationTableName(migration_table_name)
 
     if unicastbroadcastchannel:
-       cmo.setClusterBroadcastChannel(unicastbroadcastchannel)
+      cmo.setClusterBroadcastChannel(unicastbroadcastchannel)
 
     if multicastaddress:
-       cmo.setMulticastAddress(multicastaddress)
+      cmo.setMulticastAddress(multicastaddress)
 
     if multicastport:
       cmo.setMulticastPort(multicastport)

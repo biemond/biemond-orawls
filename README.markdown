@@ -115,6 +115,15 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'oud'         -> OUD (Oracle Unified Directory)
 
 
+## Puppet master with orawls module key points
+it should work on every PE or opensource puppet master, customers and I succesfull tested orawls on PE 3.0, 3.1, 3.2, 3.3. See also the puppet master vagrant box
+
+But when it fails you can do the following actions.
+- Update orawls and its dependencies on the puppet master.
+- After adding or refreshing the easy_type or orawls modules you need to restart all the PE services on the puppet master (this will flush the PE cache) and always do a puppet agent run on the Puppet master
+- To solve this error "no such file to load -- easy_type" you need just to do a puppet run on the puppet master when it is still failing you can move the easy_type module to its primary module location ( /etc/puppetlabs/puppet/module )
+
+
 ## Orawls WebLogic Facter
 
 Contains WebLogic Facter which displays the following

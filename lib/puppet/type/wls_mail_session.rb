@@ -47,8 +47,7 @@ module Puppet
     property :targettype
     property :jndiname
 
-    property :mailpropertynames
-    property :mailpropertyvalues
+    property :mailproperty
 
     add_title_attributes(:mailsession_name) do
       /^((.*\/)?(.*)?)$/

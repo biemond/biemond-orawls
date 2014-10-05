@@ -3239,8 +3239,7 @@ Valid mail properties are found at: https://javamail.java.net/nonav/docs/api/
       jndiname       => 'myMailSession',
       target         => ['ManagedServer1', 'WebCluster'],
       targettype     => ['Server', 'Cluster'],
-      mailpropertynames => ['mail.host', 'mail.user'],
-      mailpropertyvalues => ['smtp.hostname.com', 'smtpadmin'],
+      mailproperty   => ['mail.host=smtp.hostname.com', 'mail.user=smtpadmin'],
     }
 
 
@@ -3256,9 +3255,6 @@ in hiera
         targettype:
          - 'Server'
          - 'Cluster'
-        mailpropertynames:
-         - 'mail.host'
-         - 'mail.user'
-        mailpropertyvalues:
-         - 'smtp.hostname.com'
-         - 'smtpadmin'
+        mailproperty:
+         - 'mail.host=smtp.hostname.com'
+         - 'mail.user=smtpadmin'

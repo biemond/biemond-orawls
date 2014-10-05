@@ -6,12 +6,9 @@ real_domain='<%= domain %>'
 name                  = '<%= mailsession_name %>'
 jndiname              = '<%= jndiname %>'
 
-mailpropertynames     = '<%= mailpropertynames %>'
-mailpropertyvalue     = '<%= mailpropertyvalues %>'
+mailproperty          = '<%= mailproperty %>'
 target                = '<%= target %>'
 targettype            = '<%= targettype %>'
-
-
 
 
 edit()
@@ -25,32 +22,23 @@ try:
 
     cmo.setJNDIName(jndiname)
 
-    if mailpropertynames:
-        properties  = String(mailpropertynames).split(",")
-        propvals    = String(mailpropertyvalue).split(",")
+    if mailproperty:
+        properties  = String(mailproperty).split(",")
 
-        if len(properties) != len(propvals):
-            print "ERROR: Inconsistent number of Mail Properties and Mail Values"
-            raise
-        else:
-            proplist  = []
-            for i in range(len(properties)):
-                proplist.append(properties[i]+"="+propvals[i])
-            
-            final_properties = "{" + ",".join(proplist) + "}"
-            set('Properties', final_properties)
+        final_properties = "{" + ",".join(properties) + "}"
+        set('Properties', final_properties)
 
     targets     = String(target).split(",")
     targettypes = String(targettype).split(",")
     targetList  = []
     for i in range(len(targets)):
       print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-    
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
     set('Targets',jarray.array(targetList, ObjectName))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

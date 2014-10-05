@@ -1,6 +1,8 @@
 # History
 
 ## 1.0.19
+- changed properties of wls_mail_session, no change when there is a different sorting
+- changed users of wls_group, no change when there is a different sorting
 
 ## 1.0.18
 - small fix for the server_template type with the arguments parameter

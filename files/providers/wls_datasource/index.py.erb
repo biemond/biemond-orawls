@@ -3,13 +3,13 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;extrapropertiesvalues;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist"
 for token in m:
         print '___'+token+'___'
         cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -24,7 +24,7 @@ for token in m:
         maxcapacity     = get('MaxCapacity')
         initialcapacity = get('InitialCapacity')
         if not (initialcapacity):
-           initialcapacity = '0' 
+           initialcapacity = '0'
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')
@@ -38,7 +38,7 @@ for token in m:
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token)
         globalTransactionsProtocol = get('GlobalTransactionsProtocol')
 
-        
+
         try:
             cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCOracleParams/' + token )
             fanenabled = str(get('FanEnabled'))
@@ -50,12 +50,10 @@ for token in m:
 
         p = ls('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties',returnMap='true')
         properties     = []
-        propertyValues = []
         for token3 in p:
             if not token3 == 'user':
-               properties.append(token3)
                cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties/'+token3)
-               propertyValues.append(get('Value'))
+               properties.append(token3+"="+str(get('Value')))
 
         n = ls('/SystemResources/'+token+'/Targets',returnMap='true')
         target     = []
@@ -65,6 +63,6 @@ for token in m:
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),','.join(propertyValues),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

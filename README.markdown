@@ -2652,8 +2652,7 @@ or use puppet resource wls_datasource
     wls_datasource { 'hrDS':
       ensure                     => 'present',
       drivername                 => 'oracle.jdbc.xa.client.OracleXADataSource',
-      extraproperties            => ['SendStreamAsBlob','oracle.net.CONNECT_TIMEOUT'],
-      extrapropertiesvalues      => ['true','10000'],
+      extraproperties            => ['SendStreamAsBlob=true','oracle.net.CONNECT_TIMEOUT=10000'],
       globaltransactionsprotocol => 'TwoPhaseCommit',
       initialcapacity            => '1',
       jndinames                  => ['jdbc/hrDS'],
@@ -2693,11 +2692,8 @@ in hiera
           ensure:                      'present'
           drivername:                  'oracle.jdbc.xa.client.OracleXADataSource'
           extraproperties:
-            - 'SendStreamAsBlob'
-            - 'oracle.net.CONNECT_TIMEOUT'
-          extrapropertiesvalues:
-            - 'true'
-            - '10000'
+            - 'SendStreamAsBlob=true'
+            - 'oracle.net.CONNECT_TIMEOUT=1000'
           globaltransactionsprotocol:  'TwoPhaseCommit'
           initialcapacity:             '1'
           jndinames:
@@ -3146,16 +3142,14 @@ or use puppet resource wls_foreign_server
     wls_foreign_server { 'jmsClusterModule:AQForeignServer':
       ensure                => 'present',
       defaulttargeting      => '1',
-      extraproperties       => 'datasource',
-      extrapropertiesvalues => ['jdbc/hrDS'],
+      extraproperties       => 'datasource=jdbc/hrDS',
       initialcontextfactory => ['oracle.jms.AQjmsInitialContextFactory'],
     }
     wls_foreign_server { 'jmsClusterModule:Jboss':
       ensure                => 'present',
       connectionurl         => 'remote://10.10.10.10:4447',
       defaulttargeting      => '0',
-      extraproperties       => ['java.naming.security.principal'],
-      extrapropertiesvalues => ['jmsuser'],
+      extraproperties       => ['java.naming.security.principal=jmsuser'],
       initialcontextfactory => 'org.jboss.naming.remote.client.InitialContextFactory',
       subdeployment         => 'wlsServers',
     }
@@ -3166,18 +3160,14 @@ in hiera
         ensure:                'present'
         defaulttargeting:      '1'
         extraproperties:
-          - 'datasource'
-        extrapropertiesvalues:
-          - 'jdbc/hrDS'
+          - 'datasource=jdbc/hrDS'
         initialcontextfactory: 'oracle.jms.AQjmsInitialContextFactory'
     'jmsClusterModule:Jboss':
         ensure:                'present'
         connectionurl:         'remote://10.10.10.10:4447'
         defaulttargeting:      '0'
         extraproperties:
-          - 'java.naming.security.principal'
-        extrapropertiesvalues:
-          - 'jmsuser'
+          - 'java.naming.security.principal=jmsuser'
         initialcontextfactory: 'org.jboss.naming.remote.client.InitialContextFactory'
         subdeployment:         'wlsServers'
         password:              'test'

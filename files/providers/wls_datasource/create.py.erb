@@ -15,7 +15,6 @@ user                       = '<%= user %>'
 testtablename              = '<%= testtablename %>'
 globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
 extraproperties            = '<%= extraproperties %>'
-extrapropertiesvalues      = '<%= extrapropertiesvalues %>'
 maxcapacity                = '<%= maxcapacity %>'
 initialcapacity            = '<%= initialcapacity %>'
 fanenabled                 = '<%= fanenabled %>'
@@ -33,8 +32,8 @@ try:
     cmo.setName(name)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
-    if jndinames: 
-      jndis = String(jndinames).split(",")  
+    if jndinames:
+      jndis = String(jndinames).split(",")
       set('JNDINames',jarray.array(jndis, String))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
@@ -43,7 +42,7 @@ try:
     if usexa == '1':
       cmo.setUseXaDataSourceInterface(true)
     else:
-      cmo.setUseXaDataSourceInterface(false)  
+      cmo.setUseXaDataSourceInterface(false)
     cmo.setPassword(password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
@@ -60,17 +59,13 @@ try:
     cmo.setValue(user)
 
     if extraproperties:
-      if extrapropertiesvalues:
-          properties=String(extraproperties).split(",")
-          values=String(extrapropertiesvalues).split(",")
-
-          i = 0
-          for property in properties:
-              cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
-              cmo.createProperty(property)
-              cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/'+property)
-              cmo.setValue(values[i])
-              i = i + 1
+      properties=String(extraproperties).split(",")
+      for property in properties:
+        propname, val = property.split("=")
+        cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
+        cmo.createProperty(propname)
+        cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/'+propname)
+        cmo.setValue(val)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
     cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)
@@ -95,12 +90,12 @@ try:
     targetList  = []
     for i in range(len(targets)):
       print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-    
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
     set('Targets',jarray.array(targetList, ObjectName))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

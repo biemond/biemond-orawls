@@ -11,7 +11,6 @@ initialcontextfactory     = '<%= initialcontextfactory %>'
 password                  = '<%= password %>'
 connectionurl             = '<%= connectionurl %>'
 extraproperties           = '<%= extraproperties %>'
-extrapropertiesvalues     = '<%= extrapropertiesvalues %>'
 
 edit()
 startEdit()
@@ -34,26 +33,23 @@ try:
       cmo.setInitialContextFactory(initialcontextfactory)
 
     if password:
-      cmo.setJNDIPropertiesCredential(password)  
+      cmo.setJNDIPropertiesCredential(password)
 
     if extraproperties:
-      if extrapropertiesvalues:
-          properties=String(extraproperties).split(",")
-          values=String(extrapropertiesvalues).split(",")
+      properties=String(extraproperties).split(",")
+      for property in properties:
+        propname, val = property.split("=")
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name)
+        try:
+          cmo.createJNDIProperty(propname)
+        except:
+          print "already exists"
 
-          i = 0
-          for property in properties:
-              cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name)
-              try:
-                cmo.createJNDIProperty(property)
-              except:
-                print "already exists"
-              cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name + '/JNDIProperties/' +property)
-              cmo.setValue(values[i])
-              i = i + 1
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name + '/JNDIProperties/' +propname)
+        cmo.setValue(val)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

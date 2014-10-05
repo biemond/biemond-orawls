@@ -46,7 +46,6 @@ module Puppet
     property :subdeployment
     property :defaulttargeting
     property :extraproperties
-    property :extrapropertiesvalues
     property :initialcontextfactory
     property :connectionurl
 

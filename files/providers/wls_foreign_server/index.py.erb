@@ -3,13 +3,13 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/JMSSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;subdeployment;defaulttargeting;extraproperties;extrapropertiesvalues;connectionurl;initialcontextfactory;domain"
+print >>f, "name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain"
 
 for token in m:
     print '_jmsmodule_'+token+'___'
@@ -21,22 +21,19 @@ for token in m:
 
             p = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties',returnMap='true')
             properties     = []
-            propertyValues = []
             for token3 in p:
-                   properties.append(token3)
-                   cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties/'+token3)
-                   propertyValues.append(get('Value'))
-            
+              cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties/'+token3)
+              properties.append(token3+"="+str(get('Value')))
 
             cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
             defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
             if defaultTargetingEnabled == '1':
               subDeploymentName = ''
             else:
-              subDeploymentName = cmo.getSubDeploymentName()  
+              subDeploymentName = cmo.getSubDeploymentName()
 
-            print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),','.join(propertyValues),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain]))
- 
+            print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain]))
+
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
 

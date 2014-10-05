@@ -41,10 +41,16 @@ nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}
 nmDisconnect()
 EOF"
 
-    Puppet.debug "adminserver action: #{action} with command #{command} and CONFIG_JVM_ARGS=#{config}"
+    command2 = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+nmConnect(\"#{weblogic_user}\",\"xxxxx\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"ssl\")
+#{wls_action}
+nmDisconnect()
+EOF"
+
+    Puppet.info "adminserver action: #{action} with command #{command2} and CONFIG_JVM_ARGS=#{config}"
 
     output = `su - #{user} -c 'export CONFIG_JVM_ARGS="#{config}";#{command}'`
-    Puppet.debug "adminserver result: #{output}"
+    Puppet.info "adminserver result: #{output}"
   end
 
   def adminserver_status

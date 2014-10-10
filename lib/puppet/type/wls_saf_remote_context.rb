@@ -42,6 +42,7 @@ module Puppet
     parameter :jmsmodule
     parameter :remote_context_name
     parameter :weblogic_password
+    parameter :timeout
     property :weblogic_user
     property :connect_url
 

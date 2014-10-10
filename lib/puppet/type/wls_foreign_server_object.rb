@@ -43,6 +43,7 @@ module Puppet
     parameter :jmsmodule
     parameter :foreign_server
     parameter :object_name
+    parameter :timeout
     property :object_type
     property :remotejndiname
     property :localjndiname

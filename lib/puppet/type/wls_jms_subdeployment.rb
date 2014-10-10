@@ -41,6 +41,7 @@ module Puppet
     parameter :name
     parameter :subdeployment_name
     parameter :jmsmodule
+    parameter :timeout
     property :target
     property :targettype
 

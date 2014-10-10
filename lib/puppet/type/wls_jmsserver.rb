@@ -40,6 +40,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :jmsserver_name
+    parameter :timeout
     property :persistentstore
     property :persistentstoretype
     property :target

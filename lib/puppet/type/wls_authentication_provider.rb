@@ -42,6 +42,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :authentication_provider_name
+    parameter :timeout
 
     property :control_flag
     parameter :providerclassname

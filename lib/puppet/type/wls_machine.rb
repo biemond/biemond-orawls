@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :machine_name
+    parameter :timeout
 
     property :machinetype
     property :nmtype

@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :jms_module_name
+    parameter :timeout
     property :target
     property :targettype
 

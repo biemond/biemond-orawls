@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :workmanager_name
+    parameter :timeout
     property :stuckthreads
     property :target
     property :targettype

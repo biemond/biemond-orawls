@@ -45,6 +45,7 @@ module Puppet
     parameter :custom_identity_keystore_passphrase
     parameter :custom_identity_privatekey_passphrase
     parameter :trust_keystore_passphrase
+    parameter :timeout
 
     property :custom_identity
 

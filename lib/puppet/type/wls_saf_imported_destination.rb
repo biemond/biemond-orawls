@@ -41,6 +41,7 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :imported_destination_name
+    parameter :timeout
     property :errorhandling
     property :remotecontext
     property :jndiprefix

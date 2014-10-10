@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :file_persistence_name
+    parameter :timeout
     property :directory
     property :target
     property :targettype

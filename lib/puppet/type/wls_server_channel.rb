@@ -42,6 +42,7 @@ module Puppet
     parameter :name
     parameter :server
     parameter :channel_name
+    parameter :timeout
 
     property :protocol
     property :enabled

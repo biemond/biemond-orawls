@@ -1,7 +1,5 @@
 class WlsDaemon < EasyType::Daemon
-
   DEFAULT_TIMEOUT = 120 # 2 minutes
-
 
   def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
     daemon = super("wls-#{domain}")

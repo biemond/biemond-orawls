@@ -1890,6 +1890,8 @@ only control_flag is a property, the rest are parameters and only used in a crea
 
 to provide a list of token types to create provide a "::" seperated list for attribute 'ActiveTypes'
 
+Optionally, providers can be ordered by providing a value to the order paramater, which is a zero-based list. When configuring ordering order, it may be necessary to create the resources with Puppet ordering (if not using Hiera) or by structuring Hiera in matching order. Otherwise ordering may fail if not all authentication providers are created yet.
+
 or use puppet resource wls_authentication_provider
 
 
@@ -1904,13 +1906,15 @@ or use puppet resource wls_authentication_provider
       attributes:       =>  'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes',
       attributesvalues  =>  '1;1;CN;AuthenticatedUser::X.509',
     }
-    # this will use default as wls_setting identifier
+   
+    # this provider will be ordered first in the providers list
     wls_authentication_provider { 'ldap':
       ensure            => 'present',
       control_flag      => 'SUFFICIENT',
       providerclassname => 'weblogic.security.providers.authentication.LDAPAuthenticator',
       attributes:       =>  'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled',
       attributesvalues  =>  'ldapuser;ldapserver;389;60;1024;4;true',
+      order             =>  '0'
     }
 
 
@@ -1930,12 +1934,15 @@ in hiera
         providerclassname:  'weblogic.security.providers.authentication.DefaultIdentityAsserter'
         attributes:         'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes'
         attributesvalues:   '1;1;CN;AuthenticatedUser::X.509'
+
+      #ldap will be the first listed provider
       'ldap':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
         providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
         attributes:         'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled'
         attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;true'
+        order:              '0'
 
 
 

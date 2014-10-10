@@ -5,6 +5,7 @@ real_domain='<%= domain %>'
 
 name                      = '<%= authentication_provider_name %>'
 control_flag              = '<%= control_flag %>'
+order                     = '<%= order %>'
 
 edit()
 startEdit()
@@ -17,7 +18,31 @@ try:
     cd(path)
 
     cd('AuthenticationProviders/'+name)
-    cmo.setControlFlag(control_flag)
+    if control_flag:
+        cmo.setControlFlag(control_flag)
+    
+    if order:
+        order_val = int(order)
+        cd('/'+path)
+        ap = get('AuthenticationProviders')
+
+        if ap[order_val].getKeyProperty('Name') != realmName.getName()+name:
+            # Find the current index
+            old_index = len(ap)-1
+            if order_val > old_index:
+                raise Exception("ERROR - Order Value %d is higher than the quantity of Authentication Providers configured. Cannot order." % order_val)
+    
+            for provider in ap[::-1]:
+                if provider.getKeyProperty('Name') == realmName.getName()+name:   
+                    print "Ordering %s to position %d" % (name, order_val)
+                    ap.insert(order_val, ap.pop(old_index))
+                    break
+        
+                old_index = old_index - 1
+        
+            # Apply the new order
+            set('AuthenticationProviders', ap)
+    
 
     save()
     activate()          

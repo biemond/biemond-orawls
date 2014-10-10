@@ -1906,14 +1906,14 @@ or use puppet resource wls_authentication_provider
       attributes:       =>  'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes',
       attributesvalues  =>  '1;1;CN;AuthenticatedUser::X.509',
     }
-   
+
     # this provider will be ordered first in the providers list
     wls_authentication_provider { 'ldap':
       ensure            => 'present',
       control_flag      => 'SUFFICIENT',
       providerclassname => 'weblogic.security.providers.authentication.LDAPAuthenticator',
       attributes:       =>  'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled',
-      attributesvalues  =>  'ldapuser;ldapserver;389;60;1024;4;true',
+      attributesvalues  =>  'ldapuser;ldapserver;389;60;1024;4;1',
       order             =>  '0'
     }
 
@@ -1941,7 +1941,7 @@ in hiera
         control_flag:       'SUFFICIENT'
         providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
         attributes:         'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled'
-        attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;true'
+        attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;1'
         order:              '0'
 
 

@@ -32,7 +32,7 @@ try:
           values=String(attributesvalues).split(";")
 
           numbers  = ['Port','CacheTTL','CacheSize','MaxGroupMembershipSearchLevel']
-          booleans = ['KeepAliveEnabled','UseRetrievedUserNameAsPrincipal','IgnoreDuplicateMembership','DigestReplayDetectionEnabled','UseDefaultUserNameMapper']
+          booleans = ['KeepAliveEnabled','UseRetrievedUserNameAsPrincipal','IgnoreDuplicateMembership','DigestReplayDetectionEnabled','UseDefaultUserNameMapper','SSLEnabled']
           lists =    ['ActiveTypes']
 
           i = 0
@@ -67,7 +67,7 @@ try:
 
             elif property in lists:
               print "is a list"
-              
+
               list_values=String(values[i]).split("::")
               set(property,jarray.array(list_values, String))
 
@@ -79,27 +79,30 @@ try:
 
     # Authentication Provider Ordering
     if order:
-      cd('/'+path)
-      ap = get('AuthenticationProviders')
+        order_val = int(order)
+        cd('/'+path)
+        ap = get('AuthenticationProviders')
 
-      if ap[order].getKeyProperty('Name') != realmName.getName()+name:
-        # Find the current index
-        old_index = len(ap)-1
-        if order > old_index:
-          raise Exception("ERROR - Order Value %d is higher than the quantity of Authentication Providers configured. Cannot order." % order)
-        
-        for provider in ap[::-1]:
-          if provider.getKeyProperty('Name') == realmName.getName()+name:
-            print "Ordering %s to position %d" % (name, order)
-            ap.insert(order, ap.pop(old_index))
-            break
-        
-          old_index = old_index - 1
-        
-          # Apply the new order
-          set('AuthenticationProviders', ap)
-          
+        if ap[order_val].getKeyProperty('Name') != realmName.getName()+name:
+            # Find the current index
+            old_index = len(ap)-1
+            if order_val > old_index:
+                raise Exception("ERROR - Order Value %d is higher than the quantity of Authentication Providers configured. Cannot order." % order_val)
 
+            for provider in ap[::-1]:
+                if provider.getKeyProperty('Name') == realmName.getName()+name:
+                    print "Ordering %s to position %d" % (name, order_val)
+                    ap.insert(order_val, ap.pop(old_index))
+                    break
+
+                old_index = old_index - 1
+
+            # Apply the new order
+            set('AuthenticationProviders', ap)
+
+
+
+    print "done"
     save()
     activate()
     print "~~~~COMMAND SUCCESFULL~~~~"

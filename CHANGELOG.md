@@ -5,6 +5,7 @@
 - changed users of wls_group, no change when there is a different sorting
 - removed extrapropertiesvalues of wls_datasource, you can use now extraproperties with key=value,key1=value
 - removed extrapropertiesvalues of wls_foreign_server, you can use now extraproperties with key=value,key1=value
+- New Order parameter on the wls_authentication_provider type so you can change the order
 
 ## 1.0.18
 - small fix for the server_template type with the arguments parameter

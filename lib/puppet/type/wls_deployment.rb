@@ -43,6 +43,8 @@ module Puppet
     parameter :deployment_name
     parameter :localpath
     parameter :planpath
+    parameter :timeout
+
     property :target
     property :targettype
     property :deploymenttype

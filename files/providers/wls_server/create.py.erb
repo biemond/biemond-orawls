@@ -35,6 +35,7 @@ trust_keystore_file                    = '<%= trust_keystore_file %>'
 trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 default_file_store                     = '<%= default_file_store %>'
+max_message_size                       = '<%= max_message_size %>'
 
 edit()
 startEdit()
@@ -53,32 +54,35 @@ def formatBoolean(value):
     if value == 1:
         return 'True'
     else:
-        return 'False'    
+        return 'False'
 
 def formatBoolean2(value):
   if value == '1':
     return true
   else:
-    return false    
+    return false
 
 
 try:
 
     cd('/')
     cmo.createServer(name)
-  
+
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
-    
+
     if listenAddress:
         set('ListenAddress',listenAddress)
 
     set('ListenPort', listenPort)
 
-    if classpath:    
+    if max_message_size:
+      set('MaxMessageSize',max_message_size)
+
+    if classpath:
         set('ServerStart/'+name+'/ClassPath', classpath)
 
-    if arguments:    
+    if arguments:
         set('ServerStart/'+name+'/Arguments', arguments)
 
     if custom_identity == '1':
@@ -92,13 +96,13 @@ try:
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
     else:
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
-    
+
     cd('/Servers/'+name+'/SSL/'+name)
 
     set('Enabled', formatBoolean(sslEnabled))
-    
+
     set('JSSEEnabled', formatBoolean(jsseenabled))
-    
+
     set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
     set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
     set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
@@ -132,7 +136,7 @@ try:
 
     createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 

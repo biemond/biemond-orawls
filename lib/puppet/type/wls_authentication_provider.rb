@@ -47,6 +47,7 @@ module Puppet
     parameter :providerclassname
     parameter :attributes
     parameter :attributesvalues
+    parameter :order
 
     add_title_attributes(:authentication_provider_name) do
       /^((.*\/)?(.*)?)$/

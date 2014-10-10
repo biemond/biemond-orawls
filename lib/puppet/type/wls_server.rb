@@ -45,6 +45,7 @@ module Puppet
     parameter :custom_identity_keystore_passphrase
     parameter :custom_identity_privatekey_passphrase
     parameter :trust_keystore_passphrase
+    parameter :timeout
 
     property :custom_identity
 
@@ -72,6 +73,7 @@ module Puppet
     property :client_certificate_enforced
     property :jsseenabled
     property :default_file_store
+    property :max_message_size
 
     add_title_attributes(:server_name) do
       /^((.*\/)?(.*)?)$/

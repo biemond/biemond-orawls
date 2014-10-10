@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :cluster_name
+    parameter :timeout
     property :server_name_prefix
     property :server_template_name
     property :nodemanager_match

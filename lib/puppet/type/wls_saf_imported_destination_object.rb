@@ -43,6 +43,7 @@ module Puppet
     parameter :jmsmodule
     parameter :imported_destination
     parameter :object_name
+    parameter :timeout
     property :object_type
     property :timetolivedefault
     property :usetimetolivedefault

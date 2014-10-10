@@ -42,6 +42,7 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :connection_factory_name
+    parameter :timeout
     property :jndiname
     property :subdeployment
     property :defaulttargeting

@@ -41,6 +41,7 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :topic_name
+    parameter :timeout
     property :distributed
     property :jndiname
     property :subdeployment

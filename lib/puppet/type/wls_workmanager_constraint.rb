@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :workmanager_constraint_name
+    parameter :timeout
     property :constrainttype
     property :target
     property :targettype

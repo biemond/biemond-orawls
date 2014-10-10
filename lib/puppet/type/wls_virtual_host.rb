@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :virtual_host_name
+    parameter :timeout
     property :channel
     property :target
     property :targettype

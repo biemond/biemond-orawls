@@ -41,6 +41,7 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :quota_name
+    parameter :timeout
     property :bytesmaximum
     property :messagesmaximum
     property :policy

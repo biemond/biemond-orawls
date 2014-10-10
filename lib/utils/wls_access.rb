@@ -74,8 +74,22 @@ module Utils
       postClasspath       = domainValues['post_classpath'] || ''
 
       wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
-      wls_daemon.execute_script(tmpFile.path)
+      if timeout_specified
+        wls_daemon.execute_script(tmpFile.path, timeout_specified)
+      else
+        wls_daemon.execute_script(tmpFile.path)
+      end
       File.read('/tmp/' + script + '.out') if action == 'index'
+    end
+
+    private
+
+    def timeout_specified
+      if respond_to?(:to_hash)
+        to_hash.fetch(:timeout) { nil } #
+      else
+        nil
+      end
     end
   end
 end

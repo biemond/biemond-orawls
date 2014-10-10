@@ -42,6 +42,7 @@ module Puppet
     parameter :name
     parameter :datasource_name
     parameter :password
+    parameter :timeout
 
     property :target
     property :targettype

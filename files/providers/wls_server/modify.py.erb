@@ -35,6 +35,8 @@ trust_keystore_file                    = '<%= trust_keystore_file %>'
 trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 default_file_store                     = '<%= default_file_store %>'
+max_message_size                       = '<%= max_message_size %>'
+
 
 def format(value):
     if (value):
@@ -46,14 +48,14 @@ def formatBoolean(value):
     if value == 1:
         return 'True'
     else:
-        return 'False'    
+        return 'False'
 
 def formatBoolean2(value):
   if value == '1':
     return true
   else:
-    return false    
-        
+    return false
+
 edit()
 startEdit()
 
@@ -61,10 +63,13 @@ try:
 
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
-    
+
     set('ListenAddress', format(listenAddress))
 
     set('ListenPort', format(listenPort))
+
+    if max_message_size:
+      set('MaxMessageSize',max_message_size)
 
     set('ServerStart/'+name+'/ClassPath', format(classpath))
 
@@ -81,7 +86,7 @@ try:
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
     else:
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
-    
+
     cd('/Servers/'+name+'/SSL/'+name)
 
     set('Enabled', formatBoolean(sslEnabled))
@@ -91,9 +96,9 @@ try:
     set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
     set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
     set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
-    
+
     set('ListenPort', sslListenPort)
-    
+
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:
       set('FileName', logFilename)
@@ -117,7 +122,7 @@ try:
     cmo.setDirectory(default_file_store)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 

@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :server_template
+    parameter :timeout
 
     property :ssllistenport
     property :sslenabled

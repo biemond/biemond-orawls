@@ -42,6 +42,7 @@ module Puppet
     parameter :name
     parameter :user_name
     parameter :password
+    parameter :timeout
     property :realm
     property :authenticationprovider
     property :description

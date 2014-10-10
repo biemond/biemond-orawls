@@ -2,7 +2,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 cd('/')
@@ -24,7 +24,7 @@ for token in m:
     try:
       control_flag = get('ControlFlag')
     except:
-      print "already exists"
+      print "ControlFlag does not exists, continue"
 
     cd('../')
     ap = get('AuthenticationProviders')

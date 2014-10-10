@@ -40,6 +40,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :safagent_name
+    parameter :timeout
     property :servicetype
     property :persistentstore
     property :persistentstoretype

@@ -77,20 +77,19 @@ module Utils
       if timeout_specified
         wls_daemon.execute_script(tmpFile.path, timeout_specified)
       else
-        wls_daemon.execute_script(tmpFile.path, timeout)
+        wls_daemon.execute_script(tmpFile.path)
       end
       File.read('/tmp/' + script + '.out') if action == 'index'
     end
 
-private
+    private
+
     def timeout_specified
       if respond_to?(:to_hash)
-        to_hash.fetch(:timeout) { nil} #
+        to_hash.fetch(:timeout) { nil } #
       else
         nil
       end
     end
-
-
   end
 end

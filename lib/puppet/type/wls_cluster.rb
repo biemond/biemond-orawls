@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :cluster_name
+    parameter :timeout
     property :servers
     property :migrationbasis
     property :migration_datasource

@@ -38,6 +38,7 @@ module Puppet
 
     parameter :domain
     parameter :name
+    parameter :timeout
     parameter :weblogic_domain_name
     property :jta_transaction_timeout
     property :jta_max_transactions

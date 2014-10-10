@@ -41,6 +41,7 @@ module Puppet
     parameter :name
     parameter :jmsmodule
     parameter :error_handler_name
+    parameter :timeout
     property :errordestination
     property :logformat
     property :policy

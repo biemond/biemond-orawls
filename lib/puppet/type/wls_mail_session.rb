@@ -41,6 +41,7 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :mailsession_name
+    parameter :timeout
 
     # Shared
     property :target

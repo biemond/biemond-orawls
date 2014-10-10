@@ -40,6 +40,7 @@ module Puppet
 
     parameter :domain
     parameter :name
+    parameter :timeout
     parameter :coherence_cluster_name
     property :clusteringmode
     property :unicastaddress

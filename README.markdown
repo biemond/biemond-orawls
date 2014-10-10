@@ -2032,6 +2032,7 @@ or with log parameters, default file store and ssl
       two_way_ssl                       => '0',
       client_certificate_enforced       => '0',
       default_file_store                => '/path/to/default_file_store/',
+      max_message_size                  => '25000000',
     }
 
 or with JSSE with custom identity and trust
@@ -2062,6 +2063,7 @@ or with JSSE with custom identity and trust
       custom_identity_privatekey_passphrase => 'welcome',
       trust_keystore_file                   => '/vagrant/truststore.jks',
       trust_keystore_passphrase             => 'welcome',
+      max_message_size                      => '25000000',
     }
 
 
@@ -2104,6 +2106,8 @@ or with log parameters
         sslhostnameverificationignored:        '1'
         jsseenabled:                           '1'
         default_file_store:                    '/path/to/default_file_store/'
+        max_message_size:                      '25000000'
+
 
 
 You can also pass server arguments as an array, as it makes it easier to use references in YAML.

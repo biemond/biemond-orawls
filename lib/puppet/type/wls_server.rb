@@ -73,6 +73,7 @@ module Puppet
     property :client_certificate_enforced
     property :jsseenabled
     property :default_file_store
+    property :max_message_size
 
     add_title_attributes(:server_name) do
       /^((.*\/)?(.*)?)$/

@@ -13,7 +13,7 @@ cd(path)
 m = ls('AuthenticationProviders',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;authentication_provider_name;control_flag;domain"
+print >>f, "name;authentication_provider_name;control_flag;domain;order"
 for token in m:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)
@@ -26,7 +26,17 @@ for token in m:
     except:
       print "already exists"
 
-    cd('../../')
-    print >>f, ";".join(map(quote, [domain+'/'+token,token,control_flag,domain]))
+    cd('../')
+    ap = get('AuthenticationProviders')
+    i=0
+    order=''
+    for provider in ap:
+      if provider.getKeyProperty('Name') == "%s%s" % (realmName.getName(), token):
+        order=str(i)
+        break
+      i=i+1
+
+    cd('../')
+    print >>f, ";".join(map(quote, [domain+'/'+token,token,control_flag,domain,order]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

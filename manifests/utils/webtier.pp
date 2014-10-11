@@ -83,7 +83,7 @@ define orawls::utils::webtier(
     }
 
     exec { "config webtier ${title}":
-      command     => "${middleware_home_dir}/Oracle_WT1/bin/config.sh -silent -response ${download_dir}/${title}_configureWebtier.rsp -waitforcompletion",
+      command     => "/bin/sh -c 'unset DISPLAY;${middleware_home_dir}/Oracle_WT1/bin/config.sh -silent -response ${download_dir}/${title}_configureWebtier.rsp -waitforcompletion'",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
       path        => $exec_path,
       creates     => "${middleware_home_dir}/Oracle_WT1/instances/${instance_name}",

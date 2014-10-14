@@ -108,7 +108,7 @@ define orawls::utils::oimconfig(
         backup  => false,
       }
       exec { "config oim server ${title}":
-        command   => "${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_server.rsp -waitforcompletion",
+        command   => "/bin/sh -c 'unset DISPLAY;${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_server.rsp -waitforcompletion'",
         timeout   => 0,
         require   => File["${download_dir}/${title}config_oim_server.rsp"],
         path      => $execPath,

@@ -247,6 +247,9 @@ set('UnicastListenPort',9991)
 
 if soaEnabled == true:
     print "fix SOA"
+    cd('/')
+    assign('AppDeployment'                ,'soa-infra'                    , 'Target', SOAClusterName)
+    assign('AppDeployment.SubDeployment'  ,'soa-infra.*'                  , 'Target', SOAClusterName)
 
 if osbEnabled == true:
     print "fix OSB jms"

@@ -68,6 +68,9 @@ module Puppet
     property :log_rotationtype
     property :log_rotate_logon_startup
 
+    property :log_http_filename
+    property :log_datasource_filename
+
     property :sslhostnameverificationignored
     property :two_way_ssl
     property :client_certificate_enforced

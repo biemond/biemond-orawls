@@ -2,6 +2,7 @@
 
 ## 1.0.20
 - unset DISPLAY on install/configurations actions to avoid X timeout
+- exclude the standard puppet attributes from the wls_setting yaml files
 
 ## 1.0.19
 - changed property and removed propertyvalues of wls_mail_session, now there is no change detected when there is a different sorting

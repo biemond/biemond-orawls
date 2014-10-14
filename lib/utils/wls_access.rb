@@ -73,6 +73,16 @@ module Utils
       weblogicPassword    = domainValues['weblogic_password'] || 'weblogic1'
       postClasspath       = domainValues['post_classpath'] || ''
 
+      debugmode = Puppet::Util::Log.level()
+      if debugmode.to_s == 'debug'
+        puts "Prepare to run: " + tmpFile.path + "," +  operatingSystemUser + "," +  domain + "," +  weblogicHomeDir + "," +  weblogicUser + "," +  weblogicPassword + "," +  weblogicConnectUrl + "," +  postClasspath
+        puts "vvv==================================================================="
+        File.open(tmpFile.path).readlines.each do |line|
+          puts line
+        end
+        puts "^^^===================================================================="
+      end
+
       wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
       if timeout_specified
         wls_daemon.execute_script(tmpFile.path, timeout_specified)

@@ -2025,6 +2025,8 @@ or with log parameters, default file store and ssl
       log_rotate_logon_startup          => '1',
       log_rotationtype                  => 'bySize',
       logfilename                       => '/var/log/weblogic/wlsServer2.log',
+      log_datasource_filename           => 'logs/datasource.log',
+      log_http_filename                 => 'logs/access.log',
       machine                           => 'Node2',
       sslenabled                        => '1',
       sslhostnameverificationignored    => '1',
@@ -2100,6 +2102,8 @@ or with log parameters
         log_number_of_files_limited:           '1'
         log_rotate_logon_startup:              '1'
         log_rotationtype:                      'bySize'
+        log_datasource_filename:               'logs/datasource.log'
+        log_http_filename:                     'logs/access.log'
         machine:                               'Node1'
         sslenabled:                            '1'
         ssllistenport:                         '8201'

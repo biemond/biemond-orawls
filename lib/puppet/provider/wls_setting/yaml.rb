@@ -4,6 +4,7 @@ Puppet::Type.type(:wls_setting).provide(:yaml) do
   include EasyType::Provider
 
   desc 'Manage wls settings through yaml file'
+  PUPPET_META_ATTRIBUTES = [:name, :alias, :audit, :before, :loglevel, :noop, :notify, :require, :schedule, :stage, :subscribe, :tag, :provider]
 
   mk_resource_methods
 
@@ -21,7 +22,7 @@ private
 
   def settings_for_resource
     # settings = resource.to_resource
-    settings = resource.to_hash.reject { |key, _value| [:name, :provider, :loglevel].include?(key) }
+    settings = resource.to_hash.reject { |key, _value| PUPPET_META_ATTRIBUTES.include?(key) }
     stringify_keys(settings)
   end
 

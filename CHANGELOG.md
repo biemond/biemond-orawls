@@ -3,6 +3,8 @@
 ## 1.0.20
 - unset DISPLAY on install/configurations actions to avoid X timeout
 - exclude the standard puppet attributes from the wls_setting yaml files
+- Print the WLST scripts of all the wls types when puppet runs in debug mode
+- Added new attributes log_http_filename & log_datasource_filename to the wls_server type
 
 ## 1.0.19
 - changed property and removed propertyvalues of wls_mail_session, now there is no change detected when there is a different sorting

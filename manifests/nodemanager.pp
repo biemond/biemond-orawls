@@ -25,6 +25,7 @@ define orawls::nodemanager (
   $download_dir                          = hiera('wls_download_dir'), # /data/install
   $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
   $log_output                            = false, # true|false
+  $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # /data/logs
 )
 {
 
@@ -137,8 +138,8 @@ define orawls::nodemanager (
     cwd         => $nodeMgrHome,
   }
 
-  exec { "sleep 20 sec for wlst exec ${title}":
-      command     => '/bin/sleep 20',
+  exec { "sleep ${sleep} sec for wlst exec ${title}":
+      command     => "/bin/sleep ${sleep}",
       subscribe   => Exec["startNodemanager ${title}"],
       refreshonly => true,
       path        => $exec_path,

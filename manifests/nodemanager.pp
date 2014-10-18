@@ -139,7 +139,7 @@ define orawls::nodemanager (
   }
 
   exec { "sleep ${sleep} sec for wlst exec ${title}":
-      command     => '/bin/sleep ${sleep}',
+      command     => "/bin/sleep ${sleep}",
       subscribe   => Exec["startNodemanager ${title}"],
       refreshonly => true,
       path        => $exec_path,

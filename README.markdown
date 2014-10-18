@@ -1514,22 +1514,35 @@ Global timeout parameter for WebLogic resource types. use timeout and value in s
 
 required for all the weblogic type/providers, this is a pointer to an WebLogic AdminServer.
 
-      wls_setting { 'default':
-        user               => 'oracle',
-        weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
-        connect_url        => "t3://localhost:7001",
-        weblogic_user      => 'weblogic',
-        weblogic_password  => 'weblogic1',
-      }
+    wls_setting { 'default':
+      user               => 'oracle',
+      weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
+      connect_url        => "t3://localhost:7001",
+      weblogic_user      => 'weblogic',
+      weblogic_password  => 'weblogic1',
+    }
 
-      wls_setting { 'domain2':
-        user               => 'oracle',
-        weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
-        connect_url        => "t3://localhost:7011",
-        weblogic_user      => 'weblogic',
-        weblogic_password  => 'weblogic1',
-        post_classpath:     "/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar"
-      }
+    wls_setting { 'domain2':
+      user               => 'oracle',
+      weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
+      connect_url        => "t3://localhost:7011",
+      weblogic_user      => 'weblogic',
+      weblogic_password  => 'weblogic1',
+      post_classpath     => '/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar'
+    }
+
+or in hiera
+
+    # and for with weblogic infra 12.1.3, use this post_classpath
+    wls_setting_instances:
+      'default':
+        user:               'oracle'
+        weblogic_home_dir:  '/opt/oracle/middleware12c/wlserver'
+        connect_url:        "t3://10.10.10.21:7001"
+        weblogic_user:      'weblogic'
+        weblogic_password:  'weblogic1'
+        post_classpath:     '/opt/oracle/middleware12c/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wlst_12.1.3.jar'
+
 
 ### wls_domain
 

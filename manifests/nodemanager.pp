@@ -25,7 +25,7 @@ define orawls::nodemanager (
   $download_dir                          = hiera('wls_download_dir'), # /data/install
   $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
   $log_output                            = false, # true|false
-  $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # /data/logs
+  $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
 )
 {
 

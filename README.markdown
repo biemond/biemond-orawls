@@ -1039,6 +1039,7 @@ __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware
       log_dir                    => "/data/logs",
       download_dir               => "/data/install",
       log_output                 => true,
+      sleep                      => 20,
     }
 
 or when you set the defaults hiera variables

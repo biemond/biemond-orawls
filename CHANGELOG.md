@@ -7,6 +7,7 @@
 - Added new attributes log_http_filename & log_datasource_filename to the wls_server type
 - SOA Cluster 12.1.3 fix for activating soa-infra application
 - control the startup delay for the nodemanager with the sleep parameter
+- option to assign the jrfcluster to a opss database
 
 ## 1.0.19
 - changed property and removed propertyvalues of wls_mail_session, now there is no change detected when there is a different sorting

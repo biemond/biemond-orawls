@@ -1413,6 +1413,7 @@ hiera configuration
       'WebCluster':
          domain_name:          "adf_domain"
          jrf_target_name:      "WebCluster"
+         opss_datasource_name: "opss-data-source" #optional
          log_output:           *logoutput
 
 ### webtier

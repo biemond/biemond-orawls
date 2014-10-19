@@ -14,6 +14,7 @@ define orawls::utils::fmwclusterjrf (
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $jrf_target_name            = undef,
+  $opss_datasource_name       = undef,
   $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
   $weblogic_password          = hiera('domain_wls_password'),
   $os_user                    = hiera('wls_os_user'), # oracle

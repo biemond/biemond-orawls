@@ -1,5 +1,7 @@
 # History
 
+## 1.0.21
+
 ## 1.0.20
 - unset DISPLAY on install/configurations actions to avoid X timeout
 - exclude the standard puppet attributes from the wls_setting yaml files

@@ -412,6 +412,7 @@ define orawls::domain (
           os_group                    => $os_group,
           download_dir                => $download_dir,
           rcu_action                  => 'create',
+          rcu_jdbc_url                => $repository_database_url,
           rcu_database_url            => $rcu_database_url,
           rcu_sys_password            => $repository_sys_password,
           rcu_prefix                  => $repository_prefix,

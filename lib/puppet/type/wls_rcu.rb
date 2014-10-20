@@ -46,33 +46,39 @@ module Puppet
       EOT
     end
 
-    newparam(:oracle_home) do
-      desc <<-EOT
-        The oracle database home folder.
-      EOT
-    end
-
     newparam(:sys_password) do
       desc <<-EOT
         The sys password for the RCU check/install.
       EOT
     end
 
-    newparam(:db_server) do
+    newparam(:jdbc_url) do
       desc <<-EOT
-        The database server for the RCU check/install.
+        The jdbc url for the RCU check.
       EOT
     end
 
-    newparam(:db_service) do
+    newparam(:oracle_home) do
       desc <<-EOT
-        The database service for the RCU check/install.
+        The oracle_home for the WLST location.
+      EOT
+    end
+
+    newparam(:check_script) do
+      desc <<-EOT
+        The check_script py script for the RCU Repository.
       EOT
     end
 
     newparam(:statement) do
       desc <<-EOT
         The RCU statement.
+      EOT
+    end
+
+    newparam(:jdk_home_dir) do
+      desc <<-EOT
+        The jdk_home_dir.
       EOT
     end
 

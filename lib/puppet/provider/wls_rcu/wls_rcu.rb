@@ -11,9 +11,9 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     statement    = resource[:statement]
     jdk_home_dir = resource[:jdk_home_dir]
 
-    Puppet.debug "rcu statement: #{statement}"
+    Puppet.info "rcu statement: #{statement}"
 
-    output = `su - #{user} -c 'JAVA_HOME=${jdk_home_dir};LANG=en_US.UTF8;LC_ALL=en_US.UTF8;NLS_LANG=american_america;#{statement}'`
+    output = `su - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
     Puppet.info "RCU result: #{output}"
 
     # Check for 'Repository Creation Utility - Create : Operation Completed' else raise
@@ -43,12 +43,12 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     Puppet.info "rcu for prefix #{prefix} execute SQL with #{oraclehome}/common/bin/wlst.sh #{checkscript}"
     rcu_output = `su - #{user} -c '#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix}'`
     fail ArgumentError, "Error executing puppet code, #{output}" if $CHILD_STATUS != 0
-
+    Puppet.info "RCU check result: #{rcu_output}"
     rcu_output.each_line do |li|
       unless li.nil?
         Puppet.debug "line #{li}"
         if li.include? 'found'
-          Puppet.debug "found RCU #{prefix}"
+          Puppet.info "found RCU #{prefix}"
           return prefix
         end
       end

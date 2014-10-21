@@ -1,0 +1,128 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>'
+DOMAIN='<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED=<%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
+DEVELOPMENT_MODE=<%= @development_mode %>
+WEBLOGIC_VERSION=<%= @version %>
+
+ADMIN_SERVER='<%= @adminserver_name %>'
+ADMIN_USER='<%= @weblogic_user %>'
+ADMIN_PASSWORD='<%= @weblogic_password %>'
+
+JAVA_HOME='<%= @jdk_home_dir %>'
+
+<% if @java_arguments["ADM"] %>
+ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments["SOA"] %>
+SOA_JAVA_ARGUMENTS='<%= @java_arguments["SOA"] %>'
+<% else %>
+SOA_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
+<% end %>
+
+<% if @java_arguments["OAM"] %>
+OAM_JAVA_ARGUMENTS='<%= @java_arguments["OAM"] %>'
+<% else %>
+OAM_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dwlspatch=wls_patch1036 -Dweblogic.Stdout=<%= @oam_nodemanager_log_dir %>/oam_server1.out -Dweblogic.Stderr=<%= @oam_nodemanager_log_dir %>/oam_server1_err.out'
+<% end %>
+
+<% if @java_arguments["OIM"] %>
+OIM_JAVA_ARGUMENTS='<%= @java_arguments["OIM"] %>'
+<% else %>
+OIM_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oim_nodemanager_log_dir %>/oim_server1.out -Dweblogic.Stderr=<%= @oim_nodemanager_log_dir %>/oim_server1_err.out'
+<% end %>
+
+REPOS_DBURL='<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+REPOS_DBPASSWORD='<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
+
+cd('/')
+
+<% if @apps_dir %>
+setOption( "AppDir", APP_PATH )
+<% end %>
+
+print 'Adding SOA Template'
+addTemplate('<%= @templateApplCore %>')
+addTemplate('<%= @templateJRF %>')
+addTemplate('<%= @templateWSMPM %>')
+addTemplate('<%= @templateSOA %>')
+
+print 'Adding EM Template'
+addTemplate('<%= @templateEM %>')
+
+print 'Adding OIM Template'
+addTemplate('<%= @templateOIM %>')
+
+print 'Adding OAM Template'
+addTemplate('<%= @templateOAM %>')
+
+dumpStack();
+
+setOption( "AppDir", APP_PATH )
+
+print('change the default machine LocalMachine with type Machine')
+createMachine('Machine', 'LocalMachine', '<%= @adminserver_address %>')
+
+print 'Change AdminServer'
+cd('/Servers/'+ADMIN_SERVER)
+set('Machine','LocalMachine')
+
+print 'change soa_server1'
+cd('/')
+changeManagedServer('soa_server1','LocalMachine','<%= @adminserver_address %>',8001,SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+print 'Change oam_server1'
+cd('/')
+changeManagedServer('oam_server1','LocalMachine','<%= @adminserver_address %>',None,OAM_JAVA_ARGUMENTS,'<%= @oam_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+print 'Change oim_server1'
+cd('/')
+changeManagedServer('oim_server1','LocalMachine','<%= @adminserver_address %>',None,OIM_JAVA_ARGUMENTS,'<%= @oim_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+print 'Change datasources'
+
+changeDatasource('EDNDataSource'       , REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('EDNLocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('OraSDPMDataSource'   , REPOS_DBUSER_PREFIX+'_ORASDPM' , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('SOADataSource'       , REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('SOALocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-owsm'            , REPOS_DBUSER_PREFIX+'_MDS'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-soa'             , REPOS_DBUSER_PREFIX+'_MDS'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('oamDS'               , REPOS_DBUSER_PREFIX+'_OAM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('opss-DBDS'           , REPOS_DBUSER_PREFIX+'_OPSS'    , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-oim'             , REPOS_DBUSER_PREFIX+'_MDS'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('soaOIMLookupDB'      , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('oimJMSStoreDS'       , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('ApplicationDB'       , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('oimOperationsDB'     , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+
+print 'Finished datasources'
+
+
+updateDomain()
+closeDomain();
+
+# end check
+
+createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/servers/oim_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/servers/oam_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+print('Exiting...')
+exit()

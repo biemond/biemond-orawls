@@ -1,0 +1,123 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>'
+DOMAIN='<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED=<%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
+DEVELOPMENT_MODE=<%= @development_mode %>
+WEBLOGIC_VERSION=<%= @version %>
+WEBTIER_ENABLED=<%= @webtier_enabled %>
+
+ADMIN_SERVER='<%= @adminserver_name %>'
+ADMIN_USER='<%= @weblogic_user %>'
+ADMIN_PASSWORD='<%= @weblogic_password %>'
+
+JAVA_HOME='<%= @jdk_home_dir %>'
+
+<% if @java_arguments["ADM"] %>
+ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments["WC_COL"] %>
+WC_COLLABORATION_JAVA_ARGUMENTS='<%= @java_arguments["WC_COL"] %>'
+<% else %>
+WC_COLLABORATION_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @wcCollaboration_nodemanager_log_dir %>/wc_collaboration.out -Dweblogic.Stderr=<%= @wcCollaboration_nodemanager_log_dir %>/wc_collaboration_err.out'
+<% end %>
+
+<% if @java_arguments["WC_POR"] %>
+WC_PORTLET_JAVA_ARGUMENTS='<%= @java_arguments["WC_POR"] %>'
+<% else %>
+WC_PORTLET_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @wcPortlet_nodemanager_log_dir %>/wc_portlet.out -Dweblogic.Stderr=<%= @wcPortlet_nodemanager_log_dir %>/wc_portlet_err.out'
+<% end %>
+
+<% if @java_arguments["WC_SPC"] %>
+WC_SPACES_JAVA_ARGUMENTS='<%= @java_arguments["WC_SPC"] %>'
+<% else %>
+WC_SPACES_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @wcSpaces_nodemanager_log_dir %>/wc_spaces.out -Dweblogic.Stderr=<%= @wcSpaces_nodemanager_log_dir %>/wc_spaces_err.out'
+<% end %>
+
+REPOS_DBURL='<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+REPOS_DBPASSWORD='<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
+
+cd('/')
+
+setOption( "AppDir", APP_PATH )
+
+print 'Adding WC Template'
+addTemplate('<%= @templateJRF %>')
+print 'Adding EM Template'
+addTemplate('<%= @templateEM %>')
+print 'Adding WSMPM'
+addTemplate('<%= @templateWSMPM %>')
+print 'Adding Spaces'
+addTemplate('<%= @templateSpaces %>')
+print 'Adding Portlets'
+addTemplate('<%= @templatePortlets %>')
+print 'Adding Pagelet'
+addTemplate('<%= @templatePagelet %>')
+print 'Adding Discussion'
+addTemplate('<%= @templateDiscussion %>')
+
+dumpStack();
+
+setOption( "AppDir", APP_PATH )
+
+print('change the default machine LocalMachine with type Machine')
+cd('/')
+cd('Machine/LocalMachine')
+create('LocalMachine','NodeManager')
+cd('NodeManager/LocalMachine')
+set('ListenAddress','<%= @adminserver_address %>')
+
+print 'Change AdminServer'
+cd('/Servers/'+ADMIN_SERVER)
+set('Machine','LocalMachine')
+
+
+print 'Change wc_collaboration'
+cd('/')
+changeManagedServer('WC_Collaboration','LocalMachine','<%= @adminserver_address %>',None,WC_COLLABORATION_JAVA_ARGUMENTS,'<%= @wcCollaboration_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+print 'Change wc_portlet'
+cd('/')
+changeManagedServer('WC_Portlet','LocalMachine','<%= @adminserver_address %>',None,WC_PORTLET_JAVA_ARGUMENTS,'<%= @wcPortlet_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+print 'Change WC_Spaces'
+cd('/')
+changeManagedServer('WC_Spaces','LocalMachine','<%= @adminserver_address %>',None,WC_SPACES_JAVA_ARGUMENTS,'<%= @wcSpaces_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+
+print 'Change datasources'
+
+changeDatasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('WebCenterDS', REPOS_DBUSER_PREFIX+'_WEBCENTER', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-SpacesDS', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('PortletDS', REPOS_DBUSER_PREFIX+'_PORTLET', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-PageletProducerDS',REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('OWC_DiscussionDS', REPOS_DBUSER_PREFIX+'_DISCUSSIONS', REPOS_DBPASSWORD, REPOS_DBURL)
+
+print 'Finished datasources'
+
+dumpStack();
+updateDomain()
+dumpStack();
+closeDomain();
+
+createBootPropertiesFile(DOMAIN_PATH+'/servers/WC_Collaboration/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/servers/WC_Spaces/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+createBootPropertiesFile(DOMAIN_PATH+'/servers/WC_Portlet/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+
+print('Exiting...')
+exit()

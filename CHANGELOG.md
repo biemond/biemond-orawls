@@ -2,6 +2,7 @@
 
 ## 1.0.21
 - puppet custom type for 12.1.2, 12.1.3 RCU, checks first if it already exists
+- refactor all domains py scripts to standard one with an FMW extension (optional)
 
 ## 1.0.20
 - unset DISPLAY on install/configurations actions to avoid X timeout

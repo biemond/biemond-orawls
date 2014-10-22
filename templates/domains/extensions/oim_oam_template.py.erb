@@ -1,5 +1,5 @@
 # load common defs
-execfile('utils.py')
+execfile('<%= @download_dir %>/utils.py')
 
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
@@ -43,64 +43,13 @@ OIM_JAVA_ARGUMENTS='<%= @java_arguments["OIM"] %>'
 OIM_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oim_nodemanager_log_dir %>/oim_server1.out -Dweblogic.Stderr=<%= @oim_nodemanager_log_dir %>/oim_server1_err.out'
 <% end %>
 
-OIM_REPOS_DBURL='<%= @repository_database_url %>'
-OIM_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
-OIM_REPOS_DBPASSWORD='<%= @repository_password %>'
-
-
-print('Start...wls domain with template <%= @template %>')
-readTemplate('<%= @template %>')
-
-print('Set crossdomain')
-setCrossDomain()
-
-cd('/')
-print('Set domain log')
-changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
-
-changeAdminServer(ADMIN_SERVER, None, '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
-
-changeSSL(ADMIN_SERVER, JSSE_ENABLED)
-
-if CUSTOM_IDENTITY_ENABLED == true:
-  print('Set adminserver custom identity')
-  changeCustomIdentityStore(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
-
-print('Change AdminServer log')
-changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
-
-print('Set password...')
-setWebLogicPassword(ADMIN_USER, ADMIN_PASSWORD)
-
-<% if @apps_dir %>
-setOption( "AppDir", APP_PATH )
-<% end %>
-
-# Set domain save options:
-# - ServerStartMode: Set mode to development.
-# - JavaHome: Sets home directory for the JVM used when starting the server.
-
-if DEVELOPMENT_MODE == true:
-  setOption('ServerStartMode', 'dev')
-else:
-  setOption('ServerStartMode', 'prod')
-
-setOption('JavaHome', JAVA_HOME)
-
-print('write domain...')
-# write path + domain name
-writeDomain(DOMAIN_PATH)
-closeTemplate()
-
-createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
-createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
-
-es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+REPOS_DBURL='<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+REPOS_DBPASSWORD='<%= @repository_password %>'
 
 readDomain(DOMAIN_PATH)
 
-setDomainPassword(DOMAIN,es,ADMIN_USER)
+changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
@@ -148,20 +97,20 @@ changeManagedServer('oim_server1','LocalMachine','<%= @adminserver_address %>',N
 
 print 'Change datasources'
 
-changeDatasource('EDNDataSource'       , OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('EDNLocalTxDataSource', OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('OraSDPMDataSource'   , OIM_REPOS_DBUSER_PREFIX+'_ORASDPM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('SOADataSource'       , OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('SOALocalTxDataSource', OIM_REPOS_DBUSER_PREFIX+'_SOAINFRA', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('mds-owsm'            , OIM_REPOS_DBUSER_PREFIX+'_MDS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('mds-soa'             , OIM_REPOS_DBUSER_PREFIX+'_MDS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('oamDS'               , OIM_REPOS_DBUSER_PREFIX+'_OAM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('opss-DBDS'           , OIM_REPOS_DBUSER_PREFIX+'_OPSS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('mds-oim'             , OIM_REPOS_DBUSER_PREFIX+'_MDS', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('soaOIMLookupDB'      , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('oimJMSStoreDS'       , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('ApplicationDB'       , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
-changeDatasource('oimOperationsDB'     , OIM_REPOS_DBUSER_PREFIX+'_OIM', OIM_REPOS_DBPASSWORD, OIM_REPOS_DBURL)
+changeDatasource('EDNDataSource'       , REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('EDNLocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('OraSDPMDataSource'   , REPOS_DBUSER_PREFIX+'_ORASDPM' , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('SOADataSource'       , REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('SOALocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-owsm'            , REPOS_DBUSER_PREFIX+'_MDS'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-soa'             , REPOS_DBUSER_PREFIX+'_MDS'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('oamDS'               , REPOS_DBUSER_PREFIX+'_OAM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('opss-DBDS'           , REPOS_DBUSER_PREFIX+'_OPSS'    , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('mds-oim'             , REPOS_DBUSER_PREFIX+'_MDS'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('soaOIMLookupDB'      , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('oimJMSStoreDS'       , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('ApplicationDB'       , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+changeDatasource('oimOperationsDB'     , REPOS_DBUSER_PREFIX+'_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
 
 print 'Finished datasources'
 

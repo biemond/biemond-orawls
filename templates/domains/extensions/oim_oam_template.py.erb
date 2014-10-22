@@ -76,8 +76,11 @@ dumpStack();
 
 setOption( "AppDir", APP_PATH )
 
+cd('/')
+# destroy the normal one
+delete('LocalMachine','Machine')
 print('change the default machine LocalMachine with type Machine')
-createMachine('Machine', 'LocalMachine', '<%= @adminserver_address %>')
+createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
 
 print 'Change AdminServer'
 cd('/Servers/'+ADMIN_SERVER)

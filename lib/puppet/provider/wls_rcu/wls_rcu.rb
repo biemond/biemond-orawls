@@ -13,7 +13,7 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
 
     Puppet.info "rcu statement: #{statement}"
 
-    output = `su - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
+    output = `su - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
     Puppet.info "RCU result: #{output}"
 
     # Check for 'Repository Creation Utility - Create : Operation Completed' else raise

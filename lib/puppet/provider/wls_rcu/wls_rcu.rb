@@ -41,7 +41,7 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     prefix       = resource[:name]
 
     Puppet.info "rcu for prefix #{prefix} execute SQL with #{oraclehome}/common/bin/wlst.sh #{checkscript}"
-    rcu_output = `su - #{user} -c '#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix}'`
+    rcu_output = `su - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix}'`
     fail ArgumentError, "Error executing puppet code, #{output}" if $CHILD_STATUS != 0
     Puppet.info "RCU check result: #{rcu_output}"
     rcu_output.each_line do |li|

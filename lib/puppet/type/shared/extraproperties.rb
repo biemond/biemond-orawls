@@ -10,7 +10,9 @@ newproperty(:extraproperties, :array_matching => :all) do
   end
 
   def insync?(is)
-    is.sort == should.sort
+    if is.kind_of?(Array)
+      is.sort == should.sort
+    end
   end
 
 end

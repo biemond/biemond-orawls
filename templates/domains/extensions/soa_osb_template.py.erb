@@ -1,5 +1,5 @@
 # load common defs
-execfile('utils.py')
+execfile('<%= @download_dir %>/utils.py')
 
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
@@ -44,67 +44,18 @@ BAM_JAVA_ARGUMENTS='<%= @java_arguments["BAM"] %>'
 BAM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @bam_nodemanager_log_dir %>/bam_server1.out -Dweblogic.Stderr=<%= @bam_nodemanager_log_dir %>/bam_server1_err.out'
 <% end %>
 
-SOA_REPOS_DBURL='<%= @repository_database_url %>'
-SOA_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
-SOA_REPOS_DBPASSWORD='<%= @repository_password %>'
+REPOS_DBURL='<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+REPOS_DBPASSWORD='<%= @repository_password %>'
 
 BPM_ENABLED=<%= @bpm %>
 BAM_ENABLED=<%= @bam_enabled %>
 B2B_ENABLED=<%= @b2b_enabled %>
 ESS_ENABLED=<%= @ess_enabled %>
 
-print('Start...wls domain with template <%= @template %>')
-readTemplate('<%= @template %>')
-
-print('Set crossdomain')
-setCrossDomain()
-
-cd('/')
-print('Set domain log')
-changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
-
-changeAdminServer(ADMIN_SERVER, None, '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
-
-changeSSL(ADMIN_SERVER, JSSE_ENABLED)
-
-if CUSTOM_IDENTITY_ENABLED == true:
-  print('Set adminserver custom identity')
-  changeCustomIdentityStore(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
-
-print('Change AdminServer log')
-changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
-
-print('Set password...')
-setWebLogicPassword(ADMIN_USER, ADMIN_PASSWORD)
-
-<% if @apps_dir %>
-setOption( "AppDir", APP_PATH )
-<% end %>
-
-# Set domain save options:
-# - ServerStartMode: Set mode to development.
-# - JavaHome: Sets home directory for the JVM used when starting the server.
-
-if DEVELOPMENT_MODE == true:
-  setOption('ServerStartMode', 'dev')
-else:
-  setOption('ServerStartMode', 'prod')
-
-setOption('JavaHome', JAVA_HOME)
-
-print('write domain...')
-# write path + domain name
-writeDomain(DOMAIN_PATH)
-closeTemplate()
-
-createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
-createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-
-es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
-
 readDomain(DOMAIN_PATH)
 
-setDomainPassword(DOMAIN,es,ADMIN_USER)
+changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
@@ -157,18 +108,18 @@ if WEBLOGIC_VERSION == 1213:
 
 dumpStack();
 
-if WEBLOGIC_VERSION == 1213:
-
-  print('Create machine LocalMachine with type UnixMachine')
-  createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
 
 if WEBLOGIC_VERSION != 1213:
+  cd('/')
+  # destroy the normal one
+  delete('LocalMachine','Machine')
   print('change the default machine LocalMachine with type Machine')
-  createMachine('Machine', 'LocalMachine', '<%= @adminserver_address %>')
+  createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
 
 print 'Change AdminServer'
 cd('/Servers/'+ADMIN_SERVER)
 set('Machine','LocalMachine')
+
 
 <% if @apps_dir %>
 setOption( "AppDir", APP_PATH )
@@ -200,24 +151,24 @@ if WEBLOGIC_VERSION != 1213:
   else:
     target = ADMIN_SERVER + ',soa_server1'
 
-  createOPSSDataSource(target, SOA_REPOS_DBUSER_PREFIX, SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  createOPSSDataSource(target, REPOS_DBUSER_PREFIX, REPOS_DBPASSWORD, REPOS_DBURL)
 
 if WEBLOGIC_VERSION != 1213:
 
   print 'Change datasources'
-  changeDatasource('EDNDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
-  changeDatasource('EDNLocalTxDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
-  changeDatasource('OraSDPMDataSource', SOA_REPOS_DBUSER_PREFIX+'_ORASDPM', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
-  changeDatasource('SOADataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
-  changeDatasource('SOALocalTxDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
-  changeDatasource('mds-owsm', SOA_REPOS_DBUSER_PREFIX+'_MDS', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
-  changeDatasource('mds-soa', SOA_REPOS_DBUSER_PREFIX+'_MDS', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+  changeDatasource('EDNDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+  changeDatasource('EDNLocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+  changeDatasource('OraSDPMDataSource', REPOS_DBUSER_PREFIX+'_ORASDPM', REPOS_DBPASSWORD, REPOS_DBURL)
+  changeDatasource('SOADataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+  changeDatasource('SOALocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+  changeDatasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+  changeDatasource('mds-soa', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
 
   print 'Change datasource wlsbjmsrpDataSource'
-  changeDatasourceDriver('wlsbjmsrpDataSource', SOA_REPOS_DBUSER_PREFIX+'_SOAINFRA', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL,'oracle.jdbc.OracleDriver')
+  changeDatasourceDriver('wlsbjmsrpDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL,'oracle.jdbc.OracleDriver')
 
   if BAM_ENABLED == true:
-    changeDatasource('BAMDataSource', SOA_REPOS_DBUSER_PREFIX+'_ORABAM', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+    changeDatasource('BAMDataSource', REPOS_DBUSER_PREFIX+'_ORABAM', REPOS_DBPASSWORD, REPOS_DBURL)
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
@@ -226,7 +177,7 @@ if WEBLOGIC_VERSION == 1213:
     print 'Change datasources'
 
     print 'Change datasource LocalScvTblDataSource'
-    changeDatasource('LocalSvcTblDataSource', SOA_REPOS_DBUSER_PREFIX+'_STB', SOA_REPOS_DBPASSWORD, SOA_REPOS_DBURL)
+    changeDatasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX+'_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 
     print 'Call getDatabaseDefaults which reads the service table'
     getDatabaseDefaults()
@@ -270,7 +221,6 @@ if WEBLOGIC_VERSION == 1213:
 updateDomain()
 closeDomain();
 
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/soa_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 if BAM_ENABLED == true:

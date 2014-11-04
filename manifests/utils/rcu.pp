@@ -9,6 +9,7 @@ define orawls::utils::rcu(
   $os_group                    = hiera('wls_os_group'),     # dba
   $download_dir                = hiera('wls_download_dir'), # /data/install
   $rcu_action                  = 'create',
+  $rcu_jdbc_url                = undef,   #jdbc...
   $rcu_database_url            = undef,   #192.168.50.5:1521:XE
   $rcu_prefix                  = undef,
   $rcu_password                = undef,
@@ -18,7 +19,7 @@ define orawls::utils::rcu(
 
   case $::kernel {
     'Linux','SunOS': {
-      $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
+      $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
     }
     default: {
       fail('Unrecognized operating system')
@@ -40,13 +41,26 @@ define orawls::utils::rcu(
     fail('Unrecognized FMW fmw_product')
   }
 
-  file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt":
+  file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt":
     ensure  => present,
     content => template('orawls/utils/rcu_passwords.txt.erb'),
     mode    => '0775',
     owner   => $os_user,
     group   => $os_group,
     backup  => false,
+    before  => Wls_rcu[$rcu_prefix],
+  }
+
+  if !defined(File["${download_dir}/checkrcu.py"]) {
+    file { "${download_dir}/checkrcu.py":
+      ensure  => present,
+      source  => 'puppet:///modules/orawls/wlst/checkrcu.py',
+      mode    => '0775',
+      owner   => $os_user,
+      group   => $os_group,
+      backup  => false,
+      before  => Wls_rcu[$rcu_prefix],
+    }
   }
 
   if $rcu_action == 'create' {
@@ -56,27 +70,14 @@ define orawls::utils::rcu(
     $action = '-dropRepository'
   }
 
-  # wls_rcu{ $schemaPrefix:
-  #   ensure                  => $rcu_action,
-  #   statement               => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser SYS -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt",
-  #   os_user                 => $os_user,
-  #   oracle_home             => $oracleHome,
-  #   sys_password            => $sysPassword,
-  #   db_server               => $dbServer,
-  #   db_service              => $dbService,
-  #   require                 => File["${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt"],
-  # }
-
-  exec { "install rcu repos ${title}":
-    command     => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser SYS -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt",
-    require     => File["${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}.txt"],
-    environment => ["JAVA_HOME=${jdk_home_dir}",
-                    "LANG='en_US.UTF8'",
-                    "LC_ALL='en_US.UTF8'",
-                    "NLS_LANG='american_america'"],
-    path        => $execPath,
-    user        => $os_user,
-    group       => $os_group,
-    logoutput   => $log_output,
+  wls_rcu{ $rcu_prefix:
+    ensure       => $rcu_action,
+    statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser SYS -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt",
+    os_user      => $os_user,
+    oracle_home  => $oracle_fmw_product_home_dir,
+    sys_password => $rcu_sys_password,
+    jdbc_url     => $rcu_jdbc_url,
+    jdk_home_dir => $jdk_home_dir,
+    check_script => "${download_dir}/checkrcu.py",
   }
 }

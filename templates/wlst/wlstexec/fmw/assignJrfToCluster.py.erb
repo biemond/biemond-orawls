@@ -1,8 +1,26 @@
 
-
+VERSION='<%= @version %>'
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
 JRFTargetName = '<%= @jrf_target_name %>'
+OPSSDatasourceName ='<%= @opss_datasource_name %>'
+
+DOMAIN_PATH='<%= @domain_dir %>'
+
+if OPSSDatasourceName:
+    readDomain(DOMAIN_PATH)
+
+    cd('/JDBCSystemResource/'+OPSSDatasourceName)
+    currentTargets = []
+    for target in get('Target'):
+       print target.getName()
+       currentTargets.append(target.getName())
+
+    opssTargets = ','.join(currentTargets) + ',' + JRFTargetName
+    assign('JdbcSystemResource', OPSSDatasourceName , 'Target', opssTargets)
+
+    updateDomain()
+    dumpStack()
+    closeDomain()
 
 applyJRF(JRFTargetName, DOMAIN_PATH, true)
-

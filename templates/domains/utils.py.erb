@@ -121,6 +121,12 @@ def changeSSL(server, jsse_enabled):
   else:
     set('JSSEEnabled','False')
 
+def changeServerArguments(server, java_arguments):
+  print "changeDefaultServerAttributes for server " + server
+  cd('/Servers/' + server)
+  cd('ServerStart/' + server)
+  set('Arguments' , java_arguments)
+
 def changeDefaultServerAttributes(server, machine, address, port, java_arguments, java_home):
   print "changeDefaultServerAttributes for server " + server
   cd('/Servers/' + server)

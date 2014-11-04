@@ -1,5 +1,5 @@
 # load common defs
-execfile('utils.py')
+execfile('<%= @download_dir %>/utils.py')
 
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
@@ -32,65 +32,13 @@ OSB_JAVA_ARGUMENTS='<%= @java_arguments["OSB"] %>'
 OSB_JAVA_ARGUMENTS='-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
 <% end %>
 
-OSB_REPOS_DBURL='<%= @repository_database_url %>'
-OSB_REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
-OSB_REPOS_DBPASSWORD='<%= @repository_password %>'
-
-print('Start...wls domain with template <%= @template %>')
-readTemplate('<%= @template %>')
-
-print('Set crossdomain')
-setCrossDomain()
-
-cd('/')
-print('Set domain log')
-changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
-
-print('Create machine LocalMachine with type UnixMachine')
-createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
-
-changeAdminServer(ADMIN_SERVER, 'LocalMachine', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
-
-changeSSL(ADMIN_SERVER, JSSE_ENABLED)
-
-if CUSTOM_IDENTITY_ENABLED == true:
-  print('Set adminserver custom identity')
-  changeCustomIdentityStore(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
-
-print('Change AdminServer log')
-changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
-
-print('Set password...')
-setWebLogicPassword(ADMIN_USER, ADMIN_PASSWORD)
-
-<% if @apps_dir %>
-setOption( "AppDir", APP_PATH )
-<% end %>
-
-# Set domain save options:
-# - ServerStartMode: Set mode to development.
-# - JavaHome: Sets home directory for the JVM used when starting the server.
-
-if DEVELOPMENT_MODE == true:
-  setOption('ServerStartMode', 'dev')
-else:
-  setOption('ServerStartMode', 'prod')
-
-setOption('JavaHome', JAVA_HOME)
-
-print('write domain...')
-# write path + domain name
-writeDomain(DOMAIN_PATH)
-closeTemplate()
-
-createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
-createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-
-es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+REPOS_DBURL='<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
+REPOS_DBPASSWORD='<%= @repository_password %>'
 
 readDomain(DOMAIN_PATH)
 
-setDomainPassword(DOMAIN,es,ADMIN_USER)
+changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
@@ -131,7 +79,7 @@ if WEBLOGIC_VERSION == 1213:
     print 'Change datasources'
 
     print 'Change datasource LocalScvTblDataSource for service table'
-    changeDatasource('LocalSvcTblDataSource', OSB_REPOS_DBUSER_PREFIX+'_STB', OSB_REPOS_DBPASSWORD, OSB_REPOS_DBURL)
+    changeDatasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX+'_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 
     print 'Call getDatabaseDefaults which reads the service table'
     getDatabaseDefaults()
@@ -156,7 +104,6 @@ updateDomain()
 
 closeDomain();
 
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
 createBootPropertiesFile(DOMAIN_PATH+'/servers/osb_server1/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
 
 print('Exiting...')

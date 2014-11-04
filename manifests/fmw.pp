@@ -344,7 +344,7 @@ define orawls::fmw (
       if $version != 1213 {
         if $fmw_product == 'soa' {
           exec { "add -d64 oraparam.ini ${title}":
-            command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/soa.tmp && mv /tmp/soa.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
+            command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > ${temp_directory}/soa.tmp && mv ${temp_directory}/soa.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
             unless    => "grep 'JRE_MEMORY_OPTIONS=\"-d64' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
             require   => [Exec["extract ${fmw_file1}"],
                           Exec["extract ${fmw_file2}"],],
@@ -357,7 +357,7 @@ define orawls::fmw (
         }
         if $fmw_product == 'osb' {
           exec { "add -d64 oraparam.ini ${title}":
-            command   => "sed -e's/\\[Oracle\\]/\\[Oracle\\]\\\nJRE_MEMORY_OPTIONS=\"-d64\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > /tmp/osb.tmp && mv /tmp/osb.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
+            command   => "sed -e's/\\[Oracle\\]/\\[Oracle\\]\\\nJRE_MEMORY_OPTIONS=\"-d64\"/g' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini > ${temp_directory}/osb.tmp && mv ${temp_directory}/osb.tmp ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
             unless    => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${download_dir}/${fmw_product}/Disk1/install/${installDir}/oraparam.ini",
             require   => Exec["extract ${fmw_file1}"],
             before    => Exec["install ${fmw_product} ${title}"],
@@ -383,7 +383,7 @@ define orawls::fmw (
 
       exec { "install ${fmw_product} ${title}":
         command     => "${install}${download_dir}/${fmw_product}/${binFile1} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
-        environment => "TMP=${temp_directory}",
+        environment => "TEMP=${temp_directory}",
         timeout     => 0,
         creates     => $oracleHome,
         path        => $exec_path,
@@ -404,7 +404,7 @@ define orawls::fmw (
 
       exec { "install ${fmw_product} ${title}":
         command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}'",
-        environment => "TMP=${temp_directory}",
+        environment => "TEMP=${temp_directory}",
         timeout     => 0,
         creates     => "${oracleHome}/OPatch",
         path        => $exec_path,

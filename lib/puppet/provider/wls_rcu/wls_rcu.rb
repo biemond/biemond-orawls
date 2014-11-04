@@ -7,64 +7,51 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
 
   def rcu(action)
     Puppet.info "RCU #{action}"
-    user        = resource[:os_user]
-    statement   = resource[:statement]
-    oracle_home = resource[:oracle_home]
+    user         = resource[:os_user]
+    statement    = resource[:statement]
+    jdk_home_dir = resource[:jdk_home_dir]
 
-    environment = "SQLPLUS_HOME=#{oracle_home}"
-    Puppet.debug "rcu statement: #{statement}"
+    Puppet.info "rcu statement: #{statement}"
 
-    output = execute statement, :failonfail => true, :uid => user, :custom_environment => environment
+    output = `su - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
     Puppet.info "RCU result: #{output}"
+
+    # Check for 'Repository Creation Utility - Create : Operation Completed' else raise
+    result = false
+    output.each_line do |li|
+      unless li.nil?
+        if li.include? 'Operation Completed'
+          result = true
+        end
+      end
+    end
+    fail(output) if result == false
+    Puppet.info 'RCU done'
   end
 
   def rcu_status
     Puppet.debug 'rcu_status'
 
-    oracle_home             = resource[:oracle_home]
-    sys_password            = resource[:sys_password]
-    user                    = resource[:os_user]
-    prefix                  = resource[:name]
-    db_service              = resource[:db_service]
-    db_server               = resource[:db_server]
+    jdbcurl      = resource[:jdbc_url]
+    syspassword  = resource[:sys_password]
+    user         = resource[:os_user]
+    prefix       = resource[:name]
+    oraclehome   = resource[:oracle_home]
+    checkscript  = resource[:check_script]
+    prefix       = resource[:name]
 
-    sql = <<-EOS
-set term off echo off pages 0 colsep '|' trimspool on
-spool /tmp/check_rcu_#{prefix}2.txt
-select distinct 'found' from system.schema_version_registry where mrc_name ='#{prefix}';
-grant execute on sys.dbms_job to PUBLIC;
-grant execute on sys.dbms_reputil to PUBLIC;
-spool off
-exit
-EOS
-
-    # if FileTest.exists?("/tmp/check_rcu_#{prefix}2.txt")
-    #   File.delete("/tmp/check_rcu_DEV2.txt")
-    # end
-
-    tmpFile = Tempfile.new(['rcuCheck', '.sql'])
-    tmpFile.write(sql)
-    tmpFile.close
-    FileUtils.chmod(0555, tmpFile.path)
-
-    Puppet.debug "rcu for prefix #{prefix} execute SQL"
-    output = `su - #{user} -c 'export ORACLE_HOME=#{oracle_home};LD_LIBRARY_PATH=#{oracle_home}/lib;#{oracle_home}/bin/sqlplus \"sys/#{sys_password}@//#{db_server}/#{db_service} as sysdba\" @#{tmpFile.path}'`
+    Puppet.info "rcu for prefix #{prefix} execute SQL with #{oraclehome}/common/bin/wlst.sh #{checkscript}"
+    rcu_output = `su - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix}'`
     fail ArgumentError, "Error executing puppet code, #{output}" if $CHILD_STATUS != 0
-
-    if FileTest.exists?("/tmp/check_rcu_#{prefix}2.txt")
-      File.open("/tmp/check_rcu_#{prefix}2.txt") do |rcu_output|
-        rcu_output.each_line do |li|
-          unless li.nil?
-            Puppet.debug "line #{li}"
-            if (li.include? 'found') && !(li.include? 'select')
-              Puppet.debug "found RCU #{prefix}"
-              return prefix
-            end
-          end
+    Puppet.info "RCU check result: #{rcu_output}"
+    rcu_output.each_line do |li|
+      unless li.nil?
+        Puppet.debug "line #{li}"
+        if li.include? 'found'
+          Puppet.info "found RCU #{prefix}"
+          return prefix
         end
       end
-    else
-      return 'NoOutput'
     end
     'NotFound'
   end
@@ -80,17 +67,9 @@ EOS
   def status
     Puppet.debug 'status'
 
-    if resource[:oracle_home].nil?
-      if resource[:ensure] == :present
-        return :absent
-      else
-        return :present
-      end
-    end
-
     output  = rcu_status
     prefix  = resource[:name]
-    Puppet.info "rcu_status output #{output} for prefix #{prefix}"
+    Puppet.info "rcu_status compare output #{output} with prefix #{prefix}"
     if output == prefix
       return :present
     else

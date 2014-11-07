@@ -29,11 +29,12 @@ define orawls::nodemanager (
 )
 {
 
-  if ( $wls_domains_dir == undef ) {
+  if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
     $domains_dir =  $wls_domains_dir
   }
+
 
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"

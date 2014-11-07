@@ -25,13 +25,13 @@ define orawls::copydomain (
   $log_output                 = false, # true|false
 )
 {
-  if ( $wls_domains_dir == undef ) {
+  if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
     $domains_dir =  $wls_domains_dir
   }
 
-  if ( $wls_apps_dir == undef ) {
+  if ( $wls_apps_dir == undef or $wls_apps_dir == '') {
     $apps_dir = "${middleware_home_dir}/user_projects/applications"
   } else {
     $apps_dir =  $wls_apps_dir

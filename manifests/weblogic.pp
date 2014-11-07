@@ -25,7 +25,7 @@ class orawls::weblogic (
     fail('please provide all the required parameters')
   }
 
-  if ( $wls_domains_dir != undef ) {
+  if ( $wls_domains_dir != undef) {
     # make sure you don't create the middleware home, else root will be owner
     if ($wls_domains_dir == "${middleware_home_dir}/user_projects/domains") {
         $domains_dir =  undef
@@ -33,7 +33,7 @@ class orawls::weblogic (
         $domains_dir =  $wls_domains_dir
     }
   }
-  if ( $wls_apps_dir != undef ) {
+  if ( $wls_apps_dir != undef) {
     # make sure you don't create the middleware home, else root will be owner
     if ($wls_apps_dir == "${middleware_home_dir}/user_projects/applications") {
         $apps_dir =  undef

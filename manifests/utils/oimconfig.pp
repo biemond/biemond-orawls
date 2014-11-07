@@ -34,7 +34,7 @@ define orawls::utils::oimconfig(
   $log_output                 = false, # true|false
 ) {
 
-  if ( $wls_domains_dir == undef ) {
+  if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
     $domains_dir =  $wls_domains_dir

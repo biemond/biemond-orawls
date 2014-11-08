@@ -13,7 +13,7 @@ unicastaddress          = '<%= unicastaddress %>'
 unicastport             = '<%= unicastport %>'
 target                  = '<%= target %>'
 targettype              = '<%= targettype %>'
-
+storage_enabled         = '<%= storage_enabled %>'
 
 edit()
 startEdit()
@@ -28,7 +28,7 @@ try:
 
     cd('/CoherenceClusterSystemResources/'+name+'/CoherenceClusterResource/'+name+'/CoherenceClusterParams/'+name)
 
-    set('ClusteringMode',clusteringmode) 
+    set('ClusteringMode',clusteringmode)
 
     if multicastaddress:
        set('MulticastListenAddress',multicastaddress)
@@ -55,19 +55,23 @@ try:
         target_path = "/Clusters/"+targets[i]
       else:
         target_path = "/Servers/"+targets[i]
-      
+
       target_mbean = getMBean(target_path)
       print target_mbean
       target_mbean.setCoherenceClusterSystemResource(coherence_cluster)
+
+      if int(storage_enabled) == 1:
+        target_mbean.getCoherenceTier().setLocalStorageEnabled(True)
+
       print "add to targetlist"
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-    
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
     cd('/CoherenceClusterSystemResources/'+name)
     set('Targets',jarray.array(targetList, ObjectName))
 
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

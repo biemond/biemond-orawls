@@ -2305,12 +2305,13 @@ or use puppet resource wls_coherence_cluster
 
     # this will use default as wls_setting identifier
     wls_coherence_cluster { 'WebCoherenceCluster':
-      ensure         => 'present',
-      clusteringmode => 'unicast',
-      multicastport  => '33389',
-      target         => ['WebCluster'],
-      targettype     => ['Cluster'],
-      unicastport    => '9999',
+      ensure          => 'present',
+      clusteringmode  => 'unicast',
+      multicastport   => '33389',
+      target          => ['WebCluster'],
+      targettype      => ['Cluster'],
+      unicastport     => '9999',
+      storage_enabled =>  '1',
     }
     wls_coherence_cluster { 'defaultCoherenceCluster':
       ensure         => 'present',
@@ -2327,13 +2328,16 @@ in hiera
 
 
     coherence_cluster_instances:
-      'WebCoherenceCluster':
-        ensure:         'present'
-        clusteringmode: 'unicast'
-        multicastport:  '33389'
-        target:         ['WebCluster']
-        targettype:     ['Cluster']
-        unicastport:    '9999'
+      'clusterCoherence':
+        ensure:           'present'
+        clusteringmode:   'unicast'
+        multicastaddress: '231.1.1.1'
+        multicastport:    '33387'
+        target:           ['DynamicCluster']
+        targettype:       ['Cluster']
+        unicastport:      '9099'
+        unicastaddress:   '10.10.10.100,10.10.10.200'
+        storage_enabled:  '1'
 
 
 

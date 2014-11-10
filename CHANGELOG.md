@@ -1,5 +1,7 @@
 # History
 
+## 1.0.23
+
 ## 1.0.22
 - fix for copydomain when the standard domains location is used
 - enable storage on wls_coherence_cluster

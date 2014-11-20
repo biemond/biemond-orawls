@@ -1,6 +1,7 @@
 # History
 
 ## 1.0.23
+- changed oraInst.loc permissions to 0755
 
 ## 1.0.22
 - fix for copydomain when the standard domains location is used

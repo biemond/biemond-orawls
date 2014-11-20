@@ -20,6 +20,7 @@ define orawls::utils::orainst
         file { $oraInstPath:
           ensure => directory,
           before => File["${oraInstPath}/oraInst.loc"],
+          mode   => '0755',
         }
       }
     }
@@ -32,6 +33,7 @@ define orawls::utils::orainst
     file { "${oraInstPath}/oraInst.loc":
       ensure  => present,
       content => template('orawls/utils/oraInst.loc.erb'),
+      mode    => '0755',
     }
   }
 }

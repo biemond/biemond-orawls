@@ -1,8 +1,6 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
 name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
 arguments     = '''<%= arguments %>'''
@@ -16,6 +14,8 @@ log_rotationtype            = '<%= log_rotationtype %>'
 log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 
 log_http_Filename           = '<%= log_http_filename %>'
+log_http_format             = '<%= log_http_format %>'
+log_http_format_type        = '<%= log_http_format_type %>'
 log_datasource_Filename     = '<%= log_datasource_filename %>'
 
 listenAddress = '<%= listenaddress %>'
@@ -28,6 +28,8 @@ sslListenPort = <%= ssllistenport %>
 
 jsseenabled   = <%= jsseenabled %>
 
+tunnelingenabled = <%= tunnelingenabled %>
+
 custom_identity                        = '<%= custom_identity %>'
 custom_identity_keystore_filename      = '<%= custom_identity_keystore_filename %>'
 custom_identity_keystore_passphrase    = '<%= custom_identity_keystore_passphrase %>'
@@ -38,7 +40,6 @@ trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 default_file_store                     = '<%= default_file_store %>'
 max_message_size                       = '<%= max_message_size %>'
-
 
 def format(value):
     if (value):
@@ -64,18 +65,26 @@ startEdit()
 try:
 
     cd('/Servers/'+name)
-    set('Machine',getMBean('/Machines/'+machineName))
+    if name != 'AdminServer':
+      set('Machine',getMBean('/Machines/'+machineName))
 
-    set('ListenAddress', format(listenAddress))
+    if listenAddress and not listenAddress.isspace():
+      set('ListenAddress', format(listenAddress))
 
-    set('ListenPort', format(listenPort))
+    if listenPort:
+      set('ListenPort', format(listenPort))
+
+    if tunnelingenabled:
+      set('TunnelingEnabled', tunnelingenabled)
 
     if max_message_size:
       set('MaxMessageSize',max_message_size)
 
-    set('ServerStart/'+name+'/ClassPath', format(classpath))
+    if classpath:
+      set('ServerStart/'+name+'/ClassPath', format(classpath))
 
-    set('ServerStart/'+name+'/Arguments', format(arguments))
+    if arguments:
+      set('ServerStart/'+name+'/Arguments', format(arguments))
 
     if custom_identity == '1':
       set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
@@ -86,20 +95,25 @@ try:
       cd('SSL/'+name)
       set('ServerPrivateKeyAlias'                    ,custom_identity_alias)
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
-    else:
+    if custom_identity == '0':
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
 
     cd('/Servers/'+name+'/SSL/'+name)
 
-    set('Enabled', formatBoolean(sslEnabled))
+    if sslEnabled and sslEnabled != -1:
+      set('Enabled', formatBoolean(sslEnabled))
+    if jsseenabled and jsseenabled != -1:
+      set('JSSEEnabled',formatBoolean(jsseenabled))
 
-    set('JSSEEnabled',formatBoolean(jsseenabled))
+    if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != -1:
+      set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
+    if two_way_ssl:
+      set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
+    if client_certificate_enforced:
+      set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
 
-    set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
-    set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
-    set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
-
-    set('ListenPort', sslListenPort)
+    if sslListenPort:
+      set('ListenPort', sslListenPort)
 
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:
@@ -128,6 +142,10 @@ try:
       cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
     if log_file_min_size:
       cmo.setFileMinSize(int(log_file_min_size))
+    if log_http_format_type:
+      cmo.setLogFileFormat(log_http_format_type)
+    if log_http_format:
+      cmo.setELFFields(log_http_format)
 
     cd('/Servers/'+name+'/DataSource/'+name+'/DataSourceLogFile/'+name)
     if log_datasource_Filename:
@@ -144,7 +162,8 @@ try:
       cmo.setFileMinSize(int(log_file_min_size))
 
     cd('/Servers/'+name+'/DefaultFileStore/'+name)
-    cmo.setDirectory(default_file_store)
+    if default_file_store:
+      cmo.setDirectory(default_file_store)
 
     save()
     activate()

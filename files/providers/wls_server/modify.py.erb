@@ -65,8 +65,7 @@ startEdit()
 try:
 
     cd('/Servers/'+name)
-    if name != 'AdminServer':
-      set('Machine',getMBean('/Machines/'+machineName))
+    set('Machine',getMBean('/Machines/'+machineName))
 
     if listenAddress and not listenAddress.isspace():
       set('ListenAddress', format(listenAddress))
@@ -75,7 +74,7 @@ try:
       set('ListenPort', format(listenPort))
 
     if tunnelingenabled:
-      set('TunnelingEnabled', tunnelingenabled)
+      set('TunnelingEnabled', formatBoolean(tunnelingenabled))
 
     if max_message_size:
       set('MaxMessageSize',max_message_size)

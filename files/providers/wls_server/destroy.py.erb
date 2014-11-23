@@ -10,6 +10,10 @@ startEdit()
 
 try:
 
+    AdminServerName = get('AdminServerName')
+    if name == AdminServerName:
+      raise "Cannot destroy the AdminServer, its not allowed"
+
     cd('/Servers/'+name)
     cmo.setCluster(None)
     cmo.setMachine(None)

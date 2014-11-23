@@ -2024,6 +2024,8 @@ or use puppet resource wls_server
       listenport                        => '8001',
       machine                           => 'Node1',
       sslenabled                        => '0',
+      tunnelingenabled                  => '0',
+      max_message_size                  => '10000000',
     }
 
 or with log parameters, default file store and ssl
@@ -2043,6 +2045,8 @@ or with log parameters, default file store and ssl
       logfilename                       => '/var/log/weblogic/wlsServer2.log',
       log_datasource_filename           => 'logs/datasource.log',
       log_http_filename                 => 'logs/access.log',
+      log_http_format                   => 'date time cs-method cs-uri sc-status',
+      log_http_format_type              => 'common',
       machine                           => 'Node2',
       sslenabled                        => '1',
       sslhostnameverificationignored    => '1',

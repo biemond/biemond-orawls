@@ -2,6 +2,7 @@
 
 ## 1.0.23
 - changed oraInst.loc permissions to 0755
+- wls_server resource type changes like: check for Adminserver creation/deletion, new properties tunnelingenabled, log_http_format_type, log_http_format, default_file_store, log_datasource_filename
 
 ## 1.0.22
 - fix for copydomain when the standard domains location is used

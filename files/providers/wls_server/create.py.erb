@@ -68,8 +68,11 @@ def formatBoolean2(value):
 try:
 
     cd('/')
-    if name != 'AdminServer':
-      cmo.createServer(name)
+    AdminServerName = get('AdminServerName')
+    if name == AdminServerName:
+      raise "Cannot create a new AdminServer, its not allowed"
+
+    cmo.createServer(name)
 
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
@@ -90,7 +93,7 @@ try:
       set('ServerStart/'+name+'/Arguments', arguments)
 
     if tunnelingenabled:
-      set('TunnelingEnabled', tunnelingenabled)
+      set('TunnelingEnabled', formatBoolean(tunnelingenabled))
 
     if custom_identity == '1':
       set('KeyStores'                                ,'CustomIdentityAndCustomTrust')

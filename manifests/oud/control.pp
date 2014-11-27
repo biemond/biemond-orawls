@@ -18,10 +18,17 @@ define orawls::oud::control(
       $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep '${oud_instances_home_dir}/${oud_instance_name}/OUD'"
     }
     'SunOS': {
-      $checkCommand = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep '${oud_instances_home_dir}/${oud_instance_name}/OUD'"
+      case $::kernelrelease {
+        '5.11': {
+          $checkCommand = "/bin/ps wwxa | /bin/grep -v grep | /bin/grep '${oud_instances_home_dir}/${oud_instance_name}/OUD'"
+        }
+        default: {
+          $checkCommand = "/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep '${oud_instances_home_dir}/${oud_instance_name}/OUD'"
+        }
+      }
     }
     default: {
-      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
+      fail("Unrecognized operating system ${::kernel}, please use it on a Linux or Solaris host")
     }
   }
 

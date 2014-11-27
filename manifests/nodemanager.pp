@@ -84,13 +84,20 @@ define orawls::nodemanager (
       $java_statement = 'java'
     }
     'SunOS': {
-      $checkCommand   = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.NodeManager'"
+      case $::kernelrelease {
+        '5.11': {
+          $checkCommand   = "/bin/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager'"
+        }
+        default: {
+          $checkCommand   = "/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager'"
+        }
+      }
       $nativeLib      = 'solaris/x64'
       $suCommand      = "su - ${os_user}"
       $java_statement = 'java -d64'
     }
     default: {
-      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
+      fail("Unrecognized operating system ${::kernel}, please use it on a Linux or Solaris host")
     }
   }
 

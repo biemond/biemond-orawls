@@ -38,11 +38,12 @@ EOF"
     domain_name    = resource[:domain_name]
     name           = resource[:server_name]
 
-    if :kernel == 'SunOS'
-      command  = "/usr/ucb/ps wwxa | grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
-    else
-      command  = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
-    end
+    kernel = Facter.value(:kernel)
+
+    ps_bin = (kernel != "SunOS" || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? "/bin/ps" : "/usr/ucb/ps"
+    ps_arg = kernel == "SunOS" ? "awwx" : "-ef"
+
+    command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
 
     Puppet.debug "managedserver_status #{command}"
     output = `#{command}`

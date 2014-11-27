@@ -3,13 +3,20 @@ real_domain='<%= domain %>'
 
 
 
-name               = '<%= connection_factory_name %>'
-jmsmodule          = '<%= jmsmodule %>'
-jndiname           = '<%= jndiname %>'
-subdeployment      = '<%= subdeployment %>'
-defaulttargeting   = '<%= defaulttargeting %>'
-xaenabled          = '<%= xaenabled %>'
-transactiontimeout = '<%= transactiontimeout %>'
+name                       = '<%= connection_factory_name %>'
+jmsmodule                  = '<%= jmsmodule %>'
+jndiname                   = '<%= jndiname %>'
+subdeployment              = '<%= subdeployment %>'
+defaulttargeting           = '<%= defaulttargeting %>'
+xaenabled                  = '<%= xaenabled %>'
+transactiontimeout         = '<%= transactiontimeout %>'
+clientidpolicy             = '<%= clientidpolicy %>'
+subscriptionsharingpolicy  = '<%= subscriptionsharingpolicy %>'
+messagesmaximum            = '<%= messagesmaximum %>'
+reconnectpolicy            = '<%= reconnectpolicy %>'
+loadbalancingenabled       = '<%= loadbalancingenabled %>'
+serveraffinityenabled      = '<%= serveraffinityenabled %>'
+attachjmsxuserid           = '<%= attachjmsxuserid %>'
 
 edit()
 startEdit()
@@ -34,6 +41,26 @@ try:
 
     if transactiontimeout:
       cmo.setTransactionTimeout( int(transactiontimeout) )
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/ClientParams/'+name)
+    if clientidpolicy:
+      cmo.setClientIdPolicy(clientidpolicy)
+    if subscriptionsharingpolicy:
+      cmo.setSubscriptionSharingPolicy(subscriptionsharingpolicy)
+    if messagesmaximum:
+      cmo.setMessagesMaximum( int(messagesmaximum) )
+    if reconnectpolicy:
+      cmo.setReconnectPolicy(reconnectpolicy)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/LoadBalancingParams/'+name)
+    if loadbalancingenabled:
+      cmo.setServerAffinityEnabled( formatBoolean(loadbalancingenabled) )
+    if serveraffinityenabled:
+      cmo.setServerAffinityEnabled( formatBoolean(serveraffinityenabled) )
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/SecurityParams/'+name)
+    if attachjmsxuserid:
+      cmo.setAttachJMSXUserId( formatBoolean(attachjmsxuserid) )
 
     save()
     activate()          

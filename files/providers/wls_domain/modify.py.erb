@@ -3,18 +3,21 @@ real_domain='<%= domain %>'
 
 print "modify domain"
 
-name                        = '<%= weblogic_domain_name %>'
-jta_transaction_timeout     = '<%= jta_transaction_timeout %>'
-jta_max_transactions        = '<%= jta_max_transactions %>'
-jpa_default_provider        = '<%= jpa_default_provider %>'
-security_crossdomain        = '<%= security_crossdomain %>'
-log_filename                = '<%= log_filename %>'
+name                                               = '<%= weblogic_domain_name %>'
+jta_transaction_timeout                            = '<%= jta_transaction_timeout %>'
+jta_max_transactions                               = '<%= jta_max_transactions %>'
+jpa_default_provider                               = '<%= jpa_default_provider %>'
+security_crossdomain                               = '<%= security_crossdomain %>'
+jmx_platform_mbean_server_enabled                  = '<%= jmx_platform_mbean_server_enabled %>'
+jmx_platform_mbean_server_used                     = '<%= jmx_platform_mbean_server_used %>'
+web_app_container_show_archived_real_path_enabled  = '<%= web_app_container_show_archived_real_path_enabled %>'
+log_filename                                       = '<%= log_filename %>'
 
-log_file_min_size           = '<%= log_file_min_size %>'
-log_filecount               = '<%= log_filecount %>'
-log_rotate_logon_startup    = '<%= log_rotate_logon_startup %>'
-log_rotationtype            = '<%= log_rotationtype %>'
-log_number_of_files_limited = '<%= log_number_of_files_limited %>'
+log_file_min_size                                  = '<%= log_file_min_size %>'
+log_filecount                                      = '<%= log_filecount %>'
+log_rotate_logon_startup                           = '<%= log_rotate_logon_startup %>'
+log_rotationtype                                   = '<%= log_rotationtype %>'
+log_number_of_files_limited                        = '<%= log_number_of_files_limited %>'
 
 def formatBoolean(value):
   if value == '1':
@@ -66,6 +69,18 @@ try:
     cd('/SecurityConfiguration/'+name)
     if security_crossdomain:
       cmo.setCrossDomainSecurityEnabled(formatBoolean(security_crossdomain))
+
+    print "change jmx"
+    cd('/JMX/'+name)
+    if jmx_platform_mbean_server_enabled:
+      cmo.setPlatformMBeanServerEnabled(formatBoolean(jmx_platform_mbean_server_enabled))
+    if jmx_platform_mbean_server_used:
+      cmo.setPlatformMBeanServerUsed(formatBoolean(jmx_platform_mbean_server_used))
+
+    print "change web app container"
+    cd('/WebAppContainer/'+name)
+    if web_app_container_show_archived_real_path_enabled:
+      cmo.setShowArchivedRealPathEnabled(formatBoolean(web_app_container_show_archived_real_path_enabled))
 
     print "save"
     save()

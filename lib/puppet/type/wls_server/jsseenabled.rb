@@ -4,8 +4,6 @@ newproperty(:jsseenabled) do
   desc 'The JSSE eenabled enabled on the server'
   newvalues('1', '0', '-1')
 
-  defaultto '-1'
-
   to_translate_to_resource do | raw_resource|
     raw_resource['jsseenabled']
   end

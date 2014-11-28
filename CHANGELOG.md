@@ -1,5 +1,7 @@
 # History
 
+## 1.0.24
+
 ## 1.0.23
 - Solaris 11 fixes for nodemanager, wls_adminserver & wls_managedserver resource types
 - wls_server resource type changes like: check for Adminserver creation/deletion, new properties tunnelingenabled, log_http_format_type, log_http_format, default_file_store, log_datasource_filename

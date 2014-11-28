@@ -4,7 +4,7 @@
 - Solaris 11 fixes for nodemanager, wls_adminserver & wls_managedserver resource types
 - wls_server resource type changes like: check for Adminserver creation/deletion, new properties tunnelingenabled, log_http_format_type, log_http_format, default_file_store, log_datasource_filename
 - wls_domain resource type properties: platform-m-bean-server-enabled, platform-m-bean-server-used, show-archived-real-path-enabled
-- wls_conn resource type properties: client-id-policy, subscription-sharing-policy, messages-maximum, reconnect-policy, load-balancing-enabled, server-affinity-enabled, attach-jmsx-user-id
+- wls_jms_connection_factory resource type properties: client-id-policy, subscription-sharing-policy, messages-maximum, reconnect-policy, load-balancing-enabled, server-affinity-enabled, attach-jmsx-user-id
 - changed oraInst.loc permissions to 0755
 
 ## 1.0.22

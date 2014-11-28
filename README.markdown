@@ -1554,31 +1554,37 @@ or use puppet resource wls_domain
 
     # In this case it will use default as wls_setting identifier
     wls_domain { 'Wls1036':
-      ensure                      => 'present',
-      jpa_default_provider        => 'org.eclipse.persistence.jpa.PersistenceProvider',
-      jta_max_transactions        => '20000',
-      jta_transaction_timeout     => '35',
-      log_file_min_size           => '5000',
-      log_filecount               => '5',
-      log_filename                => '/var/log/weblogic/Wls1036.log',
-      log_number_of_files_limited => '1',
-      log_rotate_logon_startup    => '1',
-      log_rotationtype            => 'bySize',
-      security_crossdomain        => '0',
+      ensure                                            => 'present',
+      jmx_platform_mbean_server_enabled                 => '1',
+      jmx_platform_mbean_server_used                    => '1',
+      jpa_default_provider                              => 'org.eclipse.persistence.jpa.PersistenceProvider',
+      jta_max_transactions                              => '20000',
+      jta_transaction_timeout                           => '35',
+      log_file_min_size                                 => '5000',
+      log_filecount                                     => '10',
+      log_filename                                      => '/var/log/weblogic/Wls1036.log',
+      log_number_of_files_limited                       => '1',
+      log_rotate_logon_startup                          => '1',
+      log_rotationtype                                  => 'bySize',
+      security_crossdomain                              => '0',
+      web_app_container_show_archived_real_path_enabled => '1',
     }
-    # In this case it will use domain2 as wls_setting identifier
-    wls_domain { 'domain2/Wls11g':
-      ensure                      => 'present',
-      jpa_default_provider        => 'org.apache.openjpa.persistence.PersistenceProviderImpl',
-      jta_max_transactions        => '10000',
-      jta_transaction_timeout     => '30',
-      log_file_min_size           => '5000',
-      log_filecount               => '10',
-      log_filename                => '/var/log/weblogic/Wls11g.log',
-      log_number_of_files_limited => '0',
-      log_rotate_logon_startup    => '0',
-      log_rotationtype            => 'byTime',
-      security_crossdomain        => '1',
+
+    wls_domain { 'Wls11gSetting/Wls11g':
+      ensure                                            => 'present',
+      jmx_platform_mbean_server_enabled                 => '0',
+      jmx_platform_mbean_server_used                    => '1',
+      jpa_default_provider                              => 'org.apache.openjpa.persistence.PersistenceProviderImpl',
+      jta_max_transactions                              => '10000',
+      jta_transaction_timeout                           => '30',
+      log_file_min_size                                 => '5000',
+      log_filecount                                     => '5',
+      log_filename                                      => '/var/log/weblogic/Wls11g.log',
+      log_number_of_files_limited                       => '0',
+      log_rotate_logon_startup                          => '0',
+      log_rotationtype                                  => 'byTime',
+      security_crossdomain                              => '1',
+      web_app_container_show_archived_real_path_enabled => '0',
     }
 
 in hiera
@@ -2804,20 +2810,33 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 or use puppet resource wls_connection_factory
 
     wls_jms_connection_factory { 'jmsClusterModule:cf':
-      ensure             => 'present',
-      defaulttargeting   => '0',
-      jndiname           => 'jms/cf',
-      subdeployment      => 'wlsServers',
-      transactiontimeout => '3600',
-      xaenabled          => '0',
+      ensure                    => 'present',
+      attachjmsxuserid          => '0',
+      clientidpolicy            => 'Restricted',
+      defaulttargeting          => '0',
+      jndiname                  => 'jms/cf',
+      loadbalancingenabled      => '1',
+      messagesmaximum           => '10',
+      reconnectpolicy           => 'producer',
+      serveraffinityenabled     => '1',
+      subdeployment             => 'wlsServers',
+      subscriptionsharingpolicy => 'Exclusive',
+      transactiontimeout        => '3600',
+      xaenabled                 => '0',
     }
-    wls_jms_connection_factory { 'jmsClusterModule:cf2':
-      ensure             => 'present',
-      defaulttargeting   => '1',
-      jndiname           => 'jms/cf2',
-      subdeployment      => 'cf2',
-      transactiontimeout => '3600',
-      xaenabled          => '1',
+    wls_jms_connection_factory { 'default/jmsClusterModule:cf2':
+      ensure                    => 'present',
+      attachjmsxuserid          => '0',
+      clientidpolicy            => 'Restricted',
+      defaulttargeting          => '1',
+      jndiname                  => 'jms/cf2',
+      loadbalancingenabled      => '1',
+      messagesmaximum           => '10',
+      reconnectpolicy           => 'producer',
+      serveraffinityenabled     => '1',
+      subscriptionsharingpolicy => 'Exclusive',
+      transactiontimeout        => '3600',
+      xaenabled                 => '1',
     }
 
 in hiera

@@ -1,4 +1,4 @@
-newparam(:jmx_platform_mbean_server_enabled) do
+newproperty(:jmx_platform_mbean_server_enabled) do
   include EasyType
 
   desc 'Platform MBean server enabled'

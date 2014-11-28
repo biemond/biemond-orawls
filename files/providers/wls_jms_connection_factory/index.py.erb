@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/JMSSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;jndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain"
+print >>f, "name;jmsmodule;jndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid"
 for token in m:
   n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories',returnMap='true')
   for token2 in n:
@@ -24,8 +24,21 @@ for token in m:
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/TransactionParams/'+token2)
          xaEnabled          = str(get('XAConnectionFactoryEnabled'))
          transactionTimeout = get('TransactionTimeout')
-         
-         print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,jndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain]))
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/ClientParams/'+token2)
+         clientIdPolicy = str(get('ClientIdPolicy'))
+         subscriptionSharingPolicy = str(get('SubscriptionSharingPolicy'))
+         messagesMaximum = get('MessagesMaximum')
+         reconnectPolicy = str(get('ReconnectPolicy'))
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/LoadBalancingParams/'+token2)
+         loadBalancingEnabled = str(get('LoadBalancingEnabled'))
+         serverAffinityEnabled = str(get('ServerAffinityEnabled'))
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/SecurityParams/'+token2)
+         attachJmsXUserId = str(get('AttachJMSXUserId'))
+
+         print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,jndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId]))
         
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

@@ -7,7 +7,7 @@ def quote(text):
         return ""
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;domain;jta_transaction_timeout;jta_max_transactions;jpa_default_provider;security_crossdomain;log_file_min_size;log_filecount;log_rotate_logon_startup;log_filename;log_rotationtype;log_number_of_files_limited"
+print >>f, "name;domain;jta_transaction_timeout;jta_max_transactions;jpa_default_provider;security_crossdomain;log_file_min_size;log_filecount;log_rotate_logon_startup;log_filename;log_rotationtype;log_number_of_files_limited;jmx_platform_mbean_server_enabled;jmx_platform_mbean_server_used;web_app_container_show_archived_real_path_enabled"
 
 cd('/')
 domain_name = get('Name') 
@@ -34,7 +34,14 @@ except:
   print "exception security_crossdomain", sys.exc_info()[0]
   security_crossdomain = '0'
 
-print >>f, ";".join(map(quote, [domain+'/'+domain_name,domain,jta_transaction_timeout,jta_max_transactions,jpa_default_provider,security_crossdomain,log_file_min_size,log_filecount,log_rotate_logon_startup,log_filename,log_rotationtype,log_number_of_files_limited]))
+cd('/JMX/'+domain_name)
+jmx_platform_mbean_server_enabled = str(get('PlatformMBeanServerEnabled'))
+jmx_platform_mbean_server_used = str(get('PlatformMBeanServerUsed'))
+
+cd('/WebAppContainer/'+domain_name)
+web_app_container_show_archived_real_path_enabled = str(get('ShowArchivedRealPathEnabled'))
+
+print >>f, ";".join(map(quote, [domain+'/'+domain_name,domain,jta_transaction_timeout,jta_max_transactions,jpa_default_provider,security_crossdomain,log_file_min_size,log_filecount,log_rotate_logon_startup,log_filename,log_rotationtype,log_number_of_files_limited,jmx_platform_mbean_server_enabled,jmx_platform_mbean_server_used,web_app_container_show_archived_real_path_enabled]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

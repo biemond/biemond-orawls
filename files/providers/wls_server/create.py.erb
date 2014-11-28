@@ -18,15 +18,15 @@ log_rotationtype            = '<%= log_rotationtype %>'
 log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 
 listenAddress = '<%= listenaddress %>'
-listenPort    = <%= listenport %>
-sslEnabled    = <%= sslenabled %>
-sslHostnameVerificationIgnored = <%= sslhostnameverificationignored %>
-two_way_ssl = <%= two_way_ssl %>
-client_certificate_enforced = <%= client_certificate_enforced %>
-sslListenPort = <%= ssllistenport %>
+listenPort    = '<%= listenport %>'
+sslEnabled    = '<%= sslenabled %>'
+sslHostnameVerificationIgnored = '<%= sslhostnameverificationignored %>'
+two_way_ssl = '<%= two_way_ssl %>'
+client_certificate_enforced = '<%= client_certificate_enforced %>'
+sslListenPort = '<%= ssllistenport %>'
 
-jsseenabled   = <%= jsseenabled %>
-tunnelingenabled     = <%= tunnelingenabled %>
+jsseenabled   = '<%= jsseenabled %>'
+tunnelingenabled  = '<%= tunnelingenabled %>'
 
 custom_identity                        = '<%= custom_identity %>'
 custom_identity_keystore_filename      = '<%= custom_identity_keystore_filename %>'
@@ -53,13 +53,13 @@ def createBootPropertiesFile(directoryPath,fileName, username, password):
   fileNew.close()
 
 def formatBoolean(value):
-    if value == 1:
+    if value == '1' or value == 1:
         return 'True'
     else:
         return 'False'
 
 def formatBoolean2(value):
-  if value == '1':
+  if value == '1' or value == 1:
     return true
   else:
     return false
@@ -81,7 +81,7 @@ try:
       set('ListenAddress',listenAddress)
 
     if listenPort:
-      set('ListenPort', listenPort)
+      set('ListenPort', int(listenPort))
 
     if max_message_size:
       set('MaxMessageSize',max_message_size)
@@ -109,18 +109,18 @@ try:
 
     cd('/Servers/'+name+'/SSL/'+name)
 
-    if sslEnabled and sslEnabled != -1:
+    if sslEnabled and sslEnabled != '-1':
       set('Enabled', formatBoolean(sslEnabled))
-    if jsseenabled and jsseenabled != -1:
+    if jsseenabled and jsseenabled != '-1':
       set('JSSEEnabled', formatBoolean(jsseenabled))
-    if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != -1:
+    if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != '-1':
       set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
     if two_way_ssl:
       set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
     if client_certificate_enforced:
       set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
     if sslListenPort:
-      set('ListenPort', sslListenPort)
+      set('ListenPort', int(sslListenPort))
 
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:

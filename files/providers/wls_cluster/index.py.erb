@@ -1,5 +1,4 @@
 
-
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
@@ -9,7 +8,7 @@ def quote(text):
 m = ls('/Clusters',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport"
+print >>f, "name;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication"
 for token in m:
   print '___'+token+'___'
   cd('/Clusters/'+token)
@@ -41,7 +40,6 @@ for token in m:
   cd('/Clusters/'+token)
   pwd()
   ls()
-  # print ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
-  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort')]))
+  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

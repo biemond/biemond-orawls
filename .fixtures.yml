@@ -6,5 +6,7 @@ fixtures:
       repo: 'git://github.com/reidmv/puppet-module-yamlfile'
     'filemapper':
       repo: 'git://github.com/adrienthebo/puppet-filemapper'
+    'sleep':
+      repo: 'git://github.com/fiddyspence/puppet-sleep'
   symlinks:
     'orawls': '#{source_dir}'

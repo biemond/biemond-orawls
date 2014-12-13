@@ -54,5 +54,11 @@ module Puppet
       /^((.*\/)?(.*):(.*)?)$/
     end
 
+    #
+    # Make sure the top level jms module is auto required
+    #
+    autorequire(:wls_jms_module) { jmsmodule}
+
+
   end
 end

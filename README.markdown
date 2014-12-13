@@ -22,6 +22,7 @@ Dependency with
 - hajee/easy_type >=0.10.0
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
+- fiddyspence/sleep => 1.1.2
 
 ## Complete examples
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)

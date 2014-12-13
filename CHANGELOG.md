@@ -1,6 +1,7 @@
 # History
 
 ## 1.0.25
+- Auto require on wls resource types
 
 ## 1.0.24
 - Wls_setting resource type check for required attributes

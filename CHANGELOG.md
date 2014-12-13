@@ -1,5 +1,7 @@
 # History
 
+## 1.0.25
+
 ## 1.0.24
 - Wls_setting resource type check for required attributes
 - Timeout parameter bug on all wls resource types ( the default 120 was always used)

@@ -19,8 +19,8 @@ class orawls::urandomfix() {
     ensure => present,
   }
 
-  case $::operatingsystem {
-    'CentOS', 'RedHat', 'OracleLinux' : {
+  case $::osfamily {
+    'RedHat': {
       if ( $::operatingsystemmajrelease == '7') {
         exec { 'set urandom /lib/systemd/system/rngd.service':
           command => "sed -i -e's/ExecStart=\\/sbin\\/rngd -f/ExecStart=\\/sbin\\/rngd -r \\/dev\\/urandom -o \\/dev\\/random -f/g' /lib/systemd/system/rngd.service;systemctl daemon-reload;systemctl restart rngd.service",
@@ -54,7 +54,7 @@ class orawls::urandomfix() {
         }
       }
     }
-    'Ubuntu', 'Debian', 'SLES': {
+    'Debian','Suse' : {
       exec { 'set urandom /etc/default/rng-tools':
         command => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
         unless  => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",

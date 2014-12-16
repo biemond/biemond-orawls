@@ -27,8 +27,8 @@ class WlsDaemon < EasyType::Daemon
     connect_to_wls
   end
 
-  def execute_script(script, debug = false, timeout = DEFAULT_TIMEOUT)
-    Puppet.info "Executing wls-script #{script}"
+  def execute_script(script, timeout = DEFAULT_TIMEOUT)
+    Puppet.info "Executing wls-script #{script} with timeout = #{timeout}"
     pass_domain
     pass_credentials
     connect_to_wls

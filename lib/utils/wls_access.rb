@@ -70,17 +70,20 @@ module Utils
       weblogicHomeDir     = domainValues['weblogic_home_dir']
       weblogicUser        = domainValues['weblogic_user']     || 'weblogic'
       weblogicConnectUrl  = domainValues['connect_url']       || 't3://localhost:7001'
-      weblogicPassword    = domainValues['weblogic_password'] || 'weblogic1'
-      postClasspath       = domainValues['post_classpath'] || ''
+      weblogicPassword    = domainValues['weblogic_password']
+      postClasspath       = domainValues['post_classpath']
 
-      debugmode = Puppet::Util::Log.level()
+      fail('weblogic_home_dir cannot be nil, check the wls_setting resource type') if weblogicHomeDir.nil?
+      fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
+
+      debugmode = Puppet::Util::Log.level
       if debugmode.to_s == 'debug'
-        puts "Prepare to run: " + tmpFile.path + "," +  operatingSystemUser + "," +  domain + "," +  weblogicHomeDir + "," +  weblogicUser + "," +  weblogicPassword + "," +  weblogicConnectUrl + "," +  postClasspath
-        puts "vvv==================================================================="
+        puts 'Prepare to run: ' + tmpFile.path + ',' +  operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl + ',' +  postClasspath
+        puts 'vvv==================================================================='
         File.open(tmpFile.path).readlines.each do |line|
           puts line
         end
-        puts "^^^===================================================================="
+        puts '^^^===================================================================='
       end
 
       wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
@@ -91,8 +94,6 @@ module Utils
       end
       File.read('/tmp/' + script + '.out') if action == 'index'
     end
-
-    private
 
     def timeout_specified
       if respond_to?(:to_hash)

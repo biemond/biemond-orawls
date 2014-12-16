@@ -19,33 +19,42 @@ class orawls::urandomfix() {
     ensure => present,
   }
 
-  case $::operatingsystem {
-    'CentOS', 'RedHat', 'OracleLinux' : {
-      exec { 'set urandom /etc/sysconfig/rngd':
-        command => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
-        unless  => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
-        require => Package['rng-tools'],
-        user    => 'root',
-        path    => $path,
-      }
+  case $::osfamily {
+    'RedHat': {
+      if ( $::operatingsystemmajrelease == '7') {
+        exec { 'set urandom /lib/systemd/system/rngd.service':
+          command => "sed -i -e's/ExecStart=\\/sbin\\/rngd -f/ExecStart=\\/sbin\\/rngd -r \\/dev\\/urandom -o \\/dev\\/random -f/g' /lib/systemd/system/rngd.service;systemctl daemon-reload;systemctl restart rngd.service",
+          unless  => "/bin/grep 'ExecStart=/sbin/rngd -r /dev/urandom -o /dev/random -f' /lib/systemd/system/rngd.service",
+          require => Package['rng-tools'],
+          user    => 'root',
+          path    => $path,
+        }
+      } else {
+        exec { 'set urandom /etc/sysconfig/rngd':
+          command => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
+          unless  => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
+          require => Package['rng-tools'],
+          user    => 'root',
+          path    => $path,
+        }
 
-      service { 'start rngd service':
-        ensure  => true,
-        name    => 'rngd',
-        enable  => true,
-        require => Exec['set urandom /etc/sysconfig/rngd'],
-      }
+        service { 'start rngd service':
+          ensure  => true,
+          name    => 'rngd',
+          enable  => true,
+          require => Exec['set urandom /etc/sysconfig/rngd'],
+        }
 
-      exec { 'chkconfig rngd':
-        command => 'chkconfig --add rngd',
-        require => Service['start rngd service'],
-        user    => 'root',
-        unless  => "chkconfig | /bin/grep 'rngd'",
-        path    => $path,
+        exec { 'chkconfig rngd':
+          command => 'chkconfig --add rngd',
+          require => Service['start rngd service'],
+          user    => 'root',
+          unless  => "chkconfig | /bin/grep 'rngd'",
+          path    => $path,
+        }
       }
-
     }
-    'Ubuntu', 'Debian', 'SLES': {
+    'Debian','Suse' : {
       exec { 'set urandom /etc/default/rng-tools':
         command => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
         unless  => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",

@@ -56,5 +56,10 @@ module Puppet
       /^((.*\/)?(.*):(.*):(.*)?)$/
     end
 
+    #
+    # Make sure the top level jms module is auto required
+    #
+    autorequire(:wls_saf_imported_destination) { "#{jmsmodule}:#{imported_destination}" }
+
   end
 end

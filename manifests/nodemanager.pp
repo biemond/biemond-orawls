@@ -78,10 +78,11 @@ define orawls::nodemanager (
 
   case $::kernel {
     'Linux': {
-      $checkCommand   = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
-      $nativeLib      = 'linux/x86_64'
-      $suCommand      = "su -l ${os_user}"
-      $java_statement = 'java'
+      $checkCommand      = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager'"
+      $nativeLib         = 'linux/x86_64'
+      $suCommand         = "su -l ${os_user}"
+      $java_statement    = 'java'
+      $netstat_statement = "/bin/netstat -lnt | /bin/grep ':${nodemanager_port}'"
     }
     'SunOS': {
       case $::kernelrelease {
@@ -92,9 +93,10 @@ define orawls::nodemanager (
           $checkCommand   = "/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager'"
         }
       }
-      $nativeLib      = 'solaris/x64'
-      $suCommand      = "su - ${os_user}"
-      $java_statement = 'java -d64'
+      $nativeLib         = 'solaris/x64'
+      $suCommand         = "su - ${os_user}"
+      $java_statement    = 'java -d64'
+      $netstat_statement = "/bin/netstat -an -P tcp | /bin/grep LISTEN | /bin/grep '.${nodemanager_port}'"
     }
     default: {
       fail("Unrecognized operating system ${::kernel}, please use it on a Linux or Solaris host")
@@ -146,12 +148,13 @@ define orawls::nodemanager (
     cwd         => $nodeMgrHome,
   }
 
-  exec { "sleep ${sleep} sec for wlst exec ${title}":
-      command     => "/bin/sleep ${sleep}",
-      subscribe   => Exec["startNodemanager ${title}"],
-      refreshonly => true,
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
+  # using fiddyspence/sleep module
+  sleep { "wake up ${title}":
+    bedtime       => $sleep,
+    wakeupfor     => $netstat_statement,
+    dozetime      => 2,
+    failontimeout => true,
+    subscribe     => Exec["startNodemanager ${title}"],
+    refreshonly   => true,
   }
 }

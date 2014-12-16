@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe 'orawls::nodemanager', :type => :define do
 
-
   describe "CentOS 11g" do
     let(:params){{:version              => 1111,
                   :download_dir         => '/install',
@@ -21,18 +20,18 @@ describe 'orawls::nodemanager', :type => :define do
                    :osfamily        => 'RedHat' }}
 
     describe "nodemanager.properties" do
-      it { 
+      it {
            should contain_file("nodemanager.properties ux nodemanager11g").with({
              'ensure'  => 'present',
              'path'    => "/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager.properties",
              'owner'   => 'oracle',
              'group'   => 'dba',
-           }).that_comes_before('Exec[startNodemanager nodemanager11g]')  
-         }  
+           }).that_comes_before('Exec[startNodemanager nodemanager11g]')
+         }
     end
 
     describe "start nodemanager 1" do
-      it { 
+      it {
            should contain_exec("startNodemanager nodemanager11g").with({
              'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
              'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
@@ -40,7 +39,7 @@ describe 'orawls::nodemanager', :type => :define do
              'group'       => 'dba',
              'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
            })
-         }  
+         }
     end
 
   end
@@ -65,37 +64,37 @@ describe 'orawls::nodemanager', :type => :define do
 
 
     describe "create logdir" do
-      it { 
+      it {
            should contain_exec("create /var/log/weblogic directory").with({
              'command'  => 'mkdir -p /var/log/weblogic',
              'cwd'      => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
            })
-         }  
+         }
     end
 
     describe "change logdir" do
-      it { 
+      it {
            should contain_file("/var/log/weblogic").with({
              'ensure'  => 'directory',
              'owner'   => 'oracle',
              'group'   => 'dba',
-           }).that_requires('Exec[create /var/log/weblogic directory]')  
-         }  
+           }).that_requires('Exec[create /var/log/weblogic directory]')
+         }
     end
 
     describe "nodemanager.properties" do
-      it { 
+      it {
            should contain_file("nodemanager.properties ux nodemanager11g").with({
              'ensure'  => 'present',
              'path'    => "/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager.properties",
              'owner'   => 'oracle',
              'group'   => 'dba',
-           }).that_comes_before('Exec[startNodemanager nodemanager11g]')  
-         }  
+           }).that_comes_before('Exec[startNodemanager nodemanager11g]')
+         }
     end
 
     describe "start nodemanager 2" do
-      it { 
+      it {
            should contain_exec("startNodemanager nodemanager11g").with({
              'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
              'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
@@ -103,10 +102,10 @@ describe 'orawls::nodemanager', :type => :define do
              'group'       => 'dba',
              'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
            })
-         }  
+         }
     end
 
-  end  
+  end
 
   describe "CentOS 12.1.2 log dir" do
     let(:params){{:version              => 1212,
@@ -129,7 +128,7 @@ describe 'orawls::nodemanager', :type => :define do
 
 
     describe "start nodemanager 3" do
-      it { 
+      it {
            should contain_exec("startNodemanager nodemanager12c").with({
              'command'     => 'nohup /opt/oracle/wlsdomains/domains/wls1212/bin/startNodeManager.sh &',
              'cwd'         => '/opt/oracle/wlsdomains/domains/wls1212/nodemanager',
@@ -137,11 +136,9 @@ describe 'orawls::nodemanager', :type => :define do
              'group'       => 'dba',
              'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
            })
-         }  
+         }
     end
 
-  end  
-
-
+  end
 
 end

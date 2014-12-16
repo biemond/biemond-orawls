@@ -57,5 +57,11 @@ module Puppet
       /^((.*\/)?(.*):(.*)?)$/
     end
 
+    #
+    # Make sure the top level jserver is auto required
+    #
+    autorequire(:wls_server) { server }
+
+
   end
 end

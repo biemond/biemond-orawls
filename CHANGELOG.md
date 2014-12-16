@@ -1,6 +1,13 @@
 # History
 
+## 1.0.25
+- Auto require on wls resource types
+- urandom fix for rngd service on RedHat Family version 7
+
 ## 1.0.24
+- Wls_setting resource type check for required attributes
+- Timeout parameter bug on all wls resource types ( the default 120 was always used)
+- Nodemanager.pp exec sleep command replaced by fiddyspence/sleep resource type, will check every 2 seconds with netstat
 
 ## 1.0.23
 - Solaris 11 fixes for nodemanager, wls_adminserver & wls_managedserver resource types

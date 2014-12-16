@@ -54,6 +54,7 @@ module Puppet
     property :frontendhost
     property :frontendhttpport
     property :frontendhttpsport
+    property :securereplication
 
     add_title_attributes(:cluster_name) do
       /^((.*\/)?(.*)?)$/

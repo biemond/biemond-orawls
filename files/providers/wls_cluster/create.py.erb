@@ -21,6 +21,8 @@ frontendhost              = '<%= frontendhost %>'
 frontendhttpport          = '<%= frontendhttpport %>'
 frontendhttpsport         = '<%= frontendhttpsport %>'
 
+securereplication         = '<%= securereplication %>'
+
 print "2"
 
 edit()
@@ -41,6 +43,9 @@ try:
     cmo.setFrontendHTTPPort(int(frontendhttpport))
   if frontendhttpsport:
     cmo.setFrontendHTTPSPort(int(frontendhttpsport))
+
+  if securereplication == '1':
+    cmo.setSecureReplicationEnabled(true)
 
   cmo.setMigrationBasis(migrationbasis)
   if migrationbasis == 'database':

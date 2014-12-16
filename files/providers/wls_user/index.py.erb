@@ -15,7 +15,7 @@ f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;realm;authenticationprovider;description;domain"
 
 for i in authProvider:
-  if isinstance(i,UserReaderMBean):
+  if isinstance(i,UserReaderMBean) and "ldap" not in i.getProviderClassName().lower():
     userName = i
     authName = i.getName()
 

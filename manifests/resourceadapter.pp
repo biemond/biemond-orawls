@@ -171,10 +171,10 @@ define orawls::resourceadapter(
 
     case $::kernel {
       'Linux': {
-        $javaCommandPlan = "java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+        $javaCommandPlan = 'java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
       }
       'SunOS': {
-        $javaCommandPlan = "java -d64 -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+        $javaCommandPlan = 'java -d64 -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
       }
     }
 

@@ -53,13 +53,13 @@ define orawls::utils::rcu(
 
   if !defined(File["${download_dir}/checkrcu.py"]) {
     file { "${download_dir}/checkrcu.py":
-      ensure  => present,
-      source  => 'puppet:///modules/orawls/wlst/checkrcu.py',
-      mode    => '0775',
-      owner   => $os_user,
-      group   => $os_group,
-      backup  => false,
-      before  => Wls_rcu[$rcu_prefix],
+      ensure => present,
+      source => 'puppet:///modules/orawls/wlst/checkrcu.py',
+      mode   => '0775',
+      owner  => $os_user,
+      group  => $os_group,
+      backup => false,
+      before => Wls_rcu[$rcu_prefix],
     }
   }
 

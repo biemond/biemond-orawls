@@ -9,13 +9,13 @@ define orawls::utils::fmwclusterjrf (
   $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $domain_name                = hiera('domain_name'),
   $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $adminserver_name           = hiera('domain_adminserver'        , "AdminServer"),
-  $adminserver_address        = hiera('domain_adminserver_address', "localhost"),
+  $adminserver_name           = hiera('domain_adminserver'        , 'AdminServer'),
+  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
   $jrf_target_name            = undef,
   $opss_datasource_name       = undef,
-  $weblogic_user              = hiera('wls_weblogic_user'         , "weblogic"),
+  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),
   $os_user                    = hiera('wls_os_user'), # oracle
   $os_group                   = hiera('wls_os_group'), # dba

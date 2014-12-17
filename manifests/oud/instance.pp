@@ -32,7 +32,7 @@ define orawls::oud::instance (
     }
   }
 
-  $execPath = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
   exec { "rootUserPasswordFile ${title}":
     command   => "echo ${oud_root_user_password} > ${instances_home}/${oud_instance_name}pass.txt",
@@ -46,7 +46,7 @@ define orawls::oud::instance (
   }
 
   exec { "create ldap ${title}":
-    command     => "${oud_home}/oud-setup --cli --baseDN ${oud_baseDN} --addBaseEntry --netsvc --ldapPort ${oud_ldapPort} --adminConnectorPort ${oud_adminConnectorPort} --skipPortCheck --rootUserDN cn=Directory\\ Manager --rootUserPasswordFile ${instances_home}/${oud_instance_name}pass.txt --doNotStart --serverTuning autotune --importTuning autotune --enableStartTLS --ldapsPort ${oud_ldapsPort} --generateSelfSignedCertificate --hostName ${fqdn} --no-prompt --noPropertiesFile",
+    command     => "${oud_home}/oud-setup --cli --baseDN ${oud_baseDN} --addBaseEntry --netsvc --ldapPort ${oud_ldapPort} --adminConnectorPort ${oud_adminConnectorPort} --skipPortCheck --rootUserDN cn=Directory\\ Manager --rootUserPasswordFile ${instances_home}/${oud_instance_name}pass.txt --doNotStart --serverTuning autotune --importTuning autotune --enableStartTLS --ldapsPort ${oud_ldapsPort} --generateSelfSignedCertificate --hostName ${::fqdn} --no-prompt --noPropertiesFile",
     timeout     => 0,
     environment => ["INSTANCE_NAME=../oud_instances/${oud_instance_name}"],
     unless      => "test -d ${instances_home}/${oud_instance_name}",

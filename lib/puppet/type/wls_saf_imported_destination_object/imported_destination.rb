@@ -11,3 +11,6 @@ newparam(:imported_destination) do
   desc 'SAF imported destination name'
 
 end
+
+
+autorequire(:wls_saf_imported_destination) { "#{jmsmodule}:#{imported_destination}" }

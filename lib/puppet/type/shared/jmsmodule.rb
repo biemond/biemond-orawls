@@ -11,3 +11,5 @@ newparam(:jmsmodule) do
   end
 
 end
+
+autorequire(:wls_jms_module) { jmsmodule}

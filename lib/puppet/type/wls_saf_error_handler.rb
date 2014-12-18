@@ -49,11 +49,5 @@ module Puppet
     add_title_attributes(:jmsmodule, :error_handler_name) do
       /^((.*\/)?(.*):(.*)?)$/
     end
-
-    #
-    # Make sure the top level jms module is auto required
-    #
-    autorequire(:wls_jms_module) { jmsmodule }
-
   end
 end

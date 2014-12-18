@@ -10,3 +10,7 @@ newproperty(:authenticationprovider) do
   end
 
 end
+
+
+autorequire(:wls_authentication_provider) { authenticationprovider}
+

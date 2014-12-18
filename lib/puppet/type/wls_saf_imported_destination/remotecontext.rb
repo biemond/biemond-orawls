@@ -8,3 +8,8 @@ newproperty(:remotecontext) do
   end
 
 end
+
+#
+# Make sure the top level jms module is auto required
+#
+autorequire(:wls_saf_remote_context) { "#{jmsmodule}:#{remotecontext}" if remotecontext }

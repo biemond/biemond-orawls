@@ -8,3 +8,5 @@ newproperty(:user) do
   end
 
 end
+
+autorequire(:wls_user) {user}

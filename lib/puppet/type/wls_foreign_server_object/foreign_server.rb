@@ -11,3 +11,5 @@ newparam(:foreign_server) do
   desc 'Foreign server name'
 
 end
+
+autorequire(:wls_foreign_server) { "#{jmsmodule}:#{foreign_server}" }

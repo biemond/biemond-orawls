@@ -8,3 +8,5 @@ newproperty(:subdeployment) do
   end
 
 end
+
+autorequire(:wls_subdeployment) { subdeployment}

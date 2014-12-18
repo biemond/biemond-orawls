@@ -14,3 +14,7 @@ end
 def target
   self[:target] ? self[:target].join(',') : ''
 end
+
+autorequire(:wls_cluster) { target if targettype == 'Cluster'}
+autorequire(:wls_server)  { target if targettype == 'Server'}
+

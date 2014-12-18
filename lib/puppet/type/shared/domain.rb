@@ -22,3 +22,5 @@ newparam(:domain) do
   end
 
 end
+
+autorequire(:wls_domain)      { domain}

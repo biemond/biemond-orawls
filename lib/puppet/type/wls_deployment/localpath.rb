@@ -6,3 +6,5 @@ newparam(:localpath) do
   isnamevar
 
 end
+
+autorequire(:file) { localpath}

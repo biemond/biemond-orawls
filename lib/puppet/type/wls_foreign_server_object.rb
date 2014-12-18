@@ -52,10 +52,6 @@ module Puppet
       /^((.*\/)?(.*):(.*):(.*)?)$/
     end
 
-    #
-    # Make sure the top foreign server is auto required
-    #
-    autorequire(:wls_foreign_server) { "#{jmsmodule}:#{foreign_server}" }
 
   end
 end

@@ -11,3 +11,5 @@ newparam(:server) do
   end
 
 end
+
+autorequire(:wls_server) { server }

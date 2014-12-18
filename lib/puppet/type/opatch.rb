@@ -48,7 +48,7 @@ module Puppet
 
     newparam(:oracle_product_home_dir) do
       desc <<-EOT
-        The oracle prodcut home folder.
+        The oracle product home folder.
       EOT
     end
 

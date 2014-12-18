@@ -8,3 +8,5 @@ newproperty(:quota) do
   end
 
 end
+
+autorequire(:wls_quota) { quota }

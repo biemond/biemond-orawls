@@ -5,6 +5,7 @@
 - urandom fix for rngd service on RedHat Family version 7
 - Secure replication parameter for wls_cluster
 - ignore ldap providers for wls_user & wls_group
+- Support for nodemanagers without security ( plain, with nodemanager_secure_listener = false) on control.pp, nodemanager.pp & domain.pp
 
 ## 1.0.24
 - Wls_setting resource type check for required attributes

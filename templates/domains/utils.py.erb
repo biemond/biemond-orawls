@@ -19,12 +19,18 @@ def createAdminStartupPropertiesFile(directoryPath, args):
   fileNew.flush()
   fileNew.close()
 
-def createMachine(type, name, address):
+def createMachine(type, name, address, nodemanager_secure_listener):
   cd('/')
   create(name,type)
   cd(type + '/' + name)
   create(name,'NodeManager')
   cd('NodeManager/' + name)
+
+  if nodemanager_secure_listener == true:
+    set('NMType','SSL')
+  else:
+    set('NMType','Plain')
+
   set('ListenAddress',address)
 
 def changeDatasource(datasource, username, password, db_url):

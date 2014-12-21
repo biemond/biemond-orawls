@@ -13,7 +13,7 @@ StartScriptName=startWebLogic.sh
 ListenAddress=<%= @nodemanager_address %>
 NativeVersionEnabled=true
 LogToStderr=true
-SecureListener=true
+SecureListener=<%= @nodemanager_secure_listener %>
 LogCount=1
 DomainRegistrationEnabled=false
 StopScriptEnabled=true

@@ -7,19 +7,20 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
   def adminserver_control(action)
     Puppet.debug "adminserver action: #{action}"
 
-    domain_name               = resource[:domain_name]
-    domain_path               = resource[:domain_path]
-    name                      = resource[:server_name]
-    user                      = resource[:os_user]
-    weblogic_home_dir         = resource[:weblogic_home_dir]
-    weblogic_user             = resource[:weblogic_user]
-    weblogic_password         = resource[:weblogic_password]
-    nodemanager_address       = resource[:nodemanager_address]
-    nodemanager_port          = resource[:nodemanager_port]
-    jsse_enabled              = resource[:jsse_enabled]
-    custom_trust              = resource[:custom_trust]
-    trust_keystore_file       = resource[:trust_keystore_file]
-    trust_keystore_passphrase = resource[:trust_keystore_passphrase]
+    domain_name                 = resource[:domain_name]
+    domain_path                 = resource[:domain_path]
+    name                        = resource[:server_name]
+    user                        = resource[:os_user]
+    weblogic_home_dir           = resource[:weblogic_home_dir]
+    weblogic_user               = resource[:weblogic_user]
+    weblogic_password           = resource[:weblogic_password]
+    nodemanager_address         = resource[:nodemanager_address]
+    nodemanager_port            = resource[:nodemanager_port]
+    nodemanager_secure_listener = resource[:nodemanager_secure_listener]
+    jsse_enabled                = resource[:jsse_enabled]
+    custom_trust                = resource[:custom_trust]
+    trust_keystore_file         = resource[:trust_keystore_file]
+    trust_keystore_passphrase   = resource[:trust_keystore_passphrase]
 
     Puppet.debug "adminserver custom trust: #{custom_trust}"
 
@@ -35,14 +36,20 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       wls_action = "nmKill(\"#{name}\")"
     end
 
+    if nodemanager_secure_listener == true
+      nm_protocol = 'ssl'
+    else
+      nm_protocol = 'plain'
+    end
+
     command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
-nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"ssl\")
+nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 #{wls_action}
 nmDisconnect()
 EOF"
 
     command2 = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
-nmConnect(\"#{weblogic_user}\",\"xxxxx\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"ssl\")
+nmConnect(\"#{weblogic_user}\",\"xxxxx\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 #{wls_action}
 nmDisconnect()
 EOF"
@@ -59,8 +66,8 @@ EOF"
 
     kernel = Facter.value(:kernel)
 
-    ps_bin = (kernel != "SunOS" || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? "/bin/ps" : "/usr/ucb/ps"
-    ps_arg = kernel == "SunOS" ? "awwx" : "-ef"
+    ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
+    ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
 
     command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
 

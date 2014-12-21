@@ -103,6 +103,12 @@ module Puppet
       EOT
     end
 
+    newparam(:nodemanager_secure_listener) do
+      desc <<-EOT
+        The nodemanager secure listener true or false.
+      EOT
+    end
+
     newparam(:jsse_enabled) do
       desc <<-EOT
         The jsse enabled.

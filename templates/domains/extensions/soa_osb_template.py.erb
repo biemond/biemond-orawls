@@ -19,6 +19,7 @@ ADMIN_USER='<%= @weblogic_user %>'
 ADMIN_PASSWORD='<%= @weblogic_password %>'
 
 JAVA_HOME='<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER=<%= @nodemanager_secure_listener %>
 
 <% if @java_arguments["ADM"] %>
 ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
@@ -114,7 +115,7 @@ if WEBLOGIC_VERSION != 1213:
   # destroy the normal one
   delete('LocalMachine','Machine')
   print('change the default machine LocalMachine with type Machine')
-  createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
+  createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>',NODEMANAGER_SECURE_LISTENER)
 
 print 'Change AdminServer'
 cd('/Servers/'+ADMIN_SERVER)

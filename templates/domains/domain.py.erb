@@ -22,6 +22,7 @@ ADMIN_PASSWORD='<%= @weblogic_password %>'
 JAVA_HOME='<%= @jdk_home_dir %>'
 
 ADMINSERVER_LISTEN_ON_ALL_INTERFACES=<%= @adminserver_listen_on_all_interfaces %>
+NODEMANAGER_SECURE_LISTENER=<%= @nodemanager_secure_listener %>
 
 <% if @java_arguments["ADM"] %>
 ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
@@ -40,7 +41,7 @@ print('Set domain log')
 changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 
 print('Create machine LocalMachine with type UnixMachine')
-createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>')
+createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>',NODEMANAGER_SECURE_LISTENER)
 
 if ADMINSERVER_LISTEN_ON_ALL_INTERFACES:
   changeAdminServer(ADMIN_SERVER, 'LocalMachine', None, <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)

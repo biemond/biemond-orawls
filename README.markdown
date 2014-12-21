@@ -743,25 +743,26 @@ __orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | 
 optional override the default server arguments in the domain.py template with java_arguments parameter
 
     orawls::domain { 'wlsDomain12c':
-      version                    => 1212,  # 1036|1111|1211|1212|1213
-      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
-      middleware_home_dir        => "/opt/oracle/middleware12c",
-      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
-      domain_template            => "standard",  #standard|adf|osb|osb_soa|osb_soa_bpm|soa|soa_bpm
-      domain_name                => "Wls12c",
-      development_mode           => false,
-      adminserver_name           => "AdminServer",
-      adminserver_address        => "localhost",
-      adminserver_port           => 7001,
-      nodemanager_port           => 5556,
-      java_arguments             => { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."},
-      weblogic_user              => "weblogic",
-      weblogic_password          => "weblogic1",
-      os_user                    => "oracle",
-      os_group                   => "dba",
-      log_dir                    => "/data/logs",
-      download_dir               => "/data/install",
-      log_output                 => true,
+      version                     => 1212,  # 1036|1111|1211|1212|1213
+      weblogic_home_dir           => "/opt/oracle/middleware12c/wlserver",
+      middleware_home_dir         => "/opt/oracle/middleware12c",
+      jdk_home_dir                => "/usr/java/jdk1.7.0_45",
+      domain_template             => "standard",  #standard|adf|osb|osb_soa|osb_soa_bpm|soa|soa_bpm
+      domain_name                 => "Wls12c",
+      development_mode            => false,
+      adminserver_name            => "AdminServer",
+      adminserver_address         => "localhost",
+      adminserver_port            => 7001,
+      nodemanager_secure_listener => true,
+      nodemanager_port            => 5556,
+      java_arguments              => { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."},
+      weblogic_user               => "weblogic",
+      weblogic_password           => "weblogic1",
+      os_user                     => "oracle",
+      os_group                    => "dba",
+      log_dir                     => "/data/logs",
+      download_dir                => "/data/install",
+      log_output                  => true,
     }
 
 or when you set the defaults hiera variables
@@ -792,27 +793,28 @@ vagrantcentos64.example.com.yaml
     ---
     domain_instances:
       'wlsDomain12c':
-         version:              1212
-         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
-         middleware_home_dir:  "/opt/oracle/middleware12c"
-         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
-         domain_template:      "standard"
-         domain_name:          "Wls12c"
-         development_mode:     false
-         adminserver_name:     "AdminServer"
-         adminserver_address:  "localhost"
-         adminserver_port:     7001
-         nodemanager_port:     5556
-         weblogic_user:        "weblogic"
-         weblogic_password:    "weblogic1"
-         os_user:              "oracle"
-         os_group:             "dba"
-         log_dir:              "/data/logs"
-         download_dir:         "/data/install"
+         version:                     1212
+         weblogic_home_dir:           "/opt/oracle/middleware12c/wlserver"
+         middleware_home_dir:         "/opt/oracle/middleware12c"
+         jdk_home_dir:                "/usr/java/jdk1.7.0_45"
+         domain_template:             "standard"
+         domain_name:                 "Wls12c"
+         development_mode:            false
+         adminserver_name:            "AdminServer"
+         adminserver_address:         "localhost"
+         adminserver_port:            7001
+         nodemanager_secure_listener: true
+         nodemanager_port:            5556
+         weblogic_user:               "weblogic"
+         weblogic_password:           "weblogic1"
+         os_user:                     "oracle"
+         os_group:                    "dba"
+         log_dir:                     "/data/logs"
+         download_dir:                "/data/install"
          java_arguments:
             ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
             OSB:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
-         log_output:           true
+         log_output:                  true
 
 or when you set the defaults hiera variables
 
@@ -1033,17 +1035,18 @@ when you just have one WebLogic domain on a server
 __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware Home
 
     orawls::nodemanager{'nodemanager12c':
-      version                    => 1212, # 1036|1111|1211|1212
-      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
-      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
-      nodemanager_port           => 5556,
-      domain_name                => "Wls12c",
-      os_user                    => "oracle",
-      os_group                   => "dba",
-      log_dir                    => "/data/logs",
-      download_dir               => "/data/install",
-      log_output                 => true,
-      sleep                      => 20,
+      version                     => 1212, # 1036|1111|1211|1212
+      weblogic_home_dir           => "/opt/oracle/middleware12c/wlserver",
+      jdk_home_dir                => "/usr/java/jdk1.7.0_45",
+      nodemanager_port            => 5556,
+      nodemanager_secure_listener => true,
+      domain_name                 => "Wls12c",
+      os_user                     => "oracle",
+      os_group                    => "dba",
+      log_dir                     => "/data/logs",
+      download_dir                => "/data/install",
+      log_output                  => true,
+      sleep                       => 20,
     }
 
 or when you set the defaults hiera variables
@@ -1065,16 +1068,17 @@ vagrantcentos64.example.com.yaml
     ---
     nodemanager_instances:
       'nodemanager12c':
-         version:              1212
-         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
-         nodemanager_port:     5556
-         domain_name:          "Wls12c"
-         os_user:              "oracle"
-         os_group:             "dba"
-         log_dir:              "/data/logs"
-         download_dir:         "/data/install"
-         log_output:           true
+         version:                     1212
+         weblogic_home_dir:           "/opt/oracle/middleware12c/wlserver"
+         jdk_home_dir:                "/usr/java/jdk1.7.0_45"
+         nodemanager_port:            5556
+         nodemanager_secure_listener: true
+         domain_name:                 "Wls12c"
+         os_user:                     "oracle"
+         os_group:                    "dba"
+         log_dir:                     "/data/logs"
+         download_dir:                "/data/install"
+         log_output:                  true
 
 or when you set the defaults hiera variables
 
@@ -1120,22 +1124,23 @@ or with custom identity and custom truststore
 __orawls::control__ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain, this will call the wls_managedserver and wls_adminserver types
 
     orawls::control{'startWLSAdminServer12c':
-      domain_name                => "Wls12c",
-      server_type                => 'admin',  # admin|managed
-      target                     => 'Server', # Server|Cluster
-      server                     => 'AdminServer',
-      action                     => 'start',
-      weblogic_home_dir          => "/opt/oracle/middleware12c/wlserver",
-      jdk_home_dir               => "/usr/java/jdk1.7.0_45",
-      weblogic_user              => "weblogic",
-      weblogic_password          => "weblogic1",
-      adminserver_address        => 'localhost',
-      adminserver_port           => 7001,
-      nodemanager_port           => 5556,
-      os_user                    => "oracle",
-      os_group                   => "dba",
-      download_dir               => "/data/install",
-      log_output                 => true,
+      domain_name                 => "Wls12c",
+      server_type                 => 'admin',  # admin|managed
+      target                      => 'Server', # Server|Cluster
+      server                      => 'AdminServer',
+      action                      => 'start',
+      weblogic_home_dir           => "/opt/oracle/middleware12c/wlserver",
+      jdk_home_dir                => "/usr/java/jdk1.7.0_45",
+      weblogic_user               => "weblogic",
+      weblogic_password           => "weblogic1",
+      adminserver_address         => 'localhost',
+      adminserver_port            => 7001,
+      nodemanager_port            => 5556,
+      nodemanager_secure_listener => true,
+      os_user                     => "oracle",
+      os_group                    => "dba",
+      download_dir                => "/data/install",
+      log_output                  => true,
     }
 
 or when you set the defaults hiera variables
@@ -1166,23 +1171,24 @@ vagrantcentos64.example.com.yaml
     ---
     control_instances:
       'startWLSAdminServer12c':
-         domain_name:          "Wls12c"
-         domain_dir:           "/opt/oracle/middleware12c/user_projects/domains/Wls12c"
-         server_type:          'admin'
-         target:               'Server'
-         server:               'AdminServer'
-         action:               'start'
-         weblogic_home_dir:    "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir:         "/usr/java/jdk1.7.0_45"
-         weblogic_user:        "weblogic"
-         weblogic_password:    "weblogic1"
-         adminserver_address:  'localhost'
-         adminserver_port:     7001
-         nodemanager_port:     5556
-         os_user:              "oracle"
-         os_group:             "dba"
-         download_dir:         "/data/install"
-         log_output:           true
+         domain_name:                  "Wls12c"
+         domain_dir:                   "/opt/oracle/middleware12c/user_projects/domains/Wls12c"
+         server_type:                  'admin'
+         target:                       'Server'
+         server:                       'AdminServer'
+         action:                       'start'
+         weblogic_home_dir:            "/opt/oracle/middleware12c/wlserver"
+         jdk_home_dir:                 "/usr/java/jdk1.7.0_45"
+         weblogic_user:                "weblogic"
+         weblogic_password:            "weblogic1"
+         adminserver_address:          'localhost'
+         adminserver_port:             7001
+         nodemanager_port:             5556
+         nodemanager_secure_listener:  true
+         os_user:                      "oracle"
+         os_group:                     "dba"
+         download_dir:                 "/data/install"
+         log_output:                   true
 
 or when you set the defaults hiera variables
 

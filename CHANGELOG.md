@@ -1,5 +1,7 @@
 # History
 
+## 1.0.26
+
 ## 1.0.25
 - Auto require on wls resource types
 - urandom fix for rngd service on RedHat Family version 7

@@ -12,4 +12,5 @@ newparam(:server) do
 
 end
 
-autorequire(:wls_server) { server }
+
+autorequire(:wls_server) {"#{domain}/#{server}"}

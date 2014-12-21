@@ -9,4 +9,4 @@ newproperty(:quota) do
 
 end
 
-autorequire(:wls_quota) { quota }
+autorequire(:wls_jms_quota) { "#{domain}/#{jmsmodule}:#{quota}" }

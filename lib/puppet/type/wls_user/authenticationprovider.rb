@@ -12,5 +12,5 @@ newproperty(:authenticationprovider) do
 end
 
 
-autorequire(:wls_authentication_provider) { authenticationprovider}
+autorequire(:wls_authentication_provider) { "#{domain}/#{authenticationprovider}"}
 

@@ -9,4 +9,4 @@ newproperty(:user) do
 
 end
 
-autorequire(:wls_user) {user}
+autorequire(:wls_user) {"#{domain}/#{user}"}

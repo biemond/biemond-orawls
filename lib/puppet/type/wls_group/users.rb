@@ -20,4 +20,4 @@ def users
 end
 
 
-autorequire(:wls_user) { users}
+autorequire(:wls_user) { self[:users].collect{|u| "#{domain}/#{u}"}}

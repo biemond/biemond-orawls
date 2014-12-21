@@ -13,4 +13,4 @@ newparam(:imported_destination) do
 end
 
 
-autorequire(:wls_saf_imported_destination) { "#{jmsmodule}:#{imported_destination}" }
+autorequire(:wls_saf_imported_destination) { "#{domain}/#{jmsmodule}:#{imported_destination}" }

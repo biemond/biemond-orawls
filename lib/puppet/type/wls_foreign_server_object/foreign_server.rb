@@ -12,4 +12,4 @@ newparam(:foreign_server) do
 
 end
 
-autorequire(:wls_foreign_server) { "#{jmsmodule}:#{foreign_server}" }
+autorequire(:wls_foreign_server) { "#{domain}/#{jmsmodule}:#{foreign_server}" }

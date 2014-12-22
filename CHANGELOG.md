@@ -1,5 +1,7 @@
 # History
 
+## 1.0.27
+
 ## 1.0.26
 - auto require based on the wls resource parameters, no need to use require on the all wls resource types
 - wls_adminserver type used plain as a default in nmconnect

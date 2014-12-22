@@ -36,7 +36,7 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       wls_action = "nmKill(\"#{name}\")"
     end
 
-    if nodemanager_secure_listener == true
+    if "#{nodemanager_secure_listener}" == 'true'
       nm_protocol = 'ssl'
     else
       nm_protocol = 'plain'

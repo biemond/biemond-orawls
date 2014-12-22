@@ -60,5 +60,13 @@ module Puppet
       /^((.*\/)?(.*)?)$/
     end
 
+    #
+    # Manage auto requires
+    #
+    autorequire(:wls_datasource)  {[
+      "#{domain}/#{migration_datasource}",
+      "#{domain}/#{datasourceforjobscheduler}"
+    ]}
+
   end
 end

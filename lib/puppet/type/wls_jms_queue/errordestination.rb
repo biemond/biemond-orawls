@@ -8,3 +8,5 @@ newproperty(:errordestination) do
   end
 
 end
+
+autorequire(:wls_jms_queue) { "#{domain}/#{jmsmodule}:#{errordestination}" if errordestination}

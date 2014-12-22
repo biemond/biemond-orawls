@@ -8,3 +8,5 @@ newproperty(:weblogic_user) do
   end
 
 end
+
+autorequire(:wls_user) { "#{domain}/#{weblogic_user}"}

@@ -8,3 +8,5 @@ newproperty(:subdeployment) do
   end
 
 end
+
+autorequire(:wls_jms_subdeployment) { "#{domain}/#{jmsmodule}:#{subdeployment}" }

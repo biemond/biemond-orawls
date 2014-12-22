@@ -8,3 +8,5 @@ newproperty(:machine) do
   end
 
 end
+
+autorequire(:wls_machine) {"#{domain}/#{machine}"}

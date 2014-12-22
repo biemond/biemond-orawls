@@ -63,10 +63,10 @@ module Puppet
     #
     # Manage auto requires
     #
-    autorequire(:wls_datasource)  {[
-      "#{domain}/#{migration_datasource}",
-      "#{domain}/#{datasourceforjobscheduler}"
-    ]}
+    autorequire(:wls_datasource)  {
+      ["#{domain}/#{migration_datasource}",
+       "#{domain}/#{datasourceforjobscheduler}"]
+    }
 
   end
 end

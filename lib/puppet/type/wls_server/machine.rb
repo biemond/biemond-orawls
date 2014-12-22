@@ -9,4 +9,4 @@ newproperty(:machine) do
 
 end
 
-autorequire(:wls_machine) {"#{domain}/#{machine}"}
+autorequire(:wls_machine) { "#{domain}/#{machine}" }

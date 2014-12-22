@@ -19,5 +19,4 @@ def users
   self[:users] ? self[:users].join(',') : ''
 end
 
-
-autorequire(:wls_user) { self[:users].collect{|u| "#{domain}/#{u}"}}
+autorequire(:wls_user) { self[:users].collect { |u| "#{domain}/#{u}" } }

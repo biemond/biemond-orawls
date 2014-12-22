@@ -9,5 +9,4 @@ newproperty(:errordestination) do
 
 end
 
-
-autorequire(:wls_jms_queue) { "#{domain}/#{jmsmodule}:#{errordestination}"}
+autorequire(:wls_jms_queue) { "#{domain}/#{jmsmodule}:#{errordestination}" }

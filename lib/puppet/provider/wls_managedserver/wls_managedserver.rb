@@ -40,8 +40,8 @@ EOF"
 
     kernel = Facter.value(:kernel)
 
-    ps_bin = (kernel != "SunOS" || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? "/bin/ps" : "/usr/ucb/ps"
-    ps_arg = kernel == "SunOS" ? "awwx" : "-ef"
+    ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
+    ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
 
     command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
 

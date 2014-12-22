@@ -7,4 +7,4 @@ newparam(:localpath) do
 
 end
 
-autorequire(:file) { localpath}
+autorequire(:file) { localpath }

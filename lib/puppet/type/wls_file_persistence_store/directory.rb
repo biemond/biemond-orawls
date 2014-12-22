@@ -9,5 +9,4 @@ newproperty(:directory) do
 
 end
 
-autorequire(:file) { directory}
-
+autorequire(:file) { directory }

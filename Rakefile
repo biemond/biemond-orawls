@@ -4,6 +4,8 @@ require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
 require 'pathname'
 require 'ci/reporter/rake/rspec'
+require 'puppet_blacksmith/rake_tasks'
+
 
 desc "Run the tests"
 RSpec::Core::RakeTask.new(:test) do |t|

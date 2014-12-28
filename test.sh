@@ -32,6 +32,17 @@ bundle exec rubocop
 rubocop
 
 
+# Release the Puppet module, doing a clean, build, tag, push, bump_commit
+rake module:clean
+rake build
+
+rake module:push
+rake module:tag
+rake module:bump_commit  # Bump version and git commit
+
+
+
+
 # for windows
 install ruby 1.9.3 for windows
 install puppet 3.7.1 msi (https://downloads.puppetlabs.com/windows/)
@@ -48,3 +59,5 @@ SET RUBYLIB="C:\Program Files (x86)\Puppet Labs\Puppet\lib";"C:\Program Files (x
 bundle exec rake syntax
 bundle exec rake lint
 bundle exec rake ci:setup:rspec spec
+
+

@@ -2720,6 +2720,7 @@ or use puppet resource wls_datasource
       testtablename              => 'SQL SELECT 1 FROM DUAL',
       url                        => 'jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com',
       user                       => 'hr',
+      password                   => 'pass',
       usexa                      => '1',
     }
     # this will use default as wls_setting identifier
@@ -2735,6 +2736,7 @@ or use puppet resource wls_datasource
       testtablename              => 'SQL SELECT 1',
       url                        => 'jdbc:mysql://10.10.10.10:3306/jms',
       user                       => 'jms',
+      password                   => 'pass',
       usexa                      => '1',
       # To Optionally Configure as Gridlink Datasource
       fanenabled                 => '1',
@@ -2766,6 +2768,7 @@ in hiera
           testtablename:               'SQL SELECT 1 FROM DUAL'
           url:                         "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
           user:                        'hr'
+          password:                    'pass'
           usexa:                       '1'
         'jmsDS':
           ensure:                      'present'
@@ -2782,6 +2785,7 @@ in hiera
           testtablename:               'SQL SELECT 1'
           url:                         'jdbc:mysql://10.10.10.10:3306/jms'
           user:                        'jms'
+          password:                    'pass'
           usexa:                       '1'
           # To Optionally Configure as Gridlink Datasource
           fanenabled:                  '1'

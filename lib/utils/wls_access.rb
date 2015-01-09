@@ -78,7 +78,7 @@ module Utils
 
       debugmode = Puppet::Util::Log.level
       if debugmode.to_s == 'debug'
-        puts 'Prepare to run: ' + tmpFile.path + ',' +  operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl + ',' +  postClasspath
+        puts 'Prepare to run: ' + tmpFile.path + ',' +  operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl
         puts 'vvv==================================================================='
         File.open(tmpFile.path).readlines.each do |line|
           puts line

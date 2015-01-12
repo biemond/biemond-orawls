@@ -3347,8 +3347,8 @@ in hiera
 
     multi_datasources:
       'myMultiDatasource':
-        ensure:  present
-        jndiname: 'myMultiDatasource'
+        ensure:        present
+        jndinames:     'myMultiDatasource'
         testfrequency: 120
         algorithmtype: 'Failover'
         datasources:

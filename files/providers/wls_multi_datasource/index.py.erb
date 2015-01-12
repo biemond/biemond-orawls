@@ -1,0 +1,37 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+m = ls('/JDBCSystemResources',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;datasources;target;targettype;jndinames;algorithmtype;testfrequency"
+for token in m:
+        print '___'+token+'___'
+
+        cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
+        datasources = get('DataSourceList')
+
+        n = ls('/SystemResources/'+token+'/Targets',returnMap='true')
+        target     = []
+        targetType = []
+        
+        for token2 in n:
+               target.append(token2)
+               cd('/SystemResources/'+token+'/Targets/'+token2)
+               targetType.append(get('Type'))
+
+        cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
+        jndinames = get('JNDINames')
+        algorithmtype = get('AlgorithmType') 
+
+        cd('/JDBCSystemResources/'+token+'/JDBCResource/'+token+'/JDBCConnectionPoolParams/'+token)
+        testfrequency = get('TestFrequencySeconds')
+
+        print >>f, ";".join(map(quote, [domain+'/'+token,datasources,','.join(target),','.join(targetType),','.join(jndinames),algorithmtype,testfrequency]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

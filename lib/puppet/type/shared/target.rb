@@ -24,7 +24,8 @@ private
 
 def autorequire_when(type, type_name)
   return_value = []
-  self[:target].each_with_index do |value, index|
+  targets = self[:target] || []
+  targets.each_with_index do |value, index|
     return_value << full_name(value) if self[:targettype][index] == type_name
   end
 end

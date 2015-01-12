@@ -1,0 +1,70 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+name                       = '<%= multi_datasource_name %>'
+target                     = '<%= target %>'
+targettype                 = '<%= targettype %>'
+jndinames                  = '<%= jndinames %>'
+datasources                = '<%= datasources %>'
+algorithmtype              = '<%= algorithmtype %>' 
+testfrequency              = '<%= testfrequency %>'
+
+edit()
+startEdit()
+
+try:
+
+    print "modify"
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name)
+    cmo.setName(name)
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
+    if jndinames:
+      jndis = String(jndinames).split(",")
+      set('JNDINames',jarray.array(jndis, String))
+
+
+    cmo.setAlgorithmType(algorithmtype)
+    
+    print "set datasources" 
+    
+    cmo.setDataSourceList(datasources)
+        
+    print "set testfrequency"
+    cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)    
+    set('TestFrequencySeconds',int(testfrequency))
+    
+    cd('/JDBCSystemResources/' + name)
+    
+    # Removing current targets
+    currentTargets = cmo.getTargets()
+    for currentTarget in currentTargets:
+        cmo.removeTarget(currentTarget)
+
+    cd('/SystemResources/' + name )
+
+    print "target: "     +  target
+    print "targettype: " +  targettype
+    
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
+    targetList  = []
+    for i in range(len(targets)):
+        print "target "+targets[i] + " " + targettypes[i]
+        targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
+    set('Targets',jarray.array(targetList, ObjectName))
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+
+

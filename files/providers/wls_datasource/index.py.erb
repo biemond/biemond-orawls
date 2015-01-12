@@ -11,8 +11,13 @@ m = ls('/JDBCSystemResources',returnMap='true')
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist"
 for token in m:
-        print '___'+token+'___'
-        cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
+    print '___'+token+'___'
+    cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
+
+    # check for MultiDatasource
+    cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
+    dataSourceList = get('DataSourceList')
+    if dataSourceList is None:
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token )
         url      = get('Url')
@@ -32,8 +37,11 @@ for token in m:
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCConnectionPoolParams/' + token )
         testTableName = get('TestTableName')
 
-        cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties/user')
-        user = get('Value')
+        try:
+          cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties/user')
+          user = get('Value')
+        except:
+          user = ''
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token)
         globalTransactionsProtocol = get('GlobalTransactionsProtocol')

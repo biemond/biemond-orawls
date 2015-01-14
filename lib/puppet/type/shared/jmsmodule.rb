@@ -12,5 +12,4 @@ newparam(:jmsmodule) do
 
 end
 
-
 autorequire(:wls_jms_module) { "#{domain}/#{jmsmodule}" }

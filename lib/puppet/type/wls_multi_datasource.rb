@@ -19,7 +19,7 @@ module Puppet
 
     to_get_raw_resources do
       Puppet.info "index #{name}"
-      environment = { 'action' => 'index', 'type' => 'wls_multi_datasource'}
+      environment = { 'action' => 'index', 'type' => 'wls_multi_datasource' }
 
       wlst template('puppet:///modules/orawls/providers/wls_multi_datasource/index.py.erb', binding), environment
     end
@@ -42,21 +42,19 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :multi_datasource_name
-    
+
     property :target
     property :targettype
     property :jndinames
     property :datasources
     property :algorithmtype
     property :testfrequency
-    
+
     add_title_attributes(:multi_datasource_name) do
       /^((.*\/)?(.*)?)$/
     end
-    
+
     autorequire(:wls_datasource) { datasources }
 
   end
 end
-
-

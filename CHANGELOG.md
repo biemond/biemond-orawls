@@ -1,5 +1,7 @@
 # History
 
+## 1.0.28
+
 ## 1.0.27
 - bug fixes in auto require and post classpath parameter bug when running in debug mode
 - wls_multi_datasource resource type added

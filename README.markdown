@@ -127,7 +127,7 @@ But when it fails you can do the following actions.
 - Update orawls and its dependencies on the puppet master.
 - After adding or refreshing the easy_type or orawls modules you need to restart all the PE services on the puppet master (this will flush the PE cache) and always do a puppet agent run on the Puppet master
 - To solve this error "no such file to load -- easy_type" you need just to do a puppet run on the puppet master when it is still failing you can move the easy_type module to its primary module location ( /etc/puppetlabs/puppet/module )
-
+- Move orawls and easy_type to the primary module location [pup-1515](https://tickets.puppetlabs.com/browse/PUP-1515) when the Puppet master loads a Type, it searches the environment that the agent requested. When it loads providers for that type, it searches the default environment instead of the one the agent requested.
 
 ## Orawls WebLogic Facter
 

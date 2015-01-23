@@ -54,6 +54,7 @@ module Puppet
     property :testtablename
     property :globaltransactionsprotocol
     property :extraproperties
+    property :xaproperties
     property :maxcapacity
     property :initialcapacity
     property :fanenabled

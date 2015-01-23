@@ -17,6 +17,7 @@ maxcapacity                = '<%= maxcapacity %>'
 initialcapacity            = '<%= initialcapacity %>'
 fanenabled                 = '<%= fanenabled %>'
 onsnodelist                = '<%= onsnodelist %>'
+xaproperties               = '<%= xaproperties %>'
 
 edit()
 startEdit()
@@ -39,7 +40,6 @@ try:
       cmo.setUseXaDataSourceInterface(true)
     else:
       cmo.setUseXaDataSourceInterface(false)
-    #cmo.setPassword(dsPassword)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))
@@ -51,7 +51,7 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/user')
     cmo.setValue(user)
 
-
+    ## Extra Properties
     # Remove Existing Properties First
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/')
     existing_properties = ls('', returnMap='true')
@@ -71,6 +71,29 @@ try:
 
         cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/'+propname)
         cmo.setValue(val)
+
+    ## XA Properties
+    if usexa == '1':
+        # Remove Existing XA Properties First (resets them to default)
+        cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCXAParams/' + name)
+        valid_xa_properties = ls('', returnMap='true')
+        for existing_prop in valid_xa_properties:
+            cmo.unSet(existing_prop)
+    
+        # Set Them Dynamically
+        if xaproperties:
+            xapropertiesarray=String(xaproperties).split(",")
+            for xaproperty in xapropertiesarray:
+                propname, val = xaproperty.split("=")
+                # Converts to integer (for numbers and booleans too)
+                if val.isnumeric():
+                    val = int(val)
+                cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCXAParams/' + name )
+                try:
+                    methodToCall = getattr(cmo, 'set'+propname)
+                    methodToCall(val)
+                except AttributeError:
+                    print "%s is not a valid attribute type" % (propname)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
     cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)

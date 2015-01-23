@@ -15,6 +15,7 @@ user                       = '<%= user %>'
 testtablename              = '<%= testtablename %>'
 globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
 extraproperties            = '<%= extraproperties %>'
+xaproperties               = '<%= xaproperties %>'
 maxcapacity                = '<%= maxcapacity %>'
 initialcapacity            = '<%= initialcapacity %>'
 fanenabled                 = '<%= fanenabled %>'
@@ -66,6 +67,20 @@ try:
         cmo.createProperty(propname)
         cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name + '/Properties/'+propname)
         cmo.setValue(val)
+
+    if usexa == '1' and xaproperties:
+      xapropertiesarray=String(xaproperties).split(",")
+      for xaproperty in xapropertiesarray:
+        propname, val = xaproperty.split("=")
+        # Converts to integer (for numbers and booleans too)
+        if val.isnumeric():
+            val = int(val)
+        cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCXAParams/' + name )
+        try:
+            methodToCall = getattr(cmo, 'set'+propname)
+            methodToCall(val)
+        except AttributeError:
+            print "%s is not a valid attribute type" % (propname)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
     cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)

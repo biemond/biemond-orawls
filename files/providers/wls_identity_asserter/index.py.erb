@@ -10,26 +10,28 @@ realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
 path = getPath(realmName)
 cd(path)
 
-m2 = ls('AuthenticationProviders',returnMap='true')
-m = []
+m = ls('AuthenticationProviders',returnMap='true')
+m2 = []
 
-for ap in m2:
-  if 'identityasserter' not in ap.lower():
-    m.append(ap)
+for ap in m:
+  if 'identityasserter' in ap.lower():
+    m2.append(ap)
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;authentication_provider_name;control_flag;domain;order"
-for token in m:
+print >>f, "name;authentication_provider_name;domain;activetypes;defaultmappertype;order"
+for token in m2:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)
     description       = get('Description')
     providerclassname = get('ProviderClassName')
 
-    control_flag      = ''
+    activetypes      = ''
     try:
-      control_flag = get('ControlFlag')
+      activetypes = "::".join(get('ActiveTypes'))
     except:
-      print "ControlFlag does not exists, continue"
+      print "Failed to convert to list the Active Types."
+
+    defaultmappertype = get('DefaultUserNameMapperAttributeType')
 
     cd('../')
     ap = get('AuthenticationProviders')
@@ -42,6 +44,7 @@ for token in m:
       i=i+1
 
     cd('../')
-    print >>f, ";".join(map(quote, [domain+'/'+token,token,control_flag,domain,order]))
+
+    print >>f, ";".join(map(quote, [domain+'/'+token,token,domain,activetypes,defaultmappertype,order]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

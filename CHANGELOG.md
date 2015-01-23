@@ -1,6 +1,10 @@
 # History
 
 ## 1.0.28
+- new wls_identity_asserter type for customising default identy asserter
+- xaproperties attributes in wls_datasource
+- better error handling for wls_authentication_provider ordering
+- option to skip the OPSS security store migration from file to the database in fmwcluster.pp
 
 ## 1.0.27
 - bug fixes in auto require and post classpath parameter bug when running in debug mode

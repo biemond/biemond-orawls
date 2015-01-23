@@ -73,6 +73,7 @@ Dependency with
 - [wls_domain](#wls_domain)
 - [wls_user](#wls_user)
 - [wls_authentication_provider](#wls_authentication_provider)
+- [wls_identity_asserter](#wls_identity_asserter)
 - [wls_machine](#wls_machine)
 - [wls_server](#wls_server)
 - [wls_server_channel](#wls_server_channel)
@@ -1961,14 +1962,31 @@ in hiera
         control_flag:       'SUFFICIENT'
 
 
-      #ldap will be the first listed provider
-      'ldap':
-        ensure:             'present'
-        control_flag:       'SUFFICIENT'
-        providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
-        attributes:         'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled'
-        attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;1'
-        order:              '0'
+    #ldap will be the first listed provider
+       'ldap':
+          ensure:             'present'
+          control_flag:       'SUFFICIENT'
+          providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
+          attributes:         'Principal;Host;Port;CacheTTL;CacheSize;MaxGroupMembershipSearchLevel;SSLEnabled'
+          attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;1'
+          order:              '0'
+
+    'IdmsAuthenticator':
+      ensure:             'present'
+      control_flag:       'SUFFICIENT'
+      providerclassname:  'nl.rsg.security.idms.providers.authentication.IdmsAuthenticator'
+      attributes:         'Endpoint;RequestTimeout;ConnectTimeout'
+      attributesvalues:   'http://xxxx.com/MSL/4/AccountService;60000;5000'
+      order:              '0'
+
+    'ActiveDirectoryAuthenticator':
+      ensure:             'present'
+      control_flag:       'SUFFICIENT'
+      providerclassname:  'weblogic.security.providers.authentication.ActiveDirectoryAuthenticator'
+      attributes:         'Credential;GroupBaseDN;GroupFromNameFilter;GroupMembershipSearching;Host;MaxGroupMembershipSearchLevel;Principal;UserBaseDN;UserFromNameFilter;UserNameAttribute;Port'
+      attributesvalues:   'password;DC=ad,DC=company,DC=org;(&(sAMAccountName=%g)(objectclass=group));limited;ad.company.org;0;CN=SER_WASadmin,OU=Service Accounts,DC=ad,DC=company,DC=org;DC=ad,DC=company,DC=org;(&(sAMAccountName=%u)(objectclass=user));sAMAccountName;389'
+      order:              '1'
+
 
 ### wls_identity_asserter
 
@@ -1995,14 +2013,14 @@ in hiera
     $identity_asserter_instances = hiera('identity_asserter_instances', {})
     create_resources('wls_identity_asserter',$identity_asserter_instances, $default_params)
 
-    identity_asserter_instances:    
+    identity_asserter_instances:
       'DefaultIdentityAsserter':
         order:              '3'
         ensure:             'present'
         providerclassname:  'weblogic.security.providers.authentication.DefaultIdentityAsserter'
         attributes:         'DigestReplayDetectionEnabled;UseDefaultUserNameMapper'
         attributesvalues:   '1;1'
-        activetypes:        'AuthenticatedUser::X.509' 
+        activetypes:        'AuthenticatedUser::X.509'
         defaultmappertype:  'CN'
 
 ### wls_machine

@@ -1367,11 +1367,11 @@ or when you set the defaults hiera variables
 
 
 ### fmwcluster
-__orawls::utils::fmwcluster__ convert existing cluster to a OSB or SOA suite cluster (BPM is optional) and also convert BAM to a BAM cluster. This will also work for OIM / OAM cluster
+__orawls::utils::fmwcluster__ convert existing cluster to a OSB or SOA suite cluster (BPM is optional) and also convert BAM to a BAM cluster. This will also work for OIM / OAM cluster.
+The security store is migrated to a database store during this conversion. To maintain a file based store set a standalone hiera param "retain_security_file_store" to true.
 
 You first need to create some OSB, SOA or BAM clusters and add some managed servers to these clusters
 for OSB 11g or SOA Suite 11g managed servers make sure to also set the coherence arguments parameters
-
 
     $default_params = {}
     $fmw_cluster_instances = hiera('fmw_cluster_instances', $default_params)
@@ -1677,7 +1677,7 @@ with JSSE and custom trust
       trust_keystore_passphrase => hiera('wls_trust_keystore_passphrase'),
     }
 
-subscribe to a wls_domain or wls_authenticaton_provider event
+subscribe to a wls_domain, wls_authenticaton_provider or wls_identity_asserter event
 
     # for this type you won't need a wls_setting identifier
     wls_adminserver{'AdminServer_Wls1036:':
@@ -1722,7 +1722,7 @@ also supports subscribe with refreshonly
     }
 
 
-subscribe to a wls_domain or wls_authenticaton_provider event
+subscribe to a wls_domain, wls_identity_asserter or wls_authenticaton_provider event
 
     # for this type you won't need a wls_setting identifier
     wls_managedserver{'JMSServer1_Wls1036':
@@ -1924,9 +1924,9 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 
 only control_flag is a property, the rest are parameters and only used in a create action
 
-to provide a list of token types to create provide a "::" seperated list for attribute 'ActiveTypes'
+Optionally, providers can be ordered by providing a value to the order paramater, which is a zero-based list. When configuring ordering order, it may be necessary to create the resources with Puppet ordering (if not using Hiera) or by structuring Hiera in matching order. Otherwise ordering may fail if not all authentication providers are created yet (by default the provider will be ordered last if it is greater than the number of providers currently configured).
 
-Optionally, providers can be ordered by providing a value to the order paramater, which is a zero-based list. When configuring ordering order, it may be necessary to create the resources with Puppet ordering (if not using Hiera) or by structuring Hiera in matching order. Otherwise ordering may fail if not all authentication providers are created yet.
+To manage Weblogic's DefaultIdentityAsserter use the wls_identity_asserter type.
 
 or use puppet resource wls_authentication_provider
 
@@ -1935,12 +1935,6 @@ or use puppet resource wls_authentication_provider
     wls_authentication_provider { 'DefaultAuthenticator':
       ensure       => 'present',
       control_flag => 'SUFFICIENT',
-    }
-    wls_authentication_provider { 'DefaultIdentityAsserter':
-      ensure            => 'present',
-      providerclassname => 'weblogic.security.providers.authentication.DefaultIdentityAsserter',
-      attributes:       =>  'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes',
-      attributesvalues  =>  '1;1;CN;AuthenticatedUser::X.509',
     }
 
     # this provider will be ordered first in the providers list
@@ -1965,11 +1959,7 @@ in hiera
       'DefaultAuthenticator':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
-      'DefaultIdentityAsserter':
-        ensure:             'present'
-        providerclassname:  'weblogic.security.providers.authentication.DefaultIdentityAsserter'
-        attributes:         'DigestReplayDetectionEnabled;UseDefaultUserNameMapper;DefaultUserNameMapperAttributeType;ActiveTypes'
-        attributesvalues:   '1;1;CN;AuthenticatedUser::X.509'
+
 
       #ldap will be the first listed provider
       'ldap':
@@ -1980,7 +1970,40 @@ in hiera
         attributesvalues:   'ldapuser;ldapserver;389;60;1024;4;1'
         order:              '0'
 
+### wls_identity_asserter
 
+it needs wls_setting and when identifier is not provided it will use the 'default' and probably after the creation the AdminServer needs a reboot or subscribe to a restart with the wls_adminserver type
+
+to provide a list of token types to create provide a "::" seperated list for attribute 'ActiveTypes'
+
+Optionally, the provider can be ordered by specifying a value to the order paramater, which is a zero-based list. When configuring ordering order, it may be necessary to create the resources with Puppet ordering (if not using Hiera) or by structuring Hiera in matching order. Otherwise ordering may fail if not all authentication providers are created yet (by default the provider will be ordered last if it is greater than the number of providers currently configured).
+
+or use puppet resource wls_identity_asserter
+
+    wls_authentication_provider { 'DefaultIdentityAsserter':
+      ensure            => 'present',
+      providerclassname => 'weblogic.security.providers.authentication.DefaultIdentityAsserter',
+      attributes:       => 'DigestReplayDetectionEnabled;UseDefaultUserNameMapper',
+      attributesvalues  => '1;1;',
+      activetypes       => 'AuthenticatedUser::X.509',
+      defaultmappertype => 'CN',
+    }
+
+in hiera
+
+    $default_params = {}
+    $identity_asserter_instances = hiera('identity_asserter_instances', {})
+    create_resources('wls_identity_asserter',$identity_asserter_instances, $default_params)
+
+    identity_asserter_instances:    
+      'DefaultIdentityAsserter':
+        order:              '3'
+        ensure:             'present'
+        providerclassname:  'weblogic.security.providers.authentication.DefaultIdentityAsserter'
+        attributes:         'DigestReplayDetectionEnabled;UseDefaultUserNameMapper'
+        attributesvalues:   '1;1'
+        activetypes:        'AuthenticatedUser::X.509' 
+        defaultmappertype:  'CN'
 
 ### wls_machine
 
@@ -2705,6 +2728,8 @@ in hiera
 
 it needs wls_setting and when identifier is not provided it will use the 'default'.
 
+xaproperties are case sensitive and should be provided as comma separated key=value. Use WLST and run ls() in the JDBCXAParams component of your datasource to determine the valid XA properties which can be set.
+
 or use puppet resource wls_datasource
 
     # this will use default as wls_setting identifier
@@ -2723,6 +2748,7 @@ or use puppet resource wls_datasource
       user                       => 'hr',
       password                   => 'pass',
       usexa                      => '1',
+      xaproperties:              => 'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300',
     }
     # this will use default as wls_setting identifier
     wls_datasource { 'jmsDS':
@@ -2771,6 +2797,7 @@ in hiera
           user:                        'hr'
           password:                    'pass'
           usexa:                       '1'
+          xaproperties:                'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300'
         'jmsDS':
           ensure:                      'present'
           drivername:                  'com.mysql.jdbc.Driver'

@@ -79,9 +79,15 @@ try:
 
     # Authentication Provider Ordering
     if order:
-        order_val = int(order)
+        print "setting order"
+        
         cd('/'+path)
+        order_val = int(order)
         ap = get('AuthenticationProviders')
+        total_aps = len(ap)-1
+        if order_val > total_aps:
+          print "Order value %d exceeds number of authentication providers. Setting to max %d instead." % (order_val, total_aps)
+          order_val = total_aps
 
         if ap[order_val].getKeyProperty('Name') != realmName.getName()+name:
             # Find the current index

@@ -6,6 +6,7 @@
 - better error handling for wls_authentication_provider ordering
 - option to skip the OPSS security store migration from file to the database in fmwcluster.pp
 - Custom type for oracle weblogic/domain directory structure instead of using a structure manifest
+- logintimeout attribute for wls_server
 
 ## 1.0.27
 - bug fixes in auto require and post classpath parameter bug when running in debug mode

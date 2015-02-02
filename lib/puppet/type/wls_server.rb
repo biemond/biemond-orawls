@@ -60,6 +60,7 @@ module Puppet
     property :machine
     property :classpath
     property :arguments
+    property :logintimeout
 
     property :logfilename
     property :log_file_min_size

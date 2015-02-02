@@ -24,6 +24,7 @@ sslHostnameVerificationIgnored = '<%= sslhostnameverificationignored %>'
 two_way_ssl = '<%= two_way_ssl %>'
 client_certificate_enforced = '<%= client_certificate_enforced %>'
 sslListenPort = '<%= ssllistenport %>'
+logintimeout  = '<%= logintimeout %>'
 
 jsseenabled   = '<%= jsseenabled %>'
 tunnelingenabled  = '<%= tunnelingenabled %>'
@@ -67,6 +68,9 @@ try:
 
     if listenPort:
       set('ListenPort', int(listenPort))
+
+    if logintimeout:
+      set('LoginTimeoutMillis', int(logintimeout))
 
     if max_message_size:
       set('MaxMessageSize',max_message_size)

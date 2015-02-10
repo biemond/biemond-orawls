@@ -613,7 +613,7 @@ define orawls::domain (
 
     # set our 12.1.2 nodemanager properties
     if ($version == 1212 or $version == 1213) {
-      file { "nodemanager.properties ux ${version} ${title}":
+      file { "nodemanager.properties ux ${version} ${title} ${nodemanager_port}":
         ensure  => present,
         path    => "${nodeMgrHome}/nodemanager.properties",
         replace => true,

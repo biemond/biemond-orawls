@@ -46,6 +46,7 @@ module Puppet
     property :server_template_name
     property :nodemanager_match
     property :maximum_server_count
+    property :calculated_listen_port
 
     add_title_attributes(:cluster_name) do
       /^((.*\/)?(.*)?)$/

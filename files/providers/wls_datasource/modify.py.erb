@@ -18,6 +18,9 @@ initialcapacity            = '<%= initialcapacity %>'
 fanenabled                 = '<%= fanenabled %>'
 onsnodelist                = '<%= onsnodelist %>'
 xaproperties               = '<%= xaproperties %>'
+mincapacity                = '<%= mincapacity %>'
+statementcachesize         = '<%= statementcachesize %>'
+testconnectionsonreserve   = '<%= testconnectionsonreserve %>'
 
 edit()
 startEdit()
@@ -44,6 +47,17 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
+    
+    if mincapacity:
+       set('MinCapacity',int(mincapacity))
+    
+    if statementcachesize:
+       set('StatementCacheSize',int(statementcachesize))    
+
+    if testconnectionsonreserve and testconnectionsonreserve == '1':
+       set('TestConnectionsOnReserve','true')
+    else:
+       set('TestConnectionsOnReserve','false')
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)

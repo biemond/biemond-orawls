@@ -59,6 +59,9 @@ module Puppet
     property :initialcapacity
     property :fanenabled
     property :onsnodelist
+    property :mincapacity
+    property :statementcachesize
+    property :testconnectionsonreserve
 
     add_title_attributes(:datasource_name) do
       /^((.*\/)?(.*)?)$/

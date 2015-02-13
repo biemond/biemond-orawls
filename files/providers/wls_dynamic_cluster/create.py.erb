@@ -25,21 +25,21 @@ try:
     cluster.setClusterMessagingMode('unicast')
 
     server_template.setCluster(cluster)
-    
+
     cluster.getDynamicServers().setServerTemplate(server_template)
     cluster.getDynamicServers().setMaximumDynamicServerCount(int(maximum_server_count))
 
     cluster.getDynamicServers().setCalculatedMachineNames(true)
     cluster.getDynamicServers().setMachineNameMatchExpression(nodemanager_match)
     cluster.getDynamicServers().setServerNamePrefix(server_name_prefix)
-    
-    if calculated_listen_port and calculated_listen_port == 'true':
+
+    if calculated_listen_port and calculated_listen_port == '1':
        cluster.getDynamicServers().setCalculatedListenPorts(true)
     else:
        cluster.getDynamicServers().setCalculatedListenPorts(false)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

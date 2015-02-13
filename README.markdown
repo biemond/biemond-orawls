@@ -2448,11 +2448,12 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 or use puppet resource wls_dynamic_cluster
 
     wls_dynamic_cluster { 'DynamicCluster':
-      ensure               => 'present',
-      maximum_server_count => '2',
-      nodemanager_match    => 'Node1,Node2',
-      server_name_prefix   => 'DynCluster-',
-      server_template_name => 'ServerTemplateWeb',
+      ensure                 => 'present',
+      calculated_listen_port => '0',  # '0' or '1'
+      maximum_server_count   => '2',
+      nodemanager_match      => 'Node1,Node2',
+      server_name_prefix     => 'DynCluster-',
+      server_template_name   => 'ServerTemplateWeb',
     }
 
 in hiera
@@ -2463,11 +2464,12 @@ in hiera
 
     dynamic_cluster_instances:
       'DynamicCluster':
-        ensure:               'present'
-        maximum_server_count: '2'
-        nodemanager_match:    'Node1,Node2'
-        server_name_prefix:   'DynCluster-'
-        server_template_name: 'ServerTemplateWeb'
+        ensure:                 'present'
+        calculated_listen_port: '0'        # '0' or '1'
+        maximum_server_count:   '2'
+        nodemanager_match:      'Node1,Node2'
+        server_name_prefix:     'DynCluster-'
+        server_template_name:   'ServerTemplateWeb'
 
 ### wls_virtual_host
 

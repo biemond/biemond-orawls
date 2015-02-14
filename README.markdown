@@ -2761,6 +2761,9 @@ or use puppet resource wls_datasource
       initialcapacity            => '1',
       jndinames                  => ['jdbc/hrDS'],
       maxcapacity                => '15',
+      mincapacity                => '1',
+      statementcachesize         => '10',
+      testconnectionsonreserve   => '0',
       target                     => ['WebCluster','WebCluster2'],
       targettype                 => ['Cluster','Cluster'],
       testtablename              => 'SQL SELECT 1 FROM DUAL',
@@ -2778,6 +2781,9 @@ or use puppet resource wls_datasource
       initialcapacity            => '1',
       jndinames                  => ['jmsDS'],
       maxcapacity                => '15',
+      mincapacity                => '1',
+      statementcachesize         => '10',
+      testconnectionsonreserve   => '0',
       target                     => ['WebCluster'],
       targettype                 => ['Cluster'],
       testtablename              => 'SQL SELECT 1',
@@ -2803,9 +2809,12 @@ in hiera
             - 'oracle.net.CONNECT_TIMEOUT=1000'
           globaltransactionsprotocol:  'TwoPhaseCommit'
           initialcapacity:             '1'
+          maxcapacity:                 '15'
+          mincapacity:                 '1'
+          statementcachesize:          '10'
+          testconnectionsonreserve:    '0'
           jndinames:
            - 'jdbc/hrDS'
-          maxcapacity:                 '15'
           target:
             - 'WebCluster'
             - 'WebCluster2'

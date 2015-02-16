@@ -1,5 +1,9 @@
 # History
 
+## 1.0.29
+- calculated_listen_port attribute for wls_dynamic_cluster
+- mincapacity, statementcachesize, testconnectionsonreserve for wls_datasource
+
 ## 1.0.28
 - new wls_identity_asserter type for customising default identy asserter
 - xaproperties attributes in wls_datasource
@@ -7,6 +11,7 @@
 - option to skip the OPSS security store migration from file to the database in fmwcluster.pp
 - Custom type for oracle weblogic/domain directory structure instead of using a structure manifest
 - logintimeout attribute for wls_server
+- added some extra autorequire on wls resource types
 
 ## 1.0.27
 - bug fixes in auto require and post classpath parameter bug when running in debug mode

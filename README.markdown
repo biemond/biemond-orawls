@@ -2448,11 +2448,12 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 or use puppet resource wls_dynamic_cluster
 
     wls_dynamic_cluster { 'DynamicCluster':
-      ensure               => 'present',
-      maximum_server_count => '2',
-      nodemanager_match    => 'Node1,Node2',
-      server_name_prefix   => 'DynCluster-',
-      server_template_name => 'ServerTemplateWeb',
+      ensure                 => 'present',
+      calculated_listen_port => '0',  # '0' or '1'
+      maximum_server_count   => '2',
+      nodemanager_match      => 'Node1,Node2',
+      server_name_prefix     => 'DynCluster-',
+      server_template_name   => 'ServerTemplateWeb',
     }
 
 in hiera
@@ -2463,11 +2464,12 @@ in hiera
 
     dynamic_cluster_instances:
       'DynamicCluster':
-        ensure:               'present'
-        maximum_server_count: '2'
-        nodemanager_match:    'Node1,Node2'
-        server_name_prefix:   'DynCluster-'
-        server_template_name: 'ServerTemplateWeb'
+        ensure:                 'present'
+        calculated_listen_port: '0'        # '0' or '1'
+        maximum_server_count:   '2'
+        nodemanager_match:      'Node1,Node2'
+        server_name_prefix:     'DynCluster-'
+        server_template_name:   'ServerTemplateWeb'
 
 ### wls_virtual_host
 
@@ -2759,6 +2761,9 @@ or use puppet resource wls_datasource
       initialcapacity            => '1',
       jndinames                  => ['jdbc/hrDS'],
       maxcapacity                => '15',
+      mincapacity                => '1',
+      statementcachesize         => '10',
+      testconnectionsonreserve   => '0',
       target                     => ['WebCluster','WebCluster2'],
       targettype                 => ['Cluster','Cluster'],
       testtablename              => 'SQL SELECT 1 FROM DUAL',
@@ -2776,6 +2781,9 @@ or use puppet resource wls_datasource
       initialcapacity            => '1',
       jndinames                  => ['jmsDS'],
       maxcapacity                => '15',
+      mincapacity                => '1',
+      statementcachesize         => '10',
+      testconnectionsonreserve   => '0',
       target                     => ['WebCluster'],
       targettype                 => ['Cluster'],
       testtablename              => 'SQL SELECT 1',
@@ -2801,9 +2809,12 @@ in hiera
             - 'oracle.net.CONNECT_TIMEOUT=1000'
           globaltransactionsprotocol:  'TwoPhaseCommit'
           initialcapacity:             '1'
+          maxcapacity:                 '15'
+          mincapacity:                 '1'
+          statementcachesize:          '10'
+          testconnectionsonreserve:    '0'
           jndinames:
            - 'jdbc/hrDS'
-          maxcapacity:                 '15'
           target:
             - 'WebCluster'
             - 'WebCluster2'

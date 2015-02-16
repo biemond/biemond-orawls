@@ -8,3 +8,5 @@ newproperty(:errorhandling) do
   end
 
 end
+
+autorequire(:wls_saf_error_handler) { "#{domain}/#{jmsmodule}:#{errorhandling}" if errorhandling }

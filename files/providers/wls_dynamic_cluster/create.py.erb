@@ -8,6 +8,7 @@ nodemanager_match         = '<%= nodemanager_match %>'
 maximum_server_count      = '<%= maximum_server_count %>'
 server_name_prefix        = '<%= server_name_prefix %>'
 server_template_name      = '<%= server_template_name %>'
+calculated_listen_port    = '<%= calculated_listen_port %>'
 
 edit()
 startEdit()
@@ -24,17 +25,21 @@ try:
     cluster.setClusterMessagingMode('unicast')
 
     server_template.setCluster(cluster)
-    
+
     cluster.getDynamicServers().setServerTemplate(server_template)
     cluster.getDynamicServers().setMaximumDynamicServerCount(int(maximum_server_count))
 
     cluster.getDynamicServers().setCalculatedMachineNames(true)
     cluster.getDynamicServers().setMachineNameMatchExpression(nodemanager_match)
     cluster.getDynamicServers().setServerNamePrefix(server_name_prefix)
-    cluster.getDynamicServers().setCalculatedListenPorts(false)
+
+    if calculated_listen_port and calculated_listen_port == '1':
+       cluster.getDynamicServers().setCalculatedListenPorts(true)
+    else:
+       cluster.getDynamicServers().setCalculatedListenPorts(false)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

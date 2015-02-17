@@ -7,7 +7,7 @@ newproperty(:adapter) do
   defaultto 'eis.jms.WLSConnectionFactoryJNDINoTX'
 
   to_translate_to_resource do | raw_resource|
-     raw_resource['adapter']
-   end
-  
+    raw_resource['adapter']
+  end
+
 end

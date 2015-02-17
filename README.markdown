@@ -103,7 +103,7 @@ Dependency with
 - [wls_mail_session](#wls_mail_session)
 - [wls_multi_datasource](#wls_multi_datasource)
 - [wls_jms_bridge_destination](#wls_jms_bridge_destination)
-- [wls_messaging_brigde](#wls_messaging_brigde)
+- [wls_messaging_bridge](#wls_messaging_bridge)
 
 ## Domain creation options (Dev or Prod mode)
 

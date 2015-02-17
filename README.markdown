@@ -102,6 +102,8 @@ Dependency with
 - [wls_foreign_server_object](#wls_foreign_server_object)
 - [wls_mail_session](#wls_mail_session)
 - [wls_multi_datasource](#wls_multi_datasource)
+- [wls_jms_bridge_destination](#wls_jms_bridge_destination)
+- [wls_messaging_brigde](#wls_messaging_brigde)
 
 ## Domain creation options (Dev or Prod mode)
 
@@ -3409,6 +3411,91 @@ in hiera
         algorithmtype: 'Failover'
         datasources:
          - 'myJDBCDatasource'
+        target:
+         - 'ManagedServer1'
+         - 'WebCluster'
+        targettype:
+         - 'Server'
+         - 'Cluster'
+
+### wls_jms_bridge_destination
+
+it needs wls_setting and when identifier is not provided it will use the 'default'
+
+or use puppet resource wls_jms_bridge_destination
+
+Valid jms bridge destinations are found at: https://javamail.java.net/nonav/docs/api/
+
+    wls_jms_bridge_destination { 'myBridgeDest':
+      ensure                => 'present',
+      adapter               => 'eis.jms.WLSConnectionFactoryJNDINoTX',
+      classpath             => 'myClasspath',
+      connectionfactoryjndi => 'myCFJndi',
+      connectionurl         => 'myConnUrl',
+      destinationjndi       => 'myDestJndi',
+      destinationtype       => 'Queue',
+      initialcontextfactory => 'weblogic.jndi.WLInitialContextFactory',
+    }
+
+in hiera
+
+    jms_bridge_destinations:
+      'myBridgeDest':
+        ensure:                  present
+        adapter:                'eis.jms.WLSConnectionFactoryJNDINoTX',
+        classpath:              'myClasspath',
+        connectionfactoryjndi:  'myCFJndi',
+        connectionurl:          'myConnUrl',
+        destinationjndi:        'myDestJndi',
+        destinationtype:        'Queue',
+        initialcontextfactory;  'weblogic.jndi.WLInitialContextFactory',
+
+### wls_messaging_bridge
+
+it needs wls_setting and when identifier is not provided it will use the 'default'
+
+or use puppet resource wls_messaging_bridge
+
+Valid messaging bridge properties are found at: https://javamail.java.net/nonav/docs/api/
+
+    wls_messaging_bridge { 'myBrigde':
+      ensure                 => 'present',
+      asyncenabled           => '1',
+      batchinterval          => '-1',
+      batchsize              => '10',
+      durabilityenabled      => '1',
+      idletimemax            => '60',
+      qos                    => 'Exactly-once',
+      reconnectdelayincrease => '5',
+      reconnectdelaymax      => '60',
+      reconnectdelaymin      => '15',
+      selector               => 'sel',
+      transactiontimeout     => '30',
+      sourcedestination      => 'mySourceBrigdeDest',
+      targetdestination      => 'MyDestBridgeDest',
+      target                 => ['ManagedServer1', 'WebCluster'],
+      targettype             => ['Server', 'Cluster'],
+}
+
+
+in hiera
+
+    messaging_bridges:
+      'myBridge':
+        ensure:                 present
+        asyncenabled:           '1'
+        batchinterval:          '-1',
+        batchsize:              '10',
+        durabilityenabled:      '1',
+        idletimemax:            '60',
+        qos:                    'Exactly-once',
+        reconnectdelayincrease: '5',
+        reconnectdelaymax:      '60',
+        reconnectdelaymin::     '15',
+        selector:               'sel',
+        transactiontimeout:     '30',
+        sourcedestination:      'mySourceBrigdeDest',
+        targetdestination:      'MyDestBridgeDest',
         target:
          - 'ManagedServer1'
          - 'WebCluster'

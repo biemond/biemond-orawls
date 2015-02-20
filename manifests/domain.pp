@@ -22,7 +22,6 @@ define orawls::domain (
   $java_arguments                        = hiera('domain_java_arguments'         , {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address                   = undef,
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
-  $nodemanager_secure_listener           = true,
   $weblogic_user                         = hiera('wls_weblogic_user'             , 'weblogic'),
   $weblogic_password                     = hiera('domain_wls_password'),
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
@@ -324,8 +323,8 @@ define orawls::domain (
     }
 
     # the utils.py used by the wlst
-    if !defined(File['utils.py']) {
-      file { 'utils.py':
+    if !defined(File["utils.py_${domain_name}"]) {
+      file { "utils.py_${domain_name}":
         ensure  => present,
         path    => "${download_dir}/utils.py",
         content => template('orawls/domains/utils.py.erb'),
@@ -364,7 +363,7 @@ define orawls::domain (
       owner   => $os_user,
       group   => $os_group,
       require => [File[$download_dir],
-                  File['utils.py'],],
+                  File["utils.py_${domain_name}"],],
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
@@ -459,7 +458,7 @@ define orawls::domain (
       creates     => $domain_dir,
       cwd         => $download_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
-                      File['utils.py'],
+                      File["utils.py_${domain_name}"],
                       File[$domains_dir],],
       timeout     => 0,
       path        => $exec_path,

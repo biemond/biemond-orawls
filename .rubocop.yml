@@ -68,6 +68,9 @@ AccessorMethodName:
 MethodLength:
   Enabled: false
 
+Metrics/CyclomaticComplexity:
+  Severity: convention
+
 Metrics/ParameterLists:
   Max: 8
   CountKeywordArgs: true

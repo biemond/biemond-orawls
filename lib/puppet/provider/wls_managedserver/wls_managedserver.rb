@@ -35,25 +35,52 @@ EOF"
   end
 
   def managedserver_status
-    domain_name    = resource[:domain_name]
-    name           = resource[:server_name]
+    domain_name         = resource[:domain_name]
+    name                = resource[:server_name]
+    target              = resource[:target]
+    user                = resource[:os_user]
+    weblogic_home_dir   = resource[:weblogic_home_dir]
+    weblogic_user       = resource[:weblogic_user]
+    weblogic_password   = resource[:weblogic_password]
+    adminserver_address = resource[:adminserver_address]
+    adminserver_port    = resource[:adminserver_port]
 
-    kernel = Facter.value(:kernel)
+    if target == 'Server'
+      kernel = Facter.value(:kernel)
 
-    ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
-    ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
+      ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
+      ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
 
-    command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
+      command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
 
-    Puppet.debug "managedserver_status #{command}"
-    output = `#{command}`
+      Puppet.debug "managedserver_status #{command}"
+      output = `#{command}`
 
-    output.each_line do |li|
-      unless li.nil?
-        Puppet.debug "line #{li}"
-        if li.include? name
-          Puppet.debug 'found server'
-          return 'Found'
+      output.each_line do |li|
+        unless li.nil?
+          Puppet.debug "line #{li}"
+          if li.include? name
+            Puppet.debug 'found server'
+            return 'Found'
+          end
+        end
+      end
+    elsif target == 'Cluster'
+
+      command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+connect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"t3://#{adminserver_address}:#{adminserver_port}\")
+state(\"#{name}\",\"#{target}\")
+exit()
+EOF"
+
+      output = `su - #{user} -c '#{command}'`
+      output.each_line do |li|
+        unless li.nil?
+          Puppet.debug "aline #{li}"
+          if li.include? 'RUNNING'
+            Puppet.debug 'found server'
+            return 'Found'
+          end
         end
       end
     end

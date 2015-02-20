@@ -42,7 +42,7 @@ module Puppet
       if File.exist?(config_file)
         open(config_file) { |f| YAML.load(f) }
       else
-        Hash['default', {}]
+        {}
       end
     end
 

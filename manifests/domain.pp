@@ -22,7 +22,6 @@ define orawls::domain (
   $java_arguments                        = hiera('domain_java_arguments'         , {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address                   = undef,
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
-  $nodemanager_secure_listener           = true,
   $weblogic_user                         = hiera('wls_weblogic_user'             , 'weblogic'),
   $weblogic_password                     = hiera('domain_wls_password'),
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),

@@ -1,0 +1,61 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+m = ls('/MessagingBridges',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination"
+for token in m:
+    print '___'+token+'___'
+    cd('/MessagingBridges/'+token)
+
+    asyncenabled = get('AsyncEnabled')
+    batchinterval = get('BatchInterval')
+    batchsize = get('BatchSize')
+    durabilityenabled = get('DurabilityEnabled')
+    idletimemax = get('IdleTimeMaximum')
+    preservemsgproperty = get('PreserveMsgProperty')
+    qosdegradationallowed = get('QOSDegradationAllowed')
+    qos = get('QualityOfService')
+    reconnectdelayincrease = get('ReconnectDelayIncrease')
+    reconnectdelaymax = get('ReconnectDelayMaximum')
+    reconnectdelaymin = get('ReconnectDelayMinimum')
+    selector = get('Selector')
+    started = get('Started')
+    transactiontimeout = get('TransactionTimeout')
+
+    sourcedestinationMbean = cmo.getSourceDestination()
+    if sourcedestinationMbean:
+       path = getPath(sourcedestinationMbean)
+       cd("/"+path) 
+       sourcedestination  = get('Name')
+       cd('/MessagingBridges/'+token)
+    else:
+       sourcedestination = ''
+
+    targetdestinationMbean = cmo.getTargetDestination()
+    if targetdestinationMbean:
+       path = getPath(targetdestinationMbean)
+       cd("/"+path) 
+       targetdestination  = get('Name')
+       cd('/MessagingBridges/'+token)
+    else:
+       targetdestination = ''
+
+    n = ls('/Deployments/'+token+'/Targets',returnMap='true')
+    target     = []
+    targetType = []
+    for token2 in n:
+           target.append(token2)
+           cd('/Deployments/'+token+'/Targets/'+token2)
+           targetType.append(get('Type'))
+
+#]
+    print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),asyncenabled,batchinterval,batchsize,durabilityenabled,idletimemax,preservemsgproperty,qosdegradationallowed,qos,reconnectdelayincrease,reconnectdelaymax,reconnectdelaymin,selector,started,transactiontimeout,sourcedestination,targetdestination]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

@@ -1,0 +1,30 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+m = ls('/JMSBridgeDestinations',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password"
+for token in m:
+    print '___'+token+'___'
+
+    cd('/JMSBridgeDestinations/' + token )
+
+    adapter = get('AdapterJNDIName')
+    classpath = get('Classpath')
+    connectionfactoryjndi = get('ConnectionFactoryJNDIName')
+    connectionurl = get('ConnectionURL')
+    destinationjndi = get('DestinationJNDIName')
+    destinationtype = get('DestinationType')
+    initialcontextfactory = get('InitialContextFactory')
+    user_name = get('UserName')
+    password = ''
+
+    print >>f, ";".join(map(quote, [domain+'/'+token,adapter,classpath,connectionfactoryjndi,connectionurl,destinationjndi,destinationtype,initialcontextfactory,user_name,password]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

@@ -46,11 +46,10 @@ module Puppet
     parameter :providerclassname
     parameter :attributes
     parameter :attributesvalues
-    parameter :authentication_provider_name   
-    
-    property  :activetypes
-    property  :defaultmappertype
+    parameter :authentication_provider_name
 
+    property :activetypes
+    property :defaultmappertype
 
     add_title_attributes(:authentication_provider_name) do
       /^((.*\/)?(.*)?)$/

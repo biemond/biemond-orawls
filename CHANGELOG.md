@@ -3,6 +3,10 @@
 ## 1.0.29
 - calculated_listen_port attribute for wls_dynamic_cluster
 - mincapacity, statementcachesize, testconnectionsonreserve for wls_datasource
+- wls_managedserver type fix when target is cluster, doesn't use ps -ef but uses wlst to check the cluster status
+- new wls_messaging_bridge wls type
+- new wls_jms_bridge_destination wls type
+- wls_setting added a 'default' entry in wls_settings.yaml even when default is not used
 
 ## 1.0.28
 - new wls_identity_asserter type for customising default identy asserter

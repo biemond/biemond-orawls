@@ -324,8 +324,8 @@ define orawls::domain (
     }
 
     # the utils.py used by the wlst
-    if !defined(File['utils.py']) {
-      file { 'utils.py':
+    if !defined(File["${download_dir}/utils.py"]) {
+      file { "${download_dir}/utils.py":
         ensure  => present,
         path    => "${download_dir}/utils.py",
         content => template('orawls/domains/utils.py.erb'),
@@ -364,7 +364,7 @@ define orawls::domain (
       owner   => $os_user,
       group   => $os_group,
       require => [File[$download_dir],
-                  File['utils.py'],],
+                  File["${download_dir}/utils.py"],],
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
@@ -459,7 +459,7 @@ define orawls::domain (
       creates     => $domain_dir,
       cwd         => $download_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
-                      File['utils.py'],
+                      File["${download_dir}/utils.py"],
                       File[$domains_dir],],
       timeout     => 0,
       path        => $exec_path,

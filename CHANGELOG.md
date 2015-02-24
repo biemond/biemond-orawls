@@ -1,5 +1,8 @@
 # History
 
+## 1.0.30
+- bsu unzip -o option instead of -n so the new readme is also added to the cache_dir
+
 ## 1.0.29
 - calculated_listen_port attribute for wls_dynamic_cluster
 - mincapacity, statementcachesize, testconnectionsonreserve for wls_datasource

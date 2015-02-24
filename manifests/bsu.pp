@@ -56,7 +56,7 @@ define orawls::bsu (
     }
 
     exec { "extract ${patch_file}":
-      command   => "unzip -n ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+      command   => "unzip -o ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
       creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
       path      => $exec_path,
       user      => $os_user,

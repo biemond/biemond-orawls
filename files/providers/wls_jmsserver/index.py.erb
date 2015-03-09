@@ -9,10 +9,14 @@ def quote(text):
 m = ls('/JMSServers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;persistentstore;persistentstoretype;domain"
+print >>f, "name;target;targettype;persistentstore;persistentstoretype;bytes_maximum;store_enabled;allows_persistent_downgrade;domain"
 for token in m:
   print '___'+token+'___'
   cd('/JMSServers/'+token)
+
+  bytesMaximum               = get('BytesMaximum')
+  storeEnabled               = str(get('StoreEnabled'))
+  allowsPersistentDowngrade  = str(get('AllowsPersistentDowngrade'))
 
   n = ls('/JMSServers/'+token+'/Targets',returnMap='true')
   target = ''
@@ -24,6 +28,7 @@ for token in m:
 
   l = ls('/JMSServers/'+token+'/PersistentStore',returnMap='true')
 
+
   persistentStore     = ''
   persistentStoreType = ''
   for token3 in l:
@@ -31,8 +36,7 @@ for token in m:
      cd('/JMSServers/'+token+'/PersistentStore/'+token3)
      persistentStoreType = get('Type')
 
-  print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,domain]))
+  print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,bytesMaximum,storeEnabled,allowsPersistentDowngrade,domain]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
-
 

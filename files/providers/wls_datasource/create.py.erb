@@ -3,27 +3,29 @@ real_domain='<%= domain %>'
 
 
 
-name                       = '<%= datasource_name %>'
-password                   = '<%= password %>'
-target                     = '<%= target %>'
-targettype                 = '<%= targettype %>'
-drivername                 = '<%= drivername %>'
-jndinames                  = '<%= jndinames %>'
-url                        = '<%= url %>'
-usexa                      = '<%= usexa %>'
-user                       = '<%= user %>'
-testtablename              = '<%= testtablename %>'
-globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
-extraproperties            = '<%= extraproperties %>'
-xaproperties               = '<%= xaproperties %>'
-maxcapacity                = '<%= maxcapacity %>'
-initialcapacity            = '<%= initialcapacity %>'
-fanenabled                 = '<%= fanenabled %>'
-onsnodelist                = '<%= onsnodelist %>'
-mincapacity                = '<%= mincapacity %>'
-statementcachesize         = '<%= statementcachesize %>'
-testconnectionsonreserve   = '<%= testconnectionsonreserve %>'
-
+name                                    = '<%= datasource_name %>'
+password                                = '<%= password %>'
+target                                  = '<%= target %>'
+targettype                              = '<%= targettype %>'
+drivername                              = '<%= drivername %>'
+jndinames                               = '<%= jndinames %>'
+url                                     = '<%= url %>'
+usexa                                   = '<%= usexa %>'
+user                                    = '<%= user %>'
+testtablename                           = '<%= testtablename %>'
+globaltransactionsprotocol              = '<%= globaltransactionsprotocol %>'
+extraproperties                         = '<%= extraproperties %>'
+xaproperties                            = '<%= xaproperties %>'
+maxcapacity                             = '<%= maxcapacity %>'
+initialcapacity                         = '<%= initialcapacity %>'
+fanenabled                              = '<%= fanenabled %>'
+onsnodelist                             = '<%= onsnodelist %>'
+mincapacity                             = '<%= mincapacity %>'
+statementcachesize                      = '<%= statementcachesize %>'
+testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
+secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>' 
+testfrequency                           = '<%= testfrequency  %>'
+connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>' 
 
 edit()
 startEdit()
@@ -63,6 +65,10 @@ try:
        set('TestConnectionsOnReserve','true')
     else:
        set('TestConnectionsOnReserve','false')
+       
+    set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+    set('TestFrequencySeconds', int(testfrequency))
+    set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)

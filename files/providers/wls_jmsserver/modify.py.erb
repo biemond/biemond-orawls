@@ -10,6 +10,7 @@ persistentstore             = '<%= persistentstore %>'
 persistentstoretype         = '<%= persistentstoretype %>'
 bytes_maximum               = '<%= bytes_maximum %>'
 allows_persistent_downgrade = '<%= allows_persistent_downgrade %>'
+store_enabled               = '<%= store_enabled %>'
 
 edit()
 startEdit()
@@ -19,12 +20,17 @@ try:
     cd('/JMSServers/'+name)
 
     if bytes_maximum:
-      set('BytesMaximum',int(bytes_maximum))
+      set('BytesMaximum',bytes_maximum)
 
     if allows_persistent_downgrade == '1':
       set('AllowsPersistentDowngrade','True')
     else:
       set('AllowsPersistentDowngrade','False')
+
+    if store_enabled == '1':
+      set('StoreEnabled','True')
+    else:
+      set('StoreEnabled','False')
 
     cd('/Deployments/'+name)
 

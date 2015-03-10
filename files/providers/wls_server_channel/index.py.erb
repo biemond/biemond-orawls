@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/Servers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicaddress;domain"
+print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain"
 for token in m:
         print '___'+token+'___'
         cd('/Servers/'+token)
@@ -22,11 +22,14 @@ for token in m:
                listenaddress    = get('ListenAddress')
                publicaddress    = get('PublicAddress')
                listenport       = str(get('ListenPort'))
+               publicport       = str(get('PublicPort'))
+               max_message_size = str(get('MaxMessageSize'))
+
                httpenabled      = str(get('HttpEnabledForThisProtocol'))
                outboundenabled  = str(get('OutboundEnabled'))
                tunnelingenabled = str(get('TunnelingEnabled'))
 
-               print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicaddress,domain]))
+               print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicport,max_message_size,publicaddress,domain]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

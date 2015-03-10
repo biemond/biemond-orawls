@@ -2,25 +2,28 @@
 real_domain='<%= domain %>'
 
 
-name                       = '<%= datasource_name %>'
-target                     = '<%= target %>'
-targettype                 = '<%= targettype %>'
-drivername                 = '<%= drivername %>'
-jndinames                  = '<%= jndinames %>'
-url                        = '<%= url %>'
-usexa                      = '<%= usexa %>'
-user                       = '<%= user %>'
-testtablename              = '<%= testtablename %>'
-globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
-extraproperties            = '<%= extraproperties %>'
-maxcapacity                = '<%= maxcapacity %>'
-initialcapacity            = '<%= initialcapacity %>'
-fanenabled                 = '<%= fanenabled %>'
-onsnodelist                = '<%= onsnodelist %>'
-xaproperties               = '<%= xaproperties %>'
-mincapacity                = '<%= mincapacity %>'
-statementcachesize         = '<%= statementcachesize %>'
-testconnectionsonreserve   = '<%= testconnectionsonreserve %>'
+name                                    = '<%= datasource_name %>'
+target                                  = '<%= target %>'
+targettype                              = '<%= targettype %>'
+drivername                              = '<%= drivername %>'
+jndinames                               = '<%= jndinames %>'
+url                                     = '<%= url %>'
+usexa                                   = '<%= usexa %>'
+user                                    = '<%= user %>'
+testtablename                           = '<%= testtablename %>'
+globaltransactionsprotocol              = '<%= globaltransactionsprotocol %>'
+extraproperties                         = '<%= extraproperties %>'
+maxcapacity                             = '<%= maxcapacity %>'
+initialcapacity                         = '<%= initialcapacity %>'
+fanenabled                              = '<%= fanenabled %>'
+onsnodelist                             = '<%= onsnodelist %>'
+xaproperties                            = '<%= xaproperties %>'
+mincapacity                             = '<%= mincapacity %>'
+statementcachesize                      = '<%= statementcachesize %>'
+testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
+secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>' 
+testfrequency                           = '<%= testfrequency  %>'
+connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>'
 
 edit()
 startEdit()
@@ -52,7 +55,11 @@ try:
        set('MinCapacity',int(mincapacity))
     
     if statementcachesize:
-       set('StatementCacheSize',int(statementcachesize))    
+       set('StatementCacheSize',int(statementcachesize))
+       
+    set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+    set('TestFrequencySeconds', int(testfrequency))
+    set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
 
     if testconnectionsonreserve and testconnectionsonreserve == '1':
        set('TestConnectionsOnReserve','true')

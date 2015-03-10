@@ -21,7 +21,7 @@ xaproperties                            = '<%= xaproperties %>'
 mincapacity                             = '<%= mincapacity %>'
 statementcachesize                      = '<%= statementcachesize %>'
 testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
-secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>' 
+secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>'
 testfrequency                           = '<%= testfrequency  %>'
 connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>'
 
@@ -50,16 +50,21 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
-    
+
     if mincapacity:
        set('MinCapacity',int(mincapacity))
-    
+
     if statementcachesize:
        set('StatementCacheSize',int(statementcachesize))
-       
-    set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
-    set('TestFrequencySeconds', int(testfrequency))
-    set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
+
+    if secondstotrustidlepoolconnection:
+      set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+
+    if testfrequency:
+      set('TestFrequencySeconds', int(testfrequency))
+
+    if connectioncreationretryfrequency:
+      set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
 
     if testconnectionsonreserve and testconnectionsonreserve == '1':
        set('TestConnectionsOnReserve','true')
@@ -100,7 +105,7 @@ try:
         valid_xa_properties = ls('', returnMap='true')
         for existing_prop in valid_xa_properties:
             cmo.unSet(existing_prop)
-    
+
         # Set Them Dynamically
         if xaproperties:
             xapropertiesarray=String(xaproperties).split(",")

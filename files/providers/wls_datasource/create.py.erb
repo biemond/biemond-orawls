@@ -23,9 +23,9 @@ onsnodelist                             = '<%= onsnodelist %>'
 mincapacity                             = '<%= mincapacity %>'
 statementcachesize                      = '<%= statementcachesize %>'
 testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
-secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>' 
+secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>'
 testfrequency                           = '<%= testfrequency  %>'
-connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>' 
+connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>'
 
 edit()
 startEdit()
@@ -54,21 +54,26 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity', int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
-    
+
     if mincapacity:
        set('MinCapacity',int(mincapacity))
-    
+
     if statementcachesize:
-       set('StatementCacheSize',int(statementcachesize))    
+       set('StatementCacheSize',int(statementcachesize))
 
     if testconnectionsonreserve and testconnectionsonreserve == '1':
        set('TestConnectionsOnReserve','true')
     else:
        set('TestConnectionsOnReserve','false')
-       
-    set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
-    set('TestFrequencySeconds', int(testfrequency))
-    set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
+
+    if secondstotrustidlepoolconnection:
+      set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+
+    if testfrequency:
+      set('TestFrequencySeconds', int(testfrequency))
+
+    if connectioncreationretryfrequency:
+      set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)

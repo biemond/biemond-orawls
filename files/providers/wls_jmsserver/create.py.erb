@@ -9,7 +9,6 @@ targettype                  = '<%= targettype %>'
 persistentstore             = '<%= persistentstore %>'
 persistentstoretype         = '<%= persistentstoretype %>'
 bytes_maximum               = '<%= bytes_maximum %>'
-store_enabled               = '<%= store_enabled %>'
 allows_persistent_downgrade = '<%= allows_persistent_downgrade %>'
 
 edit()
@@ -26,15 +25,9 @@ try:
       set('BytesMaximum',int(bytes_maximum))
 
     if allows_persistent_downgrade == '1':
-      set('AllowsPersistentDowngrade',true)
+      set('AllowsPersistentDowngrade','True')
     else:
-      set('AllowsPersistentDowngrade',false)
-
-    if store_enabled == '1':
-      set('StoreEnabled',true)
-    else:
-      set('StoreEnabled',false)
-
+      set('AllowsPersistentDowngrade','False')
 
     cd('/Deployments/'+name)
 
@@ -48,11 +41,8 @@ try:
     if bytes_maximum:
       set('SubDeploymentName',bytes_maximum)
 
-    if store_enabled:
-      set('StoreEnabled',store_enabled)
-
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

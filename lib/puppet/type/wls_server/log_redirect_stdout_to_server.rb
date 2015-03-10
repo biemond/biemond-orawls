@@ -8,4 +8,3 @@ newproperty(:log_redirect_stdout_to_server) do
   end
 
 end
-

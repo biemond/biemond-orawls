@@ -26,25 +26,27 @@ try:
     cd('/Servers/'+server)
     cd('/Servers/'+server+'/NetworkAccessPoints/'+name)
     cmo.setProtocol(protocol)
-    cmo.setListenPort(int(listenport))
-    cmo.setPublicPort(int(publicport))
+    if listenport:
+      cmo.setListenPort(int(listenport))
+    if publicport:
+      cmo.setPublicPort(int(publicport))
 
-    if enabled == '1':    
+    if enabled == '1':
       cmo.setEnabled(true)
     else:
       cmo.setEnabled(false)
 
-    if httpenabled == '1':    
+    if httpenabled == '1':
       cmo.setHttpEnabledForThisProtocol(true)
     else:
       cmo.setHttpEnabledForThisProtocol(false)
 
-    if tunnelingenabled == '1':    
+    if tunnelingenabled == '1':
       cmo.setTunnelingEnabled(true)
     else:
       cmo.setTunnelingEnabled(false)
 
-    if outboundenabled == '1':    
+    if outboundenabled == '1':
       cmo.setOutboundEnabled(true)
     else:
       cmo.setOutboundEnabled(false)
@@ -52,18 +54,18 @@ try:
     if listenaddress:
       set('ListenAddress',listenaddress )
     else:
-      set('ListenAddress',None )  
+      set('ListenAddress',None )
 
     if publicaddress:
       set('PublicAddress', publicaddress)
     else:
-      set('PublicAddress',None )  
+      set('PublicAddress',None )
 
     if max_message_size:
       set('MaxMessageSize',max_message_size)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -72,6 +74,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
-

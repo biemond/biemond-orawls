@@ -14,8 +14,14 @@ for token in m:
   print '___'+token+'___'
   cd('/JMSServers/'+token)
 
-  bytesMaximum               = get('BytesMaximum')
-  storeEnabled               = str(get('StoreEnabled'))
+  bytesMaximum = get('BytesMaximum')
+
+  try:
+    storeEnabled = str(get('StoreEnabled'))
+  except:
+    print "probably not supported"
+    storeEnabled = ''
+
   allowsPersistentDowngrade  = str(get('AllowsPersistentDowngrade'))
 
   n = ls('/JMSServers/'+token+'/Targets',returnMap='true')

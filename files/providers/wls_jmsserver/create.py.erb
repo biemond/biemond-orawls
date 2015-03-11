@@ -17,6 +17,8 @@ startEdit()
 try:
 
     cd('/')
+    version = get('DomainVersion')
+
     cmo.createJMSServer(name)
 
     cd('/JMSServers/'+name)
@@ -29,10 +31,11 @@ try:
     else:
       set('AllowsPersistentDowngrade','False')
 
-    if store_enabled == '1':
-      set('StoreEnabled','True')
-    elif store_enabled == '0':
-      set('StoreEnabled','False')
+    if "10.3" in version:
+      if store_enabled == '1':
+        set('StoreEnabled','True')
+      elif store_enabled == '0':
+        set('StoreEnabled','False')
 
     cd('/Deployments/'+name)
 

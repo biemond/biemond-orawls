@@ -29,7 +29,7 @@ try:
 
     if store_enabled == '1':
       set('StoreEnabled','True')
-    else:
+    elif store_enabled == '0':
       set('StoreEnabled','False')
 
     cd('/Deployments/'+name)

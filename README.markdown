@@ -2106,6 +2106,12 @@ or with log parameters, default file store and ssl
       log_http_filename                 => 'logs/access.log',
       log_http_format                   => 'date time cs-method cs-uri sc-status',
       log_http_format_type              => 'common',
+      log_http_file_count               => '10',
+      log_http_number_of_files_limited  => '0',
+      log_redirect_stderr_to_server     => '0',
+      log_redirect_stdout_to_server     => '0',
+      logintimeout                      => '5000',
+      restart_max                       => '2',
       machine                           => 'Node2',
       sslenabled                        => '1',
       sslhostnameverificationignored    => '1',
@@ -2115,6 +2121,8 @@ or with log parameters, default file store and ssl
       default_file_store                => '/path/to/default_file_store/',
       max_message_size                  => '25000000',
     }
+
+
 
 or with JSSE with custom identity and trust
 
@@ -2183,6 +2191,12 @@ or with log parameters
         log_rotationtype:                      'bySize'
         log_datasource_filename:               'logs/datasource.log'
         log_http_filename:                     'logs/access.log'
+        log_http_file_count:                   '10'
+        log_http_number_of_files_limited:      '0'
+        log_redirect_stderr_to_server:         '0'
+        log_redirect_stdout_to_server:         '0'
+        logintimeout:                          '5000'
+        restart_max:                           '2'
         machine:                               'Node1'
         sslenabled:                            '1'
         ssllistenport:                         '8201'
@@ -2291,9 +2305,11 @@ or use puppet resource wls_server_channel
       enabled          => '1',
       httpenabled      => '1',
       listenport       => '8003',
+      publicport       => '8103',
       outboundenabled  => '0',
       protocol         => 'cluster-broadcast',
       tunnelingenabled => '0',
+      max_message_size => '25000000',
     }
 
 in hiera
@@ -2315,9 +2331,11 @@ in hiera
         enabled:          '1'
         httpenabled:      '1'
         listenport:       '8003'
+        publicport:       '8103'
         outboundenabled:  '0'
         protocol:         'cluster-broadcast'
         tunnelingenabled: '0'
+        max_message_size: '25000000'
 
 
 ### wls_cluster
@@ -2698,54 +2716,6 @@ in hiera
             servicetype:         'Both'
 
 
-### wls_jmsserver
-
-it needs wls_setting and when identifier is not provided it will use the 'default'.
-
-or use puppet resource wls_jmsserver
-
-    # this will use default as wls_setting identifier
-    wls_jmsserver { 'jmsServer1':
-      ensure              => 'present',
-      persistentstore     => 'jmsFile1',
-      persistentstoretype => 'FileStore',
-      target              => ['wlsServer1'],
-      targettype          => ['Server'],
-    }
-    # this will use default as wls_setting identifier
-    wls_jmsserver { 'jmsServer2':
-      ensure     => 'present',
-      target     => ['wlsServer2'],
-      targettype => ['Server'],
-    }
-    # this will use default as wls_setting identifier
-    wls_jmsserver { 'jmsServer3':
-      ensure     => 'present',
-      target     => ['wlsServer3'],
-      targettype => ['Server'],
-    }
-
-
-in hiera
-
-    # this will use default as wls_setting identifier
-    jmsserver_instances:
-       jmsServer1:
-         ensure:              'present'
-         target:
-           - 'wlsServer1'
-         targettype:
-           - 'Server'
-         persistentstore:     'jmsFile1'
-         persistentstoretype: 'FileStore'
-       jmsServer2:
-         ensure:              'present'
-         target:
-           - 'wlsServer2'
-         targettype:
-           - 'Server'
-
-
 ### wls_datasource
 
 it needs wls_setting and when identifier is not provided it will use the 'default'.
@@ -2756,24 +2726,27 @@ or use puppet resource wls_datasource
 
     # this will use default as wls_setting identifier
     wls_datasource { 'hrDS':
-      ensure                     => 'present',
-      drivername                 => 'oracle.jdbc.xa.client.OracleXADataSource',
-      extraproperties            => ['SendStreamAsBlob=true','oracle.net.CONNECT_TIMEOUT=10000'],
-      globaltransactionsprotocol => 'TwoPhaseCommit',
-      initialcapacity            => '1',
-      jndinames                  => ['jdbc/hrDS'],
-      maxcapacity                => '15',
-      mincapacity                => '1',
-      statementcachesize         => '10',
-      testconnectionsonreserve   => '0',
-      target                     => ['WebCluster','WebCluster2'],
-      targettype                 => ['Cluster','Cluster'],
-      testtablename              => 'SQL SELECT 1 FROM DUAL',
-      url                        => 'jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com',
-      user                       => 'hr',
-      password                   => 'pass',
-      usexa                      => '1',
-      xaproperties:              => 'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300',
+      ensure                           => 'present',
+      drivername                       => 'oracle.jdbc.xa.client.OracleXADataSource',
+      extraproperties                  => ['SendStreamAsBlob=true','oracle.net.CONNECT_TIMEOUT=10000'],
+      globaltransactionsprotocol       => 'TwoPhaseCommit',
+      initialcapacity                  => '1',
+      jndinames                        => ['jdbc/hrDS'],
+      maxcapacity                      => '15',
+      mincapacity                      => '1',
+      statementcachesize               => '10',
+      testconnectionsonreserve         => '0',
+      target                           => ['WebCluster','WebCluster2'],
+      targettype                       => ['Cluster','Cluster'],
+      testtablename                    => 'SQL SELECT 1 FROM DUAL',
+      url                              => 'jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com',
+      user                             => 'hr',
+      password                         => 'pass',
+      usexa                            => '1',
+      xaproperties:                    => 'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300',
+      connectioncreationretryfrequency => '0',
+      secondstotrustidlepoolconnection => '10',
+      testfrequency                    => '120',
     }
     # this will use default as wls_setting identifier
     wls_datasource { 'jmsDS':
@@ -2804,17 +2777,16 @@ in hiera
     # this will use default as wls_setting identifier
     datasource_instances:
         'hrDS':
-          ensure:                      'present'
-          drivername:                  'oracle.jdbc.xa.client.OracleXADataSource'
+          ensure:                           'present'
+          drivername:                       'oracle.jdbc.xa.client.OracleXADataSource'
           extraproperties:
             - 'SendStreamAsBlob=true'
             - 'oracle.net.CONNECT_TIMEOUT=1000'
           globaltransactionsprotocol:  'TwoPhaseCommit'
-          initialcapacity:             '1'
-          maxcapacity:                 '15'
-          mincapacity:                 '1'
-          statementcachesize:          '10'
-          testconnectionsonreserve:    '0'
+          initialcapacity:                  '1'
+          maxcapacity:                      '15'
+          mincapacity:                      '1'
+          statementcachesize:               '10'
           jndinames:
            - 'jdbc/hrDS'
           target:
@@ -2823,12 +2795,16 @@ in hiera
           targettype:
             - 'Cluster'
             - 'Cluster'
-          testtablename:               'SQL SELECT 1 FROM DUAL'
-          url:                         "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
-          user:                        'hr'
-          password:                    'pass'
-          usexa:                       '1'
-          xaproperties:                'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300'
+          testtablename:                    'SQL SELECT 1 FROM DUAL'
+          url:                              "jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com"
+          user:                             'hr'
+          password:                         'pass'
+          usexa:                            '1'
+          xaproperties:                     'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300'
+          testconnectionsonreserve:         '0'
+          secondstotrustidlepoolconnection: '10'
+          testfrequency:                    '120'
+          connectioncreationretryfrequency: '0'
         'jmsDS':
           ensure:                      'present'
           drivername:                  'com.mysql.jdbc.Driver'
@@ -2849,6 +2825,57 @@ in hiera
           # To Optionally Configure as Gridlink Datasource
           fanenabled:                  '1'
           onsnodelist:                 '10.10.10.110:6200,10.10.10.111:6200'
+
+### wls_jmsserver
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_jmsserver
+
+    # this will use default as wls_setting identifier
+    wls_jmsserver { 'jmsServer1':
+      ensure                      => 'present',
+      persistentstore             => 'jmsFile1',
+      persistentstoretype         => 'FileStore',
+      target                      => ['wlsServer1'],
+      targettype                  => ['Server'],
+      allows_persistent_downgrade => '0',
+      bytes_maximum               => '-1',
+    }
+    # this will use default as wls_setting identifier
+    wls_jmsserver { 'jmsServer2':
+      ensure     => 'present',
+      target     => ['wlsServer2'],
+      targettype => ['Server'],
+    }
+    # this will use default as wls_setting identifier
+    wls_jmsserver { 'jmsServer3':
+      ensure     => 'present',
+      target     => ['wlsServer3'],
+      targettype => ['Server'],
+    }
+
+
+in hiera
+
+    # this will use default as wls_setting identifier
+    jmsserver_instances:
+       jmsServer1:
+         ensure:                      'present'
+         target:
+           - 'wlsServer1'
+         targettype:
+           - 'Server'
+         persistentstore:             'jmsFile1'
+         persistentstoretype:         'FileStore'
+         allows_persistent_downgrade: '0'
+         bytes_maximum:               '-1'
+       jmsServer2:
+         ensure:              'present'
+         target:
+           - 'wlsServer2'
+         targettype:
+           - 'Server'
 
 ### wls_jms_module
 

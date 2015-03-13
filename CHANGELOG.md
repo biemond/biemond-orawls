@@ -1,5 +1,12 @@
 # History
 
+## 1.0.30
+- bsu unzip -o option instead of -n so the new readme is also added to the cache_dir
+- wls_server, new attributes log_redirect_stderr_to_server, log_redirect_stdout_to_server, restart_max, log_http_file_count, log_http_number_of_files_limited, bea_home
+- wls_jmsserver, new attributes bytes_maximum, allows_persistent_downgrade
+- wls_datasource, new attributes secondstotrustidlepoolconnection, testfrequency, connectioncreationretryfrequency
+- wls_server_channnel, new attributes publicport, max_message_size
+
 ## 1.0.29
 - calculated_listen_port attribute for wls_dynamic_cluster
 - mincapacity, statementcachesize, testconnectionsonreserve for wls_datasource

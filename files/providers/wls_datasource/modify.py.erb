@@ -2,25 +2,28 @@
 real_domain='<%= domain %>'
 
 
-name                       = '<%= datasource_name %>'
-target                     = '<%= target %>'
-targettype                 = '<%= targettype %>'
-drivername                 = '<%= drivername %>'
-jndinames                  = '<%= jndinames %>'
-url                        = '<%= url %>'
-usexa                      = '<%= usexa %>'
-user                       = '<%= user %>'
-testtablename              = '<%= testtablename %>'
-globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
-extraproperties            = '<%= extraproperties %>'
-maxcapacity                = '<%= maxcapacity %>'
-initialcapacity            = '<%= initialcapacity %>'
-fanenabled                 = '<%= fanenabled %>'
-onsnodelist                = '<%= onsnodelist %>'
-xaproperties               = '<%= xaproperties %>'
-mincapacity                = '<%= mincapacity %>'
-statementcachesize         = '<%= statementcachesize %>'
-testconnectionsonreserve   = '<%= testconnectionsonreserve %>'
+name                                    = '<%= datasource_name %>'
+target                                  = '<%= target %>'
+targettype                              = '<%= targettype %>'
+drivername                              = '<%= drivername %>'
+jndinames                               = '<%= jndinames %>'
+url                                     = '<%= url %>'
+usexa                                   = '<%= usexa %>'
+user                                    = '<%= user %>'
+testtablename                           = '<%= testtablename %>'
+globaltransactionsprotocol              = '<%= globaltransactionsprotocol %>'
+extraproperties                         = '<%= extraproperties %>'
+maxcapacity                             = '<%= maxcapacity %>'
+initialcapacity                         = '<%= initialcapacity %>'
+fanenabled                              = '<%= fanenabled %>'
+onsnodelist                             = '<%= onsnodelist %>'
+xaproperties                            = '<%= xaproperties %>'
+mincapacity                             = '<%= mincapacity %>'
+statementcachesize                      = '<%= statementcachesize %>'
+testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
+secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>'
+testfrequency                           = '<%= testfrequency  %>'
+connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>'
 
 edit()
 startEdit()
@@ -47,12 +50,21 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
-    
+
     if mincapacity:
        set('MinCapacity',int(mincapacity))
-    
+
     if statementcachesize:
-       set('StatementCacheSize',int(statementcachesize))    
+       set('StatementCacheSize',int(statementcachesize))
+
+    if secondstotrustidlepoolconnection:
+      set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+
+    if testfrequency:
+      set('TestFrequencySeconds', int(testfrequency))
+
+    if connectioncreationretryfrequency:
+      set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
 
     if testconnectionsonreserve and testconnectionsonreserve == '1':
        set('TestConnectionsOnReserve','true')
@@ -93,7 +105,7 @@ try:
         valid_xa_properties = ls('', returnMap='true')
         for existing_prop in valid_xa_properties:
             cmo.unSet(existing_prop)
-    
+
         # Set Them Dynamically
         if xaproperties:
             xapropertiesarray=String(xaproperties).split(",")

@@ -55,6 +55,7 @@ module Puppet
     property :redeliverydelay
     property :timetodeliver
     property :timetolive
+    property :forwarddelay
 
     add_title_attributes(:jmsmodule, :queue_name) do
       /^((.*\/)?(.*):(.*)?)$/

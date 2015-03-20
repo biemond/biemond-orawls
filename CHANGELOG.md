@@ -1,5 +1,8 @@
 # History
 
+## 1.0.31
+- wls_jms_queue type, new attribute forwarddelay
+
 ## 1.0.30
 - download dir dependency cycle error between weblogic and domain manifest.
 - bsu unzip -o option instead of -n so the new readme is also added to the cache_dir

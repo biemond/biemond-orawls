@@ -9,6 +9,7 @@ def quote(text):
 def queue(token,token2,location,distributed):
     cd(location)
     jndiname      = get('JNDIName') 
+    forwardDelay  = get('ForwardDelay')
 
     defaultTargeting   = str(get('DefaultTargetingEnabled'))
     if defaultTargeting == '1':
@@ -49,10 +50,10 @@ def queue(token,token2,location,distributed):
     timeToDeliver   = get('TimeToDeliver')                             
     redeliveryDelay = get('RedeliveryDelay')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,domain]))
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,forwardDelay,domain]))
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;domain"
+print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;forwarddelay;domain"
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:

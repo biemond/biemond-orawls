@@ -18,6 +18,7 @@ expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
 redeliverydelay          = '<%= redeliverydelay %>'
+forwarddelay             = '<%= forwarddelay %>'
 
 edit()
 startEdit()
@@ -37,6 +38,10 @@ try:
 
     if subdeployment:
       set('SubDeploymentName',subdeployment)
+
+    if forwarddelay: 
+      print "ForwardDelay"
+      cmo.setForwardDelay( int(forwarddelay))
 
     print "distributed: ",distributed
     if distributed == "true":

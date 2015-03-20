@@ -123,6 +123,14 @@ class orawls::weblogic (
     os_group          => $os_group,
   }
 
+  # if !defined(File[$download_dir]) {
+  #   file { $download_dir:
+  #     ensure => directory,
+  #     mode   => '0777',
+  #     require => Wls_directory_structure["weblogic structure ${version}"],
+  #   }
+  # }
+
   # for performance reasons, download and install or just install it
   if $remote_file == true {
     # put weblogic generic jar

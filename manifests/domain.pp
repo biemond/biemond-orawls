@@ -314,14 +314,12 @@ define orawls::domain (
       }
     }
 
-    if !defined(File[$download_dir]) {
-      file { $download_dir:
-        ensure => directory,
-        mode   => '0775',
-        owner  => $os_user,
-        group  => $os_group,
-      }
-    }
+    # if !defined(File[$download_dir]) {
+    #   file { $download_dir:
+    #     ensure => directory,
+    #     mode   => '0777',
+    #   }
+    # }
 
     # the utils.py used by the wlst
     if !defined(File["${download_dir}/utils.py"]) {
@@ -334,7 +332,7 @@ define orawls::domain (
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
-        require => File[$download_dir],
+        # require => File[$download_dir],
       }
     }
 
@@ -348,7 +346,7 @@ define orawls::domain (
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
-        require => File[$download_dir],
+        # require => File[$download_dir],
         before  => File["domain.py ${domain_name} ${title}"],
       }
     }
@@ -363,8 +361,7 @@ define orawls::domain (
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
-      require => [File[$download_dir],
-                  File["${download_dir}/utils.py"],],
+      require => File["${download_dir}/utils.py"],
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){

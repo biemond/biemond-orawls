@@ -35,10 +35,9 @@ try:
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
 
-    if (clusteraddress)
-        set('ClusterAddress', clusteraddress)
+    if clusteraddress:
+      cmo.setClusterAddress(clusteraddress)
 
-    pwd()
     if frontendhost:
       cmo.setFrontendHost(frontendhost)
     if frontendhttpport:
@@ -86,5 +85,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-

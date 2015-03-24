@@ -2979,6 +2979,7 @@ or use puppet resource wls_jms_queue
       ensure           => 'present',
       defaulttargeting => '0',
       distributed      => '1',
+      forwarddelay     => '-1',
       errordestination => 'ErrorQueue',
       expirationpolicy => 'Redirect',
       jndiname         => 'jms/Queue1',
@@ -3019,6 +3020,7 @@ in hiera
        'jmsClusterModule:Queue1':
          ensure:                   'present'
          distributed:              '1'
+         forwarddelay:             '-1'
          errordestination:         'ErrorQueue'
          expirationpolicy:         'Redirect'
          jndiname:                 'jms/Queue1'

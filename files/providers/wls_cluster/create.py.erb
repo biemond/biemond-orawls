@@ -2,9 +2,8 @@
 real_domain='<%= domain %>'
 
 
-print "1"
-
 name                      = '<%= cluster_name %>'
+clusteraddress            = '<%= clusteraddress %>'
 clusterNodesTargets       = String('<%= servers %>').split(",")
 messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
@@ -23,8 +22,6 @@ frontendhttpsport         = '<%= frontendhttpsport %>'
 
 securereplication         = '<%= securereplication %>'
 
-print "2"
-
 edit()
 startEdit()
 
@@ -36,6 +33,9 @@ try:
 
   cd('/Clusters/'+name)
   cmo.setClusterMessagingMode(messagingmode)
+
+  if clusteraddress:
+    cmo.setClusterAddress(clusteraddress)
 
   if frontendhost:
     cmo.setFrontendHost(frontendhost)

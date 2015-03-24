@@ -1,7 +1,9 @@
 # History
 
 ## 1.0.31
-- wls_jms_queue type, new attribute forwarddelay
+- wls_jms_queue, new attribute forwarddelay
+- wls_foreign_server_object, bug when removing object plus also removing dependencies
+- wls_cluster, new attribute clusteraddress
 
 ## 1.0.30
 - download dir dependency cycle error between weblogic and domain manifest.

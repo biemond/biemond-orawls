@@ -4,6 +4,7 @@ real_domain='<%= domain %>'
 
 
 name                      = '<%= cluster_name %>'
+clusteraddress            = '<%= clusteraddress %>'
 clusterNodesTargets       = String('<%= servers %>').split(",")
 messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
@@ -34,7 +35,9 @@ try:
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
 
-    pwd()
+    if clusteraddress:
+      cmo.setClusterAddress(clusteraddress)
+
     if frontendhost:
       cmo.setFrontendHost(frontendhost)
     if frontendhttpport:
@@ -82,5 +85,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-

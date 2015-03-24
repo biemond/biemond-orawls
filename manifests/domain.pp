@@ -615,7 +615,7 @@ define orawls::domain (
         path    => "${nodeMgrHome}/nodemanager.properties",
         replace => true,
         content => template("orawls/nodemgr/nodemanager.properties_${version}.erb"),
-        require => Exec["execwlst ${domain_name} ${title}"],
+        require => Exec["execwlst ${domain_name} extension ${title}"],
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,

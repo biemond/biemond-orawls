@@ -4,6 +4,7 @@ real_domain='<%= domain %>'
 
 
 name                      = '<%= cluster_name %>'
+clusteraddress            = '<%= clusteraddress %>'
 clusterNodesTargets       = String('<%= servers %>').split(",")
 messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
@@ -33,6 +34,9 @@ try:
 
     cd('/Clusters/'+name)
     cmo.setClusterMessagingMode(messagingmode)
+
+    if (clusteraddress)
+        set('ClusterAddress', clusteraddress)
 
     pwd()
     if frontendhost:

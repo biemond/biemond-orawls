@@ -43,6 +43,7 @@ module Puppet
     parameter :cluster_name
     parameter :timeout
     property :servers
+    property :clusteraddress
     property :migrationbasis
     property :migration_datasource
     property :migration_table_name

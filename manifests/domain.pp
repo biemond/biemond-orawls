@@ -614,8 +614,7 @@ define orawls::domain (
       # If we are using an extension template make sure we depend on that or our properties will get overwritten
       if($extensionsTemplateFile) {
         $dependsExtension = "execwlst ${domain_name} extension ${title}"
-      }
-      else {
+      } else {
         $dependsExtension = "execwlst ${domain_name} ${title}"
       }
 

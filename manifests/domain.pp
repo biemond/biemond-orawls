@@ -259,7 +259,8 @@ define orawls::domain (
 
     if $log_dir == undef {
       $admin_nodemanager_log_dir = "${domain_dir}/servers/${adminserver_name}/logs"
-      $nodemanager_log_dir       = "${domain_dir}/nodemanager/nodemanager.log"
+      $nodeMgrLogDir             = "${domain_dir}/nodemanager/nodemanager.log"
+      
 
       $osb_nodemanager_log_dir   = "${domain_dir}/servers/osb_server1/logs"
       $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"

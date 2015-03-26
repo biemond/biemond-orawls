@@ -8,7 +8,6 @@ define orawls::nodemanager (
   $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'),
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
   $nodemanager_address                   = undef,
-  $nodemanager_address                   = undef,
   $nodemanager_secure_listener           = true,
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
   $custom_trust                          = hiera('wls_custom_trust'              , false),

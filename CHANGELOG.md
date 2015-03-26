@@ -4,6 +4,8 @@
 - wls_jms_queue, new attribute forwarddelay
 - wls_foreign_server_object, bug when removing object plus also removing dependencies
 - wls_cluster, new attribute clusteraddress
+- nodemanager.properties was overwritten in case of weblogic 12c and a domain extension
+- nodemanager with 12c didn't start when log_dir was empty
 
 ## 1.0.30
 - download dir dependency cycle error between weblogic and domain manifest.

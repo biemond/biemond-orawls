@@ -78,6 +78,7 @@ Dependency with
 - [wls_server](#wls_server)
 - [wls_server_channel](#wls_server_channel)
 - [wls_cluster](#wls_cluster)
+- [wls_singleton_service](#wls_singleton_service)
 - [wls_coherence_cluster](#wls_coherence_cluster)
 - [wls_server_template](#wls_server_template)
 - [wls_dynamic_cluster](#wls_dynamic_cluster)
@@ -2378,6 +2379,40 @@ in hiera
         servers:
           - 'wlsServer1'
           - 'wlsServer2'
+
+### wls_singleton_service
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_singleton_service
+
+    # this will use default as wls_setting identifier
+    wls_singleton_service { 'SingletonService':
+        ensure => 'present',
+        cluster => 'ClusterName',
+        user_preferred_server => 'PreferredServerName',
+        class_name => 'com.example.package.SingletonServiceImpl',
+        constrained_candidate_servers => ['PreferredServerName', 'OtherServerName'],
+        additional_migration_attempts => 2,
+        millis_to_sleep_between_attempts => 300000,
+        notes => 'This is a singleton service that prefers to run on PreferredServerName, but can be migrated to OtherServerName.',
+    }
+
+in hiera
+
+    # this will use default as wls_setting identifier
+    singleton_service_instances:
+      'SingletonService':
+        ensure:                            'present'
+        cluster:                           'ClusterName'
+        user_preferred_server:             'PreferredServerName'
+        class_name:                        'com.example.package.SingletonServiceImpl'
+        constrained_candidate_servers:
+          - 'PreferredServerName'
+          - 'OtherServerName'
+        additional_migration_attempts:     2
+        millis_to_sleep_between_attempts:  300000
+        notes:                             'This is a singleton service that prefers to run on PreferredServerName, but can be migrated to OtherServerName.'
 
 ### wls_coherence_cluster
 

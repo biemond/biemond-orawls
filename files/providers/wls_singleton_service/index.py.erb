@@ -1,0 +1,30 @@
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+cd('/')
+singletonServices = cmo.getSingletonServices()
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;domain;singleton_service_name;cluster;class_name;user_preferred_server;constrained_candidate_servers;additional_migration_attempts;millis_to_sleep_between_attempts;notes"
+
+for singletonService in singletonServices:
+    constrainedCandidateServers = ','.join(map(lambda server: server.getName(), singletonService.getConstrainedCandidateServers()))
+    print >>f, ";".join(map(quote, [
+            domain + '/' + singletonService.getName(),
+            domain,
+            singletonService.getName(),
+            singletonService.getCluster().getName(),
+            singletonService.getClassName(),
+            singletonService.getUserPreferredServer().getName(),
+            constrainedCandidateServers,
+            singletonService.getAdditionalMigrationAttempts(),
+            singletonService.getMillisToSleepBetweenAttempts(),
+            singletonService.getNotes()
+        ]))
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
+

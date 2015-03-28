@@ -1,7 +1,7 @@
 newparam(:singleton_service_name) do
-    include EasyType
+  include EasyType
 
-    isnamevar
+  isnamevar
 
-    desc 'The name of this singleton service'
+  desc 'The name of this singleton service'
 end

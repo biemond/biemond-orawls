@@ -2388,14 +2388,14 @@ or use puppet resource wls_singleton_service
 
     # this will use default as wls_setting identifier
     wls_singleton_service { 'SingletonService':
-        ensure => 'present',
-        cluster => 'ClusterName',
-        user_preferred_server => 'PreferredServerName',
-        class_name => 'com.example.package.SingletonServiceImpl',
-        constrained_candidate_servers => ['PreferredServerName', 'OtherServerName'],
-        additional_migration_attempts => 2,
+        ensure                           => 'present',
+        cluster                          => 'ClusterName',
+        user_preferred_server            => 'PreferredServerName',
+        class_name                       => 'com.example.package.SingletonServiceImpl',
+        constrained_candidate_servers    => ['PreferredServerName', 'OtherServerName'],
+        additional_migration_attempts    => 2,
         millis_to_sleep_between_attempts => 300000,
-        notes => 'This is a singleton service that prefers to run on PreferredServerName, but can be migrated to OtherServerName.',
+        notes                            => 'This is a singleton service that prefers to run on PreferredServerName, but can be migrated to OtherServerName.',
     }
 
 in hiera

@@ -1,5 +1,8 @@
 # History
 
+## 1.0.32
+- new wls_singleton_service type
+
 ## 1.0.31
 - wls_jms_queue, new attribute forwarddelay
 - wls_foreign_server_object, bug when removing object plus also removing dependencies

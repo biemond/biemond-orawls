@@ -1,4 +1,4 @@
-newparam(:cluster) do
+newproperty(:cluster) do
   include EasyType
 
   desc 'The cluster this singleton service should be targetted to'

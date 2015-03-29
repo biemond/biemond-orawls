@@ -1,4 +1,4 @@
-newparam(:class_name) do
+newproperty(:class_name) do
   include EasyType
 
   desc 'The fully qualified classname of the singleton service'

@@ -40,8 +40,8 @@ module Puppet
     parameter :domain
     parameter :name
     parameter :singleton_service_name
-    parameter :cluster
-    parameter :class_name
+    property :cluster
+    property :class_name
     property :additional_migration_attempts
     property :millis_to_sleep_between_attempts
     property :notes

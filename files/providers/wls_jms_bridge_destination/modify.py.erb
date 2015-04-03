@@ -27,8 +27,12 @@ try:
     cmo.setDestinationJNDIName(destinationjndi)
     cmo.setDestinationType(destinationtype)
     cmo.setInitialContextFactory(initialcontextfactory)
-    cmo.setUserName(user_name)
-    cmo.setUserPassword(password)
+    
+    if user_name:
+        cmo.setUserName(user_name)
+
+    if password:
+        cmo.setUserPassword(password)
 
     save()
     activate()          

@@ -2,6 +2,8 @@
 
 ## 1.0.32
 - new wls_singleton_service type
+- wls_jms_bridge_destination fix for username and password
+- fiddyspence/sleep fix so it works with hiera and string value as input
 
 ## 1.0.31
 - wls_jms_queue, new attribute forwarddelay

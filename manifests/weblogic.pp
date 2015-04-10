@@ -198,7 +198,7 @@ class orawls::weblogic (
 
   } else {
     exec {"install weblogic ${version}":
-      command     => "${cmd_prefix}${weblogic_jar_location} -Djava.io.tmpdir=${temp_directory} -mode=silent -silent_xml=${download_dir}/weblogic_silent_install.xml",
+      command     => "${cmd_prefix}${weblogic_jar_location} -Djava.io.tmpdir=${temp_directory} -Duser.country=US -Duser.language=en -mode=silent -log=${temp_directory}/wls.out -log_priority=info -silent_xml=${download_dir}/weblogic_silent_install.xml",
       environment => ['JAVA_VENDOR=Sun',"JAVA_HOME=${jdk_home_dir}"],
       creates     => $created_dir,
       timeout     => 0,

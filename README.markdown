@@ -1530,6 +1530,10 @@ Global timeout parameter for WebLogic resource types. use timeout and value in s
 
 required for all the weblogic type/providers, this is a pointer to an WebLogic AdminServer.
 
+For suppressing the passwords in the puppet log output you can set the loglevel to debug, this way it will only show up when you set puppet agent or apply loglevel to debug and off course when the wls_setting is created or updated. in other cases you won't see a thing in the output.
+
+in hiera loglevel: 'debug' or loglevel => 'debug'
+
     wls_setting { 'default':
       user               => 'oracle',
       weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',

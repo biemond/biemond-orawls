@@ -62,7 +62,7 @@ describe 'orawls::weblogic', :type => :class do
     describe "install weblogic" do
       it {
            should contain_exec("install weblogic 1036").with({
-             'command'      => 'java  -Xmx1024m -Djava.io.tmpdir=/data -jar /install/wls1036_generic.jar -Djava.io.tmpdir=/data -mode=silent -silent_xml=/install/weblogic_silent_install.xml',
+             'command'      => 'java  -Xmx1024m -Djava.io.tmpdir=/data -jar /install/wls1036_generic.jar -Djava.io.tmpdir=/data -Duser.country=US -Duser.language=en -mode=silent -log=/data/wls.out -log_priority=info -silent_xml=/install/weblogic_silent_install.xml',
              'environment'  => ["JAVA_VENDOR=Sun","JAVA_HOME=/usr/java/jdk1.7.0_45"],
            }).that_requires('File[/install/weblogic_silent_install.xml]').that_requires('Wls_directory_structure[weblogic structure 1036]')
          }
@@ -158,7 +158,7 @@ describe 'orawls::weblogic', :type => :class do
     describe "install weblogic" do
       it {
            should contain_exec("install weblogic 1036").with({
-             'command'      => 'java  -Xmx1024m -Djava.io.tmpdir=/tmp -jar /software/wls1036_generic.jar -Djava.io.tmpdir=/tmp -mode=silent -silent_xml=/install/weblogic_silent_install.xml',
+             'command'      => 'java  -Xmx1024m -Djava.io.tmpdir=/tmp -jar /software/wls1036_generic.jar -Djava.io.tmpdir=/tmp -Duser.country=US -Duser.language=en -mode=silent -log=/tmp/wls.out -log_priority=info -silent_xml=/install/weblogic_silent_install.xml',
              'environment'  => ["JAVA_VENDOR=Sun","JAVA_HOME=/usr/java/jdk1.7.0_45"],
            }).that_requires('File[/install/weblogic_silent_install.xml]').that_requires('Wls_directory_structure[weblogic structure 1036]')
          }

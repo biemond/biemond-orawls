@@ -15,8 +15,16 @@ try:
     cd('/')
     cmo.createJMSSystemResource(name)
     cd('/SystemResources/'+name)
-    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targetType)], ObjectName))
 
+    targets     = String(target).split(",")
+    targettypes = String(targetType).split(",")
+    targetList  = []
+    for i in range(len(targets)):
+      print "target "+targets[i] + " " + targettypes[i]
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
+    set('Targets',jarray.array(targetList, ObjectName))
+    
     save()
     activate()          
     print "~~~~COMMAND SUCCESFULL~~~~"

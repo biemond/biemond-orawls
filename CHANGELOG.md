@@ -6,6 +6,7 @@
 - fiddyspence/sleep fix so it works with hiera and string value as input
 - added log file to tmp dir + level for the weblogic 10.3 or 11g installation output
 - Multiple targets for wls_jms_module type
+- new wls_deployment attributes for stagingmode, remote and upload
 
 ## 1.0.31
 - wls_jms_queue, new attribute forwarddelay

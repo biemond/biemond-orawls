@@ -1760,47 +1760,42 @@ or use puppet resource wls_deployment
     wls_deployment { 'jersey-bundle':
       ensure            => 'present',
       deploymenttype    => 'Library',
-      target            => ['AdminServer','WebCluster'],
-      targettype        => ['Server','Cluster'],
+      stagingmode       => 'nostage',
+      remote            => "1",
+      upload            => "1",
+      target            => ['AdminServer', 'WebCluster'],
+      targettype        => ['Server', 'Cluster'],
       versionidentifier => '1.18@1.18.0.0',
-      localpath         =>  '/vagrant/jersey-bundle-1.18.war',
-      timeout           => 60,
     }
-    # this will use default as wls_setting identifier
+
     wls_deployment { 'webapp':
       ensure            => 'present',
       deploymenttype    => 'AppDeployment',
-      target            => ['WebCluster'],
-      targettype        => ['Cluster'],
-      localpath         => '/vagrant/webapp.war',
-      timeout           => 60,
-    }
-
-or add a version
-
-    # this will use default as wls_setting identifier
-    wls_deployment { 'webapp':
-      ensure            => 'present',
-      deploymenttype    => 'AppDeployment',
+      stagingmode       => 'nostage',
+      remote            => "1",
+      upload            => "1",
       target            => ['WebCluster'],
       targettype        => ['Cluster'],
       versionidentifier => '1.1@1.1.0.0',
-      localpath         => '/vagrant/webapp.war',
+      require           => Wls_deployment['jersey-bundle']
     }
 
 
 in hiera
 
     $default_params = {}
-    $deployment_instances = hiera('deployment_library_instances', $default_params)
+    $deployment_instances = hiera('deployment_instances', $default_params)
     create_resources('wls_deployment',$deployment_instances, $default_params)
 
-    # this will use default as wls_setting identifier
-    deployment_library_instances:
+    deployment_instances:
       'jersey-bundle':
         ensure:            'present'
         deploymenttype:    'Library'
         versionidentifier: '1.18@1.18.0.0'
+        timeout:           60
+        stagingmode:       "nostage"
+        remote:            "1"
+        upload:            "1"
         target:
           - 'AdminServer'
           - 'WebCluster'
@@ -1808,24 +1803,24 @@ in hiera
           - 'Server'
           - 'Cluster'
         localpath:         '/vagrant/jersey-bundle-1.18.war'
-
-    $default_params = {}
-    $deployment_instances = hiera('deployment_application_instances', $default_params)
-    create_resources('wls_deployment',$deployment_instances, $default_params)
-
-    # this will use default as wls_setting identifier
-    deployment_application_instances:
+        require:
+           - Wls_cluster[WebCluster]
       'webapp':
         ensure:            'present'
         deploymenttype:    'AppDeployment'
         versionidentifier: '1.1@1.1.0.0'
+        timeout:           60
+        stagingmode:       "nostage"
+        remote:            "1"
+        upload:            "1"
         target:
-          - 'AdminServer'
           - 'WebCluster'
         targettype:
-          - 'Server'
           - 'Cluster'
         localpath:         '/vagrant/webapp.war'
+        require:
+           - Wls_deployment[jersey-bundle]
+           - Wls_cluster[WebCluster]
 
 
 ### wls_user

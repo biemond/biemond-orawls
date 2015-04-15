@@ -21,12 +21,12 @@ try:
     print 'targettype....'+targettype
 
     print 'start....'
-    if remote == 1:
+    if remote == '1':
       remoteflag = 'true'
     else:
       remoteflag = 'false'
-    
-    if upload == 1:
+
+    if upload == '1':
       uploadflag = 'true'
     else:
       uploadflag = 'false'
@@ -41,7 +41,7 @@ try:
           currentApp               = get('ApplicationName')
           currentVersionidentifier = get('VersionIdentifier')
     else:
-      library = 'false'  
+      library = 'false'
       myapps=cmo.getAppDeployments()
       for appName in myapps:
         cd('/AppDeployments/'+appName.getName() )
@@ -72,7 +72,7 @@ try:
           deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
         else:
           deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
-    else: 
+    else:
       if planpath:
         if stagingmode:
           deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library)
@@ -93,8 +93,8 @@ try:
       targetList  = []
       for i in range(len(targets)):
         print "target "+targets[i] + " " + targettypes[i]
-        targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-      
+        targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
       print 'set targets....'
       if deploymenttype == 'Library':
         print 'lib....'
@@ -106,7 +106,7 @@ try:
       set('Targets',jarray.array(targetList, ObjectName))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

@@ -1,4 +1,4 @@
-newproperty(:remote) do
+newparam(:remote) do
   include EasyType
   include EasyType::Validators::Name
 

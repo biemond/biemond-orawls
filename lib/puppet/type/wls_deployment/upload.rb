@@ -1,4 +1,4 @@
-newproperty(:upload) do
+newparam(:upload) do
   include EasyType
   include EasyType::Validators::Name
 

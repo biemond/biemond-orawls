@@ -888,6 +888,7 @@ FMW 11g, 12.1.2 , 12.1.3 ADF domain with webtier
          repository_database_url:  "jdbc:oracle:thin:@wlsdb.example.com:1521/wlsrepos.example.com"
          repository_prefix:        "DEV"
          repository_password:      "Welcome01"
+         repository_sys_user:      "sys"
          repository_sys_password:  "Welcome01"
          rcu_database_url:         "wlsdb.example.com:1521:wlsrepos.example.com"
          webtier_enabled:          true
@@ -916,6 +917,7 @@ FMW 11g WebLogic OIM / OAM domain
         repository_database_url:  "jdbc:oracle:thin:@oimdb.example.com:1521/oimrepos.example.com"
         repository_prefix:        "DEV"
         repository_password:      "Welcome01"
+        repository_sys_user:      "sys"
         repository_sys_password:  "Welcome01"
         rcu_database_url:         "oimdb.example.com:1521/oimrepos.example.com"
 
@@ -935,6 +937,7 @@ FMW 12.1.3 WebLogic SOA Suite domain
         repository_database_url:  "jdbc:oracle:thin:@soadb.example.com:1521/soarepos.example.com"
         repository_prefix:        "DEV"
         repository_password:      "Welcome01"
+        repository_sys_user:      "sys"
         repository_sys_password:  "Welcome01"
         rcu_database_url:         "soadb.example.com:1521:soarepos.example.com"
 
@@ -950,6 +953,7 @@ FMW 12.1.3 WebLogic OSB domain
          repository_database_url:  "jdbc:oracle:thin:@osbdb.example.com:1521/osbrepos.example.com"
          repository_prefix:        "DEV"
          repository_password:      "Welcome01"
+         repository_sys_user:      "sys"
          repository_sys_password:  "Welcome01"
          rcu_database_url:         "osbdb.example.com:1521:osbrepos.example.com"
 

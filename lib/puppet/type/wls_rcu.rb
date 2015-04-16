@@ -46,6 +46,12 @@ module Puppet
       EOT
     end
 
+    newparam(:sys_user) do
+      desc <<-EOT
+        The sys user for the RCU check/install.
+      EOT
+    end
+
     newparam(:sys_password) do
       desc <<-EOT
         The sys password for the RCU check/install.

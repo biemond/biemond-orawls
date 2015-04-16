@@ -7,6 +7,8 @@
 - added log file to tmp dir + level for the weblogic 10.3 or 11g installation output
 - Multiple targets for wls_jms_module type
 - new wls_deployment attributes for stagingmode, remote and upload
+- able to provide the sys username for the FMW domain RCU action
+- derby flag on false in setDomainEnv when it is an OSB or SOA domain
 
 ## 1.0.31
 - wls_jms_queue, new attribute forwarddelay

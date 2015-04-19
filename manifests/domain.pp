@@ -266,6 +266,7 @@ define orawls::domain (
       $osb_nodemanager_log_dir   = "${domain_dir}/servers/osb_server1/logs"
       $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"
       $bam_nodemanager_log_dir   = "${domain_dir}/servers/bam_server1/logs"
+      $ess_nodemanager_log_dir   = "${domain_dir}/servers/ess_server1/logs"
 
       $oim_nodemanager_log_dir   = "${domain_dir}/servers/oim_server1/logs"
       $oam_nodemanager_log_dir   = "${domain_dir}/servers/oam_server1/logs"
@@ -283,6 +284,8 @@ define orawls::domain (
       $osb_nodemanager_log_dir   = $log_dir
       $soa_nodemanager_log_dir   = $log_dir
       $bam_nodemanager_log_dir   = $log_dir
+      $ess_nodemanager_log_dir   = $log_dir
+
 
       $oim_nodemanager_log_dir   = $log_dir
       $oam_nodemanager_log_dir   = $log_dir

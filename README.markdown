@@ -112,11 +112,11 @@ all templates creates a WebLogic domain, logs the domain creation output
 
 - domain 'standard'    -> a default WebLogic
 - domain 'adf'         -> JRF + EM + Coherence (12.1.2 & 12.1.3) + OWSM (12.1.2 & 12.1.3) + JAX-WS Advanced + Soap over JMS (12.1.2 & 12.1.3)
-- domain 'osb'         -> OSB + JRF + EM + OWSM
-- domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM
-- domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM
-- domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM
-- domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM
+- domain 'osb'         -> OSB + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
 - domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM
 - domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)

@@ -2,6 +2,7 @@
 
 ## 1.0.33
 - added ESS (enterprise schedular) to OSB domain option
+- RCU prefix compare check fix ( Uppercase )
 
 ## 1.0.32
 - new wls_singleton_service type

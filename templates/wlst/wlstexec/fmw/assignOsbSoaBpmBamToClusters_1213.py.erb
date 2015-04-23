@@ -36,7 +36,7 @@ def getFirstClusterServer(cluster):
             searchClusterStr = cluster+":"
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
-                return token    
+                return token
 
 def getClusterServers(cluster):
     servers = []
@@ -53,7 +53,7 @@ def getClusterServers(cluster):
             if not clusterNameStr.find(searchClusterStr) == -1:
                 servers.append(token)
 
-    return servers   
+    return servers
 
 def createSAFAgents(cluster, currentServerCnt):
     print ' '
@@ -75,19 +75,19 @@ def createSAFAgents(cluster, currentServerCnt):
             print "searchClusterStr = ",searchClusterStr
             print "clusterNameStr = ",clusterNameStr
             if not clusterNameStr.find(searchClusterStr) == -1:
-                print token, " is associated with ", cluster    
+                print token, " is associated with ", cluster
                 cd('/')
 
                 fileStoreName = 'WseeFileStore_auto_'+str(serverCnt)
                 safAgent      = 'ReliableWseeSAFAgent_auto_'+str(serverCnt)
-                
+
                 cd('/')
                 create(safAgent, 'SAFAgent')
                 cd('/SAFAgent/'+safAgent)
                 set ('Target'     , token)
                 set ('Store'      , fileStoreName)
                 set ('ServiceType','Both')
-    
+
                 serverCnt = serverCnt + 1
 
 def createFileStore(storeName, serverName):
@@ -118,7 +118,7 @@ def createJMSServers(cluster, track, currentServerCnt):
             print "searchClusterStr = ",searchClusterStr
             print "clusterNameStr = ",clusterNameStr
             if not clusterNameStr.find(searchClusterStr) == -1:
-                print token, " is associated with ", cluster    
+                print token, " is associated with ", cluster
                 print ' '
                 print "Creating JMS Servers for ", track
                 print ' '
@@ -138,7 +138,7 @@ def createJMSServers(cluster, track, currentServerCnt):
                 print "Created JMS Server :- ", jmsServerName
                 print ' '
                 assign('JMSServer', jmsServerName, 'Target', token)
-                print jmsServerName, " assigned to server :- ", token 
+                print jmsServerName, " assigned to server :- ", token
                 print ' '
                 cd('/JMSServer/'+jmsServerName)
                 set ('PersistentStore', fileStoreName)
@@ -178,7 +178,7 @@ if bamEnabled == true:
     cd('/')
     for i in range(len(bamServers)):
       print "change servergroups for " + bamServers[i]
-      setServerGroups(bamServers[i] , bamServerGroup)                      
+      setServerGroups(bamServers[i] , bamServerGroup)
 
     print "delete old bam"
     delete('bam_server1', 'Server')
@@ -192,13 +192,13 @@ if soaEnabled == true:
         soaServerGroup = ["SOA-MGD-SVRS"]
 
     cd('/')
-    setServerGroups('soa_server1', serverGroupNone)                      
+    setServerGroups('soa_server1', serverGroupNone)
 
     soaServers = getClusterServers(SOAClusterName)
     cd('/')
     for i in range(len(soaServers)):
       print "change servergroups for " + soaServers[i]
-      setServerGroups(soaServers[i] , soaServerGroup)                      
+      setServerGroups(soaServers[i] , soaServerGroup)
 
     print "delete old soa"
     delete('soa_server1', 'Server')
@@ -208,13 +208,13 @@ if osbEnabled == true:
     osbServerGroup  = ["OSB-MGD-SVRS-COMBINED"]
 
     cd('/')
-    setServerGroups('osb_server1', serverGroupNone)                      
+    setServerGroups('osb_server1', serverGroupNone)
 
     osbServers = getClusterServers(OSBClusterName)
     cd('/')
     for i in range(len(osbServers)):
       print "change servergroups for " + osbServers[i]
-      setServerGroups(osbServers[i] , osbServerGroup)                      
+      setServerGroups(osbServers[i] , osbServerGroup)
 
     print "delete old osb"
     delete('osb_server1', 'Server')
@@ -243,7 +243,7 @@ cd('/')
 cd('/CoherenceClusterSystemResource/defaultCoherenceCluster')
 set('Target',AllClusters)
 cd('CoherenceResource/defaultCoherenceCluster/CoherenceClusterParams/NO_NAME_0')
-set('UnicastListenPort',9991) 
+set('UnicastListenPort',9991)
 
 if soaEnabled == true:
     print "fix SOA"
@@ -271,17 +271,39 @@ if bamEnabled == true:
     cd('/')
     cd('/Cluster/'+BAMClusterName)
     set('DataSourceForJobScheduler','BamJobSchedDataSource')
-    
+
     print "re-create BAM JMS"
     cd('/')
-    delete('BamCQServiceJmsSystemResource_bam_server1','JMSSystemResource')
-    delete('BamServerJmsSystemResource'               ,'JMSSystemResource')
+    try:
+        delete('BamCQServiceJmsSystemResource_bam_server1','JMSSystemResource')
+    except:
+        print "delete BamCQServiceJmsSystemResource_bam_server1 failed"
 
-    delete('BamCQServiceJmsServer_bam_server1'   ,'JMSServer')
-    delete('BamServerJmsServer_bam_server1'      ,'JMSServer')
+    try:
+        delete('BamServerJmsSystemResource','JMSSystemResource')
+    except:
+        print "delete BamServerJmsSystemResource failed"
 
-    delete('BamCQServiceJmsFileStore_bam_server1','FileStore')
-    delete('BamServerJmsFileStore_bam_server1'   ,'FileStore')
+    try:
+        delete('BamCQServiceJmsServer_bam_server1'   ,'JMSServer')
+    except:
+        print "Delete BamCQServiceJmsServer_bam_server1 failed"
+
+    try:
+        delete('BamServerJmsServer_bam_server1'      ,'JMSServer')
+    except:
+        print "Delete BamServerJmsServer_bam_server1 failed"
+
+    try:
+        delete('BamCQServiceJmsFileStore_bam_server1','FileStore')
+    except:
+        print "Delete BamCQServiceJmsFileStore_bam_server1 failed"
+
+    try:
+        delete('BamServerJmsFileStore_bam_server1'   ,'FileStore')
+    except:
+        print "Delete BamServerJmsFileStore_bam_server1 failed"
+
 
     print "create BAM JMS"
     createJMSServers(BAMClusterName, 'Bam', 1)
@@ -314,7 +336,7 @@ if bamEnabled == true:
         print token
 
     print ("*** Setting JMS SubModule for SOA JMS Server's target***")
-    assign('JMSSystemResource.SubDeployment', 'BamServerJmsSystemResource.BamServerSubdeployment', 'Target', bamJMSServerStr) 
+    assign('JMSSystemResource.SubDeployment', 'BamServerJmsSystemResource.BamServerSubdeployment', 'Target', bamJMSServerStr)
 
     cd('/')
     cd('JMSSystemResource/BamServerJmsSystemResource/JmsResource/NO_NAME_0')
@@ -372,7 +394,7 @@ if bamEnabled == true:
         print token
 
     print ("*** Setting JMS SubModule for BamCQ JMS Server's target***")
-    assign('JMSSystemResource.SubDeployment', 'BamCQServiceJmsSystemResource.BamCQServiceAlertEngineSubdeployment', 'Target', bamJMSServerStr) 
+    assign('JMSSystemResource.SubDeployment', 'BamCQServiceJmsSystemResource.BamCQServiceAlertEngineSubdeployment', 'Target', bamJMSServerStr)
 
     cd('/')
     cd('JMSSystemResource/BamCQServiceJmsSystemResource/JmsResource/NO_NAME_0')
@@ -410,4 +432,4 @@ dumpStack()
 
 print 'Successfully Updated SOA Domain.'
 
-closeDomain() 
+closeDomain()

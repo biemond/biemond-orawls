@@ -228,6 +228,9 @@ print "updateDomain"
 updateDomain()
 dumpStack()
 
+closeDomain()
+readDomain(DOMAIN_PATH)
+
 print "change Coherence"
 if soaEnabled == true:
     cd('/')
@@ -245,11 +248,24 @@ set('Target',AllClusters)
 cd('CoherenceResource/defaultCoherenceCluster/CoherenceClusterParams/NO_NAME_0')
 set('UnicastListenPort',9991)
 
+updateDomain()
+dumpStack()
+
+closeDomain()
+readDomain(DOMAIN_PATH)
+
 if soaEnabled == true:
     print "fix SOA"
     cd('/')
     assign('AppDeployment'                ,'soa-infra'                    , 'Target', SOAClusterName)
     assign('AppDeployment.SubDeployment'  ,'soa-infra.*'                  , 'Target', SOAClusterName)
+
+    updateDomain()
+    dumpStack()
+
+    closeDomain()
+    readDomain(DOMAIN_PATH)
+
 
 if osbEnabled == true:
     print "fix OSB jms"
@@ -258,6 +274,13 @@ if osbEnabled == true:
     delete('OSBAQJMSServer'        ,'JMSSystemResource')
     delete('UMSAQJMSSystemResource','JMSSystemResource')
     createSAFAgents(OSBClusterName, 1)
+
+    updateDomain()
+    dumpStack()
+
+    closeDomain()
+    readDomain(DOMAIN_PATH)
+
 
 if bamEnabled == true:
     print "to do fix BAM foreign jndi"

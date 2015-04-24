@@ -86,6 +86,7 @@ module Puppet
     property :default_file_store
     property :max_message_size
     property :restart_max
+    property :weblogic_plugin_enabled
 
     property :custom_identity
 

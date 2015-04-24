@@ -47,6 +47,7 @@ trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 default_file_store                     = '<%= default_file_store %>'
 max_message_size                       = '<%= max_message_size %>'
+weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
 
 edit()
 startEdit()
@@ -115,6 +116,9 @@ try:
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
     if custom_identity == '0':
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
+      
+    if weblogic_plugin_enabled:
+      set('WeblogicPluginEnabled', formatBoolean(weblogic_plugin_enabled))
 
     cd('/Servers/'+name+'/SSL/'+name)
 

@@ -24,6 +24,7 @@ log_number_of_files_limited   = '<%= log_number_of_files_limited %>'
 log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
 log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
 
+
 restart_max   = '<%= restart_max %>'
 listenAddress = '<%= listenaddress %>'
 listenPort    = '<%= listenport %>'
@@ -38,6 +39,7 @@ logintimeout  = '<%= logintimeout %>'
 jsseenabled   = '<%= jsseenabled %>'
 tunnelingenabled  = '<%= tunnelingenabled %>'
 
+
 custom_identity                        = '<%= custom_identity %>'
 custom_identity_keystore_filename      = '<%= custom_identity_keystore_filename %>'
 custom_identity_keystore_passphrase    = '<%= custom_identity_keystore_passphrase %>'
@@ -48,6 +50,7 @@ trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 default_file_store                     = '<%= default_file_store %>'
 max_message_size                       = '<%= max_message_size %>'
+weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
 
 edit()
 startEdit()
@@ -125,6 +128,9 @@ try:
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
     if custom_identity == '0':
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
+
+    if weblogic_plugin_enabled:
+      set('WeblogicPluginEnabled', formatBoolean(weblogic_plugin_enabled))
 
     cd('/Servers/'+name+'/SSL/'+name)
 

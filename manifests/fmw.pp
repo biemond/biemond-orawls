@@ -372,10 +372,9 @@ define orawls::fmw (
 
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion"
 
-    #notify { "orawls::fmw ${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}": }
     if $version == 1212 or $version == 1213 {
       if $type == 'java' {
-        $install = 'java -jar '
+        $install = "java -Djava.io.tmpdir=${temp_directory} -jar "
       }
       else {
         $install = ''

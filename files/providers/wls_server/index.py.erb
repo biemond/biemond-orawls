@@ -10,7 +10,7 @@ cd("/")
 m = ls('/Servers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;logintimeout;ssllistenport;sslenabled;sslhostnameverificationignored;two_way_ssl;client_certificate_enforced;machine;logfilename;log_file_min_size;log_filecount;log_rotate_logon_startup;log_rotationtype;log_number_of_files_limited;tunnelingenabled;log_http_filename;log_http_format;log_http_format_type;log_datasource_filename;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias;default_file_store;max_message_size;log_redirect_stderr_to_server;log_redirect_stdout_to_server;restart_max;log_http_file_count;log_http_number_of_files_limited;bea_home;weblogin_plugin_enabled"
+print >>f, "name;listenaddress;listenport;logintimeout;ssllistenport;sslenabled;sslhostnameverificationignored;two_way_ssl;client_certificate_enforced;machine;logfilename;log_file_min_size;log_filecount;log_rotate_logon_startup;log_rotationtype;log_number_of_files_limited;tunnelingenabled;log_http_filename;log_http_format;log_http_format_type;log_datasource_filename;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias;default_file_store;max_message_size;log_redirect_stderr_to_server;log_redirect_stdout_to_server;restart_max;log_http_file_count;log_http_number_of_files_limited;bea_home;weblogic_plugin_enabled"
 for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token)
@@ -28,7 +28,7 @@ for token in m:
 
   custom_identity_keystore_filename = get("CustomIdentityKeyStoreFileName")
   trust_keystore_file               = get("CustomTrustKeyStoreFileName")
-  weblogic_plugin_enabled           = get("WeblogicPluginEnabled")
+  weblogic_plugin_enabled           = str(get('WeblogicPluginEnabled'))
 
   cd('/Servers/'+token+'/SSL/'+token)
   sslListenPort                     = str(get('ListenPort'))

@@ -105,6 +105,9 @@ try:
     if tunnelingenabled:
       set('TunnelingEnabled', formatBoolean(tunnelingenabled))
 
+    if weblogic_plugin_enabled:
+      set('WeblogicPluginEnabled', formatBoolean(weblogic_plugin_enabled))
+
     if custom_identity == '1':
       set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
       set('CustomIdentityKeyStoreFileName'           ,custom_identity_keystore_filename)
@@ -116,10 +119,7 @@ try:
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
     if custom_identity == '0':
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
-      
-    if weblogic_plugin_enabled:
-      set('WeblogicPluginEnabled', formatBoolean(weblogic_plugin_enabled))
-
+        
     cd('/Servers/'+name+'/SSL/'+name)
 
     if sslEnabled and sslEnabled != '-1':

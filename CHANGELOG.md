@@ -5,6 +5,8 @@
 - RCU prefix compare check fix ( Uppercase )
 - SOA FMW cluster fixes for latest 12.1.3 soa patch
 - SOA FMW cluster fix for soa with bam
+- Java tmp dir option for 12c FMW software install
+- wls_server, new attribute WeblogicPluginEnabled
 
 ## 1.0.32
 - new wls_singleton_service type

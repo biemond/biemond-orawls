@@ -2124,6 +2124,7 @@ or with log parameters, default file store and ssl
       client_certificate_enforced       => '0',
       default_file_store                => '/path/to/default_file_store/',
       max_message_size                  => '25000000',
+      weblogic_plugin_enabled           => '1',
     }
 
 

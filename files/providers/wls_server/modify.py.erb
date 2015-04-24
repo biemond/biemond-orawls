@@ -47,6 +47,7 @@ trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 
 default_file_store                     = '<%= default_file_store %>'
 max_message_size                       = '<%= max_message_size %>'
+weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
 
 edit()
 startEdit()
@@ -103,6 +104,9 @@ try:
 
     if tunnelingenabled:
       set('TunnelingEnabled', formatBoolean(tunnelingenabled))
+
+    if weblogic_plugin_enabled:
+      set('WeblogicPluginEnabled', formatBoolean(weblogic_plugin_enabled))
 
     if custom_identity == '1':
       set('KeyStores'                                ,'CustomIdentityAndCustomTrust')

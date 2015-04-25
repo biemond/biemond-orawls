@@ -31,7 +31,11 @@ for token in m2:
     except:
       print "Failed to convert to list the Active Types."
 
-    defaultmappertype = get('DefaultUserNameMapperAttributeType')
+    defaultmappertype = ''
+    try:
+      defaultmappertype = get('DefaultUserNameMapperAttributeType')
+    except:
+      print "Failed to get DefaultUserNameMapperAttributeType"
 
     cd('../')
     ap = get('AuthenticationProviders')

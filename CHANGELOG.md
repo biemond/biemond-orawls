@@ -7,6 +7,7 @@
 - SOA FMW cluster fix for soa with bam
 - Java tmp dir option for 12c FMW software install
 - wls_server, new attribute WeblogicPluginEnabled
+- Optional DefaultUserNameMapperAttributeType fix in wls_identity_asserter
 
 ## 1.0.32
 - new wls_singleton_service type

@@ -19,6 +19,7 @@ define orawls::utils::fmwcluster (
   $osb_cluster_name           = undef,
   $oam_cluster_name           = undef,
   $oim_cluster_name           = undef,
+  $ess_cluster_name           = undef,
   $bpm_enabled                = false, # true|false
   $bam_enabled                = false, # true|false
   $osb_enabled                = false, # true|false

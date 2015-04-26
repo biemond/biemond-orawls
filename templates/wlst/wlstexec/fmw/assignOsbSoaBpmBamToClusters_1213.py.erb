@@ -12,6 +12,7 @@ essEnabled     = <%= @ess_enabled %>
 SOAClusterName = '<%= @soa_cluster_name %>'
 BAMClusterName = '<%= @bam_cluster_name %>'
 OSBClusterName = '<%= @osb_cluster_name %>'
+ESSClusterName = '<%= @ess_cluster_name %>'
 Admin          = '<%= @adminserver_name %>'
 
 AllClustersArray = []
@@ -21,6 +22,8 @@ if soaEnabled == true:
     AllClustersArray.append(SOAClusterName)
 if osbEnabled == true:
     AllClustersArray.append(OSBClusterName)
+if essEnabled == true and ESSClusterName:
+    AllClustersArray.append(ESSClusterName)
 
 AllClusters  = ','.join(AllClustersArray)
 
@@ -163,6 +166,13 @@ if osbEnabled == true:
     cd('/Servers/osb_server1')
     set('ListenAddress','')
 
+if essEnabled == true:
+    try:
+        cd('/Servers/ess_server1')
+        set('ListenAddress','')
+    except:
+        print "set ListenAddress None on ess_server1 failed"
+
 updateDomain()
 
 serverGroupNone = []
@@ -186,7 +196,8 @@ if bamEnabled == true:
 if soaEnabled == true:
     print "change soa"
 
-    if essEnabled == true:
+    # add ESS to existing soa servers
+    if essEnabled == true and ESSClusterName == '':
         soaServerGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
     else:
         soaServerGroup = ["SOA-MGD-SVRS"]
@@ -202,6 +213,31 @@ if soaEnabled == true:
 
     print "delete old soa"
     delete('soa_server1', 'Server')
+
+# add ESS to its own ESS servers
+if essEnabled == true and ESSClusterName:
+    print "change ess"
+
+    essServerGroup = ["ESS-MGD-SVRS"]
+
+    cd('/')
+    try:
+        setServerGroups('ess_server1', serverGroupNone)
+    except:
+        print "set setServerGroups None on ess_server1 failed"
+
+    essServers = getClusterServers(ESSClusterName)
+    cd('/')
+    for i in range(len(essServers)):
+      print "change servergroups for " + essServers[i]
+      setServerGroups(essServers[i], essServerGroup)
+
+    print "delete old ess"
+    try:
+        delete('ess_server1', 'Server')
+    except:
+        print "delete ess_server1 failed"
+
 
 if osbEnabled == true:
     print "change osb"
@@ -241,6 +277,10 @@ if osbEnabled == true:
 if bamEnabled == true:
     cd('/')
     assign('Cluster',BAMClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+if essEnabled == true and ESSClusterName:
+    cd('/')
+    assign('Cluster',ESSClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+
 
 cd('/')
 cd('/CoherenceClusterSystemResource/defaultCoherenceCluster')

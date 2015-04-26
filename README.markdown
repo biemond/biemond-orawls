@@ -1408,6 +1408,7 @@ hiera configuration
         soa_cluster_name:     "SoaCluster"
         bam_cluster_name:     "BamCluster"
         osb_cluster_name:     "OsbCluster"
+        ess_cluster_name:     "EssCluster" # optional else ESS will be added to the soa cluster
         log_output:           *logoutput
         bpm_enabled:          true
         bam_enabled:          true

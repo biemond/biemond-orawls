@@ -1,7 +1,7 @@
 # History
 
 ## 1.0.33
-- added ESS (enterprise schedular) to OSB domain option
+- added ESS (enterprise schedular) to OSB domain + FMW cluster option
 - RCU prefix compare check fix ( Uppercase )
 - SOA FMW cluster fixes for latest 12.1.3 soa patch
 - SOA FMW cluster fix for soa with bam

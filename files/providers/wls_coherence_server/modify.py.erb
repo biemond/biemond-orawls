@@ -1,0 +1,41 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name                    = '<%= coherence_server_name %>'
+
+unicastaddress          = '<%= unicastaddress %>'
+unicastport             = '<%= unicastport %>'
+machine                 = '<%= machine %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    print 'Modify Coherence Server';
+    cd('/CoherenceServers/'+name)
+
+    if unicastaddress:
+       set('UnicastListenAddress',unicastaddress)
+
+    if unicastport:
+       set('UnicastListenPort',unicastport)
+
+    if machine:
+       cd('/')
+       m = cmo.lookupMachine('LocalMachine')
+       cd('/CoherenceServers/'+name)
+       set('Machine', m)
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+

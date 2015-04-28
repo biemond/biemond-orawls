@@ -20,15 +20,17 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
 
     Puppet.debug "bsu_patch action: #{action}"
 
-    if patch_download_dir == nil
+    if patch_download_dir.nil?
       command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh ' + bsuaction + ' -patchlist=' + patchName + ' -prod_dir=' + weblogic_home_dir + ' -verbose'
     else
       command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh ' + bsuaction + ' -patchlist=' + patchName + ' -prod_dir=' + weblogic_home_dir + ' -patch_download_dir=' + patch_download_dir + ' -verbose'
     end
-    # environment = ["USER="+user, "HOME=/home/"+user, "LOGNAME="+user]
+
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
-    output = `su - #{user} -c 'export USER="#{user}";export LOGNAME="#{user}";#{command}'`
-    # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user ,:custom_environment => environment
+    output = `su #{su_shell} - #{user} -c 'export USER="#{user}";export LOGNAME="#{user}";#{command}'`
     Puppet.info "bsu_patch result: #{output}"
 
     # Check for 'Result: Success' else raise
@@ -52,15 +54,17 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     weblogic_home_dir   = resource[:weblogic_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
 
-    if patch_download_dir == nil
+    if patch_download_dir.nil?
       command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh -view -status=applied -prod_dir=' + weblogic_home_dir + ' -verbose'
     else
       command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh -view -status=applied -prod_dir=' + weblogic_home_dir + ' -patch_download_dir=' + patch_download_dir + ' -verbose'
     end
 
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
-    output = `su - #{user} -c '#{command}'`
-    # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
+    output = `su #{su_shell} - #{user} -c '#{command}'`
 
     output.each_line do |li|
       unless li.nil?

@@ -29,8 +29,10 @@ exit()
 EOF"
 
     Puppet.debug "managedserver action: #{action} with command #{command}"
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su - #{user} -c '#{command}'`
+    output = `su #{su_shell} - #{user} -c '#{command}'`
     Puppet.debug "managedserver result: #{output}"
   end
 
@@ -73,7 +75,10 @@ state(\"#{name}\",\"#{target}\")
 exit()
 EOF"
 
-      output = `su - #{user} -c '#{command}'`
+      kernel = Facter.value(:kernel)
+      su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+
+      output = `su #{su_shell} - #{user} -c '#{command}'`
       output.each_line do |li|
         unless li.nil?
           Puppet.debug "aline #{li}"

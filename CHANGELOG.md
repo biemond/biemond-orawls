@@ -8,6 +8,7 @@
 - Java tmp dir option for 12c FMW software install
 - wls_server, new attribute WeblogicPluginEnabled
 - Optional DefaultUserNameMapperAttributeType fix in wls_identity_asserter
+- Added bash shell to su -c commands like opatch, bsu, wls_adminserver, rcu types
 
 ## 1.0.32
 - new wls_singleton_service type

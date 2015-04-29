@@ -2,6 +2,8 @@
 
 ## 1.0.34
 - Copydomain FMW apps_dir fix
+- FTP Resource adapter plus resource adapter fixes
+- New type wls_coherence_server
 
 ## 1.0.33
 - added ESS (enterprise schedular) to OSB domain + FMW cluster option

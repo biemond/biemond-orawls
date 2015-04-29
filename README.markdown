@@ -1372,6 +1372,14 @@ or when you set the defaults hiera variables
         adapter_entry:             'eis/DB/hr'
         adapter_entry_property:    'xADataSourceName'
         adapter_entry_value:       'jdbc/hrDS'
+      'FTPAdapter_hr':
+        adapter_name:              'FtpAdapter'
+        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/FtpAdapter.rar"
+        adapter_plan_dir:          "/opt/oracle/wlsdomains"
+        adapter_plan:              'Plan_FTP.xml'
+        adapter_entry:             'eis/FTP/xx'
+        adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
+        adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
 
 
 ### fmwcluster

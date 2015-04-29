@@ -24,7 +24,7 @@ try:
 
     if machine:
        cd('/')
-       m = cmo.lookupMachine('LocalMachine')
+       m = cmo.lookupMachine(machine)
        cd('/CoherenceServers/'+name)
        set('Machine', m)
 

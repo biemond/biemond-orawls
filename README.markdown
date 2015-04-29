@@ -80,6 +80,7 @@ Dependency with
 - [wls_cluster](#wls_cluster)
 - [wls_singleton_service](#wls_singleton_service)
 - [wls_coherence_cluster](#wls_coherence_cluster)
+- [wls_coherence_server](#wls_coherence_server)
 - [wls_server_template](#wls_server_template)
 - [wls_dynamic_cluster](#wls_dynamic_cluster)
 - [wls_virtual_host](#wls_virtual_host)
@@ -2506,7 +2507,19 @@ in hiera
         unicastaddress:   '10.10.10.100,10.10.10.200'
         storage_enabled:  '1'
 
+### wls_coherence_server
 
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_coherence_server
+
+    # this will use default as wls_setting identifier
+    wls_coherence_server { 'default':
+      ensure         => 'present',
+      server         => 'LocalMachine',
+      unicastaddress => 'localhost',
+      unicastport    => '8888',
+    }
 
 ### wls_server_template
 it needs wls_setting and when identifier is not provided it will use the 'default'.

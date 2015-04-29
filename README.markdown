@@ -1362,7 +1362,7 @@ or when you set the defaults hiera variables
         adapter_plan_dir:          "/opt/oracle/wlsdomains"
         adapter_plan:              'Plan_AQ.xml'
         adapter_entry:             'eis/AQ/hr'
-        adapter_entry_property:    'xADataSourceName'
+        adapter_entry_property:    'XADataSourceName'
         adapter_entry_value:       'jdbc/hrDS'
       'DbAdapter_hr':
         adapter_name:              'DbAdapter'
@@ -1370,7 +1370,7 @@ or when you set the defaults hiera variables
         adapter_plan_dir:          "/opt/oracle/wlsdomains"
         adapter_plan:              'Plan_DB.xml'
         adapter_entry:             'eis/DB/hr'
-        adapter_entry_property:    'xADataSourceName'
+        adapter_entry_property:    'XADataSourceName'
         adapter_entry_value:       'jdbc/hrDS'
       'FTPAdapter_hr':
         adapter_name:              'FtpAdapter'

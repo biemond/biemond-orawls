@@ -1381,6 +1381,43 @@ or when you set the defaults hiera variables
         adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
         adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
 
+or for 12.1.3 ( 12c )
+
+    resource_adapter_instances:
+      'JmsAdapter_hr':
+        adapter_name:              'JmsAdapter'
+        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/JmsAdapter.rar"
+        adapter_plan_dir:          "/oracle/product/12.1/middleware"
+        adapter_plan:              'Plan_JMS.xml'
+        adapter_entry:             'eis/JMS/cf'
+        adapter_entry_property:    'ConnectionFactoryLocation'
+        adapter_entry_value:       'jms/cf'
+      'AqAdapter_hr':
+        adapter_name:              'AqAdapter'
+        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/AqAdapter.rar"
+        adapter_plan_dir:          "/oracle/product/12.1/middleware"
+        adapter_plan:              'Plan_AQ.xml'
+        adapter_entry:             'eis/AQ/hr'
+        adapter_entry_property:    'XADataSourceName'
+        adapter_entry_value:       'jdbc/hrDS'
+      'DbAdapter_hr':
+        adapter_name:              'DbAdapter'
+        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/DbAdapter.rar"
+        adapter_plan_dir:          "/oracle/product/12.1/middleware"
+        adapter_plan:              'Plan_DB.xml'
+        adapter_entry:             'eis/DB/hr'
+        adapter_entry_property:    'XADataSourceName'
+        adapter_entry_value:       'jdbc/hrDS'
+      'FTPAdapter_hr':
+        adapter_name:              'FtpAdapter'
+        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/FtpAdapter.rar"
+        adapter_plan_dir:          "/oracle/product/12.1/middleware"
+        adapter_plan:              'Plan_FTP.xml'
+        adapter_entry:             'eis/FTP/xx'
+        adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
+        adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
+
+
 
 ### fmwcluster
 __orawls::utils::fmwcluster__ convert existing cluster to a OSB or SOA suite cluster (BPM is optional) and also convert BAM to a BAM cluster. This will also work for OIM / OAM cluster.

@@ -15,9 +15,14 @@ try:
     atnr=cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProvider(authenticationprovider)
 
     print 'create group: ',name
-    atnr.createGroup(name,description)
-    for user in users:        
+
+    # Create the group if it doesn't already exist
+    if not atnr.groupExists(name):
+      atnr.createGroup(name,description) 
+
+    for user in users:
       atnr.addMemberToGroup(name,user)
+
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

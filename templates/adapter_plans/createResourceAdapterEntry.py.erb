@@ -1,4 +1,6 @@
 import random
+import sys
+import traceback
 
 wlsUser    = '<%= @weblogic_user %>'  
 password   = sys.argv[1] 
@@ -16,44 +18,53 @@ planPath                    = '<%= @adapter_plan_dir %>/<%= @adapter_plan %>'
 
 useStoreConfig = '<%= @useStoreConfig %>'
  
-moduleOverrideName=appName+'.rar'
+moduleOverrideName=appName + '.rar'
 moduleDescriptorName='META-INF/weblogic-ra.xml'
-idRandom=random.randint(10000,100000)
-connectionInstance='ConnectionInstance_eis/wls/MyCF_JNDIName_'+str(idRandom)
-configProperty='ConfigProperty_ConnectionFactoryLocation_Value_'+str(idRandom)
+connectionInstance='ConnectionInstance_' + eisName
 
 def makeDeploymentPlanVariable(wlstPlan, name, value, xpath, origin='planbased'):
  
-	while wlstPlan.getVariableAssignment(name, moduleOverrideName, moduleDescriptorName):
-		wlstPlan.destroyVariableAssignment(name, moduleOverrideName, moduleDescriptorName)
-	
-	while wlstPlan.getVariable(name):
-		wlstPlan.destroyVariable(name)
-	
-	variableAssignment = wlstPlan.createVariableAssignment( name, moduleOverrideName, moduleDescriptorName )
-	variableAssignment.setXpath( xpath )
-	variableAssignment.setOrigin( origin )
-	wlstPlan.createVariable( name, value )
- 
+    while wlstPlan.getVariableAssignment(name, moduleOverrideName, moduleDescriptorName):
+        wlstPlan.destroyVariableAssignment(name, moduleOverrideName, moduleDescriptorName)
+    
+    while wlstPlan.getVariable(name):
+        wlstPlan.destroyVariable(name)
+    
+    variableAssignment = wlstPlan.createVariableAssignment( name, moduleOverrideName, moduleDescriptorName )
+    variableAssignment.setXpath( xpath )
+    variableAssignment.setOrigin( origin )
+    wlstPlan.createVariable( name, value )
  
 def main():
-	
-	edit()
-	try:
-		startEdit()
-		
-		myPlan=loadApplication(appPath, planPath)
-		
-		print '___ BEGIN change plan'
-		makeDeploymentPlanVariable(myPlan, connectionInstance, eisName, '/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="'+connectionFactoryInterface+'"]/connection-instance/[jndi-name="'+ eisName + '"]/jndi-name')
-		makeDeploymentPlanVariable(myPlan, configProperty, cfName, '/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="'+connectionFactoryInterface+'"]/connection-instance/[jndi-name="'+ eisName + '"]/connection-properties/properties/property/[name="'+propertyName+'"]/value')
-		print '___ DONE change plan'
-		
-		myPlan.save();
-		save();
-		activate(block='true');
-	except:
-		stopEdit('y')
+    edit()
+    try:
+      startEdit()
+
+      myPlan=loadApplication(appPath, planPath)
+
+      print '___ BEGIN change plan'
+      makeDeploymentPlanVariable(myPlan, connectionInstance, eisName, '/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="' + connectionFactoryInterface + '"]/connection-instance/[jndi-name="' + eisName + '"]/jndi-name')
+      myPlan.save();
+
+      pList = propertyName.split(';')
+      vList = cfName.split(';')
+      if len(pList) == len(vList):
+        i = 0
+        for p in pList:
+          configProperty='ConfigProperty_' + p + '_'+eisName
+          configPropertyValue=vList[i]
+          makeDeploymentPlanVariable(myPlan, configProperty, configPropertyValue, '/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="' + connectionFactoryInterface + '"]/connection-instance/[jndi-name="' + eisName + '"]/connection-properties/properties/property/[name="' + p + '"]/value')
+          myPlan.save();
+          i += 1
+        print '___ DONE change plan'
+        save();
+        activate(block='true');
+      else:
+        print 'ERROR: The amount of properties and values are not correct.'
+        stopEdit('y')
+    except:
+      apply(traceback.print_exception, sys.exc_info())
+      stopEdit('y')
 
 if useStoreConfig != "true":
     connect(wlsUser,password,'t3://'+machine+':'+portNumber)

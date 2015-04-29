@@ -442,6 +442,7 @@ def get_domain(domain_path, n)
       else
         ftpAdapterPlan += apps.elements['plan-path'].text
       end
+      Puppet.debug "ftp #{ftpAdapterPlan}"
       if FileTest.exists?(ftpAdapterPlan)
 
         subfile = File.read(ftpAdapterPlan)

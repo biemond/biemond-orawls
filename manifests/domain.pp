@@ -631,29 +631,5 @@ define orawls::domain (
         group   => $os_group,
       }
     }
-
-    $nodeMgrHome = "${domain_dir}/nodemanager"
-
-    # set our 12.1.2 nodemanager properties
-    if ($version == 1212 or $version == 1213) {
-
-      # If we are using an extension template make sure we depend on that or our properties will get overwritten
-      if($extensionsTemplateFile) {
-        $dependsExtension = "execwlst ${domain_name} extension ${title}"
-      } else {
-        $dependsExtension = "execwlst ${domain_name} ${title}"
-      }
-
-      file { "nodemanager.properties ux ${version} ${title}":
-        ensure  => present,
-        path    => "${nodeMgrHome}/nodemanager.properties",
-        replace => true,
-        content => template("orawls/nodemgr/nodemanager.properties_${version}.erb"),
-        require => Exec[$dependsExtension],
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-      }
-    }
   }
 }

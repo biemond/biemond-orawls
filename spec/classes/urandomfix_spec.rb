@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'orawls::urandomfix' , :type => :class do
 
+
   it { should contain_package('rng-tools').with_ensure('present') }
 
   describe "Windows" do
@@ -35,7 +36,7 @@ describe 'orawls::urandomfix' , :type => :class do
           })
       end
       it do
-        should contain_service("rngd service").with({
+        should contain_service("rngd").with({
             'ensure'     => 'running',
             'enable'     => true,
           })
@@ -61,7 +62,7 @@ describe 'orawls::urandomfix' , :type => :class do
           })
       end
       it do
-        should contain_service("rngd service").with({
+        should contain_service("rngd").with({
             'ensure'     => 'running',
             'enable'     => true,
           })
@@ -87,7 +88,7 @@ describe 'orawls::urandomfix' , :type => :class do
           })
       end
       it do
-        should contain_service("rngd service").with({
+        should contain_service("rngd").with({
             'ensure'     => 'running',
             'enable'     => true,
           })
@@ -114,7 +115,7 @@ describe 'orawls::urandomfix' , :type => :class do
           })
       end
       it do
-        should contain_service("rng-tools service").with({
+        should contain_service("rng-tools").with({
             'ensure'     => 'running',
             'enable'     => true,
           })

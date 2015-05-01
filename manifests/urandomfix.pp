@@ -35,10 +35,10 @@ class orawls::urandomfix() {
           path        => $path,
           subscribe   => Exec['set urandom /lib/systemd/system/rngd.service'],
           refreshonly => true,
-          notify      => Service['rngd service'],
+          notify      => Service['rngd'],
         }
 
-        service { 'rngd service':
+        service { 'rngd':
           ensure  => 'running',
           enable  => true,
           require => Exec['systemctl-daemon-reload'],
@@ -52,19 +52,18 @@ class orawls::urandomfix() {
           path      => $path,
           logoutput => true,
           user      => 'root',
-          notify    => Service['rngd service'],
+          notify    => Service['rngd'],
         }
 
-        service { 'rngd service':
+        service { 'rngd':
           ensure  => 'running',
-          name    => 'rngd',
           enable  => true,
           require => Exec['set urandom /etc/sysconfig/rngd'],
         }
 
         exec { 'chkconfig rngd':
           command   => 'chkconfig --add rngd',
-          require   => Service['start rngd service'],
+          require   => Service['rngd'],
           unless    => "chkconfig | /bin/grep 'rngd'",
           path      => $path,
           logoutput => true,
@@ -80,12 +79,11 @@ class orawls::urandomfix() {
         path      => $path,
         logoutput => true,
         user      => 'root',
-        notify    => Service['rng-tools service'],
+        notify    => Service['rng-tools'],
       }
 
-      service { 'rng-tools service':
+      service { 'rng-tools':
         ensure  => 'running',
-        name    => 'rng-tools',
         enable  => true,
         require => Exec['set urandom /etc/default/rng-tools'],
       }

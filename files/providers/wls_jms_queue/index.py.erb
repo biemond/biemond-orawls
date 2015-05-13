@@ -10,9 +10,11 @@ def queue(token,token2,location,distributed):
     cd(location)
     jndiname      = get('JNDIName')
 
-    forwardDelay = get('ForwardDelay')
-    if forwardDelay == None:
-      forwardDelay = ''
+    forwardDelay = ''
+    try:
+      forwardDelay = get('ForwardDelay')
+    except:
+      print "forwardDelay failed, probably a normal queue"
 
     defaultTargeting   = str(get('DefaultTargetingEnabled'))
     if defaultTargeting == '1':
@@ -75,5 +77,3 @@ for token in m:
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
-
-

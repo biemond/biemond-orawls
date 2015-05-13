@@ -1,5 +1,8 @@
 # History
 
+## 1.0.35
+- removed default value -1 on forward delay on wls_jms_queue
+
 ## 1.0.34
 - Copydomain FMW apps_dir fix
 - FTP Resource adapter plus resource adapter fixes

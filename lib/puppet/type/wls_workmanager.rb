@@ -47,6 +47,7 @@ module Puppet
     property :targettype
     property :minthreadsconstraint
     property :maxthreadsconstraint
+    property :fairsharerequestclass
     property :capacity
 
     add_title_attributes(:workmanager_name) do

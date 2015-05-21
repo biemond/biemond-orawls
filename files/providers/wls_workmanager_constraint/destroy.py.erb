@@ -12,7 +12,7 @@ startEdit()
 try:
 
     cd('/')
-    domain = get('Name') 
+    domain = get('Name')
 
     cd('/SelfTuning/'+domain)
 
@@ -25,6 +25,9 @@ try:
     elif type == 'Capacity':
       editService.getConfigurationManager().removeReferencesToBean(getMBean('/SelfTuning/'+domain+'/Capacities/'+name))
       cmo.destroyCapacity(getMBean('/SelfTuning/'+domain+'/Capacities/'+name))
+    elif type == 'FairShareRequestClasses':
+      cd('/SelfTuning/'+domain+'/FairShareRequestClasses')
+      destroy(name)
 
     save()
     activate()
@@ -36,5 +39,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-

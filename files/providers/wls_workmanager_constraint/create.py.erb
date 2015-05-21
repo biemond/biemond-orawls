@@ -15,7 +15,7 @@ startEdit()
 try:
 
     cd('/')
-    domain = get('Name') 
+    domain = get('Name')
 
     cd('/SelfTuning/'+domain)
     if type == 'MaxThreadsConstraint':
@@ -27,8 +27,14 @@ try:
     elif type == 'Capacity':
       cmo.createCapacity(name)
       cd('/SelfTuning/'+domain+'/Capacities/'+name)
+    elif type == 'FairShareRequestClasses':
+      create(name, 'FairShareRequestClasses')
+      cd('/SelfTuning/'+domain+'/FairShareRequestClasses/'+name)
 
-    cmo.setCount(int(count))
+    if type == 'FairShareRequestClasses':
+      set('FairShare', int(count))
+    else:
+      cmo.setCount(int(count))
 
     print "target: "     +  target
     print "targettype: " +  targettype
@@ -38,12 +44,12 @@ try:
     targetList  = []
     for i in range(len(targets)):
       print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-    
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
     set('Targets',jarray.array(targetList, ObjectName))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -52,6 +58,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
-

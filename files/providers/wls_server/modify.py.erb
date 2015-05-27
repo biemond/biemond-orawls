@@ -23,17 +23,17 @@ log_number_of_files_limited   = '<%= log_number_of_files_limited %>'
 log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
 log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
 
-
-restart_max   = '<%= restart_max %>'
-listenAddress = '<%= listenaddress %>'
-listenPort    = '<%= listenport %>'
-sslEnabled    = '<%= sslenabled %>'
+restart_max       = '<%= restart_max %>'
+listenAddress     = '<%= listenaddress %>'
+listenPort        = '<%= listenport %>'
+listenPortEnabled = '<%= listenportenabled %>'
+sslEnabled        = '<%= sslenabled %>'
 sslHostnameVerificationIgnored = '<%= sslhostnameverificationignored %>'
-two_way_ssl = '<%= two_way_ssl %>'
+two_way_ssl       = '<%= two_way_ssl %>'
 client_certificate_enforced = '<%= client_certificate_enforced %>'
-sslListenPort = '<%= ssllistenport %>'
-logintimeout  = '<%= logintimeout %>'
+sslListenPort     = '<%= ssllistenport %>'
 
+logintimeout  = '<%= logintimeout %>'
 jsseenabled   = '<%= jsseenabled %>'
 tunnelingenabled  = '<%= tunnelingenabled %>'
 
@@ -77,6 +77,9 @@ try:
 
     if listenPort:
       set('ListenPort', int(listenPort))
+
+    if listenPortEnabled and listenPortEnabled != '-1':
+      set('ListenPortEnabled', formatBoolean(listenPortEnabled))
 
     if logintimeout:
       set('LoginTimeoutMillis', int(logintimeout))

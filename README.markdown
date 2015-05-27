@@ -2132,6 +2132,7 @@ or use puppet resource wls_server
       jsseenabled                       => '0',
       listenaddress                     => '10.10.10.100',
       listenport                        => '8001',
+      listenportenabled                 => '1',
       machine                           => 'Node1',
       sslenabled                        => '0',
       tunnelingenabled                  => '0',
@@ -2147,6 +2148,7 @@ or with log parameters, default file store and ssl
       jsseenabled                       => '0',
       listenaddress                     => '10.10.10.200',
       listenport                        => '8001',
+      listenportenabled                 => '1',
       log_file_min_size                 => '2000',
       log_filecount                     => '10',
       log_number_of_files_limited       => '1',
@@ -2184,6 +2186,7 @@ or with JSSE with custom identity and trust
       arguments                             => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer2.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer2_err.out',
       listenaddress                         => '10.10.10.200',
       listenport                            => '8001',
+      listenportenabled                     => '1',
       log_file_min_size                     => '2000',
       log_filecount                         => '10',
       log_number_of_files_limited           => '1',
@@ -2217,6 +2220,7 @@ in hiera
          arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
          listenaddress:                  '10.10.10.100'
          listenport:                     '8001'
+         listenportenabled:              '1'
          logfilename:                    '/data/logs/wlsServer1.log'
          machine:                        'Node1'
          sslenabled:                     '1'
@@ -2235,6 +2239,7 @@ or with log parameters
         arguments:                      '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/data/logs/wlsServer1.out -Dweblogic.Stderr=/data/logs/wlsServer1_err.out'
         listenaddress:                         '10.10.10.100'
         listenport:                            '8001'
+        listenportenabled:                     '1'
         logfilename:                           '/var/log/weblogic/wlsServer1.log'
         log_file_min_size:                     '2000'
         log_filecount:                         '10'

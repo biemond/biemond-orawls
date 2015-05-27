@@ -57,6 +57,7 @@ module Puppet
     property :sslenabled
     property :listenaddress
     property :listenport
+    property :listenportenabled
     property :machine
     property :classpath
     property :arguments

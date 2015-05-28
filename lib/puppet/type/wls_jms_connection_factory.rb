@@ -44,6 +44,7 @@ module Puppet
     parameter :connection_factory_name
     parameter :timeout
     property :jndiname
+    property :localjndiname
     property :subdeployment
     property :defaulttargeting
     property :transactiontimeout
@@ -55,6 +56,8 @@ module Puppet
     property :loadbalancingenabled
     property :serveraffinityenabled
     property :attachjmsxuserid
+    property :defaultdeliverymode
+    property :defaultredeliverydelay
 
     add_title_attributes(:jmsmodule, :connection_factory_name) do
       /^((.*\/)?(.*):(.*)?)$/

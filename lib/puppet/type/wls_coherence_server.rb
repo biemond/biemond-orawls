@@ -47,6 +47,7 @@ module Puppet
     #property :restartmax
     property :unicastaddress
     property :unicastport
+    property :classpath
 
     add_title_attributes(:coherence_server_name) do
       /^((.*\/)?(.*)?)$/

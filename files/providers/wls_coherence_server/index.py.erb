@@ -9,7 +9,7 @@ cd('/')
 m = ls('/CoherenceServers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;autorestart;machine;restartdelay;restartinterval;restartmax;unicastaddress;unicastport;domain"
+print >>f, "name;autorestart;machine;restartdelay;restartinterval;restartmax;unicastaddress;unicastport;classpath;domain"
 for token in m:
     print '___'+token+'___'
     cd('/CoherenceServers/'+token)
@@ -21,6 +21,6 @@ for token in m:
         if token2:
              machine = token2
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,get('AutoRestart'),machine,get('RestartDelaySeconds'),get('RestartIntervalSeconds'),get('RestartMax'),get('UnicastListenAddress'),get('UnicastListenPort'),domain]))
+    print >>f, ";".join(map(quote, [domain+'/'+token,get('AutoRestart'),machine,get('RestartDelaySeconds'),get('RestartIntervalSeconds'),get('RestartMax'),get('UnicastListenAddress'),get('UnicastListenPort'),get('CoherenceServerStart/'+machine+'_coherence/ClassPath'),domain]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

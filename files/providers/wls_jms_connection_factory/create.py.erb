@@ -18,6 +18,12 @@ loadbalancingenabled       = '<%= loadbalancingenabled %>'
 serveraffinityenabled      = '<%= serveraffinityenabled %>'
 attachjmsxuserid           = '<%= attachjmsxuserid %>'
 
+def formatBoolean(value):
+  if value == '1':
+    return true
+  else:
+    return false
+
 edit()
 startEdit()
 
@@ -40,7 +46,7 @@ try:
     if xaenabled == '1':
       cmo.setXAConnectionFactoryEnabled(true)
     else:
-      cmo.setXAConnectionFactoryEnabled(false)   
+      cmo.setXAConnectionFactoryEnabled(false)
 
     if transactiontimeout:
       cmo.setTransactionTimeout( int(transactiontimeout) )
@@ -66,7 +72,7 @@ try:
       cmo.setAttachJMSXUserId( formatBoolean(attachjmsxuserid) )
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -75,6 +81,4 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
 

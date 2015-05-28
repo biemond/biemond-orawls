@@ -6,6 +6,7 @@ real_domain='<%= domain %>'
 name                       = '<%= connection_factory_name %>'
 jmsmodule                  = '<%= jmsmodule %>'
 jndiname                   = '<%= jndiname %>'
+localjndiname              = '<%= localjndiname %>'
 subdeployment              = '<%= subdeployment %>'
 defaulttargeting           = '<%= defaulttargeting %>'
 xaenabled                  = '<%= xaenabled %>'
@@ -17,6 +18,8 @@ reconnectpolicy            = '<%= reconnectpolicy %>'
 loadbalancingenabled       = '<%= loadbalancingenabled %>'
 serveraffinityenabled      = '<%= serveraffinityenabled %>'
 attachjmsxuserid           = '<%= attachjmsxuserid %>'
+defaultdeliverymode        = '<%= defaultdeliverymode %>'
+defaultredeliverydelay     = '<%= defaultredeliverydelay %>'
 
 def formatBoolean(value):
   if value == '1':
@@ -32,6 +35,7 @@ try:
     cd('/')
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name)
     cmo.setJNDIName(jndiname)
+    cmo.setLocalJNDIName(localjndiname)
 
     if subdeployment:
       cmo.setDefaultTargetingEnabled(false)
@@ -67,6 +71,12 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/SecurityParams/'+name)
     if attachjmsxuserid:
       cmo.setAttachJMSXUserId( formatBoolean(attachjmsxuserid) )
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/DefaultDeliveryParams/'+name)
+    if defaultdeliverymode:
+      cmo.setDefaultDeliveryMode(defaultdeliverymode)
+    if defaultredeliverydelay:
+      cmo.setDefaultRedeliveryDelay( int(defaultredeliverydelay) )
 
     save()
     activate()

@@ -48,7 +48,7 @@ if ADMINSERVER_LISTEN_ON_ALL_INTERFACES:
 else:
   changeAdminServer(ADMIN_SERVER, 'LocalMachine', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
 
-changeSSL(ADMIN_SERVER, JSSE_ENABLED)
+changeSSLwithPort(ADMIN_SERVER, JSSE_ENABLED, '<%= @adminserver_ssl_port %>')
 
 if CUSTOM_IDENTITY_ENABLED == true:
   print('Set adminserver custom identity')

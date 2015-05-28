@@ -1,6 +1,7 @@
 # History
 
 ## 1.0.35
+- custom types now supports t3s with customtrust done by wls_settings
 - removed default value -1 on forward delay on wls_jms_queue
 - wls_server new attribute listenportenabled
 - wls_jms_connection_factory xa fix

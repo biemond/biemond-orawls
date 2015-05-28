@@ -210,6 +210,17 @@ just generates all the certificates and set the following hiera variables.
     wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
     wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
 
+    wls_setting_instances:
+      'default':
+        user:                      oracle
+        weblogic_home_dir:         '/opt/oracle/middleware11g/wlserver_10.3'
+        connect_url:               't3s://10.10.10.10:7002'
+        weblogic_user:             'weblogic'
+        weblogic_password:         'Welcome01'
+        custom_trust:              *wls_custom_trust
+        trust_keystore_file:       *wls_trust_keystore_file
+        trust_keystore_passphrase: *wls_trust_keystore_passphrase
+
     # create a standard domain with custom identity for the adminserver
     domain_instances:
       'Wls1036':
@@ -232,25 +243,25 @@ just generates all the certificates and set the following hiera variables.
         custom_identity_privatekey_passphrase: 'welcome'
         nodemanager_address:                   *domain_adminserver_address
 
-        server_instances:
-          'wlsServer1':
-            ensure:                                'present'
-            arguments:                             '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out'
-            listenaddress:                         '10.10.10.100'
-            listenport:                            '8001'
-            logfilename:                           '/var/log/weblogic/wlsServer1.log'
-            machine:                               'Node1'
-            sslenabled:                            '1'
-            ssllistenport:                         '8201'
-            sslhostnameverificationignored:        '1'
-            jsseenabled:                           '1'
-            custom_identity:                       '1'
-            custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'
-            custom_identity_keystore_passphrase:   'welcome'
-            custom_identity_alias:                 'node1'
-            custom_identity_privatekey_passphrase: 'welcome'
-            trust_keystore_file:                   *wls_trust_keystore_file
-            trust_keystore_passphrase:             *wls_trust_keystore_passphrase
+    server_instances:
+      'wlsServer1':
+        ensure:                                'present'
+        arguments:                             '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out'
+        listenaddress:                         '10.10.10.100'
+        listenport:                            '8001'
+        logfilename:                           '/var/log/weblogic/wlsServer1.log'
+        machine:                               'Node1'
+        sslenabled:                            '1'
+        ssllistenport:                         '8201'
+        sslhostnameverificationignored:        '1'
+        jsseenabled:                           '1'
+        custom_identity:                       '1'
+        custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'
+        custom_identity_keystore_passphrase:   'welcome'
+        custom_identity_alias:                 'node1'
+        custom_identity_privatekey_passphrase: 'welcome'
+        trust_keystore_file:                   *wls_trust_keystore_file
+        trust_keystore_passphrase:             *wls_trust_keystore_passphrase
 
 
 ## <a name="urandom">Linux low on entropy or urandom fix</a>
@@ -1581,10 +1592,6 @@ Global timeout parameter for WebLogic resource types. use timeout and value in s
 
 required for all the weblogic type/providers, this is a pointer to an WebLogic AdminServer.
 
-For suppressing the passwords in the puppet log output you can set the loglevel to debug, this way it will only show up when you set puppet agent or apply loglevel to debug and off course when the wls_setting is created or updated. in other cases you won't see a thing in the output.
-
-in hiera loglevel: 'debug' or loglevel => 'debug'
-
     wls_setting { 'default':
       user               => 'oracle',
       weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
@@ -1613,6 +1620,25 @@ or in hiera
         weblogic_user:      'weblogic'
         weblogic_password:  'weblogic1'
         post_classpath:     '/opt/oracle/middleware12c/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wlst_12.1.3.jar'
+
+With t3s and custom trust
+
+    wls_setting_instances:
+      'default':
+        user:                      oracle'
+        weblogic_home_dir:         '/opt/oracle/middleware12c/wlserver'
+        connect_url:               "t3s://10.10.10.21:7002"
+        weblogic_user:             'weblogic'
+        weblogic_password:         'weblogic1'
+        custom_trust:              true
+        trust_keystore_file:       '/vagrant/truststore.jks'
+        trust_keystore_passphrase: 'welcome'
+      'plain':
+        user:                      oracle'
+        weblogic_home_dir:         '/opt/oracle/middleware12c/wlserver'
+        connect_url:               "t3://10.10.10.21:7101"
+        weblogic_user:             'weblogic'
+        weblogic_password:         'weblogic1'
 
 
 ### wls_domain

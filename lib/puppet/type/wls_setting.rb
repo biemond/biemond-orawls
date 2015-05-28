@@ -22,6 +22,10 @@ module Puppet
     property :weblogic_password
     property :post_classpath
 
+    property :custom_trust
+    property :trust_keystore_file
+    property :trust_keystore_passphrase
+
     def self.configuration
       @configuration
     end

@@ -32,15 +32,15 @@ for token in m:
            initialcapacity = '0'
         mincapacity     = get('MinCapacity')
         if not (mincapacity):
-           mincapacity 	= '0'
-        statementcachesize	= get('StatementCacheSize')
+           mincapacity  = '0'
+        statementcachesize = get('StatementCacheSize')
         if not (statementcachesize):
-           statementcachesize 	= '10'
+           statementcachesize = '10'
         testconnectionsonreserve = str(get('TestConnectionsOnReserve'))
-        
+
         secondstotrustidlepoolconnection = get('SecondsToTrustAnIdlePoolConnection')
         testfrequency = get('TestFrequencySeconds')
-        connectioncreationretryfrequency = get('ConnectionCreationRetryFrequencySeconds')
+        connectioncreationretryfrequency = str(get('ConnectionCreationRetryFrequencySeconds'))
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')

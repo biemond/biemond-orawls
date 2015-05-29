@@ -1,15 +1,15 @@
 
 
 def quote(text):
-	if text:
-		return "\"" + str(text).replace("\"", "\"\"") + "\""
-	else: 
-		return ""
+  if text:
+    return "\"" + str(text).replace("\"", "\"\"") + "\""
+  else:
+    return ""
 
-def constraint(token2,location,type):
+def constraint(token2,location,type,value='Count'):
     cd(location)
 
-    count = get('Count')
+    count = get(value)
     t = ls('Targets',returnMap='true')
     target     = []
     targetType = []
@@ -43,6 +43,10 @@ for token in m:
         for token2 in n:
                 constraint(token2,'/SelfTuning/'+token+'/Capacities/'+token2,'Capacity')
 
+        cd('/SelfTuning/'+token)
+        n = ls('FairShareRequestClasses',returnMap='true')
+        for token2 in n:
+                contraint(token2,'/SelfTuning/'+token+'/FairShareRequestClasses/'+token2,'FairShareRequestClasses','FairShare')
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

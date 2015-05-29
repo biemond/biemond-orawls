@@ -7,6 +7,7 @@
 - removed default value -1 on forward delay on wls_jms_queue
 - wls_server new attribute listenportenabled
 - wls_jms_connection_factory, xa fix plus new attributes localjndiname, defaultdeliverymode, defaultredeliverydelay
+- wls_workmanager_constraint, Add the ability to manage fairshare class.
 
 ## 1.0.34
 - Copydomain FMW apps_dir fix

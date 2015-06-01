@@ -1,0 +1,34 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name                       = '<%= connection_factory_name %>'
+jmsmodule                  = '<%= jmsmodule %>'
+redeliverydelay            = '<%= redeliverydelay %>'
+redeliverylimit            = '<%= redeliverylimit %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryParamsOverrides/'+name)
+    if redeliverydelay:
+      cmo.setRedeliveryDelay( int(redeliverydelay) )
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryFailureParams/'+name)
+    if redeliverylimit:
+      cmo.setRedeliveryLimit( int(redeliverylimit) )
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise

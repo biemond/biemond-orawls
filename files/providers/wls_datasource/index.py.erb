@@ -38,9 +38,9 @@ for token in m:
            statementcachesize 	= '10'
         testconnectionsonreserve = str(get('TestConnectionsOnReserve'))
         
-        secondstotrustidlepoolconnection = get('SecondsToTrustAnIdlePoolConnection')
+        secondstotrustidlepoolconnection = str(get('SecondsToTrustAnIdlePoolConnection'))
         testfrequency = get('TestFrequencySeconds')
-        connectioncreationretryfrequency = get('ConnectionCreationRetryFrequencySeconds')
+        connectioncreationretryfrequency = str(get('ConnectionCreationRetryFrequencySeconds'))
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')

@@ -1,8 +1,6 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
 name                                    = '<%= datasource_name %>'
 password                                = '<%= password %>'
 target                                  = '<%= target %>'
@@ -26,6 +24,9 @@ testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
 secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>'
 testfrequency                           = '<%= testfrequency  %>'
 connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>'
+rowprefetchenabled                      = '<%= rowprefetchenabled %>'
+rowprefetchsize                         = '<%= rowprefetchsize %>'
+initsql                                 = "<%= (initsql||'').gsub('"','\"') %>"
 
 edit()
 startEdit()
@@ -41,6 +42,10 @@ try:
     if jndinames:
       jndis = String(jndinames).split(",")
       set('JNDINames',jarray.array(jndis, String))
+    if rowprefetchenabled:
+      cmo.setRowPrefetch(int(rowprefetchenabled))
+    if rowprefetchsize:
+      cmo.setRowPrefetchSize(int(rowprefetchsize))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
     cmo.setUrl(url)
@@ -74,6 +79,9 @@ try:
 
     if connectioncreationretryfrequency:
       set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
+
+    if initsql:
+      set('InitSql', initsql)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)

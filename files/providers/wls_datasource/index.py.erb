@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql"
 for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -41,9 +41,12 @@ for token in m:
         secondstotrustidlepoolconnection = str(get('SecondsToTrustAnIdlePoolConnection'))
         testfrequency = get('TestFrequencySeconds')
         connectioncreationretryfrequency = str(get('ConnectionCreationRetryFrequencySeconds'))
+        initsql = str(get('InitSql'))
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')
+        rowprefetchenabled = str(get('RowPrefetch'))
+        rowprefetchsize = str(get('RowPrefetchSize'))
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCConnectionPoolParams/' + token )
         testTableName = get('TestTableName')
@@ -82,6 +85,6 @@ for token in m:
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

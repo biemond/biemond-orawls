@@ -19,6 +19,7 @@ timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
 redeliverydelay          = '<%= redeliverydelay %>'
 forwarddelay             = '<%= forwarddelay %>'
+templatename             = '<%= templatename %>'
 
 edit()
 startEdit()
@@ -27,19 +28,22 @@ try:
 
     cd('/')
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-     
+
     if distributed == "1":
         jmsWlsType = '/UniformDistributedQueues/'
     else:
         jmsWlsType = '/Queues/'
-     
+
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
-    set('JNDIName',jndiname) 
+    set('JNDIName',jndiname)
 
     if subdeployment:
       set('SubDeploymentName',subdeployment)
 
-    if forwarddelay: 
+    if templatename:
+      set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
+
+    if forwarddelay:
       print "ForwardDelay"
       cmo.setForwardDelay( int(forwarddelay))
 
@@ -54,7 +58,7 @@ try:
 
     if redeliverylimit:
       print "limit"
-      cmo.setRedeliveryLimit( int(redeliverylimit) )  
+      cmo.setRedeliveryLimit( int(redeliverylimit) )
 
     if errordestination:
       if distributed == "1":
@@ -69,15 +73,15 @@ try:
       print "time To Live"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       #TimeToLive is an int MBean attribute
-      cmo.setTimeToLive( int(timetolive))   
+      cmo.setTimeToLive( int(timetolive))
 
     if timetodeliver:
       print "time To Deliver"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       #TimeToDeliver is a string MBean attribute
-      cmo.setTimeToDeliver(timetodeliver)                             
+      cmo.setTimeToDeliver(timetodeliver)
 
-    if redeliverydelay: 
+    if redeliverydelay:
       print "RedeliveryDelay"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       cmo.setRedeliveryDelay( int(redeliverydelay))
@@ -88,7 +92,7 @@ try:
       cmo.setQuota(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Quotas/'+quota ))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -97,6 +101,4 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
 

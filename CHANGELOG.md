@@ -4,8 +4,12 @@
 - custom wls resource types now also supports t3s with customtrust done by wls_settings
 - adminserver_ssl_port parameter on the domain.pp manifest
 - wls_settings don't show the password in the output
+- new resource type wls_jdbc_persistence_store
+- new resource type wls_jms_template
+- wls_deployment planpath fixes
+- wls_datasource fixes
 - removed default value -1 on forward delay on wls_jms_queue
-- wls_server new attribute listenportenabled
+- wls_server, new attribute listenportenabled
 - wls_jms_connection_factory, xa fix plus new attributes localjndiname, defaultdeliverymode, defaultredeliverydelay
 - wls_workmanager_constraint, Add the ability to manage fairshare class.
 

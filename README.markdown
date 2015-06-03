@@ -88,6 +88,7 @@ Dependency with
 - [wls_workmanager](#wls_workmanager)
 - [wls_datasource](#wls_datasource)
 - [wls_file_persistence_store](#wls_file_persistence_store)
+- [wls_jdbc_persistence_store](#wls_jdbc_persistence_store)
 - [wls_jmsserver](#wls_jmsserver)
 - [wls_safagent](#wls_safagent)
 - [wls_jms_module](#wls_jms_module)
@@ -96,6 +97,7 @@ Dependency with
 - [wls_jms_queue](#wls_jms_queue)
 - [wls_jms_topic](#wls_jms_topic)
 - [wls_jms_connection_factory](#wls_jms_connection_factory)
+- [wls_jms_template](#wls_jms_template)
 - [wls_saf_remote_context](#wls_saf_remote_context)
 - [wls_saf_error_handler](#wls_saf_error_handler)
 - [wls_saf_imported_destination](#wls_saf_imported_destination)
@@ -2680,6 +2682,13 @@ or use puppet resource wls_workmanager_constaint
       target          => ['WebCluster'],
       targettype      => ['Cluster'],
     }
+    wls_workmanager_constraint { 'default/FairShareReqClass-0':
+      ensure          => 'present',
+      constrainttype  => 'FairShareRequestClasses',
+      constraintvalue => '50',
+      target          => ['WebCluster'],
+      targettype      => ['Cluster'],
+    }
 
 in hiera
 
@@ -2743,9 +2752,31 @@ in hiera
           - 'Cluster'
 
 
+### wls_jdbc_persistence_store
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_jdbc_persistence_store
+
+    wls_jdbc_persistence_store { 'JDBCStoreX':
+      ensure      => 'present',
+      datasource  => 'jmsDS',
+      prefix_name => 'dev_',
+      target      => ['wlsServer1'],
+      targettype  => ['Server'],
+    }
+
+in hiera
+
+    file_jdbc_store_instances:
+      'JDBCStoreX':
+          ensure:      'present'
+          datasource:  'jmsDS'
+          prefix_name: 'dev_'
+          target:      ['wlsServer1']
+          targettype:  ['Server']
+
 
 ### wls_file_persistence_store
-
 it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_file_persistence_store
@@ -3030,6 +3061,17 @@ in hiera
          targettype:
            - 'Cluster'
 
+### wls_jms_template
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_jms_template
+
+    wls_jms_template { 'jmsClusterModule:Template-0':
+      ensure          => 'present',
+      redeliverydelay => '-1',
+      redeliverylimit => '-1',
+    }
 
 ### wls_connection_factory
 

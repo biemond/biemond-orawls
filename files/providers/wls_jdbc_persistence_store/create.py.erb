@@ -1,0 +1,32 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name           = '<%= jdbc_persistence_name %>'
+datasource     = '<%= datasource %>'
+prefix_name    = '<%= prefix_name %>'
+target         = '<%= target %>'
+targettype     = '<%= targettype %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cmo.createJDBCStore(name)
+    cd('/JDBCStores/'+name)
+    cmo.setDataSource(getMBean('/SystemResources/'+datasource))
+    cmo.setPrefixName(prefix_name)
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise

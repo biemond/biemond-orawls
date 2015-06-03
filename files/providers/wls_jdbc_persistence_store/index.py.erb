@@ -1,0 +1,32 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+m = ls('/JDBCStores',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;datasource;prefix_name;target;targettype;domain"
+for token in m:
+    print '___'+token+'___'
+    cd('/JDBCStores/'+token)
+
+    datasourceObject = get('DataSource')
+    datasource = datasourceObject.getKeyProperty('Name')
+
+    prefix_name = get('PrefixName')
+
+    n = ls('/JDBCStores/'+token+'/Targets',returnMap='true')
+    target     = []
+    targetType = []
+    for token2 in n:
+           target.append(token2)
+           cd('/JDBCStores/'+token+'/Targets/'+token2)
+           targetType.append(get('Type'))
+
+    print >>f, ";".join(map(quote, [domain+'/'+token,datasource,prefix_name,','.join(target),','.join(targetType),domain]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

@@ -3,19 +3,24 @@ real_domain='<%= domain %>'
 
 
 
-name             = '<%= channel_name %>'
-server           = '<%= server %>'
+name                                  = '<%= channel_name %>'
+server                                = '<%= server %>'
 
-protocol         = '<%= protocol %>'
-enabled          = '<%= enabled %>'
-listenaddress    = '<%= listenaddress %>'
-publicaddress    = '<%= publicaddress %>'
-listenport       = '<%= listenport %>'
-publicport       = '<%= publicport %>'
-httpenabled      = '<%= httpenabled %>'
-outboundenabled  = '<%= outboundenabled %>'
-tunnelingenabled = '<%= tunnelingenabled %>'
-max_message_size = '<%= max_message_size %>'
+protocol                              = '<%= protocol %>'
+enabled                               = '<%= enabled %>'
+listenaddress                         = '<%= listenaddress %>'
+publicaddress                         = '<%= publicaddress %>'
+listenport                            = '<%= listenport %>'
+publicport                            = '<%= publicport %>'
+httpenabled                           = '<%= httpenabled %>'
+outboundenabled                       = '<%= outboundenabled %>'
+tunnelingenabled                      = '<%= tunnelingenabled %>'
+max_message_size                      = '<%= max_message_size %>'
+two_way_ssl                           = '<%= two_way_ssl %>'
+client_certificate_enforced           = '<%= client_certificate_enforced %>'
+channel_identity_customized           = '<%= channel_identity_customized %>'
+custom_identity_alias                 = '<%= custom_identity_alias %>'
+custom_identity_privatekey_passphrase = '<%= custom_identity_privatekey_passphrase %>'
 
 edit()
 startEdit()
@@ -63,6 +68,23 @@ try:
 
     if max_message_size:
       set('MaxMessageSize',max_message_size)
+
+    if two_way_ssl == '1':
+      cmo.setTwoWaySSLEnabled(true)
+    else:
+      cmo.setTwoWaySSLEnabled(false)
+
+    if client_certificate_enforced == '1':
+      cmo.setClientCertificateEnforced(true)
+    else:
+      cmo.setClientCertificateEnforced(false)
+
+    if channel_identity_customized == '1':
+      cmo.setChannelIdentityCustomized(true)
+      set('CustomPrivateKeyPassPhrase' ,custom_identity_privatekey_passphrase)
+      set('CustomPrivateKeyAlias', custom_identity_alias)
+    else:
+      cmo.setChannelIdentityCustomized(false)
 
     save()
     activate()

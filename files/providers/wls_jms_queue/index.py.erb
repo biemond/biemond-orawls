@@ -12,7 +12,7 @@ def queue(token,token2,location,distributed):
 
     forwardDelay = ''
     try:
-      forwardDelay = get('ForwardDelay')
+      forwardDelay = str(get('ForwardDelay'))
     except:
       print "forwardDelay failed, probably a normal queue"
 
@@ -21,7 +21,6 @@ def queue(token,token2,location,distributed):
        subdeployment = ''
     else:
        subdeployment = cmo.getSubDeploymentName()
-
 
     if distributed == '1':
       balancingPolicy  = get('LoadBalancingPolicy')

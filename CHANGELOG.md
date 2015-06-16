@@ -1,5 +1,8 @@
 # History
 
+## 1.0.36
+- support for 3 fmw installation files like oim/oam 11.1.2.3
+
 ## 1.0.35
 - custom wls resource types now also supports t3s with customtrust done by wls_settings
 - adminserver_ssl_port parameter on the domain.pp manifest

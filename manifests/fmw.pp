@@ -10,9 +10,10 @@ define orawls::fmw (
   $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
   $oracle_home_dir      = undef,                                      # /opt/oracle/middleware/Oracle_SOA
   $jdk_home_dir         = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $fmw_product          = undef,                                      # adf|soa|osb|wcc|wc|oim|web|webgate|oud|mft|b2b
+  $fmw_product          = undef,                                      # adf|soa|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b
   $fmw_file1            = undef,
   $fmw_file2            = undef,
+  $fmw_file3            = undef,
   $bpm                  = false,
   $healthcare           = false,
   $os_user              = hiera('wls_os_user'), # oracle
@@ -145,7 +146,7 @@ define orawls::fmw (
       fail('Unrecognized version for mft')
     }
 
-  } elsif ( $fmw_product == 'oim' ) {
+  } elsif ( ( $fmw_product == 'oim' ) or ( $fmw_product == 'oam' ) ) {
     $fmw_silent_response_file = 'orawls/fmw_silent_oim.rsp.erb'
     if ($oracle_home_dir == undef) {
       $oracleHome = "${middleware_home_dir}/Oracle_IDM1"
@@ -155,7 +156,8 @@ define orawls::fmw (
     }
     $createFile1 = "${download_dir}/${fmw_product}/Disk1"
     $createFile2 = "${download_dir}/${fmw_product}/Disk4"
-    $total_files = 2
+    $total_files = 3
+
 
   } elsif ( $fmw_product == 'wc' ) {
     $fmw_silent_response_file = 'orawls/fmw_silent_wc.rsp.erb'
@@ -237,7 +239,7 @@ define orawls::fmw (
     $total_files = 1
 
   } else {
-    fail('unknown fmw_product value choose adf|soa|osb|oim|wc|wcc|web|webgate|oud')
+    fail('unknown fmw_product value choose adf|soa|osb|oim|oam|wc|wcc|web|webgate|oud')
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons
@@ -307,6 +309,7 @@ define orawls::fmw (
       require   => Orawls::Utils::Orainst["create oraInst for ${fmw_product}"],
     }
 
+    # TODO: we should make a utility function to handle each file rather than copy/pasting and editing
     if ( $total_files > 1 ) {
 
       # for performance reasons, download and extract or just extract it
@@ -339,6 +342,39 @@ define orawls::fmw (
         before    => Exec["install ${fmw_product} ${title}"],
       }
     }
+    if ( $total_files > 2 ) {
+
+      # for performance reasons, download and extract or just extract it
+      if $remote_file == true {
+
+        file { "${download_dir}/${fmw_file3}":
+          ensure  => file,
+          source  => "${mountPoint}/${fmw_file3}",
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          before  => Exec["extract ${fmw_file3}"],
+          require => [File["${download_dir}/${fmw_file2}"],
+                      Exec["extract ${fmw_file2}"],],
+        }
+        $disk3_file = "${download_dir}/${fmw_file3}"
+      } else {
+        $disk3_file = "${source}/${fmw_file3}"
+      }
+
+      exec { "extract ${fmw_file3}":
+        command   => "unzip -o ${disk3_file} -d ${download_dir}/${fmw_product}",
+        creates   => $createFile2,
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => false,
+        require   => Exec["extract ${fmw_file2}"],
+        before    => Exec["install ${fmw_product} ${title}"],
+      }
+    }
+
 
     if $::kernel == 'SunOS' {
       if $version != 1213 {

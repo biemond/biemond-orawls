@@ -6,6 +6,7 @@ name                    = '<%= coherence_server_name %>'
 unicastaddress          = '<%= unicastaddress %>'
 unicastport             = '<%= unicastport %>'
 machine                 = '<%= machine %>'
+classpath               = '<%= classpath %>'
 
 edit()
 startEdit()
@@ -27,6 +28,10 @@ try:
        m = cmo.lookupMachine(machine)
        cd('/CoherenceServers/'+name)
        set('Machine', m)
+
+    cd('/CoherenceServers/'+name+'/CoherenceServerStart/'+name)
+    if classpath:
+      cmo.setClassPath(classpath)
 
     save()
     activate()

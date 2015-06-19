@@ -62,5 +62,6 @@ module Puppet
       /^((.*\/)?(.*):(.*)?)$/
     end
 
+    autorequire(:wls_jms_template) { "#{jmsmodule}:#{templatename}" }
   end
 end

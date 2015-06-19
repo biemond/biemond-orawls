@@ -65,6 +65,9 @@ module Puppet
     property :secondstotrustidlepoolconnection
     property :testfrequency
     property :connectioncreationretryfrequency
+    property :rowprefetchenabled
+    property :rowprefetchsize
+    property :initsql
 
     add_title_attributes(:datasource_name) do
       /^((.*\/)?(.*)?)$/

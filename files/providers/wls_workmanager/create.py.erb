@@ -45,7 +45,7 @@ try:
 
     cmo.setResponseTimeRequestClass(None)
     if fairsharerequestclass:
-      cmo.setFairShareRequestClass(fairsharerequestclass)
+      cmo.setFairShareRequestClass(getMBean('/SelfTuning/'+domain+'/FairShareRequestClasses/'+fairsharerequestclass))
     else:
       cmo.setFairShareRequestClass(None)
     cmo.setContextRequestClass(None)

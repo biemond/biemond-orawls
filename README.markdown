@@ -1519,6 +1519,19 @@ hiera configuration
           instance_name:         'ohs1'
           machine_name:          'Node1'
 
+Webtier for OAM
+
+    webtier_instances:
+      'ohs1':
+        action_name:            'create'
+        instance_name:          'ohs1'
+        webgate_configure:      true
+        webgate_agentname:      'ohs1'
+        webgate_hostidentifier: 'host1'
+        oamadminserverhostname: 'oim1admin.example.com'
+        oamadminserverport:     '7001'
+        log_output:             *logoutput
+
 ### oimconfig
 __orawls::utils::oimconfig__ Configure OIM , oim server, design or remote configuration
 

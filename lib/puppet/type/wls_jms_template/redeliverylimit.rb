@@ -1,6 +1,5 @@
 newproperty(:redeliverylimit) do
   include EasyType
-  include EasyType::Validators::Integer
 
   desc 'redelivery limit'
 

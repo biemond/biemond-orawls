@@ -1,6 +1,5 @@
 newproperty(:redeliverydelay) do
   include EasyType
-  include EasyType::Validators::Integer
 
   desc 'redelivery delay'
 

@@ -1,7 +1,14 @@
 # History
 
 ## 1.0.36
-- support for 3 fmw installation files like oim/oam 11.1.2.3
+- support for FMW installation which has 3 install files like oim/oam 11.1.2.3
+- Webtier configuration for OAM
+- wls_server_channel added keystore attributes
+- wls_jms_queue ForwardDelay bug plus new attribute templatename
+- wls_datasource new attributes row prefetch and initsql
+- wls_workmanager new attribute fairshare
+- wls_coherence_template new attribute classpath
+- wls_deployment bug when version is none
 
 ## 1.0.35
 - custom wls resource types now also supports t3s with customtrust done by wls_settings

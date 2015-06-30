@@ -2970,11 +2970,11 @@ in hiera
 
 it needs wls_setting and when identifier is not provided it will use the 'default'.
 
-xaproperties are case sensitive and should be provided as comma separated key=value. Use WLST and run ls() in the JDBCXAParams component of your datasource to determine the valid XA properties which can be set.
+xaproperties are case sensitive and should be provided as an array containing all values.Use WLST and run ls() in the JDBCXAParams component of your datasource to determine the valid XA properties which can be set.
 
 or use puppet resource wls_datasource
 
-    # this will use default as wls_setting identifier
+    # this will use default as wls_setting identifier, no XA properties
     wls_datasource { 'hrDS':
       ensure                           => 'present',
       connectioncreationretryfrequency => '0',
@@ -2998,8 +2998,9 @@ or use puppet resource wls_datasource
       testtablename                    => 'SQL SELECT 1 FROM DUAL',
       url                              => 'jdbc:oracle:thin:@dbagent2.alfa.local:1521/test.oracle.com',
       user                             => 'hr',
-      usexa                            => '1',
+      usexa                            => '0',
     }
+    # This will use XA Properties
     wls_datasource { 'jmsDS':
       ensure                     => 'present',
       drivername                 => 'com.mysql.jdbc.Driver',
@@ -3017,6 +3018,7 @@ or use puppet resource wls_datasource
       user                       => 'jms',
       password                   => 'pass',
       usexa                      => '1',
+      xaproperties               => ['RollbackLocalTxUponConnClose=0', 'RecoverOnlyOnce=0', 'KeepLogicalConnOpenOnRelease=0', 'KeepXaConnTillTxComplete=1', 'XaTransactionTimeout=14400', 'XaRetryIntervalSeconds=60', 'XaRetryDurationSeconds=0', 'ResourceHealthMonitoring=1', 'NewXaConnForCommit=0', 'XaSetTransactionTimeout=1', 'XaEndOnlyOnce=0', 'NeedTxCtxOnClose=0'],
       # To Optionally Configure as Gridlink Datasource
       fanenabled                 => '1',
       onsnodelist                => '10.10.10.110:6200,10.10.10.111:6200',

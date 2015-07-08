@@ -10,6 +10,7 @@ describe 'orawls::weblogic', :type => :class do
                   :os_user              => 'oracle',
                   :os_group             => 'dba',
                   :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+                  :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_10.3',
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => true,
@@ -54,7 +55,7 @@ describe 'orawls::weblogic', :type => :class do
     describe "weblogic silent file" do
       it do
            should contain_file("/install/weblogic_silent_install.xml").with({
-             'content' => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n   <bea-installer> \n     <input-fields>\n       <data-value name=\"BEAHOME\" value=\"/opt/oracle/middleware11gR1\" />\n   </input-fields> \n</bea-installer>",
+             'content' => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bea-installer>\n<input-fields>\n<data-value name=\"BEAHOME\" value=\"/opt/oracle/middleware11gR1\" />\n<data-value name=\"WLS_INSTALL_DIR\" value=\"/opt/oracle/middleware11gR1/wlserver_10.3\" />\n</input-fields>\n</bea-installer>",
            })
       end
     end
@@ -115,6 +116,7 @@ describe 'orawls::weblogic', :type => :class do
                   :os_user              => 'oracle',
                   :os_group             => 'dba',
                   :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+                  :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_10.3',
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => false,
@@ -150,7 +152,7 @@ describe 'orawls::weblogic', :type => :class do
     describe "weblogic silent file" do
       it do
            should contain_file("/install/weblogic_silent_install.xml").with({
-             'content' => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n   <bea-installer> \n     <input-fields>\n       <data-value name=\"BEAHOME\" value=\"/opt/oracle/middleware11gR1\" />\n   </input-fields> \n</bea-installer>",
+             'content' => "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bea-installer>\n<input-fields>\n<data-value name=\"BEAHOME\" value=\"/opt/oracle/middleware11gR1\" />\n<data-value name=\"WLS_INSTALL_DIR\" value=\"/opt/oracle/middleware11gR1/wlserver_10.3\" />\n</input-fields>\n</bea-installer>",
            })
       end
     end
@@ -173,7 +175,8 @@ describe 'orawls::weblogic', :type => :class do
                   :filename             => 'wls_121200.jar',
                   :os_user              => 'oracle',
                   :os_group             => 'dba',
-                  :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+                  :middleware_home_dir  => '/opt/oracle/middleware12c',
+                  :weblogic_home_dir    => '/opt/oracle/middleware12c/wlserver',
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => false,
@@ -209,7 +212,7 @@ describe 'orawls::weblogic', :type => :class do
     describe "weblogic silent file" do
       it do
            should contain_file("/install/weblogic_silent_install.xml").with({
-             'content' => "[ENGINE]\nResponse File Version=1.0.0.0.0\n[GENERIC]\n\n#The oracle home location. This can be an existing Oracle Home or a new Oracle Home\nORACLE_HOME=/opt/oracle/middleware11gR1\n#Set this variable value to the Installation Type selected. e.g. WebLogic Server, Coherence, Complete with Examples.\nINSTALL_TYPE=WebLogic Server\n \n#Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.\nMYORACLESUPPORT_USERNAME=\n#Provide the My Oracle Support Password\nMYORACLESUPPORT_PASSWORD=<SECURE VALUE>\n#Set this to true if you wish to decline the security updates. Setting this to true and providing empty string for My Oracle Support username will ignore the Oracle Configuration Manager configuration\nDECLINE_SECURITY_UPDATES=true\n#Set this to true if My Oracle Support Password is specified\nSECURITY_UPDATES_VIA_MYORACLESUPPORT=false\n",
+             'content' => "[ENGINE]\nResponse File Version=1.0.0.0.0\n[GENERIC]\n\n#The oracle home location. This can be an existing Oracle Home or a new Oracle Home\nORACLE_HOME=/opt/oracle/middleware12c\n#Set this variable value to the Installation Type selected. e.g. WebLogic Server, Coherence, Complete with Examples.\nINSTALL_TYPE=WebLogic Server\n \n#Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.\nMYORACLESUPPORT_USERNAME=\n#Provide the My Oracle Support Password\nMYORACLESUPPORT_PASSWORD=<SECURE VALUE>\n#Set this to true if you wish to decline the security updates. Setting this to true and providing empty string for My Oracle Support username will ignore the Oracle Configuration Manager configuration\nDECLINE_SECURITY_UPDATES=true\n#Set this to true if My Oracle Support Password is specified\nSECURITY_UPDATES_VIA_MYORACLESUPPORT=false\n",
            })
       end
     end

@@ -1,5 +1,10 @@
 # History
 
+## 1.0.37
+- xa properties fix for wls_datasource
+- custom weblogic home directory for WebLogic 10.3 and BSU patch
+- target attribute used in wls types are now idempotent
+
 ## 1.0.36
 - support for FMW installation which has 3 install files like oim/oam 11.1.2.3
 - Webtier configuration for OAM

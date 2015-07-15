@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql"
 for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -32,18 +32,21 @@ for token in m:
            initialcapacity = '0'
         mincapacity     = get('MinCapacity')
         if not (mincapacity):
-           mincapacity 	= '0'
-        statementcachesize	= get('StatementCacheSize')
+           mincapacity  = '0'
+        statementcachesize  = get('StatementCacheSize')
         if not (statementcachesize):
-           statementcachesize 	= '10'
+           statementcachesize   = '10'
         testconnectionsonreserve = str(get('TestConnectionsOnReserve'))
         
         secondstotrustidlepoolconnection = str(get('SecondsToTrustAnIdlePoolConnection'))
         testfrequency = get('TestFrequencySeconds')
         connectioncreationretryfrequency = str(get('ConnectionCreationRetryFrequencySeconds'))
+        initsql = str(get('InitSql'))
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')
+        rowprefetchenabled = str(get('RowPrefetch'))
+        rowprefetchsize = str(get('RowPrefetchSize'))
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCConnectionPoolParams/' + token )
         testTableName = get('TestTableName')
@@ -74,6 +77,30 @@ for token in m:
                cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties/'+token3)
                properties.append(token3+"="+str(get('Value')))
 
+        if usexa == '1':
+            xapropertiesCur = ''
+
+            cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCXAParams/' + token)
+            xapropertiesarray = ls('', returnMap='true')
+
+            for xaproperty in xapropertiesarray:
+
+                try:
+                    val = str(get(xaproperty))
+
+                    if xaproperty == 'isSet' or xaproperty == 'unSet':
+                        break
+                    elif len(xapropertiesCur) == len(xapropertiesarray) -1:
+                        xapropertiesCur += xaproperty + '=' + val
+                    else:
+                        xapropertiesCur += xaproperty + '=' + val + ','
+
+                except AttributeError:
+                    print "%s is not a valid attribute type" % (xaproperty)
+
+        else:
+            xapropertiesCur = ''
+
         n = ls('/SystemResources/'+token+'/Targets',returnMap='true')
         target     = []
         targetType = []
@@ -82,6 +109,6 @@ for token in m:
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

@@ -109,6 +109,6 @@ for token in m:
                cd('/SystemResources/'+token+'/Targets/'+token2)
                targetType.append(get('Type'))
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
+        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

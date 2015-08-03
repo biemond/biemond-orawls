@@ -2220,7 +2220,23 @@ or with log parameters, default file store and ssl
       weblogic_plugin_enabled           => '1',
     }
 
+If you want automatic restart when the server crashes, or automatically kill when the server hangs
 
+    # this will use default as wls_setting identifier
+    wls_server { 'wlsServer1':
+      ensure                            => 'present',
+      arguments                         => '-XX:PermSize=256m -XX:MaxPermSize=256m -Xms752m -Xmx752m -Dweblogic.Stdout=/var/log/weblogic/wlsServer1.out -Dweblogic.Stderr=/var/log/weblogic/wlsServer1_err.out',
+      jsseenabled                       => '0',
+      listenaddress                     => '10.10.10.100',
+      listenport                        => '8001',
+      listenportenabled                 => '1',
+      machine                           => 'Node1',
+      sslenabled                        => '0',
+      tunnelingenabled                  => '0',
+      max_message_size                  => '10000000',
+      auto_restart                      => '1',
+      autokillwfail                     => '1',
+    }
 
 or with JSSE with custom identity and trust
 

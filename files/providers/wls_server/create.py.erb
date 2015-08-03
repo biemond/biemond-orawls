@@ -50,6 +50,9 @@ trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 default_file_store                     = '<%= default_file_store %>'
 max_message_size                       = '<%= max_message_size %>'
 weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
+auto_restart                           = '<%= auto_restart %>'                   
+autokillwfail                          = '<%= autokillwfail %>'
+
 
 edit()
 startEdit()
@@ -133,6 +136,17 @@ try:
       set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
     if custom_identity == '0':
       set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
+
+    cd('/Servers/'+name)
+    if auto_restart == '0':
+      set('AutoRestart',false)
+    else:
+      set('AutoRestart',true)
+      
+    if autokillwfail == '1':
+      set('AutoKillIfFailed',true)
+    else:
+      set('AutoKillIfFailed',false)
 
     cd('/Servers/'+name+'/SSL/'+name)
 

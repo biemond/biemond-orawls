@@ -20,6 +20,7 @@ expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
 redeliverydelay          = '<%= redeliverydelay %>'
+messagelogging           = '<%= messagelogging %>'
 
 edit()
 startEdit()
@@ -93,6 +94,15 @@ try:
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
       cmo.setQuota(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Quotas/'+quota ))
 
+    if messagelogging == '1':
+      print "message logging"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
+      cmo.setMessageLoggingEnabled(true)
+    elif messagelogging == '0':
+      print "message logging"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
+      cmo.setMessageLoggingEnabled(false)
+      
     save()
     activate()          
     print "~~~~COMMAND SUCCESFULL~~~~"

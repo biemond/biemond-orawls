@@ -57,6 +57,7 @@ module Puppet
     property :timetolive
     property :forwarddelay
     property :templatename
+    property :messagelogging
 
     add_title_attributes(:jmsmodule, :queue_name) do
       /^((.*\/)?(.*):(.*)?)$/

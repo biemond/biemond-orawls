@@ -1026,6 +1026,10 @@ When using ssh (use_ssh = true) you need to setup ssh so you won't need to provi
       adminserver_port       => 7001,
       weblogic_user          => "weblogic",
       weblogic_password      => "weblogic1",
+      setinternalappdeploymentondemandenable => false,
+      setconfigbackupenabled                 => true,
+      setarchiveconfigurationcount           => 10,
+      setconfigurationaudittype              => 'logaudit',
     }
 
 Configuration with Hiera ( need to have puppet > 3.0 )

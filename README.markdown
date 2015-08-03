@@ -3267,6 +3267,7 @@ or use puppet resource wls_jms_queue
       timetodeliver    => '-1',
       timetolive       => '-1',
       templatename     => 'Template',
+      messagelogging   => '1',
     }
     wls_jms_queue { 'jmsClusterModule:Queue1':
       ensure           => 'present',
@@ -3281,6 +3282,7 @@ or use puppet resource wls_jms_queue
       subdeployment    => 'jmsServers',
       timetodeliver    => '-1',
       timetolive       => '300000',
+      messagelogging   => '1',
     }
     wls_jms_queue { 'jmsClusterModule:Queue2':
       ensure                  => 'present',
@@ -3294,6 +3296,7 @@ or use puppet resource wls_jms_queue
       subdeployment           => 'jmsServers',
       timetodeliver           => '-1',
       timetolive              => '300000',
+      messagelogging          => '1',
     }
 
 in hiera
@@ -3311,6 +3314,7 @@ in hiera
          timetodeliver:            '-1'
          timetolive:               '-1'
          templatename:             'Template'
+         messagelogging:           '1'
        'jmsClusterModule:Queue1':
          ensure:                   'present'
          distributed:              '1'
@@ -3324,6 +3328,7 @@ in hiera
          defaulttargeting:         '0'
          timetodeliver:            '-1'
          timetolive:               '300000'
+         messagelogging:           '1'
        'jmsClusterModule:Queue2':
          ensure:                   'present'
          distributed:              '1'
@@ -3336,6 +3341,7 @@ in hiera
          defaulttargeting:         '0'
          timetodeliver:            '-1'
          timetolive:               '300000'
+         messagelogging:           '1'
 
 
 ### wls_jms_topic
@@ -3355,6 +3361,7 @@ or use puppet resource wls_jms_topic
       subdeployment    => 'jmsServers',
       timetodeliver    => '-1',
       timetolive       => '300000',
+      messagelogging   => '1',
     }
 
 in hiera
@@ -3371,7 +3378,7 @@ in hiera
          subdeployment:     'jmsServers'
          timetodeliver:     '-1'
          timetolive:        '300000'
-
+         messagelogging:    '0'
 
 
 ### wls_jms_quota

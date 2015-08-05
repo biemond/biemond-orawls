@@ -78,11 +78,15 @@ try:
       for node in clusterNodesTargets:
         cd('/Servers/'+node)
         cmo.setCluster(getMBean('/Clusters/'+name))
+
     else:
       for token3 in p:
-        if name in String(get('/Servers/'+token3+'/Notes')).split(","):
-          clustered.append(token3)
-      
+        notes = get('/Servers/'+token3+'/Notes')
+        if notes:
+          if name in String(notes).split(","):
+            clustered.append(token3)
+
+
       for i in clustered:
         cd('/Servers/'+i)
         cmo.setCluster(getMBean('/Clusters/'+name))

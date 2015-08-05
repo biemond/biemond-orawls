@@ -29,23 +29,25 @@ try:
     targets     = String(target).split(",")
     targettypes = String(targettype).split(",")
     targetList  = []
-    
+
     if 'inherited' in targets:
-        
+
         tagged = []
         taggedtype = []
         i = ls('/Servers/', returnMap='true')
-        
+
         for token4 in i:
-            if name in get('/Servers/'+token4+'/Notes'):
-                for i in ls('/Clusters/', returnMap='true'):
-                    if i in get('/Servers/'+token4+'/Notes'):
-                        tagged.append(i)
-                        taggedtype.append('Cluster')
-                    else:
-                        tagged.append(token4)
-                        taggedtype.append('Server')
-        
+            notes = get('/Servers/'+token4+'/Notes')
+            if notes:
+                if name in notes:
+                    for i in ls('/Clusters/', returnMap='true'):
+                        if i in notes:
+                            tagged.append(i)
+                            taggedtype.append('Cluster')
+                        else:
+                            tagged.append(token4)
+                            taggedtype.append('Server')
+
         for i in range(len(tagged)):
             print "target "+tagged[i] + " " + taggedtype[i]
             targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )

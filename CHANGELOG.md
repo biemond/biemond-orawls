@@ -2,7 +2,7 @@
 
 ## 1.0.38
 - wls_server new attributes auto_restart & autokillwfail for automatic restart when the server crashes, or automatically kill when the server hangs
-- wls_jms_queue new attribute messagelogging
+- wls_jms_queue, wls_jms_topic new attribute messagelogging
 - wls_domain new attributes setinternalappdeploymentondemandenable, setconfigbackupenabled, setarchiveconfigurationcount, setconfigurationaudittype
 - Dynamictargetting for wls_cluster, wls_datasource, wls_mail_session
 

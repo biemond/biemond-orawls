@@ -24,6 +24,7 @@ for token in m:
   else:
      datasourceMigration = ''
 
+
   datasourceforjobschedulerMbean = cmo.getDataSourceForJobScheduler()
   if datasourceforjobschedulerMbean:
      path = getPath(datasourceforjobschedulerMbean)
@@ -37,10 +38,32 @@ for token in m:
   servers = []
   for token2 in n:
     servers.append(token2)
+  
+  p = ls('/Servers/',returnMap='true')
+  clustered = []
+  present = 1
+  cluster_result = ''
+  
+  for token3 in p:
+    if token in get('/Servers/'+token3+'/Notes'):
+       clustered.append(token3)
+  
+  if clustered:
+    for i in clustered:
+      if(i not in servers):
+        present = 0
 
+    if present != 1:
+      cluster_result = 'not_inherited'
+    else:
+      cluster_result = 'inherited'
+  
   cd('/Clusters/'+token)
   pwd()
   ls()
-  print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
+  if not clustered:
+    print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
+  else:
+    print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))  
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

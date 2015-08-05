@@ -48,10 +48,10 @@ trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
 default_file_store                     = '<%= default_file_store %>'
 max_message_size                       = '<%= max_message_size %>'
 weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
-auto_restart                           = '<%= auto_restart %>'                   
+auto_restart                           = '<%= auto_restart %>'
 autokillwfail                          = '<%= autokillwfail %>'
 
-server_parameters		       = '<%= server_parameters %>'
+server_parameters          = '<%= server_parameters %>'
 
 edit()
 startEdit()
@@ -91,8 +91,11 @@ try:
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
 
-    cmo.setNotes(server_parameters)
-	
+    print "Change Notes"
+    if server_parameters and server_parameters != 'None':
+      cmo.setNotes(server_parameters)
+
+    print "Change listenAddress"
     if listenAddress and not listenAddress.isspace():
       set('ListenAddress',listenAddress)
 
@@ -140,15 +143,20 @@ try:
 
     cd('/Servers/'+name)
     if auto_restart == '0':
-      set('AutoRestart',false)
+      print "Change AutoRestart"
+      set('AutoRestart','False')
     else:
-      set('AutoRestart',true)
-      
-    if autokillwfail == '1':
-      set('AutoKillIfFailed',true)
-    else:
-      set('AutoKillIfFailed',false)
+      print "Change AutoRestart"
+      set('AutoRestart','True')
 
+    if autokillwfail == '1':
+      print "Change AutoKillIfFailed"
+      set('AutoKillIfFailed','True')
+    else:
+      print "Change AutoKillIfFailed"
+      set('AutoKillIfFailed','False')
+
+    print "Change SSL"
     cd('/Servers/'+name+'/SSL/'+name)
 
     if sslEnabled and sslEnabled != '-1':
@@ -229,8 +237,8 @@ try:
     if log_file_min_size:
       cmo.setFileMinSize(int(log_file_min_size))
 
-    cd('/Servers/'+name+'/DefaultFileStore/'+name)
     if default_file_store:
+      cd('/Servers/'+name+'/DefaultFileStore/'+name)
       cmo.setDirectory(default_file_store)
 
     cd('/')

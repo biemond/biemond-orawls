@@ -1,5 +1,11 @@
 # History
 
+## 1.0.38
+- wls_server new attributes auto_restart & autokillwfail for automatic restart when the server crashes, or automatically kill when the server hangs
+- wls_jms_queue new attribute messagelogging
+- wls_domain new attributes setinternalappdeploymentondemandenable, setconfigbackupenabled, setarchiveconfigurationcount, setconfigurationaudittype
+- Dynamictargetting for wls_cluster, wls_datasource, wls_mail_session
+
 ## 1.0.37
 - xa properties fix for wls_datasource
 - custom weblogic home directory for WebLogic 10.3 and BSU patch

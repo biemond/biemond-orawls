@@ -28,7 +28,7 @@ def formatBoolean(value):
   if value == '1':
     return true
   else:
-    return false    
+    return false
 
 print "start edit"
 
@@ -62,7 +62,7 @@ try:
     cd('/JTA/'+name)
     if jta_transaction_timeout:
       cmo.setTimeoutSeconds(int(jta_transaction_timeout))
-    if jta_max_transactions:    
+    if jta_max_transactions:
       cmo.setMaxTransactions(int(jta_max_transactions))
 
     print "change jpa"
@@ -89,19 +89,24 @@ try:
 
 
     cd('/')
-    
-    print "Change Internal App deployment flag"
-    cmo.setInternalAppsDeployOnDemandEnabled(formatBoolean(setinternalappdeploymentondemandenable))
- 
-    print "Change configuration backup settings"
-    cmo.setArchiveConfigurationCount(int(setarchiveconfigurationcount))
-    cmo.setConfigBackupEnabled(formatBoolean(setconfigbackupenabled))
-    
-    cmo.setConfigurationAuditType(setconfigurationaudittype)
+
+    if setinternalappdeploymentondemandenable:
+      print "Change Internal App deployment flag"
+      cmo.setInternalAppsDeployOnDemandEnabled(formatBoolean(setinternalappdeploymentondemandenable))
+
+    if setarchiveconfigurationcount:
+      print "Change configuration backup settings"
+      cmo.setArchiveConfigurationCount(int(setarchiveconfigurationcount))
+
+    if setconfigbackupenabled:
+      cmo.setConfigBackupEnabled(formatBoolean(setconfigbackupenabled))
+
+    if setconfigurationaudittype:
+      cmo.setConfigurationAuditType(setconfigurationaudittype)
 
     print "save"
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

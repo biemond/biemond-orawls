@@ -56,12 +56,12 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
-
+    
     if mincapacity:
        set('MinCapacity',int(mincapacity))
-
+    
     if statementcachesize:
-       set('StatementCacheSize',int(statementcachesize))
+       set('StatementCacheSize',int(statementcachesize))    
 
     if secondstotrustidlepoolconnection:
       set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
@@ -114,7 +114,7 @@ try:
         valid_xa_properties = ls('', returnMap='true')
         for existing_prop in valid_xa_properties:
             cmo.unSet(existing_prop)
-
+    
         # Set Them Dynamically
         if xaproperties:
             xapropertiesarray=String(xaproperties).split(",")
@@ -148,10 +148,33 @@ try:
     targets     = String(target).split(",")
     targettypes = String(targettype).split(",")
     targetList  = []
-    for i in range(len(targets)):
-      print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+    
+    if 'inherited' in targets:
+        
+        tagged = []
+        taggedtype = []
+        i = ls('/Servers/', returnMap='true')
+        
+        for token4 in i:
+            if name in get('/Servers/'+token4+'/Notes'):
+                for i in ls('/Clusters/', returnMap='true'):
+                    if i in get('/Servers/'+token4+'/Notes'):
+                        tagged.append(i)
+                        taggedtype.append('Cluster')
+                    else:
+                        tagged.append(token4)
+                        taggedtype.append('Server')
+        
+        for i in range(len(tagged)):
+            print "target "+tagged[i] + " " + taggedtype[i]
+            targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )
 
+    else:            
+            
+        for i in range(len(targets)):
+          print "target "+targets[i] + " " + targettypes[i]
+          targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+	  
     set('Targets',jarray.array(targetList, ObjectName))
 
     save()

@@ -7,20 +7,18 @@ arguments     = '''<%= arguments %>'''
 machineName   = '<%= machine %>'
 bea_home      = '<%= bea_home %>'
 
-
 logFilename                      = '<%= logfilename %>'
-log_http_Filename                = '<%= log_http_filename %>'
-log_http_format                  = '<%= log_http_format %>'
-log_http_format_type             = '<%= log_http_format_type %>'
+log_http_Filename           = '<%= log_http_filename %>'
+log_http_format             = '<%= log_http_format %>'
+log_http_format_type        = '<%= log_http_format_type %>'
 log_http_file_count              = '<%= log_http_file_count %>'
 log_http_number_of_files_limited = '<%= log_http_number_of_files_limited %>'
-
-log_datasource_Filename       = '<%= log_datasource_filename %>'
-log_file_min_size             = '<%= log_file_min_size %>'
-log_filecount                 = '<%= log_filecount %>'
-log_rotate_logon_startup      = '<%= log_rotate_logon_startup %>'
-log_rotationtype              = '<%= log_rotationtype %>'
-log_number_of_files_limited   = '<%= log_number_of_files_limited %>'
+log_datasource_Filename     = '<%= log_datasource_filename %>'
+log_file_min_size           = '<%= log_file_min_size %>'
+log_filecount               = '<%= log_filecount %>'
+log_rotate_logon_startup    = '<%= log_rotate_logon_startup %>'
+log_rotationtype            = '<%= log_rotationtype %>'
+log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
 log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
 
@@ -53,6 +51,7 @@ weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
 auto_restart                           = '<%= auto_restart %>'                   
 autokillwfail                          = '<%= autokillwfail %>'
 
+server_parameters		       = '<%= server_parameters %>'
 
 edit()
 startEdit()
@@ -92,6 +91,8 @@ try:
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
 
+    cmo.setNotes(server_parameters)
+	
     if listenAddress and not listenAddress.isspace():
       set('ListenAddress',listenAddress)
 

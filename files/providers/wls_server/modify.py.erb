@@ -29,11 +29,11 @@ listenPort        = '<%= listenport %>'
 listenPortEnabled = '<%= listenportenabled %>'
 sslEnabled        = '<%= sslenabled %>'
 sslHostnameVerificationIgnored = '<%= sslhostnameverificationignored %>'
-two_way_ssl       = '<%= two_way_ssl %>'
+two_way_ssl = '<%= two_way_ssl %>'
 client_certificate_enforced = '<%= client_certificate_enforced %>'
-sslListenPort     = '<%= ssllistenport %>'
-
+sslListenPort = '<%= ssllistenport %>'
 logintimeout  = '<%= logintimeout %>'
+
 jsseenabled   = '<%= jsseenabled %>'
 tunnelingenabled  = '<%= tunnelingenabled %>'
 
@@ -51,7 +51,7 @@ weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
 auto_restart                           = '<%= auto_restart %>'                   
 autokillwfail                          = '<%= autokillwfail %>'
 
-
+server_parameters		       = '<%= server_parameters %>'
 
 edit()
 startEdit()
@@ -73,6 +73,8 @@ try:
 
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
+
+    set('Notes',str(server_parameters))
 
     if listenAddress and not listenAddress.isspace():
       set('ListenAddress',listenAddress)

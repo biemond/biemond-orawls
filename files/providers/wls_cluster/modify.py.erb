@@ -71,9 +71,21 @@ try:
     if datasourceforjobscheduler:
       cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))
 
-    for node in clusterNodesTargets:
-      cd('/Servers/'+node)
-      cmo.setCluster(getMBean('/Clusters/'+name))
+    clustered = []
+    p = ls('/Servers/',returnMap='true')
+
+    if 'inherited' not in clusterNodesTargets:
+      for node in clusterNodesTargets:
+        cd('/Servers/'+node)
+        cmo.setCluster(getMBean('/Clusters/'+name))
+    else:
+      for token3 in p:
+        if name in String(get('/Servers/'+token3+'/Notes')).split(","):
+          clustered.append(token3)
+      
+      for i in clustered:
+        cd('/Servers/'+i)
+        cmo.setCluster(getMBean('/Clusters/'+name))
 
     save()
     activate()
@@ -85,3 +97,5 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
+
+

@@ -38,16 +38,22 @@ for token in m:
   servers = []
   for token2 in n:
     servers.append(token2)
-  
+
+  print "1"
   p = ls('/Servers/',returnMap='true')
   clustered = []
   present = 1
   cluster_result = ''
-  
+
+  print "1"
   for token3 in p:
-    if token in get('/Servers/'+token3+'/Notes'):
-       clustered.append(token3)
-  
+    print "2 "+ token3
+    notes = get('/Servers/'+token3+'/Notes')
+    if notes:
+      if token in notes:
+         print "3 "+ token3
+         clustered.append(token3)
+
   if clustered:
     for i in clustered:
       if(i not in servers):
@@ -57,13 +63,13 @@ for token in m:
       cluster_result = 'not_inherited'
     else:
       cluster_result = 'inherited'
-  
+
   cd('/Clusters/'+token)
   pwd()
   ls()
   if not clustered:
     print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
   else:
-    print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))  
+    print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

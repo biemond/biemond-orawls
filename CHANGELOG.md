@@ -5,6 +5,7 @@
 - wls_jms_queue, wls_jms_topic new attribute messagelogging
 - wls_domain new attributes setinternalappdeploymentondemandenable, setconfigbackupenabled, setarchiveconfigurationcount, setconfigurationaudittype
 - Dynamictargetting for wls_cluster, wls_datasource, wls_mail_session
+- wls_datasource new attribute shrinkfrequencyseconds
 
 ## 1.0.37
 - xa properties fix for wls_datasource

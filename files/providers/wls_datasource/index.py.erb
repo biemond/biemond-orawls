@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds"
 for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -32,12 +32,13 @@ for token in m:
            initialcapacity = '0'
         mincapacity     = get('MinCapacity')
         if not (mincapacity):
-           mincapacity 	= '0'
-        statementcachesize	= get('StatementCacheSize')
+           mincapacity  = '0'
+        statementcachesize  = get('StatementCacheSize')
         if not (statementcachesize):
-           statementcachesize 	= '10'
+           statementcachesize   = '10'
         testconnectionsonreserve = str(get('TestConnectionsOnReserve'))
 
+        shrinkfrequencyseconds = str(get('ShrinkFrequencySeconds'))
         secondstotrustidlepoolconnection = str(get('SecondsToTrustAnIdlePoolConnection'))
         testfrequency = get('TestFrequencySeconds')
         connectioncreationretryfrequency = str(get('ConnectionCreationRetryFrequencySeconds'))
@@ -132,10 +133,10 @@ for token in m:
                 missing = 1
 
         if not tagged:
-            print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
+            print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds]))
         elif missing == 0:
-            print >>f, ";".join(map(quote, [domain+'/'+token,'inherited','inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
+            print >>f, ";".join(map(quote, [domain+'/'+token,'inherited','inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds]))
         else:
-            print >>f, ";".join(map(quote, [domain+'/'+token,'not_inherited','not_inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql]))
+            print >>f, ";".join(map(quote, [domain+'/'+token,'not_inherited','not_inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

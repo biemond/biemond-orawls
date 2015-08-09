@@ -27,6 +27,7 @@ connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency 
 rowprefetchenabled                      = '<%= rowprefetchenabled %>'
 rowprefetchsize                         = '<%= rowprefetchsize %>'
 initsql                                 = "<%= (initsql||'').gsub('"','\"') %>"
+shrinkfrequencyseconds                  = '<%= shrinkfrequencyseconds %>'
 
 edit()
 startEdit()
@@ -82,6 +83,9 @@ try:
 
     if initsql:
       set('InitSql', initsql)
+
+    if shrinkfrequencyseconds:
+      set('ShrinkFrequencySeconds', int(shrinkfrequencyseconds))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)

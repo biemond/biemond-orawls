@@ -1,5 +1,8 @@
 # History
 
+## 1.0.39
+- Oracle Forms & Reports 11.1.1.7 or 11.1.2 support
+
 ## 1.0.38
 - wls_server new attributes auto_restart & autokillwfail for automatic restart when the server crashes, or automatically kill when the server hangs
 - wls_jms_queue, wls_jms_topic new attribute messagelogging

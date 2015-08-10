@@ -38,6 +38,8 @@ Dependency with
 - WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example [biemond-orawls-vagrant](https://github.com/biemond/biemond-orawls-vagrant)
 - Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example [biemond-orawls-vagrant-solaris-soa](https://github.com/biemond/biemond-orawls-vagrant-solaris-soa)
 - Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box [vagrant-puppetmaster](https://github.com/biemond/vagrant-puppetmaster)
+- Oracle Forms, Reports 11.1.1.7 & 11.1.2 Reference implementation, the vagrant test case [biemond-orawls-vagrant-11g-forms](https://github.com/biemond/biemond-orawls-vagrant-11g-forms)
+
 
 ## Orawls WebLogic Features
 
@@ -62,6 +64,7 @@ Dependency with
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
 - [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate, Also Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
+- [Forms/Reports](#forms) Oracle Forms & Reports 11.1.1.7 or 11.1.2
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
 
@@ -1324,7 +1327,7 @@ when you just have one WebLogic domain on a server
          user_config_dir:      '/home/oracle'
 
 ### Dynamictargetting
-Sometimes you do not know how many managed services you will have,  
+Sometimes you do not know how many managed services you will have,
 due to application scaling or other use cases. Since you do specify resources
 like clusters and datasources in a more 'static' way, there should be a way to
 qualify a managed server as a target for such resources.
@@ -1336,7 +1339,7 @@ for the following resource types:
 - wls_datasource
 - wls_mail_session
 
-The way you use this, is by entering the resource name in the server_parameter  
+The way you use this, is by entering the resource name in the server_parameter
 field on the wls_server type, and put the servers field to 'inherited' on the
 resource to be targeted.
 

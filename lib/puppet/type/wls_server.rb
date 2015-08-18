@@ -63,6 +63,10 @@ module Puppet
     property :arguments
     property :bea_home
     property :logintimeout
+    
+    property :frontendhost
+    property :frontendhttpport
+    property :frontendhttpsport
 
     property :logfilename
     property :log_file_min_size

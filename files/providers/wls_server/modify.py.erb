@@ -53,6 +53,10 @@ autokillwfail                          = '<%= autokillwfail %>'
 
 server_parameters		       = '<%= server_parameters %>'
 
+frontend_host                  = '<%= frontendhost %>'
+frontend_http_port             = '<%= frontendhttpport %>'
+frontend_https_port            = '<%= frontendhttpsport %>'
+
 edit()
 startEdit()
 
@@ -147,6 +151,17 @@ try:
     else:
       print "Change AutoKillIfFailed"
       set('AutoKillIfFailed','False')
+
+    cd('/Servers/'+name+'/WebServer/'+name)
+
+    print "Setting Frontend Host"
+    cmo.setFrontendHost(frontend_host)
+
+    print "Setting Frontend HTTP Port"
+    cmo.setFrontendHTTPPort(int(frontend_http_port))
+
+    print "Setting Frontend HTTPS Port"
+    cmo.setFrontendHTTPSPort(int(frontend_https_port))
 
     print "Change SSL"
     cd('/Servers/'+name+'/SSL/'+name)

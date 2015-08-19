@@ -154,8 +154,9 @@ try:
 
     cd('/Servers/'+name+'/WebServer/'+name)
 
-    print "Setting Frontend Host"
-    cmo.setFrontendHost(frontend_host)
+    if frontend_host:
+      print "Setting Frontend Host"
+      cmo.setFrontendHost(frontend_host)
 
     print "Setting Frontend HTTP Port"
     cmo.setFrontendHTTPPort(int(frontend_http_port))

@@ -21,7 +21,7 @@ for token in m:
   tunnelingenabled  = str(get('TunnelingEnabled'))
   logintimeout	    = str(get('LoginTimeoutMillis'))
   restart_max       = str(get('RestartMax'))
-  
+
   auto_restart      = str(get('AutoRestart'))
   autokillwfail     = str(get('AutoKillIfFailed'))
   server_parameters = str(get('Notes'))
@@ -52,13 +52,25 @@ for token in m:
 
   arguments     = get('Arguments')
   if arguments == None:
-      arguments = ''    
+      arguments = ''
 
   cd('/Servers/'+token+'/WebServer/'+token)
-  frontendhost      = get('FrontendHost')
-  frontendhttpport  = get('FrontendHTTPPort')
-  frontendhttpsport = get('FrontendHTTPSPort')
-  
+  if get('FrontendHost'):
+    frontendhost = get('FrontendHost')
+  else:
+    frontendhost = ''
+
+  if get('FrontendHTTPPort'):
+    frontendhttpport = get('FrontendHTTPPort')
+  else:
+    frontendhttpport = '0'
+
+  if get('FrontendHTTPSPort'):
+    frontendhttpsport = get('FrontendHTTPSPort')
+  else:
+    frontendhttpsport = '0'
+
+
   cd('/Servers/'+token+'/Log/'+token)
   logfilename                   = get('FileName')
   log_rotationtype              = get('RotationType')

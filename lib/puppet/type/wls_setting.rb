@@ -3,7 +3,7 @@ require 'yaml'
 # require 'ruby-debug'
 
 module Puppet
-  newtype(:wls_setting) do
+  Type.newtype(:wls_setting) do
     include EasyType
 
     DEFAULT_FILE = '/etc/wls_setting.yaml'

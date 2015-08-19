@@ -7,7 +7,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_identity_asserter) do
+  Type.newtype(:wls_identity_asserter) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

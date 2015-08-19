@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_jms_connection_factory) do
+  Type.newtype(:wls_jms_connection_factory) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

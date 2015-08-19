@@ -6,7 +6,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_workmanager_constraint) do
+  Type.newtype(:wls_workmanager_constraint) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

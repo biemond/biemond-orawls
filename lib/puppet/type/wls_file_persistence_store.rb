@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_file_persistence_store) do
+  Type.newtype(:wls_file_persistence_store) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

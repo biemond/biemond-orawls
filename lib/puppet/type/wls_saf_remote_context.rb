@@ -5,7 +5,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_saf_remote_context) do
+  Type.newtype(:wls_saf_remote_context) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

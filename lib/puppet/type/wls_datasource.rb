@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_datasource) do
+  Type.newtype(:wls_datasource) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

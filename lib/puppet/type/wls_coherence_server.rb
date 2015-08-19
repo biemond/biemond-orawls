@@ -5,7 +5,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_coherence_server) do
+  Type.newtype(:wls_coherence_server) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

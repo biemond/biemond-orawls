@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:wls_managedserver) do
+  Type.newtype(:wls_managedserver) do
     desc 'control a managed server or cluster state like running,stop,restart'
 
     newproperty(:ensure) do

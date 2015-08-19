@@ -5,7 +5,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_jmsserver) do
+  Type.newtype(:wls_jmsserver) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

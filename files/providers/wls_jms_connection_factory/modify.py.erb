@@ -64,7 +64,7 @@ try:
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/LoadBalancingParams/'+name)
     if loadbalancingenabled:
-      cmo.setServerAffinityEnabled( formatBoolean(loadbalancingenabled) )
+      cmo.setLoadBalancingEnabled( formatBoolean(loadbalancingenabled) )
     if serveraffinityenabled:
       cmo.setServerAffinityEnabled( formatBoolean(serveraffinityenabled) )
 

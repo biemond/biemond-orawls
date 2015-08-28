@@ -9,7 +9,7 @@ def quote(text):
 m = ls('/Servers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicaddress;domain"
+print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain;two_way_ssl;client_certificate_enforced;custom_identity_alias;channel_identity_customized"
 for token in m:
         print '___'+token+'___'
         cd('/Servers/'+token)
@@ -17,16 +17,23 @@ for token in m:
         n = ls('/Servers/'+token+'/NetworkAccessPoints',returnMap='true')
         for token2 in n:
                cd('/Servers/'+token+'/NetworkAccessPoints/'+token2)
-               protocol         = get('Protocol')
-               enabled          = str(get('Enabled'))
-               listenaddress    = get('ListenAddress')
-               publicaddress    = get('PublicAddress')
-               listenport       = str(get('ListenPort'))
-               httpenabled      = str(get('HttpEnabledForThisProtocol'))
-               outboundenabled  = str(get('OutboundEnabled'))
-               tunnelingenabled = str(get('TunnelingEnabled'))
+               protocol                    = get('Protocol')
+               enabled                     = str(get('Enabled'))
+               listenaddress               = get('ListenAddress')
+               publicaddress               = get('PublicAddress')
+               listenport                  = str(get('ListenPort'))
+               publicport                  = str(get('PublicPort'))
+               max_message_size            = str(get('MaxMessageSize'))
 
-               print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicaddress,domain]))
+               httpenabled                 = str(get('HttpEnabledForThisProtocol'))
+               outboundenabled             = str(get('OutboundEnabled'))
+               tunnelingenabled            = str(get('TunnelingEnabled'))
+               two_way_ssl                 = str(get('TwoWaySSLEnabled'))
+               client_certificate_enforced = str(get('ClientCertificateEnforced'))
+               custom_identity_alias       = str(get('CustomPrivateKeyAlias'))
+               channel_identity_customized = str(get('ChannelIdentityCustomized'))
+
+               print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicport,max_message_size,publicaddress,domain,two_way_ssl,client_certificate_enforced,custom_identity_alias,channel_identity_customized]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

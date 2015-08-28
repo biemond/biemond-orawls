@@ -29,49 +29,68 @@ class orawls::urandomfix() {
           user    => 'root',
           path    => $path,
         }
-      } else {
-        exec { 'set urandom /etc/sysconfig/rngd':
-          command => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
-          unless  => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
-          require => Package['rng-tools'],
-          user    => 'root',
-          path    => $path,
+
+        exec { 'systemctl-daemon-reload':
+          command     => 'systemctl --system daemon-reload',
+          path        => $path,
+          subscribe   => Exec['set urandom /lib/systemd/system/rngd.service'],
+          refreshonly => true,
+          notify      => Service['rngd'],
         }
 
-        service { 'start rngd service':
-          ensure  => true,
-          name    => 'rngd',
+        service { 'rngd':
+          ensure  => 'running',
+          enable  => true,
+          require => Exec['systemctl-daemon-reload'],
+        }
+
+      } else {
+        exec { 'set urandom /etc/sysconfig/rngd':
+          command   => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
+          unless    => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
+          require   => Package['rng-tools'],
+          path      => $path,
+          logoutput => true,
+          user      => 'root',
+          notify    => Service['rngd'],
+        }
+
+        service { 'rngd':
+          ensure  => 'running',
           enable  => true,
           require => Exec['set urandom /etc/sysconfig/rngd'],
         }
 
         exec { 'chkconfig rngd':
-          command => 'chkconfig --add rngd',
-          require => Service['start rngd service'],
-          user    => 'root',
-          unless  => "chkconfig | /bin/grep 'rngd'",
-          path    => $path,
+          command   => 'chkconfig --add rngd',
+          require   => Service['rngd'],
+          unless    => "chkconfig | /bin/grep 'rngd'",
+          path      => $path,
+          logoutput => true,
+          user      => 'root',
         }
       }
     }
     'Debian','Suse' : {
       exec { 'set urandom /etc/default/rng-tools':
-        command => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
-        unless  => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",
-        require => Package['rng-tools'],
-        user    => 'root',
-        path    => $path,
+        command   => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
+        unless    => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",
+        require   => Package['rng-tools'],
+        path      => $path,
+        logoutput => true,
+        user      => 'root',
+        notify    => Service['rng-tools'],
       }
 
-      service { 'start rng-tools service':
-        ensure  => true,
-        name    => 'rng-tools',
+      service { 'rng-tools':
+        ensure  => 'running',
         enable  => true,
         require => Exec['set urandom /etc/default/rng-tools'],
       }
     }
     default: {
-      fail("Unrecognized operating system ${::operatingsystem}, please use it on a Linux host")
+      fail("Unrecognized osfamily ${::osfamily}, please use it on a Linux host")
     }
+
   }
 }

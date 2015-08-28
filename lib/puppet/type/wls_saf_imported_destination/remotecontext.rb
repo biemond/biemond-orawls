@@ -12,4 +12,4 @@ end
 #
 # Make sure the top level jms module is auto required
 #
-autorequire(:wls_saf_remote_context) { "#domain}/#{jmsmodule}:#{remotecontext}" if remotecontext }
+autorequire(:wls_saf_remote_context) { "#{domain}/#{jmsmodule}:#{remotecontext}" if remotecontext }

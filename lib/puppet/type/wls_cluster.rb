@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_cluster) do
+  Type.newtype(:wls_cluster) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -43,6 +43,7 @@ module Puppet
     parameter :cluster_name
     parameter :timeout
     property :servers
+    property :clusteraddress
     property :migrationbasis
     property :migration_datasource
     property :migration_table_name

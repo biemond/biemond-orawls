@@ -1,15 +1,14 @@
 
-
 def quote(text):
-	if text:
-		return "\"" + str(text).replace("\"", "\"\"") + "\""
-	else: 
-		return ""
+  if text:
+    return "\"" + str(text).replace("\"", "\"\"") + "\""
+  else:
+    return ""
 
 m = ls('/SelfTuning',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity"
+print >>f, "name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity;fairsharerequestclass"
 for token in m:
         print '___'+token+'___'
         cd('/SelfTuning/'+token)
@@ -23,7 +22,7 @@ for token in m:
                 minThreadsConstraintsMbean = cmo.getMinThreadsConstraint()
                 if minThreadsConstraintsMbean:
                    path = getPath(minThreadsConstraintsMbean)
-                   cd("/"+path) 
+                   cd("/"+path)
                    minThreadsConstraint = get('Name')
                 else:
                    minThreadsConstraint = ''
@@ -32,7 +31,7 @@ for token in m:
                 maxThreadsConstraintsMbean = cmo.getMaxThreadsConstraint()
                 if maxThreadsConstraintsMbean:
                    path = getPath(maxThreadsConstraintsMbean)
-                   cd("/"+path) 
+                   cd("/"+path)
                    maxThreadsConstraint = get('Name')
                 else:
                    maxThreadsConstraint = ''
@@ -41,10 +40,19 @@ for token in m:
                 capacitiesmBean = cmo.getCapacity()
                 if capacitiesmBean:
                    path = getPath(capacitiesmBean)
-                   cd("/"+path) 
+                   cd("/"+path)
                    capacity = get('Name')
                 else:
                    capacity = ''
+
+                cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
+                fairsharemBean = cmo.getFairShareRequestClass()
+                if fairsharemBean:
+                   path = getPath(fairsharemBean)
+                   cd("/"+path)
+                   fairshareRequestClass = get('Name')
+                else:
+                   fairshareRequestClass = ''
 
                 cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
                 t = ls('Targets',returnMap='true')
@@ -55,8 +63,7 @@ for token in m:
                         cd('/SelfTuning/'+token+'/WorkManagers/'+token2+'/Targets/'+token3)
                         targetType.append(get('Type'))
 
-                print >>f, ";".join(map(quote, [domain+'/'+token2,stuckthreads,','.join(target),','.join(targetType),domain,minThreadsConstraint,maxThreadsConstraint,capacity]))
+                print >>f, ";".join(map(quote, [domain+'/'+token2,stuckthreads,','.join(target),','.join(targetType),domain,minThreadsConstraint,maxThreadsConstraint,capacity,fairshareRequestClass]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
-

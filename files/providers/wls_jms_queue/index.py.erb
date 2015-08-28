@@ -3,29 +3,34 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 def queue(token,token2,location,distributed):
     cd(location)
-    jndiname      = get('JNDIName') 
+    jndiname      = get('JNDIName')
+
+    forwardDelay = ''
+    try:
+      forwardDelay = str(get('ForwardDelay'))
+    except:
+      print "forwardDelay failed, probably a normal queue"
 
     defaultTargeting   = str(get('DefaultTargetingEnabled'))
     if defaultTargeting == '1':
        subdeployment = ''
     else:
-       subdeployment = cmo.getSubDeploymentName()  
-
+       subdeployment = cmo.getSubDeploymentName()
 
     if distributed == '1':
       balancingPolicy  = get('LoadBalancingPolicy')
     else:
-      balancingPolicy  = ''  
+      balancingPolicy  = ''
 
     quotaMbean       = get('Quota')
     if quotaMbean:
        path = getPath(quotaMbean)
-       cd("/"+path) 
+       cd("/"+path)
        quota  = get('Name')
        cd(location)
     else:
@@ -33,26 +38,36 @@ def queue(token,token2,location,distributed):
 
     cd(location+'/DeliveryFailureParams/'+token2)
     redeliveryLimit         = get('RedeliveryLimit')
-    expirationPolicy        = get('ExpirationPolicy')  
+    expirationPolicy        = get('ExpirationPolicy')
     expirationLoggingPolicy = get('ExpirationLoggingPolicy')
 
     errorDestinationMBean   = get('ErrorDestination')
     if errorDestinationMBean:
        path = getPath(errorDestinationMBean)
-       cd("/"+path) 
+       cd("/"+path)
        errorDestination  = get('Name')
     else:
        errorDestination = ''
 
     cd(location+'/DeliveryParamsOverrides/'+token2)
-    timeToLive      = get('TimeToLive')   
-    timeToDeliver   = get('TimeToDeliver')                             
+    timeToLive      = get('TimeToLive')
+    timeToDeliver   = get('TimeToDeliver')
     redeliveryDelay = get('RedeliveryDelay')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,domain]))
+    cd(location+'/MessageLoggingParams/'+token2)
+    messagelogging = get('MessageLoggingEnabled')
+
+    
+    template=ls(location+'/Template',returnMap='true')
+    if template:
+      templatename = template[0]
+    else:
+      templatename = ''
+
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,forwardDelay,templatename,messagelogging,domain]))
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;domain"
+print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;forwarddelay;templatename;messagelogging;domain"
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:
@@ -68,8 +83,6 @@ for token in m:
   for token2 in n:
     queue(token,token2,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Queues/'+token2,'0')
 
-        
+
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
-
-

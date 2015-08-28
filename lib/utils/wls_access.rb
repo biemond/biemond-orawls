@@ -66,12 +66,15 @@ module Utils
     end
 
     def execute_wlst(script, tmpFile, parameters, domain, domainValues, action)
-      operatingSystemUser = domainValues['user']              || 'oracle'
-      weblogicHomeDir     = domainValues['weblogic_home_dir']
-      weblogicUser        = domainValues['weblogic_user']     || 'weblogic'
-      weblogicConnectUrl  = domainValues['connect_url']       || 't3://localhost:7001'
-      weblogicPassword    = domainValues['weblogic_password']
-      postClasspath       = domainValues['post_classpath']
+      operatingSystemUser       = domainValues['user']              || 'oracle'
+      weblogicHomeDir           = domainValues['weblogic_home_dir']
+      weblogicUser              = domainValues['weblogic_user']     || 'weblogic'
+      weblogicConnectUrl        = domainValues['connect_url']       || 't3://localhost:7001'
+      weblogicPassword          = domainValues['weblogic_password']
+      postClasspath             = domainValues['post_classpath']
+      custom_trust              = domainValues['custom_trust']
+      trust_keystore_file       = domainValues['trust_keystore_file']
+      trust_keystore_passphrase = domainValues['trust_keystore_passphrase']
 
       fail('weblogic_home_dir cannot be nil, check the wls_setting resource type') if weblogicHomeDir.nil?
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
@@ -86,7 +89,7 @@ module Utils
         puts '^^^===================================================================='
       end
 
-      wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath)
+      wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
       if timeout_specified
         wls_daemon.execute_script(tmpFile.path, timeout_specified)
       else

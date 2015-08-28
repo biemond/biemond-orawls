@@ -28,6 +28,33 @@ for token in m:
             cd('/MailSessions/'+token+'/Targets/'+token2)
             targetType.append(get('Type'))
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),jndiname,','.join(properties)]))
+        tagged = []
+        i = ls('/Servers/', returnMap='true')
+
+        for token4 in i:
+            notes = get('/Servers/'+token4+'/Notes')
+            if notes:
+                if token in notes:
+                    for i in ls('/Clusters/', returnMap='true'):
+                        if i in notes:
+                            tagged.append(i)
+                        else:
+                            tagged.append(token4)
+
+        missing = 0
+        for k in tagged:
+            if k not in target:
+                missing = 1
+
+        for k in target:
+            if k not in tagged:
+                missing = 1
+
+        if not tagged:
+            print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),jndiname,','.join(properties)]))
+        elif missing == 0:
+            print >>f, ";".join(map(quote, [domain+'/'+token,'inherited','inherited',jndiname,','.join(properties)]))
+        else:
+            print >>f, ";".join(map(quote, [domain+'/'+token,'not_inherited','not_inherited',jndiname,','.join(properties)]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_datasource) do
+  Type.newtype(:wls_datasource) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -59,6 +59,16 @@ module Puppet
     property :initialcapacity
     property :fanenabled
     property :onsnodelist
+    property :mincapacity
+    property :statementcachesize
+    property :testconnectionsonreserve
+    property :secondstotrustidlepoolconnection
+    property :testfrequency
+    property :connectioncreationretryfrequency
+    property :rowprefetchenabled
+    property :rowprefetchsize
+    property :initsql
+    property :shrinkfrequencyseconds
 
     add_title_attributes(:datasource_name) do
       /^((.*\/)?(.*)?)$/

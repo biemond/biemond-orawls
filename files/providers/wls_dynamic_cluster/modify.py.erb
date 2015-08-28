@@ -1,13 +1,12 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
 name                      = '<%= cluster_name %>'
 nodemanager_match         = '<%= nodemanager_match %>'
 maximum_server_count      = '<%= maximum_server_count %>'
 server_name_prefix        = '<%= server_name_prefix %>'
 server_template_name      = '<%= server_template_name %>'
+calculated_listen_port    = '<%= calculated_listen_port %>'
 
 edit()
 startEdit()
@@ -16,13 +15,18 @@ try:
 
     cd('/')
 
-    cd('/Clusters/'+name+'/DynamicServers/'+name) 
+    cd('/Clusters/'+name+'/DynamicServers/'+name)
     set('MaximumDynamicServerCount' ,int(maximum_server_count))
     set('MachineNameMatchExpression',nodemanager_match)
     set('ServerNamePrefix'          ,server_name_prefix)
 
+    if calculated_listen_port and calculated_listen_port == '1':
+       set('CalculatedListenPorts',true)
+    else:
+       set('CalculatedListenPorts',false)
+
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_deployment) do
+  Type.newtype(:wls_deployment) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -49,6 +49,9 @@ module Puppet
     property :targettype
     property :deploymenttype
     property :versionidentifier
+    parameter :remote
+    parameter :upload
+    property :stagingmode
 
     add_title_attributes(:deployment_name) do
       /^((.*\/)?(.*)?)$/

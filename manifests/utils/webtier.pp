@@ -13,6 +13,10 @@ define orawls::utils::webtier(
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
   $action_name                = 'create', #create|delete
   $webgate_configure          = false,
+  $webgate_agentname          = hiera('webgate_agentname'         , undef),
+  $webgate_hostidentifier     = hiera('webgate_hostidentifier'    , undef),
+  $oamadminserverhostname     = hiera('oamadminserverhostname'    , localhost),
+  $oamadminserverport         = hiera('oamadminserverport'        , 7001),
   $domain_configure           = true, # 11g register ohs instance with a domain
   $instance_name              = undef,
   $machine_name               = undef,
@@ -23,7 +27,7 @@ define orawls::utils::webtier(
   $download_dir               = hiera('wls_download_dir'), # /data/install
   $log_output                 = false, # true|false
 ){
-  if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
+  if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
     $domains_dir =  $wls_domains_dir
@@ -94,7 +98,43 @@ define orawls::utils::webtier(
     }
 
     if ( $webgate_configure == true ) {
-      exec { "config webgate ${title}":
+
+      # Note: rreg really should NOT be run from the "WebGate" machine
+      # instead it should be run on the OAM server, the output artifacts stored in a secure place,
+      # and then copied from there upon installation of the WebGate
+      # for now this is an OK start
+
+      # first create the input file:
+      file { "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/input/${webgate_agentname}.xml":
+        ensure  => present,
+        content => template('orawls/oam/rreg_input.xml.erb'),
+        backup  => false,
+        replace => true,
+        mode    => '0440',
+        owner   => $os_user,
+        group   => $os_group,
+      }
+
+      file { "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh":
+        ensure => file,
+        mode   => '0700',
+      }
+
+      # in the real world rreg wouldn't be run on the host running the WebTier bits
+      exec { "Run rreg for WebGate instance ${webgate_agentname}":
+        #command     => "/bin/echo -e ${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml",
+        command     => "/bin/echo -e ${weblogic_user}\\\\n${weblogic_password}\\\\n|${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml -noprompt",
+        environment => ["JAVA_HOME=${jdk_home_dir}"],
+        cwd         => "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg",
+        creates     => "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/output/${webgate_agentname}",
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+        logoutput   => $log_output,
+        require     => [File["${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/input/${webgate_agentname}.xml"],File["${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh"]]
+      }
+
+      exec { "Deploy webgate to ${instance_id}":
         command     => "${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/deployWebGate/deployWebGateInstance.sh -w ${instance_id} -oh ${middleware_home_dir}/Oracle_OAMWebGate1",
         environment => "LD_LIBRARY_PATH='${middleware_home_dir}/Oracle_WT1/lib'",
         cwd         => "${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/deployWebGate",
@@ -103,9 +143,23 @@ define orawls::utils::webtier(
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => Exec["config webtier ${title}"],
+        require     => [Exec["config webtier ${title}"],Exec["Run rreg for WebGate instance ${webgate_agentname}"],],
       }
-      exec { "config webgate http ${title}":
+
+      # copy the output from rreg to the WebGate
+      # in the real world the rreg artifacts would:
+      # * be copied to this host during host provisioning
+      #   OR
+      # * would be stored on a fileserver accessible from this host
+      #   e.g. from puppet:
+      file { "Copy rreg artifacts for ${instance_id}":
+        path    => "${instance_id}/webgate/config",
+        source  => "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/output/${webgate_agentname}",
+        recurse => true,
+        require => [Exec["Deploy webgate to ${instance_id}"],Exec["Run rreg for WebGate instance ${webgate_agentname}"],],
+      }
+
+      exec { "EditHttpConf to enable webgate ${title}":
         command     => "${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/setup/InstallTools/EditHttpConf -w ${instance_id} -oh ${middleware_home_dir}/Oracle_OAMWebGate1",
         environment => ["LD_LIBRARY_PATH=${middleware_home_dir}/Oracle_WT1/lib",
                         "ORACLE_HOME=${middleware_home_dir}/Oracle_OAMWebGate1"],
@@ -115,9 +169,27 @@ define orawls::utils::webtier(
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => [Exec["config webgate ${title}"],Exec["config webtier ${title}"],],
+        require     => [Exec["Deploy webgate to ${instance_id}"],File["Copy rreg artifacts for ${instance_id}"],],
+      }
+
+      # after enabling a WebGate you need to bounce OHS
+      exec { "Stop OHS instance ${title}":
+        command   => "/bin/sh -c 'unset DISPLAY;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}/bin/opmnctl stopall'",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+        require   => Exec["EditHttpConf to enable webgate ${title}"],
+      }
+
+      exec { "Start OHS instance ${title}":
+        command   => "/bin/sh -c 'unset DISPLAY;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}/bin/opmnctl startall'",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+        require   => Exec["Stop OHS instance ${title}"],
       }
     }
-
   }
 }

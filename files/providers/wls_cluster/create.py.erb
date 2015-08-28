@@ -2,9 +2,9 @@
 real_domain='<%= domain %>'
 
 
-print "1"
 
 name                      = '<%= cluster_name %>'
+clusteraddress            = '<%= clusteraddress %>'
 clusterNodesTargets       = String('<%= servers %>').split(",")
 messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
@@ -23,8 +23,6 @@ frontendhttpsport         = '<%= frontendhttpsport %>'
 
 securereplication         = '<%= securereplication %>'
 
-print "2"
-
 edit()
 startEdit()
 
@@ -36,6 +34,9 @@ try:
 
   cd('/Clusters/'+name)
   cmo.setClusterMessagingMode(messagingmode)
+
+  if clusteraddress:
+    cmo.setClusterAddress(clusteraddress)
 
   if frontendhost:
     cmo.setFrontendHost(frontendhost)
@@ -68,9 +69,22 @@ try:
   if datasourceforjobscheduler:
     cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))
 
-  for node in clusterNodesTargets:
-    cd('/Servers/'+node)
-    cmo.setCluster(getMBean('/Clusters/'+name))
+  clustered = []
+  p = ls('/Servers/',returnMap='true')
+  if 'inherited' not in clusterNodesTargets:
+    for node in clusterNodesTargets:
+      cd('/Servers/'+node)
+      cmo.setCluster(getMBean('/Clusters/'+name))
+  else:
+    for token3 in p:
+      notes = get('/Servers/'+token3+'/Notes')
+      if notes:
+        if name in String(notes).split(","):
+          clustered.append(token3)
+
+    for i in clustered:
+      cd('/Servers/'+i)
+      cmo.setCluster(getMBean('/Clusters/'+name))
 
   save()
   activate()

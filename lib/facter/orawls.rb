@@ -337,7 +337,7 @@ def get_domain(domain_path, n)
         planroot = subdoc.root
         planroot.elements['variable-definition'].elements.each('variable') do |eis|
           entry = eis.elements['value'].text
-          if entry.include? 'eis'
+          if entry != nil and entry.include? 'eis'
             dbAdapterPlanEntries +=  eis.elements['value'].text + ';'
           end
         end
@@ -375,7 +375,7 @@ def get_domain(domain_path, n)
         planroot = subdoc.root
         planroot.elements['variable-definition'].elements.each('variable') do |eis|
           entry = eis.elements['value'].text
-          if entry.include? 'eis'
+          if entry != nil and entry.include? 'eis'
             aqAdapterPlanEntries +=  eis.elements['value'].text + ';'
           end
         end
@@ -412,7 +412,7 @@ def get_domain(domain_path, n)
         planroot = subdoc.root
         planroot.elements['variable-definition'].elements.each('variable') do |eis|
           entry = eis.elements['value'].text
-          if entry.include? 'eis'
+          if entry != nil and entry.include? 'eis'
             jmsAdapterPlanEntries +=  eis.elements['value'].text + ';'
           end
         end
@@ -442,6 +442,7 @@ def get_domain(domain_path, n)
       else
         ftpAdapterPlan += apps.elements['plan-path'].text
       end
+      Puppet.debug "ftp #{ftpAdapterPlan}"
       if FileTest.exists?(ftpAdapterPlan)
 
         subfile = File.read(ftpAdapterPlan)
@@ -450,7 +451,9 @@ def get_domain(domain_path, n)
         planroot = subdoc.root
         planroot.elements['variable-definition'].elements.each('variable') do |eis|
           entry = eis.elements['value'].text
-          if entry.include? 'eis'
+          Puppet.debug "ftp found entry #{entry}"
+          if entry != nil and entry.include? 'eis'
+            Puppet.debug "ftp eis entry " + eis.elements['value'].text
             ftpAdapterPlanEntries +=  eis.elements['value'].text + ';'
           end
         end

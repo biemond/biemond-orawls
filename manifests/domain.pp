@@ -18,6 +18,7 @@ define orawls::domain (
   $adminserver_name                      = hiera('domain_adminserver'            , 'AdminServer'),
   $adminserver_address                   = hiera('domain_adminserver_address'    , undef),
   $adminserver_port                      = hiera('domain_adminserver_port'       , 7001),
+  $adminserver_ssl_port                  = undef,
   $adminserver_listen_on_all_interfaces  = false,  # for docker etc
   $java_arguments                        = hiera('domain_java_arguments'         , {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address                   = undef,
@@ -36,6 +37,7 @@ define orawls::domain (
   $rcu_database_url                      = undef,                                      #localhost:1521:XE"
   $repository_prefix                     = hiera('repository_prefix'             , 'DEV'),
   $repository_password                   = hiera('repository_password'           , 'Welcome01'),
+  $repository_sys_user                   = 'sys',
   $repository_sys_password               = undef,
   $custom_trust                          = hiera('wls_custom_trust'              , false),
   $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
@@ -259,11 +261,13 @@ define orawls::domain (
 
     if $log_dir == undef {
       $admin_nodemanager_log_dir = "${domain_dir}/servers/${adminserver_name}/logs"
-      $nodemanager_log_dir       = "${domain_dir}/nodemanager/nodemanager.log"
+      $nodeMgrLogDir             = "${domain_dir}/nodemanager/nodemanager.log"
+
 
       $osb_nodemanager_log_dir   = "${domain_dir}/servers/osb_server1/logs"
       $soa_nodemanager_log_dir   = "${domain_dir}/servers/soa_server1/logs"
       $bam_nodemanager_log_dir   = "${domain_dir}/servers/bam_server1/logs"
+      $ess_nodemanager_log_dir   = "${domain_dir}/servers/ess_server1/logs"
 
       $oim_nodemanager_log_dir   = "${domain_dir}/servers/oim_server1/logs"
       $oam_nodemanager_log_dir   = "${domain_dir}/servers/oam_server1/logs"
@@ -281,6 +285,8 @@ define orawls::domain (
       $osb_nodemanager_log_dir   = $log_dir
       $soa_nodemanager_log_dir   = $log_dir
       $bam_nodemanager_log_dir   = $log_dir
+      $ess_nodemanager_log_dir   = $log_dir
+
 
       $oim_nodemanager_log_dir   = $log_dir
       $oam_nodemanager_log_dir   = $log_dir
@@ -314,18 +320,16 @@ define orawls::domain (
       }
     }
 
-    if !defined(File[$download_dir]) {
-      file { $download_dir:
-        ensure => directory,
-        mode   => '0775',
-        owner  => $os_user,
-        group  => $os_group,
-      }
-    }
+    # if !defined(File[$download_dir]) {
+    #   file { $download_dir:
+    #     ensure => directory,
+    #     mode   => '0777',
+    #   }
+    # }
 
     # the utils.py used by the wlst
-    if !defined(File['utils.py']) {
-      file { 'utils.py':
+    if !defined(File["${download_dir}/utils.py"]) {
+      file { "${download_dir}/utils.py":
         ensure  => present,
         path    => "${download_dir}/utils.py",
         content => template('orawls/domains/utils.py.erb'),
@@ -334,7 +338,7 @@ define orawls::domain (
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
-        require => File[$download_dir],
+        # require => File[$download_dir],
       }
     }
 
@@ -348,7 +352,7 @@ define orawls::domain (
         mode    => '0775',
         owner   => $os_user,
         group   => $os_group,
-        require => File[$download_dir],
+        # require => File[$download_dir],
         before  => File["domain.py ${domain_name} ${title}"],
       }
     }
@@ -363,8 +367,7 @@ define orawls::domain (
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
-      require => [File[$download_dir],
-                  File['utils.py'],],
+      require => File["${download_dir}/utils.py"],
     }
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
@@ -442,6 +445,7 @@ define orawls::domain (
           rcu_action                  => 'create',
           rcu_jdbc_url                => $repository_database_url,
           rcu_database_url            => $rcu_database_url,
+          rcu_sys_user                => $repository_sys_user,
           rcu_sys_password            => $repository_sys_password,
           rcu_prefix                  => $repository_prefix,
           rcu_password                => $repository_password,
@@ -459,7 +463,7 @@ define orawls::domain (
       creates     => $domain_dir,
       cwd         => $download_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
-                      File['utils.py'],
+                      File["${download_dir}/utils.py"],
                       File[$domains_dir],],
       timeout     => 0,
       path        => $exec_path,
@@ -561,6 +565,16 @@ define orawls::domain (
           user    => $os_user,
           group   => $os_group,
         }
+
+        exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
+          command => "sed -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain3.tmp && mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
+
       }
 
     } else {
@@ -588,6 +602,16 @@ define orawls::domain (
           user    => $os_user,
           group   => $os_group,
         }
+
+        exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
+          command => "sed -i -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+          onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+          require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
+
       }
     }
 
@@ -605,22 +629,6 @@ define orawls::domain (
         require => Exec["execwlst ${domain_name} extension ${title}"],
         path    => $exec_path,
         user    => $os_user,
-        group   => $os_group,
-      }
-    }
-
-    $nodeMgrHome = "${domain_dir}/nodemanager"
-
-    # set our 12.1.2 nodemanager properties
-    if ($version == 1212 or $version == 1213) {
-      file { "nodemanager.properties ux ${version} ${title}":
-        ensure  => present,
-        path    => "${nodeMgrHome}/nodemanager.properties",
-        replace => true,
-        content => template("orawls/nodemgr/nodemanager.properties_${version}.erb"),
-        require => Exec["execwlst ${domain_name} ${title}"],
-        mode    => '0775',
-        owner   => $os_user,
         group   => $os_group,
       }
     }

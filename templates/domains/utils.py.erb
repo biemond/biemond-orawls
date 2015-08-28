@@ -115,17 +115,25 @@ def changeLog(type, name, log_folder):
   set('RotationType','byTime')
   set('FileTimeSpan',24)
 
-def changeSSL(server, jsse_enabled):
+def changeSSLwithPort(server, jsse_enabled, ssl_listen_port):
   cd('/Server/'+server)
   create(server,'SSL')
   cd('SSL/'+server)
-  set('Enabled'                    , 'False')
   set('HostNameVerificationIgnored', 'True')
+
+  if ssl_listen_port:
+    set('Enabled'   , 'True')
+    set('ListenPort', int(ssl_listen_port))
+  else:
+    set('Enabled'   , 'False')
 
   if jsse_enabled == true:
     set('JSSEEnabled','True')
   else:
     set('JSSEEnabled','False')
+
+def changeSSL(server, jsse_enabled):
+  changeSSLwithPort(server, jsse_enabled, None)
 
 def changeServerArguments(server, java_arguments):
   print "changeDefaultServerAttributes for server " + server

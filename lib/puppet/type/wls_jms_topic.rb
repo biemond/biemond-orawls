@@ -5,7 +5,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_jms_topic) do
+  Type.newtype(:wls_jms_topic) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -56,6 +56,7 @@ module Puppet
     property :redeliverydelay
     property :timetodeliver
     property :timetolive
+    property :messagelogging
 
     add_title_attributes(:jmsmodule, :topic_name) do
       /^((.*\/)?(.*):(.*)?)$/

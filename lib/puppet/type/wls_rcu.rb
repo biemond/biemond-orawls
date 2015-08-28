@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:wls_rcu) do
+  Type.newtype(:wls_rcu) do
     desc 'This is the Oracle WebLogic RCU ( Repository creation utility) installer type'
 
     newproperty(:ensure) do
@@ -22,12 +22,12 @@ module Puppet
 
       def sync
         event = super()
-
+        # rubocop:disable all
         if property = @resource.property(:enable)
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
-
+        # rubocop:enable all
         event
       end
 
@@ -43,6 +43,12 @@ module Puppet
     newparam(:os_user) do
       desc <<-EOT
         The weblogic operating system user.
+      EOT
+    end
+
+    newparam(:sys_user) do
+      desc <<-EOT
+        The sys user for the RCU check/install.
       EOT
     end
 

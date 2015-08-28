@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_saf_imported_destination_object) do
+  Type.newtype(:wls_saf_imported_destination_object) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

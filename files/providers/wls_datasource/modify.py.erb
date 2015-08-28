@@ -1,23 +1,32 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-name                       = '<%= datasource_name %>'
-target                     = '<%= target %>'
-targettype                 = '<%= targettype %>'
-drivername                 = '<%= drivername %>'
-jndinames                  = '<%= jndinames %>'
-url                        = '<%= url %>'
-usexa                      = '<%= usexa %>'
-user                       = '<%= user %>'
-testtablename              = '<%= testtablename %>'
-globaltransactionsprotocol = '<%= globaltransactionsprotocol %>'
-extraproperties            = '<%= extraproperties %>'
-maxcapacity                = '<%= maxcapacity %>'
-initialcapacity            = '<%= initialcapacity %>'
-fanenabled                 = '<%= fanenabled %>'
-onsnodelist                = '<%= onsnodelist %>'
-xaproperties               = '<%= xaproperties %>'
+name                                    = '<%= datasource_name %>'
+target                                  = '<%= target %>'
+targettype                              = '<%= targettype %>'
+drivername                              = '<%= drivername %>'
+jndinames                               = '<%= jndinames %>'
+url                                     = '<%= url %>'
+usexa                                   = '<%= usexa %>'
+user                                    = '<%= user %>'
+testtablename                           = '<%= testtablename %>'
+globaltransactionsprotocol              = '<%= globaltransactionsprotocol %>'
+extraproperties                         = '<%= extraproperties %>'
+maxcapacity                             = '<%= maxcapacity %>'
+initialcapacity                         = '<%= initialcapacity %>'
+fanenabled                              = '<%= fanenabled %>'
+onsnodelist                             = '<%= onsnodelist %>'
+xaproperties                            = '<%= xaproperties %>'
+mincapacity                             = '<%= mincapacity %>'
+statementcachesize                      = '<%= statementcachesize %>'
+testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
+secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>'
+testfrequency                           = '<%= testfrequency  %>'
+connectioncreationretryfrequency        = '<%= connectioncreationretryfrequency %>'
+rowprefetchenabled                      = '<%= rowprefetchenabled %>'
+rowprefetchsize                         = '<%= rowprefetchsize %>'
+initsql                                 = "<%= (initsql||'').gsub('"','\"') %>"
+shrinkfrequencyseconds                  = '<%= shrinkfrequencyseconds %>'
 
 edit()
 startEdit()
@@ -32,6 +41,10 @@ try:
     if jndinames:
       jndis = String(jndinames).split(",")
       set('JNDINames',jarray.array(jndis, String))
+    if rowprefetchenabled:
+      cmo.setRowPrefetch(int(rowprefetchenabled))
+    if rowprefetchsize:
+      cmo.setRowPrefetchSize(int(rowprefetchsize))
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
     cmo.setUrl(url)
@@ -44,6 +57,33 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))
     set('InitialCapacity', int(initialcapacity))
+
+    if mincapacity:
+       set('MinCapacity',int(mincapacity))
+
+    if statementcachesize:
+       set('StatementCacheSize',int(statementcachesize))
+
+    if secondstotrustidlepoolconnection:
+      set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+
+    if testfrequency:
+      set('TestFrequencySeconds', int(testfrequency))
+
+    if connectioncreationretryfrequency:
+      set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
+
+    if testconnectionsonreserve and testconnectionsonreserve == '1':
+       set('TestConnectionsOnReserve','true')
+    else:
+       set('TestConnectionsOnReserve','false')
+
+    if initsql:
+      set('InitSql', initsql)
+
+    if shrinkfrequencyseconds:
+      set('ShrinkFrequencySeconds', int(shrinkfrequencyseconds))
+
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)
@@ -79,7 +119,7 @@ try:
         valid_xa_properties = ls('', returnMap='true')
         for existing_prop in valid_xa_properties:
             cmo.unSet(existing_prop)
-    
+
         # Set Them Dynamically
         if xaproperties:
             xapropertiesarray=String(xaproperties).split(",")
@@ -113,9 +153,34 @@ try:
     targets     = String(target).split(",")
     targettypes = String(targettype).split(",")
     targetList  = []
-    for i in range(len(targets)):
-      print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
+    if 'inherited' in targets:
+
+        tagged = []
+        taggedtype = []
+        i = ls('/Servers/', returnMap='true')
+
+        for token4 in i:
+            notes = get('/Servers/'+token4+'/Notes')
+            if notes:
+                if name in notes:
+                    for i in ls('/Clusters/', returnMap='true'):
+                        if i in notes:
+                            tagged.append(i)
+                            taggedtype.append('Cluster')
+                        else:
+                            tagged.append(token4)
+                            taggedtype.append('Server')
+
+        for i in range(len(tagged)):
+            print "target "+tagged[i] + " " + taggedtype[i]
+            targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )
+
+    else:
+
+        for i in range(len(targets)):
+          print "target "+targets[i] + " " + targettypes[i]
+          targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
 
     set('Targets',jarray.array(targetList, ObjectName))
 

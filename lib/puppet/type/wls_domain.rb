@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_domain) do
+  Type.newtype(:wls_domain) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -53,6 +53,10 @@ module Puppet
     property :jmx_platform_mbean_server_enabled
     property :jmx_platform_mbean_server_used
     property :web_app_container_show_archived_real_path_enabled
+    property :setinternalappdeploymentondemandenable
+    property :setconfigurationaudittype
+    property :setconfigbackupenabled
+    property :setarchiveconfigurationcount
 
     add_title_attributes(:weblogic_domain_name) do
       /^((.*\/)?(.*)?)$/

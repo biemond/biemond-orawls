@@ -7,7 +7,7 @@ def quote(text):
         return ""
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;versionidentifier;deploymenttype;target;targettype;domain"
+print >>f, "name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain"
 
 domainConfig()
 
@@ -20,6 +20,7 @@ for appName in myapps:
   app               = get('ApplicationName')
   deploymenttype    = get('Type')
   versionidentifier = get('VersionIdentifier')
+  stagingmode       = get('StagingMode')
 
   n = ls('/AppDeployments/'+appName.getName()+'/Targets',returnMap='true')
 
@@ -30,7 +31,7 @@ for appName in myapps:
          cd('/AppDeployments/'+appName.getName()+'/Targets/'+token2)
          targetType.append(get('Type'))
 
-  print >>f, ";".join(map(quote, [domain+'/'+app,versionidentifier,deploymenttype,','.join(target),','.join(targetType),domain]))
+  print >>f, ";".join(map(quote, [domain+'/'+app,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
 
 print 'libs'
 cd('/')
@@ -41,6 +42,7 @@ for libName in mylibs:
   lib               = get('ApplicationName')
   deploymenttype    = get('Type')
   versionidentifier = get('VersionIdentifier')
+  stagingmode       = get('StagingMode')
 
   n = ls('/Libraries/'+libName.getName()+'/Targets',returnMap='true')
 
@@ -51,7 +53,7 @@ for libName in mylibs:
          cd('/Libraries/'+libName.getName()+'/Targets/'+token2)
          targetType.append(get('Type'))
 
-  print >>f, ";".join(map(quote, [domain+'/'+lib,versionidentifier,deploymenttype,','.join(target),','.join(targetType),domain]))
+  print >>f, ";".join(map(quote, [domain+'/'+lib,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
 
 
 f.close()

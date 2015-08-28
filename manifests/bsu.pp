@@ -56,7 +56,7 @@ define orawls::bsu (
     }
 
     exec { "extract ${patch_file}":
-      command   => "unzip -n ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
+      command   => "unzip -o ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
       creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
       path      => $exec_path,
       user      => $os_user,
@@ -72,7 +72,7 @@ define orawls::bsu (
     }
 
     exec { "patch policy for ${patch_file}":
-      command   => "bash -c \"{ echo 'grant codeBase \\\"file:${middleware_home_dir}/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> ${middleware_home_dir}/wlserver_10.3/server/lib/weblogic.policy\"",
+      command   => "bash -c \"{ echo 'grant codeBase \\\"file:${middleware_home_dir}/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> ${weblogic_home_dir}/server/lib/weblogic.policy\"",
       unless    => "grep 'file:${middleware_home_dir}/patch_wls1036/patch_jars/-' ${weblogic_home_dir}/server/lib/weblogic.policy",
       path      => $exec_path,
       user      => $os_user,

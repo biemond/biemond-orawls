@@ -1,0 +1,50 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name                        = '<%= bridge_destination_name %>'
+adapter                     = '<%= adapter %>'
+classpath                   = '<%= classpath %>'
+connectionfactoryjndi       = '<%=connectionfactoryjndi%>'
+connectionurl               = '<%=connectionurl%>'
+destinationjndi             = '<%=destinationjndi%>'
+destinationtype             = '<%=destinationtype%>'
+initialcontextfactory       = '<%=initialcontextfactory%>'
+user_name                   = '<%=user_name%>'
+password                    = '<%=password%>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSBridgeDestinations/' + name)
+
+    cmo.setAdapterJNDIName(adapter)
+    cmo.setClasspath(classpath)
+    cmo.setConnectionFactoryJNDIName(connectionfactoryjndi)
+    cmo.setConnectionURL(connectionurl)
+    cmo.setDestinationJNDIName(destinationjndi)
+    cmo.setDestinationType(destinationtype)
+    cmo.setInitialContextFactory(initialcontextfactory)
+    
+    if user_name:
+        cmo.setUserName(user_name)
+
+    if password:
+        cmo.setUserPassword(password)
+
+    save()
+    activate()          
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
+    dumpStack()
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+
+

@@ -10,15 +10,21 @@ cd("/")
 m = ls('/Servers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;sslhostnameverificationignored;sslhostnameverifier;two_way_ssl;client_certificate_enforced;useservercerts;machine;logfilename;log_file_min_size;log_filecount;log_rotate_logon_startup;log_rotationtype;log_number_of_files_limited;tunnelingenabled;log_http_filename;log_http_format;log_http_format_type;log_datasource_filename;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias;default_file_store;max_message_size"
+print >>f, "name;listenaddress;listenport;logintimeout;ssllistenport;sslenabled;sslhostnameverificationignored;sslhostnameverifier;two_way_ssl;client_certificate_enforced;useservercerts;machine;logfilename;log_file_min_size;log_filecount;log_rotate_logon_startup;log_rotationtype;log_number_of_files_limited;tunnelingenabled;log_http_filename;log_http_format;log_http_format_type;log_datasource_filename;classpath;arguments;jsseenabled;domain;custom_identity;custom_identity_keystore_filename;trust_keystore_file;custom_identity_alias;default_file_store;max_message_size;log_redirect_stderr_to_server;log_redirect_stdout_to_server;restart_max;log_http_file_count;log_http_number_of_files_limited;bea_home;weblogic_plugin_enabled;listenportenabled;auto_restart;autokillwfail;server_parameters;frontendhost;frontendhttpport;frontendhttpsport"
 for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token)
-  listenAddress    = get('ListenAddress')
-  listenPort       = str(get('ListenPort'))
-  max_message_size = str(get('MaxMessageSize'))
-  tunnelingenabled = str(get('TunnelingEnabled'))
+  listenAddress     = get('ListenAddress')
+  listenPort        = str(get('ListenPort'))
+  listenPortEnabled = str(get('ListenPortEnabled'))
+  max_message_size  = str(get('MaxMessageSize'))
+  tunnelingenabled  = str(get('TunnelingEnabled'))
+  logintimeout	    = str(get('LoginTimeoutMillis'))
+  restart_max       = str(get('RestartMax'))
 
+  auto_restart      = str(get('AutoRestart'))
+  autokillwfail     = str(get('AutoKillIfFailed'))
+  server_parameters = str(get('Notes'))
   if get("KeyStores") == "CustomIdentityAndCustomTrust":
     custom_identity = '1'
   else:
@@ -26,6 +32,7 @@ for token in m:
 
   custom_identity_keystore_filename = get("CustomIdentityKeyStoreFileName")
   trust_keystore_file               = get("CustomTrustKeyStoreFileName")
+  weblogic_plugin_enabled           = str(get('WeblogicPluginEnabled'))
 
   cd('/Servers/'+token+'/SSL/'+token)
   sslListenPort                     = str(get('ListenPort'))
@@ -39,6 +46,7 @@ for token in m:
   custom_identity_alias             = get("ServerPrivateKeyAlias")
 
   cd('/Servers/'+token+'/ServerStart/'+token)
+  bea_home      = get('BeaHome')
   classpath     = get('ClassPath')
   if classpath == None:
       classpath = ''
@@ -47,18 +55,40 @@ for token in m:
   if arguments == None:
       arguments = ''
 
+  cd('/Servers/'+token+'/WebServer/'+token)
+  if get('FrontendHost'):
+    frontendhost = get('FrontendHost')
+  else:
+    frontendhost = ''
+
+  if get('FrontendHTTPPort'):
+    frontendhttpport = get('FrontendHTTPPort')
+  else:
+    frontendhttpport = '0'
+
+  if get('FrontendHTTPSPort'):
+    frontendhttpsport = get('FrontendHTTPSPort')
+  else:
+    frontendhttpsport = '0'
+
+
   cd('/Servers/'+token+'/Log/'+token)
-  logfilename                 = get('FileName')
-  log_rotationtype            = get('RotationType')
-  log_rotate_logon_startup    = str(get('RotateLogOnStartup'))
-  log_number_of_files_limited = str(get('NumberOfFilesLimited'))
-  log_filecount               = str(get('FileCount'))
-  log_file_min_size           = str(get('FileMinSize'))
+  logfilename                   = get('FileName')
+  log_rotationtype              = get('RotationType')
+  log_rotate_logon_startup      = str(get('RotateLogOnStartup'))
+  log_number_of_files_limited   = str(get('NumberOfFilesLimited'))
+  log_filecount                 = str(get('FileCount'))
+  log_file_min_size             = str(get('FileMinSize'))
+  log_redirect_stderr_to_server = str(get('RedirectStderrToServerLogEnabled'))
+  log_redirect_stdout_to_server = str(get('RedirectStdoutToServerLogEnabled'))
 
   cd('/Servers/'+token+'/WebServer/'+token+'/WebServerLog/'+token)
-  log_http_filename           = get('FileName')
-  log_http_format             = get('ELFFields')
-  log_http_format_type        = get('LogFileFormat')
+  log_http_filename                = get('FileName')
+  log_http_format                  = get('ELFFields')
+  log_http_format_type             = get('LogFileFormat')
+  log_http_file_count              = get('FileCount')
+  log_http_number_of_files_limited = str(get('NumberOfFilesLimited'))
+  print log_http_number_of_files_limited
 
   cd('/Servers/'+token+'/DataSource/'+token+'/DataSourceLogFile/'+token)
   log_datasource_filename          = get('FileName')

@@ -19,11 +19,16 @@ log_rotate_logon_startup                           = '<%= log_rotate_logon_start
 log_rotationtype                                   = '<%= log_rotationtype %>'
 log_number_of_files_limited                        = '<%= log_number_of_files_limited %>'
 
+setinternalappdeploymentondemandenable             = '<%= setinternalappdeploymentondemandenable %>'
+setarchiveconfigurationcount                       = '<%= setarchiveconfigurationcount %>'
+setconfigbackupenabled                             = '<%= setconfigbackupenabled %>'
+setconfigurationaudittype                          = '<%= setconfigurationaudittype %>'
+
 def formatBoolean(value):
   if value == '1':
     return true
   else:
-    return false    
+    return false
 
 print "start edit"
 
@@ -57,7 +62,7 @@ try:
     cd('/JTA/'+name)
     if jta_transaction_timeout:
       cmo.setTimeoutSeconds(int(jta_transaction_timeout))
-    if jta_max_transactions:    
+    if jta_max_transactions:
       cmo.setMaxTransactions(int(jta_max_transactions))
 
     print "change jpa"
@@ -82,9 +87,26 @@ try:
     if web_app_container_show_archived_real_path_enabled:
       cmo.setShowArchivedRealPathEnabled(formatBoolean(web_app_container_show_archived_real_path_enabled))
 
+
+    cd('/')
+
+    if setinternalappdeploymentondemandenable:
+      print "Change Internal App deployment flag"
+      cmo.setInternalAppsDeployOnDemandEnabled(formatBoolean(setinternalappdeploymentondemandenable))
+
+    if setarchiveconfigurationcount:
+      print "Change configuration backup settings"
+      cmo.setArchiveConfigurationCount(int(setarchiveconfigurationcount))
+
+    if setconfigbackupenabled:
+      cmo.setConfigBackupEnabled(formatBoolean(setconfigbackupenabled))
+
+    if setconfigurationaudittype:
+      cmo.setConfigurationAuditType(setconfigurationaudittype)
+
     print "save"
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

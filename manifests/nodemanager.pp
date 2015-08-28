@@ -8,7 +8,6 @@ define orawls::nodemanager (
   $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'),
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
   $nodemanager_address                   = undef,
-  $nodemanager_address                   = undef,
   $nodemanager_secure_listener           = true,
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
   $custom_trust                          = hiera('wls_custom_trust'              , false),
@@ -136,6 +135,18 @@ define orawls::nodemanager (
       content => template('orawls/nodemgr/nodemanager.properties.erb'),
       owner   => $os_user,
       group   => $os_group,
+      mode    => '0775',
+      before  => Exec["startNodemanager ${title}"],
+    }
+  } else {
+    file { "nodemanager.properties ux ${version} ${title}":
+      ensure  => present,
+      path    => "${nodeMgrHome}/nodemanager.properties",
+      replace => true,
+      content => template("orawls/nodemgr/nodemanager.properties_${version}.erb"),
+      owner   => $os_user,
+      group   => $os_group,
+      mode    => '0775',
       before  => Exec["startNodemanager ${title}"],
     }
   }

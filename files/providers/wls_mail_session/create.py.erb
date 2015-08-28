@@ -31,9 +31,35 @@ try:
     targets     = String(target).split(",")
     targettypes = String(targettype).split(",")
     targetList  = []
-    for i in range(len(targets)):
-      print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
+    if 'inherited' in targets:
+
+        tagged = []
+        taggedtype = []
+        i = ls('/Servers/', returnMap='true')
+
+        for token4 in i:
+            notes = get('/Servers/'+token4+'/Notes')
+            if notes:
+                if name in notes:
+                    for i in ls('/Clusters/', returnMap='true'):
+                        if i in notes:
+                            tagged.append(i)
+                            taggedtype.append('Cluster')
+                        else:
+                            tagged.append(token4)
+                            taggedtype.append('Server')
+
+        for i in range(len(tagged)):
+            print "target "+tagged[i] + " " + taggedtype[i]
+            targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )
+
+    else:
+
+        for i in range(len(targets)):
+          print "target "+targets[i] + " " + targettypes[i]
+          targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
 
     set('Targets',jarray.array(targetList, ObjectName))
 

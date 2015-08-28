@@ -5,7 +5,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_saf_error_handler) do
+  Type.newtype(:wls_saf_error_handler) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

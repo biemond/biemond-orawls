@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:bsu_patch) do
+  Type.newtype(:bsu_patch) do
     desc 'This is the WebLogic Patch process called BSU'
 
     newproperty(:ensure) do
@@ -22,12 +22,12 @@ module Puppet
 
       def sync
         event = super()
-
+        # rubocop:disable all
         if property = @resource.property(:enable)
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
-
+        # rubocop:enable all
         event
       end
 

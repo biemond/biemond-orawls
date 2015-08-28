@@ -1,6 +1,103 @@
 # History
 
+## 1.0.39
+- Works & Tested on puppet 4.2.1
+- Oracle Forms & Reports 11.1.1.7 or 11.1.2 support
+- Wls_server new attributes frontendhost, frontendhttpport and frontendhttpsport
+
+## 1.0.38
+- wls_server new attributes auto_restart & autokillwfail for automatic restart when the server crashes, or automatically kill when the server hangs
+- wls_jms_queue, wls_jms_topic new attribute messagelogging
+- wls_domain new attributes setinternalappdeploymentondemandenable, setconfigbackupenabled, setarchiveconfigurationcount, setconfigurationaudittype
+- Dynamictargetting for wls_cluster, wls_datasource, wls_mail_session
+- wls_datasource new attribute shrinkfrequencyseconds
+
+## 1.0.37
+- xa properties fix for wls_datasource
+- custom weblogic home directory for WebLogic 10.3 and BSU patch
+- target attribute used in wls types are now idempotent
+
+## 1.0.36
+- support for FMW installation which has 3 install files like oim/oam 11.1.2.3
+- Webtier configuration for OAM
+- wls_server_channel added keystore attributes
+- wls_jms_queue ForwardDelay bug plus new attribute templatename
+- wls_datasource new attributes row prefetch and initsql
+- wls_workmanager new attribute fairshare
+- wls_coherence_template new attribute classpath
+- wls_deployment bug when version is none
+
+## 1.0.35
+- custom wls resource types now also supports t3s with customtrust done by wls_settings
+- adminserver_ssl_port parameter on the domain.pp manifest
+- wls_settings don't show the password in the output
+- new resource type wls_jdbc_persistence_store
+- new resource type wls_jms_template
+- wls_deployment planpath fixes
+- wls_datasource fixes
+- removed default value -1 on forward delay on wls_jms_queue
+- wls_server, new attribute listenportenabled
+- wls_jms_connection_factory, xa fix plus new attributes localjndiname, defaultdeliverymode, defaultredeliverydelay
+- wls_workmanager_constraint, Add the ability to manage fairshare class.
+
+## 1.0.34
+- Copydomain FMW apps_dir fix
+- FTP Resource adapter plus resource adapter fixes
+- New type wls_coherence_server
+- Moved 12c nodemanager properties from domain.pp to nodemanager.pp so custom trust will also work
+- Added urandom fixes and use notify when there is rngd configuration refresh
+
+## 1.0.33
+- added ESS (enterprise schedular) to OSB domain + FMW cluster option
+- RCU prefix compare check fix ( Uppercase )
+- SOA FMW cluster fixes for latest 12.1.3 soa patch
+- SOA FMW cluster fix for soa with bam
+- Java tmp dir option for 12c FMW software install
+- wls_server, new attribute WeblogicPluginEnabled
+- Optional DefaultUserNameMapperAttributeType fix in wls_identity_asserter
+- Added bash shell to su -c commands like opatch, bsu, wls_adminserver, rcu types
+
+## 1.0.32
+- new wls_singleton_service type
+- wls_jms_bridge_destination fix for username and password
+- fiddyspence/sleep fix so it works with hiera and string value as input
+- added log file to tmp dir + level for the weblogic 10.3 or 11g installation output
+- Multiple targets for wls_jms_module type
+- new wls_deployment attributes for stagingmode, remote and upload
+- able to provide the sys username for the FMW domain RCU action
+- derby flag on false in setDomainEnv when it is an OSB or SOA domain
+
+## 1.0.31
+- wls_jms_queue, new attribute forwarddelay
+- wls_foreign_server_object, bug when removing object plus also removing dependencies
+- wls_cluster, new attribute clusteraddress
+- nodemanager.properties was overwritten in case of weblogic 12c and a domain extension
+- nodemanager with 12c didn't start when log_dir was empty
+
+## 1.0.30
+- download dir dependency cycle error between weblogic and domain manifest.
+- bsu unzip -o option instead of -n so the new readme is also added to the cache_dir
+- wls_server, new attributes log_redirect_stderr_to_server, log_redirect_stdout_to_server, restart_max, log_http_file_count, log_http_number_of_files_limited, bea_home
+- wls_jmsserver, new attributes bytes_maximum, allows_persistent_downgrade
+- wls_datasource, new attributes secondstotrustidlepoolconnection, testfrequency, connectioncreationretryfrequency
+- wls_server_channnel, new attributes publicport, max_message_size
+
+## 1.0.29
+- calculated_listen_port attribute for wls_dynamic_cluster
+- mincapacity, statementcachesize, testconnectionsonreserve for wls_datasource
+- wls_managedserver type fix when target is cluster, doesn't use ps -ef but uses wlst to check the cluster status
+- new wls_messaging_bridge wls type
+- new wls_jms_bridge_destination wls type
+- wls_setting added a 'default' entry in wls_settings.yaml even when default is not used
+
 ## 1.0.28
+- new wls_identity_asserter type for customising default identy asserter
+- xaproperties attributes in wls_datasource
+- better error handling for wls_authentication_provider ordering
+- option to skip the OPSS security store migration from file to the database in fmwcluster.pp
+- Custom type for oracle weblogic/domain directory structure instead of using a structure manifest
+- logintimeout attribute for wls_server
+- added some extra autorequire on wls resource types
 
 ## 1.0.27
 - bug fixes in auto require and post classpath parameter bug when running in debug mode

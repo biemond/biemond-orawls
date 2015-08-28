@@ -6,7 +6,7 @@ require 'utils/title_parser'
 require 'facter'
 
 module Puppet
-  newtype(:wls_server_channel) do
+  Type.newtype(:wls_server_channel) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -43,15 +43,22 @@ module Puppet
     parameter :server
     parameter :channel_name
     parameter :timeout
+    parameter :custom_identity_privatekey_passphrase
 
     property :protocol
     property :enabled
     property :listenport
+    property :publicport
     property :listenaddress
     property :publicaddress
     property :httpenabled
     property :outboundenabled
     property :tunnelingenabled
+    property :max_message_size
+    property :custom_identity_alias
+    property :two_way_ssl
+    property :client_certificate_enforced
+    property :channel_identity_customized
 
     add_title_attributes(:server, :channel_name) do
       /^((.*\/)?(.*):(.*)?)$/

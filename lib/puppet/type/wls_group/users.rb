@@ -10,7 +10,11 @@ newproperty(:users, :array_matching => :all) do
   end
 
   def insync?(is)
-    is.sort == should.sort
+    if is == :absent
+      should.empty?
+    else
+      is.sort == should.sort
+    end
   end
 
 end

@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:wls_managedserver) do
+  Type.newtype(:wls_managedserver) do
     desc 'control a managed server or cluster state like running,stop,restart'
 
     newproperty(:ensure) do
@@ -26,12 +26,12 @@ module Puppet
 
       def sync
         event = super()
-
+        # rubocop:disable all
         if property = @resource.property(:enable)
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
-
+        # rubocop:enable all
         event
       end
     end

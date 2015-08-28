@@ -3,19 +3,40 @@ real_domain='<%= domain %>'
 
 
 
-name                 = '<%= jmsserver_name %>'
-target               = '<%= target %>'
-targettype           = '<%= targettype %>'
-persistentstore      = '<%= persistentstore %>'
-persistentstoretype  = '<%= persistentstoretype %>'
-
+name                        = '<%= jmsserver_name %>'
+target                      = '<%= target %>'
+targettype                  = '<%= targettype %>'
+persistentstore             = '<%= persistentstore %>'
+persistentstoretype         = '<%= persistentstoretype %>'
+bytes_maximum               = '<%= bytes_maximum %>'
+allows_persistent_downgrade = '<%= allows_persistent_downgrade %>'
+store_enabled               = '<%= store_enabled %>'
 edit()
 startEdit()
 
 try:
 
     cd('/')
+    version = get('DomainVersion')
+
     cmo.createJMSServer(name)
+
+    cd('/JMSServers/'+name)
+
+    if bytes_maximum:
+      set('BytesMaximum',bytes_maximum)
+
+    if allows_persistent_downgrade == '1':
+      set('AllowsPersistentDowngrade','True')
+    else:
+      set('AllowsPersistentDowngrade','False')
+
+    if "10.3" in version:
+      if store_enabled == '1':
+        set('StoreEnabled','True')
+      elif store_enabled == '0':
+        set('StoreEnabled','False')
+
     cd('/Deployments/'+name)
 
     if persistentstoretype == "FileStore":
@@ -25,8 +46,9 @@ try:
 
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
 
+
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

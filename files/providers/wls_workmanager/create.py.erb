@@ -9,6 +9,7 @@ target               = '<%= target %>'
 targettype           = '<%= targettype %>'
 minthreadsconstraint = '<%= minthreadsconstraint %>'
 maxthreadsconstraint = '<%= maxthreadsconstraint %>'
+fairsharerequestclass = '<%= fairsharerequestclass %>'
 capacity             = '<%= capacity %>'
 
 edit()
@@ -26,7 +27,7 @@ try:
 
     if stuckthreads == '1':
       cmo.setIgnoreStuckThreads(true)
-    else: 
+    else:
       cmo.setIgnoreStuckThreads(false)
 
     print "target: "     +  target
@@ -37,15 +38,18 @@ try:
     targetList  = []
     for i in range(len(targets)):
       print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )       
-    
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
     set('Targets',jarray.array(targetList, ObjectName))
 
 
     cmo.setResponseTimeRequestClass(None)
-    cmo.setFairShareRequestClass(None)
+    if fairsharerequestclass:
+      cmo.setFairShareRequestClass(getMBean('/SelfTuning/'+domain+'/FairShareRequestClasses/'+fairsharerequestclass))
+    else:
+      cmo.setFairShareRequestClass(None)
     cmo.setContextRequestClass(None)
-    
+
     if minthreadsconstraint:
       cmo.setMinThreadsConstraint(getMBean('/SelfTuning/'+domain+'/MinThreadsConstraints/'+minthreadsconstraint))
 
@@ -56,7 +60,7 @@ try:
       cmo.setCapacity(getMBean('/SelfTuning/'+domain+'/Capacities/'+capacity))
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

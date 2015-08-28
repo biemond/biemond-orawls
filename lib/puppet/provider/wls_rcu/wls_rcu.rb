@@ -12,8 +12,10 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     jdk_home_dir = resource[:jdk_home_dir]
 
     Puppet.info "rcu statement: #{statement}"
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
+    output = `su #{su_shell} - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
     Puppet.info "RCU result: #{output}"
 
     # Check for 'Repository Creation Utility - Create : Operation Completed' else raise
@@ -33,6 +35,7 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     Puppet.debug 'rcu_status'
 
     jdbcurl      = resource[:jdbc_url]
+    sysuser      = resource[:sys_user]
     syspassword  = resource[:sys_password]
     user         = resource[:os_user]
     prefix       = resource[:name]
@@ -41,7 +44,10 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     prefix       = resource[:name]
 
     Puppet.info "rcu for prefix #{prefix} execute SQL with #{oraclehome}/common/bin/wlst.sh #{checkscript}"
-    rcu_output = `su - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix}'`
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+
+    rcu_output = `su #{su_shell} - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix} #{sysuser}'`
     fail ArgumentError, "Error executing puppet code, #{output}" if $CHILD_STATUS != 0
     Puppet.info "RCU check result: #{rcu_output}"
     rcu_output.each_line do |li|

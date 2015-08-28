@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:opatch) do
+  Type.newtype(:opatch) do
     desc 'This is the Oracle Patch process called OPatch'
 
     newproperty(:ensure) do
@@ -22,12 +22,12 @@ module Puppet
 
       def sync
         event = super()
-
+        # rubocop:disable all
         if property = @resource.property(:enable)
           val = property.retrieve
           property.sync unless property.safe_insync?(val)
         end
-
+        # rubocop:enable all
         event
       end
 

@@ -19,8 +19,10 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     end
 
     Puppet.debug "opatch action: #{action} with command #{command}"
-    output = `su - #{user} -c '#{command}'`
-    # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+
+    output = `su #{su_shell} - #{user} -c '#{command}'`
     Puppet.info "opatch result: #{output}"
 
     result = false
@@ -43,8 +45,10 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     command  = oracle_product_home_dir + '/OPatch/opatch lsinventory -patch_id -oh ' + oracle_product_home_dir + ' -invPtrLoc ' + orainst_dir + '/oraInst.loc'
     Puppet.debug "opatch_status for patch #{patchName} command: #{command}"
 
-    # output = Puppet::Util::Execution.execute command, :failonfail => true ,:uid => user
-    output = `su - #{user} -c '#{command}'`
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+
+    output = `su #{su_shell} - #{user} -c '#{command}'`
 
     output.each_line do |li|
       opatch = li[5, li.index(':') - 5].strip + ';' if li['Patch'] && li[': applied on']

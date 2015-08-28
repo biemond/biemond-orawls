@@ -6,7 +6,7 @@ require 'facter'
 
 module Puppet
   #
-  newtype(:wls_mail_session) do
+  Type.newtype(:wls_mail_session) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser

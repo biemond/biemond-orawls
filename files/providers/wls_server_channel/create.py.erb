@@ -3,16 +3,24 @@ real_domain='<%= domain %>'
 
 
 
-name             = '<%= channel_name %>'
-server           = '<%= server %>'
-protocol         = '<%= protocol %>'
-enabled          = '<%= enabled %>'
-listenaddress    = '<%= listenaddress %>'
-publicaddress    = '<%= publicaddress %>'
-listenport       = '<%= listenport %>'
-httpenabled      = '<%= httpenabled %>'
-outboundenabled  = '<%= outboundenabled %>'
-tunnelingenabled = '<%= tunnelingenabled %>'
+name                                  = '<%= channel_name %>'
+server                                = '<%= server %>'
+protocol                              = '<%= protocol %>'
+enabled                               = '<%= enabled %>'
+listenaddress                         = '<%= listenaddress %>'
+publicaddress                         = '<%= publicaddress %>'
+listenport                            = '<%= listenport %>'
+publicport                            = '<%= publicport %>'
+httpenabled                           = '<%= httpenabled %>'
+outboundenabled                       = '<%= outboundenabled %>'
+tunnelingenabled                      = '<%= tunnelingenabled %>'
+max_message_size                      = '<%= max_message_size %>'
+two_way_ssl                           = '<%= two_way_ssl %>'
+client_certificate_enforced           = '<%= client_certificate_enforced %>'
+channel_identity_customized           = '<%= channel_identity_customized %>'
+custom_identity_alias                 = '<%= custom_identity_alias %>'
+custom_identity_privatekey_passphrase = '<%= custom_identity_privatekey_passphrase %>'
+
 
 edit()
 startEdit()
@@ -25,24 +33,27 @@ try:
 
     cd('/Servers/'+server+'/NetworkAccessPoints/'+name)
     cmo.setProtocol(protocol)
-    cmo.setListenPort(int(listenport))
+    if listenport:
+      cmo.setListenPort(int(listenport))
+    if publicport:
+      cmo.setPublicPort(int(publicport))
 
     if enabled == '1':
       cmo.setEnabled(true)
     else:
       cmo.setEnabled(false)
 
-    if httpenabled == '1':    
+    if httpenabled == '1':
       cmo.setHttpEnabledForThisProtocol(true)
     else:
       cmo.setHttpEnabledForThisProtocol(false)
 
-    if tunnelingenabled == '1':    
+    if tunnelingenabled == '1':
       cmo.setTunnelingEnabled(true)
     else:
       cmo.setTunnelingEnabled(false)
 
-    if outboundenabled == '1':    
+    if outboundenabled == '1':
       cmo.setOutboundEnabled(true)
     else:
       cmo.setOutboundEnabled(false)
@@ -50,15 +61,35 @@ try:
     if listenaddress:
       set('ListenAddress',listenaddress )
     else:
-      set('ListenAddress',None )  
+      set('ListenAddress',None )
 
     if publicaddress:
       set('PublicAddress', publicaddress)
     else:
-      set('PublicAddress',None )  
+      set('PublicAddress',None )
+
+    if max_message_size:
+      set('MaxMessageSize',max_message_size)
+
+    if two_way_ssl == '1':
+      cmo.setTwoWaySSLEnabled(true)
+    else:
+      cmo.setTwoWaySSLEnabled(false)
+
+    if client_certificate_enforced == '1':
+      cmo.setClientCertificateEnforced(true)
+    else:
+      cmo.setClientCertificateEnforced(false)
+
+    if channel_identity_customized == '1':
+      cmo.setChannelIdentityCustomized(true)
+      set('CustomPrivateKeyPassPhrase' ,custom_identity_privatekey_passphrase)
+      set('CustomPrivateKeyAlias', custom_identity_alias)
+    else:
+      cmo.setChannelIdentityCustomized(false)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -67,6 +98,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
-

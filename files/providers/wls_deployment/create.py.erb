@@ -7,6 +7,9 @@ planpath          = '<%= planpath %>'
 target            = '<%= target %>'
 deploymenttype    = '<%= deploymenttype %>'
 versionidentifier = '<%= versionidentifier %>'
+remote            = '<%= remote %>'
+upload            = '<%= upload %>'
+stagingmode       = '<%= stagingmode %>'
 
 edit()
 startEdit()
@@ -16,25 +19,47 @@ try:
     if deploymenttype == 'Library':
       library = 'true'
     else:
-      library = 'false'  
+      library = 'false'
+
+    if remote == '1':
+      remoteflag = 'true'
+    else:
+      remoteflag = 'false'
+
+    if upload == '1':
+      uploadflag = 'true'
+    else:
+      uploadflag = 'false'
 
     print 'deploying....'
     if versionidentifier:
       if planpath:
         print 'deploying with version and deploymentplan....'
-        deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote='true', upload='true',libraryModule=library,versionIdentifier=versionidentifier)
+        if stagingmode:
+          deploy(appName=name, path=localpath, planPath=planpath, targets=target, stageMode=stagingmode, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
+        else:
+          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
       else:
         print 'deploying with version without deploymentplan....'
-        deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library,versionIdentifier=versionidentifier)
-    else: 
+        if stagingmode:
+          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
+        else:
+          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
+    else:
       if planpath:
-        deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote='true', upload='true',libraryModule=library)
+        if stagingmode:
+          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library)
+        else:
+          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library)
       else:
-        deploy(appName=name, path=localpath, targets=target, remote='true', upload='true',libraryModule=library)
+        if stagingmode:
+          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library)
+        else:
+          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library)
 
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -43,5 +68,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-

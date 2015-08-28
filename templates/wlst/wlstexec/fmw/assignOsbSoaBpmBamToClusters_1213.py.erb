@@ -12,6 +12,7 @@ essEnabled     = <%= @ess_enabled %>
 SOAClusterName = '<%= @soa_cluster_name %>'
 BAMClusterName = '<%= @bam_cluster_name %>'
 OSBClusterName = '<%= @osb_cluster_name %>'
+ESSClusterName = '<%= @ess_cluster_name %>'
 Admin          = '<%= @adminserver_name %>'
 
 AllClustersArray = []
@@ -21,6 +22,8 @@ if soaEnabled == true:
     AllClustersArray.append(SOAClusterName)
 if osbEnabled == true:
     AllClustersArray.append(OSBClusterName)
+if essEnabled == true and ESSClusterName:
+    AllClustersArray.append(ESSClusterName)
 
 AllClusters  = ','.join(AllClustersArray)
 
@@ -36,7 +39,7 @@ def getFirstClusterServer(cluster):
             searchClusterStr = cluster+":"
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
-                return token    
+                return token
 
 def getClusterServers(cluster):
     servers = []
@@ -53,7 +56,7 @@ def getClusterServers(cluster):
             if not clusterNameStr.find(searchClusterStr) == -1:
                 servers.append(token)
 
-    return servers   
+    return servers
 
 def createSAFAgents(cluster, currentServerCnt):
     print ' '
@@ -75,19 +78,19 @@ def createSAFAgents(cluster, currentServerCnt):
             print "searchClusterStr = ",searchClusterStr
             print "clusterNameStr = ",clusterNameStr
             if not clusterNameStr.find(searchClusterStr) == -1:
-                print token, " is associated with ", cluster    
+                print token, " is associated with ", cluster
                 cd('/')
 
                 fileStoreName = 'WseeFileStore_auto_'+str(serverCnt)
                 safAgent      = 'ReliableWseeSAFAgent_auto_'+str(serverCnt)
-                
+
                 cd('/')
                 create(safAgent, 'SAFAgent')
                 cd('/SAFAgent/'+safAgent)
                 set ('Target'     , token)
                 set ('Store'      , fileStoreName)
                 set ('ServiceType','Both')
-    
+
                 serverCnt = serverCnt + 1
 
 def createFileStore(storeName, serverName):
@@ -118,7 +121,7 @@ def createJMSServers(cluster, track, currentServerCnt):
             print "searchClusterStr = ",searchClusterStr
             print "clusterNameStr = ",clusterNameStr
             if not clusterNameStr.find(searchClusterStr) == -1:
-                print token, " is associated with ", cluster    
+                print token, " is associated with ", cluster
                 print ' '
                 print "Creating JMS Servers for ", track
                 print ' '
@@ -138,7 +141,7 @@ def createJMSServers(cluster, track, currentServerCnt):
                 print "Created JMS Server :- ", jmsServerName
                 print ' '
                 assign('JMSServer', jmsServerName, 'Target', token)
-                print jmsServerName, " assigned to server :- ", token 
+                print jmsServerName, " assigned to server :- ", token
                 print ' '
                 cd('/JMSServer/'+jmsServerName)
                 set ('PersistentStore', fileStoreName)
@@ -163,6 +166,13 @@ if osbEnabled == true:
     cd('/Servers/osb_server1')
     set('ListenAddress','')
 
+if essEnabled == true:
+    try:
+        cd('/Servers/ess_server1')
+        set('ListenAddress','')
+    except:
+        print "set ListenAddress None on ess_server1 failed"
+
 updateDomain()
 
 serverGroupNone = []
@@ -178,7 +188,7 @@ if bamEnabled == true:
     cd('/')
     for i in range(len(bamServers)):
       print "change servergroups for " + bamServers[i]
-      setServerGroups(bamServers[i] , bamServerGroup)                      
+      setServerGroups(bamServers[i] , bamServerGroup)
 
     print "delete old bam"
     delete('bam_server1', 'Server')
@@ -186,35 +196,61 @@ if bamEnabled == true:
 if soaEnabled == true:
     print "change soa"
 
-    if essEnabled == true:
+    # add ESS to existing soa servers
+    if essEnabled == true and ESSClusterName == '':
         soaServerGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
     else:
         soaServerGroup = ["SOA-MGD-SVRS"]
 
     cd('/')
-    setServerGroups('soa_server1', serverGroupNone)                      
+    setServerGroups('soa_server1', serverGroupNone)
 
     soaServers = getClusterServers(SOAClusterName)
     cd('/')
     for i in range(len(soaServers)):
       print "change servergroups for " + soaServers[i]
-      setServerGroups(soaServers[i] , soaServerGroup)                      
+      setServerGroups(soaServers[i] , soaServerGroup)
 
     print "delete old soa"
     delete('soa_server1', 'Server')
+
+# add ESS to its own ESS servers
+if essEnabled == true and ESSClusterName:
+    print "change ess"
+
+    essServerGroup = ["ESS-MGD-SVRS"]
+
+    cd('/')
+    try:
+        setServerGroups('ess_server1', serverGroupNone)
+    except:
+        print "set setServerGroups None on ess_server1 failed"
+
+    essServers = getClusterServers(ESSClusterName)
+    cd('/')
+    for i in range(len(essServers)):
+      print "change servergroups for " + essServers[i]
+      setServerGroups(essServers[i], essServerGroup)
+
+    print "delete old ess"
+    try:
+        delete('ess_server1', 'Server')
+    except:
+        print "delete ess_server1 failed"
+
 
 if osbEnabled == true:
     print "change osb"
     osbServerGroup  = ["OSB-MGD-SVRS-COMBINED"]
 
     cd('/')
-    setServerGroups('osb_server1', serverGroupNone)                      
+    setServerGroups('osb_server1', serverGroupNone)
 
     osbServers = getClusterServers(OSBClusterName)
     cd('/')
     for i in range(len(osbServers)):
       print "change servergroups for " + osbServers[i]
-      setServerGroups(osbServers[i] , osbServerGroup)                      
+      setServerGroups(osbServers[i] , osbServerGroup)
 
     print "delete old osb"
     delete('osb_server1', 'Server')
@@ -228,6 +264,9 @@ print "updateDomain"
 updateDomain()
 dumpStack()
 
+closeDomain()
+readDomain(DOMAIN_PATH)
+
 print "change Coherence"
 if soaEnabled == true:
     cd('/')
@@ -238,18 +277,35 @@ if osbEnabled == true:
 if bamEnabled == true:
     cd('/')
     assign('Cluster',BAMClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+if essEnabled == true and ESSClusterName:
+    cd('/')
+    assign('Cluster',ESSClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+
 
 cd('/')
 cd('/CoherenceClusterSystemResource/defaultCoherenceCluster')
 set('Target',AllClusters)
 cd('CoherenceResource/defaultCoherenceCluster/CoherenceClusterParams/NO_NAME_0')
-set('UnicastListenPort',9991) 
+set('UnicastListenPort',9991)
+
+updateDomain()
+dumpStack()
+
+closeDomain()
+readDomain(DOMAIN_PATH)
 
 if soaEnabled == true:
     print "fix SOA"
     cd('/')
     assign('AppDeployment'                ,'soa-infra'                    , 'Target', SOAClusterName)
     assign('AppDeployment.SubDeployment'  ,'soa-infra.*'                  , 'Target', SOAClusterName)
+
+    updateDomain()
+    dumpStack()
+
+    closeDomain()
+    readDomain(DOMAIN_PATH)
+
 
 if osbEnabled == true:
     print "fix OSB jms"
@@ -258,6 +314,13 @@ if osbEnabled == true:
     delete('OSBAQJMSServer'        ,'JMSSystemResource')
     delete('UMSAQJMSSystemResource','JMSSystemResource')
     createSAFAgents(OSBClusterName, 1)
+
+    updateDomain()
+    dumpStack()
+
+    closeDomain()
+    readDomain(DOMAIN_PATH)
+
 
 if bamEnabled == true:
     print "to do fix BAM foreign jndi"
@@ -271,17 +334,39 @@ if bamEnabled == true:
     cd('/')
     cd('/Cluster/'+BAMClusterName)
     set('DataSourceForJobScheduler','BamJobSchedDataSource')
-    
+
     print "re-create BAM JMS"
     cd('/')
-    delete('BamCQServiceJmsSystemResource_bam_server1','JMSSystemResource')
-    delete('BamServerJmsSystemResource'               ,'JMSSystemResource')
+    try:
+        delete('BamCQServiceJmsSystemResource_bam_server1','JMSSystemResource')
+    except:
+        print "delete BamCQServiceJmsSystemResource_bam_server1 failed"
 
-    delete('BamCQServiceJmsServer_bam_server1'   ,'JMSServer')
-    delete('BamServerJmsServer_bam_server1'      ,'JMSServer')
+    try:
+        delete('BamServerJmsSystemResource','JMSSystemResource')
+    except:
+        print "delete BamServerJmsSystemResource failed"
 
-    delete('BamCQServiceJmsFileStore_bam_server1','FileStore')
-    delete('BamServerJmsFileStore_bam_server1'   ,'FileStore')
+    try:
+        delete('BamCQServiceJmsServer_bam_server1'   ,'JMSServer')
+    except:
+        print "Delete BamCQServiceJmsServer_bam_server1 failed"
+
+    try:
+        delete('BamServerJmsServer_bam_server1'      ,'JMSServer')
+    except:
+        print "Delete BamServerJmsServer_bam_server1 failed"
+
+    try:
+        delete('BamCQServiceJmsFileStore_bam_server1','FileStore')
+    except:
+        print "Delete BamCQServiceJmsFileStore_bam_server1 failed"
+
+    try:
+        delete('BamServerJmsFileStore_bam_server1'   ,'FileStore')
+    except:
+        print "Delete BamServerJmsFileStore_bam_server1 failed"
+
 
     print "create BAM JMS"
     createJMSServers(BAMClusterName, 'Bam', 1)
@@ -314,7 +399,7 @@ if bamEnabled == true:
         print token
 
     print ("*** Setting JMS SubModule for SOA JMS Server's target***")
-    assign('JMSSystemResource.SubDeployment', 'BamServerJmsSystemResource.BamServerSubdeployment', 'Target', bamJMSServerStr) 
+    assign('JMSSystemResource.SubDeployment', 'BamServerJmsSystemResource.BamServerSubdeployment', 'Target', bamJMSServerStr)
 
     cd('/')
     cd('JMSSystemResource/BamServerJmsSystemResource/JmsResource/NO_NAME_0')
@@ -372,7 +457,7 @@ if bamEnabled == true:
         print token
 
     print ("*** Setting JMS SubModule for BamCQ JMS Server's target***")
-    assign('JMSSystemResource.SubDeployment', 'BamCQServiceJmsSystemResource.BamCQServiceAlertEngineSubdeployment', 'Target', bamJMSServerStr) 
+    assign('JMSSystemResource.SubDeployment', 'BamCQServiceJmsSystemResource.BamCQServiceAlertEngineSubdeployment', 'Target', bamJMSServerStr)
 
     cd('/')
     cd('JMSSystemResource/BamCQServiceJmsSystemResource/JmsResource/NO_NAME_0')
@@ -410,4 +495,4 @@ dumpStack()
 
 print 'Successfully Updated SOA Domain.'
 
-closeDomain() 
+closeDomain()

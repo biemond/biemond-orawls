@@ -374,59 +374,58 @@ if bamEnabled == true:
     print "create BAM JMS"
     createJMSServers(BAMClusterName, 'Bam', 1)
 
-    if soaEnabled == true:
-        print "create BAM JMSSystemResource"
-        cd('/')
-        create('BamServerJmsSystemResource','JMSSystemResource')
+    # print "create BAM JMSSystemResource"
+    # cd('/')
+    # create('BamServerJmsSystemResource','JMSSystemResource')
 
-        print "target BAM JMSSystemResource"
-        cd('/')
-        cd('JMSSystemResource/BamServerJmsSystemResource')
-        assign('JMSSystemResource', 'BamServerJmsSystemResource', 'Target', BAMClusterName)
+    # print "target BAM JMSSystemResource"
+    # cd('/')
+    # cd('JMSSystemResource/BamServerJmsSystemResource')
+    # assign('JMSSystemResource', 'BamServerJmsSystemResource', 'Target', BAMClusterName)
 
-        print "create BAM SubDeployment"
-        cd('/')
-        cd('JMSSystemResource/BamServerJmsSystemResource')
-        create('BamServerSubdeployment', 'SubDeployment')
+    # print "create BAM SubDeployment"
+    # cd('/')
+    # cd('JMSSystemResource/BamServerJmsSystemResource')
+    # create('BamServerSubdeployment', 'SubDeployment')
 
-        cd('/')
-        cd('JMSSystemResource/BamServerJmsSystemResource/SubDeployments/BamServerSubdeployment')
+    # cd('/')
+    # cd('JMSSystemResource/BamServerJmsSystemResource/SubDeployments/BamServerSubdeployment')
 
-        print ' '
-        print ("*** Listing Bam JMS Servers ***")
-        s = ls('/JMSServers')
-        bamJMSServerStr=''
-        for token in s.split("drw-"):
-            token=token.strip().lstrip().rstrip()
-            if not token.find("BamServerJmsServer_auto") == -1:
-                bamJMSServerStr = bamJMSServerStr + token +","
-            print token
+    # print ' '
+    # print ("*** Listing Bam JMS Servers ***")
+    # s = ls('/JMSServers')
+    # bamJMSServerStr=''
+    # for token in s.split("drw-"):
+    #     token=token.strip().lstrip().rstrip()
+    #     if not token.find("BamServerJmsServer_auto") == -1:
+    #         bamJMSServerStr = bamJMSServerStr + token +","
+    #     print token
 
-        print ("*** Setting JMS SubModule for SOA JMS Server's target***")
-        assign('JMSSystemResource.SubDeployment', 'BamServerJmsSystemResource.BamServerSubdeployment', 'Target', bamJMSServerStr)
+    # print ("*** Setting JMS SubModule for SOA JMS Server's target***")
+    # assign('JMSSystemResource.SubDeployment', 'BamServerJmsSystemResource.BamServerSubdeployment', 'Target', bamJMSServerStr)
 
-        cd('/')
-        cd('JMSSystemResource/BamServerJmsSystemResource/JmsResource/NO_NAME_0')
+    # cd('/')
+    # cd('JMSSystemResource/BamServerJmsSystemResource/JmsResource/NO_NAME_0')
 
-        udd=create('BamServerAlertsEngineDTopic','UniformDistributedTopic')
-        udd.setJNDIName('topic/oracle.beam.server.event.alertsengine.changelist')
-        udd.setSubDeploymentName('BamServerSubdeployment')
+    # udd=create('BamServerAlertsEngineDTopic','UniformDistributedTopic')
+    # udd.setJNDIName('topic/oracle.beam.server.event.alertsengine.changelist')
+    # udd.setSubDeploymentName('BamServerSubdeployment')
 
-        udd=create('BamServerCQServiceDTopic','UniformDistributedTopic')
-        udd.setJNDIName('topic/oracle.beam.cqs.activedata')
-        udd.setSubDeploymentName('BamServerSubdeployment')
+    # udd=create('BamServerCQServiceDTopic','UniformDistributedTopic')
+    # udd.setJNDIName('topic/oracle.beam.cqs.activedata')
+    # udd.setSubDeploymentName('BamServerSubdeployment')
 
-        udd=create('BamServerMetadataChangeDTopic','UniformDistributedTopic')
-        udd.setJNDIName('topic/oracle.beam.server.metadatachange')
-        udd.setSubDeploymentName('BamServerSubdeployment')
+    # udd=create('BamServerMetadataChangeDTopic','UniformDistributedTopic')
+    # udd.setJNDIName('topic/oracle.beam.server.metadatachange')
+    # udd.setSubDeploymentName('BamServerSubdeployment')
 
-        udd=create('BamServerPersistenceDTopic','UniformDistributedTopic')
-        udd.setJNDIName('topic/oracle.beam.server.event.dataobject')
-        udd.setSubDeploymentName('BamServerSubdeployment')
+    # udd=create('BamServerPersistenceDTopic','UniformDistributedTopic')
+    # udd.setJNDIName('topic/oracle.beam.server.event.dataobject')
+    # udd.setSubDeploymentName('BamServerSubdeployment')
 
-        udd=create('BamServerReportCacheDTopic','UniformDistributedTopic')
-        udd.setJNDIName('topic/oracle.beam.server.event.reportcache.changelist')
-        udd.setSubDeploymentName('BamServerSubdeployment')
+    # udd=create('BamServerReportCacheDTopic','UniformDistributedTopic')
+    # udd.setJNDIName('topic/oracle.beam.server.event.reportcache.changelist')
+    # udd.setSubDeploymentName('BamServerSubdeployment')
 
 
     print "create BAM CQ JMS"

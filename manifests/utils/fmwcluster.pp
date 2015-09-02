@@ -48,9 +48,9 @@ define orawls::utils::fmwcluster (
 
   if ( $soa_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $found = soa_cluster_configured($domain_dir, $soa_cluster_name)
+    $soa_found = soa_cluster_configured($domain_dir, $soa_cluster_name)
 
-    if $found == undef or $found == true {
+    if $soa_found == undef or $soa_found == true {
       $convert_soa = false
     } else {
       $convert_soa = true
@@ -59,9 +59,9 @@ define orawls::utils::fmwcluster (
 
   if ( $osb_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $found = osb_cluster_configured($domain_dir, $osb_cluster_name)
+    $osb_found = osb_cluster_configured($domain_dir, $osb_cluster_name)
 
-    if $found == undef or $found == true {
+    if $osb_found == undef or $osb_found == true {
       $convert_osb = false
     } else {
       $convert_osb = true
@@ -70,9 +70,9 @@ define orawls::utils::fmwcluster (
 
   if ( $bam_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $found = bam_cluster_configured($domain_dir, $bam_cluster_name)
+    $bam_found = bam_cluster_configured($domain_dir, $bam_cluster_name)
 
-    if $found == undef or $found == true {
+    if $bam_found == undef or $bam_found == true {
       $convert_bam = false
     } else {
       $convert_bam = true
@@ -121,6 +121,7 @@ define orawls::utils::fmwcluster (
         path      => $exec_path,
         user      => $os_user,
         group     => $os_group,
+        timeout   => 0,
         logoutput => $log_output,
         require   => [File["${download_dir}/assignOsbSoaBpmBamToClusters${title}.py"],
                       Orawls::Control["ShutdownAdminServerForSoa${title}"],],

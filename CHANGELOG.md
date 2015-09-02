@@ -1,5 +1,8 @@
 # History
 
+## 1.0.40
+- BAM only domain option
+
 ## 1.0.39
 - Works & Tested on puppet 4.2.1
 - Oracle Forms & Reports 11.1.1.7 or 11.1.2 support

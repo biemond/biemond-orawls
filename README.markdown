@@ -124,6 +124,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 - domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'bam'         -> BAM ( only with soa suite installation)
 - domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
 - domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM
 - domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)

@@ -9,7 +9,7 @@ define orawls::domain (
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|wc|wc_wcc_bpm|oud
+  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = true,  #only for SOA Suite 12.1.3
@@ -222,6 +222,15 @@ define orawls::domain (
         $bpm           = true
       }
 
+    } elsif $domain_template == 'bam' {
+      $extensionsTemplateFile = 'orawls/domains/extensions/bam_template.py.erb'
+
+      if ( $version == 1213 ) {
+        $wlstPath      = "${middleware_home_dir}/soa/common/bin"
+      } else {
+        $wlstPath      = "${middleware_home_dir}/Oracle_SOA1/common/bin"
+      }
+
     } elsif $domain_template == 'adf' {
       $extensionsTemplateFile = 'orawls/domains/extensions/jrf_template.py.erb'
 
@@ -419,7 +428,7 @@ define orawls::domain (
       if ( $domain_template == 'adf' ) {
         $rcu_domain_template = 'adf'
 
-      } elsif ( $domain_template in ['soa','osb','osb_soa_bpm','osb_soa','soa_bpm'] ){
+      } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
         $rcu_domain_template = 'soa'
 
       } else {

@@ -50,35 +50,36 @@ define orawls::utils::fmwcluster (
     # check if the soa is already targeted to the cluster on this weblogic domain
     $found = soa_cluster_configured($domain_dir, $soa_cluster_name)
 
-    if $found == undef {
-      $continue = false
-      notify { "orawls::utils::fmwcluster ${title} ${version} continue false cause nill": }
+    if $found == undef or $found == true {
+      $convert_soa = false
     } else {
-      if ($found) {
-        $continue = false
-      } else {
-        notify { "orawls::utils::fmwcluster ${title} ${version} continue true cause not exists": }
-        $continue = true
-      }
-    }
-  } elsif ( $osb_enabled ) {
-    # check if the osb is already targeted to the cluster on this weblogic domain
-    $found = osb_cluster_configured($domain_dir, $osb_cluster_name)
-
-    if $found == undef {
-      $continue = false
-      notify { "orawls::utils::fmwcluster ${title} ${version} continue false cause nill": }
-    } else {
-      if ($found) {
-        $continue = false
-      } else {
-        notify { "orawls::utils::fmwcluster ${title} ${version} continue true cause not exists": }
-        $continue = true
-      }
+      $convert_soa = true
     }
   }
 
-  if ($continue) {
+  if ( $osb_enabled ) {
+    # check if the soa is already targeted to the cluster on this weblogic domain
+    $found = osb_cluster_configured($domain_dir, $osb_cluster_name)
+
+    if $found == undef or $found == true {
+      $convert_osb = false
+    } else {
+      $convert_osb = true
+    }
+  }
+
+  if ( $bam_enabled ) {
+    # check if the soa is already targeted to the cluster on this weblogic domain
+    $found = bam_cluster_configured($domain_dir, $bam_cluster_name)
+
+    if $found == undef or $found == true {
+      $convert_bam = false
+    } else {
+      $convert_bam = true
+    }
+  }
+
+  if $convert_soa or $convert_osb or $convert_bam {
 
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 

@@ -2335,6 +2335,7 @@ or with JSSE with custom identity and trust
       logfilename                           => '/var/log/weblogic/wlsServer2.log',
       machine                               => 'Node2',
       sslenabled                            => '1',
+      sslhostnameverifier                   => 'None',
       sslhostnameverificationignored        => '1',
       ssllistenport                         => '8201',
       two_way_ssl                           => '0'
@@ -2468,6 +2469,8 @@ or with custom identity and custom truststore
         sslenabled:                            '1'
         ssllistenport:                         '8201'
         sslhostnameverificationignored:        '1'
+        sslhostnameverifier:                   'None'
+        useservercerts:                        '0'
         jsseenabled:                           '1'
         custom_identity:                       '1'
         custom_identity_keystore_filename:     '/vagrant/identity_node1.jks'

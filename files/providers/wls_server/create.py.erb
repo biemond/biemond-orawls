@@ -28,11 +28,11 @@ listenPort        = '<%= listenport %>'
 listenPortEnabled = '<%= listenportenabled %>'
 sslEnabled        = '<%= sslenabled %>'
 sslHostnameVerificationIgnored = '<%= sslhostnameverificationignored %>'
-sslHostnameVerifier = '<% sslhostnameverifier %>'
+sslhostnameverifier = '<%= sslhostnameverifier %>'
 two_way_ssl       = '<%= two_way_ssl %>'
 client_certificate_enforced = '<%= client_certificate_enforced %>'
 sslListenPort     = '<%= ssllistenport %>'
-useServerCerts = '<%= useservercerts %>'
+useservercerts = '<%= useservercerts %>'
 
 
 logintimeout      = '<%= logintimeout %>'
@@ -183,16 +183,16 @@ try:
       set('JSSEEnabled', formatBoolean(jsseenabled))
     if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != '-1':
       set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
-      if sslHostnameVerificationIgnored == '1' and sslHostnameVerifier:
-        set('HostnameVerifier', 'weblogic.security.utils.SSLWLSWildcardHostnameVerifier')
+      if sslHostnameVerificationIgnored == '0' and sslhostnameverifier:
+        set('HostnameVerifier', sslhostnameverifier)
     if two_way_ssl:
       set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
     if client_certificate_enforced:
       set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
     if sslListenPort:
       set('ListenPort', int(sslListenPort))
-    if useServerCerts:
-      set('UseServerCerts , formatBoolean(useServerCerts)) 
+    if useservercerts:
+      set('UseServerCerts', formatBoolean(useservercerts)) 
       
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:

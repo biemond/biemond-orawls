@@ -1,6 +1,6 @@
-require 'easy_type'
+require File.dirname(__FILE__) + '/../../orawls_core'
+
 require 'yaml'
-# require 'ruby-debug'
 
 module Puppet
   Type.newtype(:wls_setting) do

@@ -94,6 +94,8 @@ module Puppet
     property :weblogic_plugin_enabled
 
     property :custom_identity
+    property :useservercerts
+    property :sslhostnameverifier
 
     property :auto_restart
     property :autokillwfail

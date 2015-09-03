@@ -85,61 +85,85 @@ define orawls::resourceadapter(
     fail('userConfigFile or wlsUser parameter is empty')
   }
 
-  # download the plan and put it on the right place
-  if $adapter_name == 'DbAdapter' {
-    if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        replace => false,
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template('orawls/adapter_plans/Plan_DB.xml.erb'),
+  case $adapter_name {
+    'JmsAdapter':{
+      $connectionFactoryInterface='oracle.tip.adapter.jms.IJmsConnectionFactory'
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          replace => false,
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template('orawls/adapter_plans/Plan_JMS.xml.erb'),
+        }
       }
     }
-  } elsif $adapter_name == 'JmsAdapter' {
-    if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        replace => false,
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template('orawls/adapter_plans/Plan_JMS.xml.erb'),
+    'DbAdapter' : {
+      $connectionFactoryInterface='javax.resource.cci.ConnectionFactory'
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          replace => false,
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template('orawls/adapter_plans/Plan_DB.xml.erb'),
+        }
       }
     }
-  } elsif $adapter_name == 'AqAdapter' {
-    if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        replace => false,
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template('orawls/adapter_plans/Plan_AQ.xml.erb'),
+    'AqAdapter' : {
+      $connectionFactoryInterface='javax.resource.cci.ConnectionFactory'
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          replace => false,
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template('orawls/adapter_plans/Plan_AQ.xml.erb'),
+        }
       }
     }
-  } elsif $adapter_name == 'FtpAdapter' {
-    if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
-      file { "${adapter_plan_dir}/${adapter_plan}":
-        ensure  => present,
-        mode    => '0744',
-        replace => false,
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
-        path    => "${adapter_plan_dir}/${adapter_plan}",
-        content => template('orawls/adapter_plans/Plan_FTP.xml.erb'),
+    'FtpAdapter' : {
+      $connectionFactoryInterface='javax.resource.cci.ConnectionFactory'
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          replace => false,
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template('orawls/adapter_plans/Plan_FTP.xml.erb'),
+        }
       }
     }
-  } else {
-    fail("adapter_name ${adapter_name} is unknown, choose for DbAdapter, JmsAdapter, FtpAdapter or AqAdapter ")
+    'FileAdapter' : {
+      $connectionFactoryInterface='javax.resource.cci.ConnectionFactory'
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          replace => false,
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template('orawls/adapter_plans/Plan_File.xml.erb'),
+        }
+      }
+    }
+    default: {
+      fail("adapter_name ${adapter_name} is unknown, choose for FileAdapter, DbAdapter, JmsAdapter, FtpAdapter or AqAdapter ")
+    }
   }
 
   # lets make the a new plan for this adapter
@@ -175,13 +199,6 @@ define orawls::resourceadapter(
 
   # after deployment of the plan we can add a new entry to the adapter
   if ( $continueEntry ) {
-
-    if $adapter_name == 'DbAdapter' or $adapter_name == 'AqAdapter' or $adapter_name == 'FtpAdapter'  {
-      $connectionFactoryInterface='javax.resource.cci.ConnectionFactory'
-    } elsif $adapter_name == 'JmsAdapter' {
-      $connectionFactoryInterface='oracle.tip.adapter.jms.IJmsConnectionFactory'
-    }
-
     case $::kernel {
       'Linux': {
         $javaCommandPlan = 'java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '

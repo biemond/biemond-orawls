@@ -3072,7 +3072,7 @@ in hiera
 
 it needs wls_setting and when identifier is not provided it will use the 'default'.
 
-xaproperties are case sensitive and should be provided as an array containing all values.Use WLST and run ls() in the JDBCXAParams component of your datasource to determine the valid XA properties which can be set.
+xaproperties are case sensitive and should be provided as an array containing all values. Use WLST and run ls() in the JDBCXAParams component of your datasource to determine the valid XA properties which can be set. Preserve the order to ensure idempotent behaviour.
 
 or use puppet resource wls_datasource
 
@@ -3155,7 +3155,19 @@ in hiera
           user:                             'hr'
           password:                         'pass'
           usexa:                            '1'
-          xaproperties:                     'XaSetTransactionTimeout=1,XaRetryIntervalSeconds=300'
+          xaproperties:
+           - 'RollbackLocalTxUponConnClose=0'
+           - 'RecoverOnlyOnce=0'
+           - 'KeepLogicalConnOpenOnRelease=0'
+           - 'KeepXaConnTillTxComplete=1'
+           - 'XaTransactionTimeout=14400'
+           - 'XaRetryIntervalSeconds=60'
+           - 'XaRetryDurationSeconds=0'
+           - 'ResourceHealthMonitoring=1'
+           - 'NewXaConnForCommit=0'
+           - 'XaSetTransactionTimeout=1'
+           - 'XaEndOnlyOnce=0'
+           - 'NeedTxCtxOnClose=0'
           testconnectionsonreserve:         '0'
           secondstotrustidlepoolconnection: '10'
           testfrequency:                    '120'

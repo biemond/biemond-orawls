@@ -3,6 +3,8 @@
 ## 1.0.40
 - BAM only domain option
 - Wls_server new attributes sslHostnameVerifier, useServerCerts
+- Added FileAdapter to resource adapter
+- Cleanup Puppet type interfaces
 
 ## 1.0.39
 - Works & Tested on puppet 4.2.1

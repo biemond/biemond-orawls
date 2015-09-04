@@ -1434,7 +1434,7 @@ or when you set the defaults hiera variables
 
 
 ### resourceadapter
-__orawls::resourceadapter__ Add a Resource adapter plan for Aq ,DB or JMS with some entries
+__orawls::resourceadapter__ Add a Resource adapter plan for File, FTP, Aq , DB or JMS with some entries
 when you set the defaults hiera variables
 
     $default_params = {}
@@ -1477,6 +1477,15 @@ or when you set the defaults hiera variables
         adapter_entry:             'eis/FTP/xx'
         adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
         adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
+      'FileAdapter_hr':
+        adapter_name:              'FileAdapter'
+        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/FileAdapter.rar"
+        adapter_plan_dir:          "/opt/oracle/wlsdomains"
+        adapter_plan:              'Plan_FILE.xml'
+        adapter_entry:             'eis/FileAdapterXX'
+        adapter_entry_property:    'ControlDir;IsTransacted'
+        adapter_entry_value:       '/tmp/aaa;false'
+
 
 or for 12.1.3 ( 12c )
 
@@ -1513,7 +1522,14 @@ or for 12.1.3 ( 12c )
         adapter_entry:             'eis/FTP/xx'
         adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
         adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
-
+      'FileAdapter_hr':
+        adapter_name:              'FileAdapter'
+        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/FileAdapter.rar"
+        adapter_plan_dir:          "/oracle/product/12.1/middleware"
+        adapter_plan:              'Plan_FILE.xml'
+        adapter_entry:             'eis/FileAdapterXX'
+        adapter_entry_property:    'ControlDir;IsTransacted'
+        adapter_entry_value:       '/tmp/aaa;false'
 
 
 ### fmwcluster

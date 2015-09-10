@@ -51,6 +51,7 @@ module Puppet
     property :expirationpolicy
     property :redeliverydelay
     property :timetodeliver
+    property :deliverymode
     property :timetolive
     property :forwarddelay
     property :templatename

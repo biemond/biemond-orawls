@@ -38,8 +38,10 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     set('JNDIName',jndiname)
 
-    if subdeployment:
-      set('SubDeploymentName',subdeployment)
+    if subdeployment and defaulttargeting == "0":
+      cmo.setSubDeploymentName(subdeployment)
+    else:
+      cmo.setDefaultTargetingEnabled(true)
 
     if templatename:
       set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
@@ -111,4 +113,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-

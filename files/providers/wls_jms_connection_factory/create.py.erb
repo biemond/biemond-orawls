@@ -40,8 +40,7 @@ try:
     cmo.setJNDIName(jndiname)
     cmo.setLocalJNDIName(localjndiname)
 
-    if subdeployment:
-      cmo.setDefaultTargetingEnabled(false)
+    if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
     else:
       cmo.setDefaultTargetingEnabled(true)
@@ -91,4 +90,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-

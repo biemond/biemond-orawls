@@ -29,17 +29,19 @@ try:
 
     cd('/')
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-     
+
     if distributed == "1":
         jmsWlsType = '/UniformDistributedTopics/'
     else:
         jmsWlsType = '/Topics/'
-     
-    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
-    set('JNDIName',jndiname) 
 
-    if subdeployment:
-      set('SubDeploymentName',subdeployment)
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
+    set('JNDIName',jndiname)
+
+    if subdeployment and defaulttargeting == "0":
+      cmo.setSubDeploymentName(subdeployment)
+    else:
+      cmo.setDefaultTargetingEnabled(true)
 
     print "distributed: ",distributed
     if distributed == "true":
@@ -52,7 +54,7 @@ try:
 
     if redeliverylimit:
       print "limit"
-      cmo.setRedeliveryLimit( int(redeliverylimit) )  
+      cmo.setRedeliveryLimit( int(redeliverylimit) )
 
     print "before"
     if errordestinationtype:
@@ -64,8 +66,8 @@ try:
         jmsErrType = 'Queues'
 
     print "after"
- 
-    print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination 
+
+    print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination
     if errordestination:
       cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination))
 
@@ -76,15 +78,15 @@ try:
       print "time To Live"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       #TimeToLive is an int MBean attribute
-      cmo.setTimeToLive( int(timetolive))   
+      cmo.setTimeToLive( int(timetolive))
 
     if timetodeliver:
       print "time To Deliver"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       #TimeToDeliver is a string MBean attribute
-      cmo.setTimeToDeliver(timetodeliver)                             
+      cmo.setTimeToDeliver(timetodeliver)
 
-    if redeliverydelay: 
+    if redeliverydelay:
       print "RedeliveryDelay"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       cmo.setRedeliveryDelay( int(redeliverydelay))
@@ -102,9 +104,9 @@ try:
       print "message logging"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
       cmo.setMessageLoggingEnabled(false)
-      
+
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -113,6 +115,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
-

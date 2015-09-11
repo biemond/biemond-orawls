@@ -1,5 +1,10 @@
 # History
 
+## 1.0.41
+- fixed wls_group absent without user attribute bug
+- statementcachesize bug with wls_datasource
+- wls_queue new attribute deliverymode
+
 ## 1.0.40
 - BAM only domain option
 - Wls_server new attributes sslHostnameVerifier, useServerCerts

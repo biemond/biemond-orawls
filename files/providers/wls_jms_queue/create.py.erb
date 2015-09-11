@@ -17,6 +17,7 @@ errordestination         = '<%= errordestination %>'
 expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
+deliverymode             = '<%= deliverymode %>'
 redeliverydelay          = '<%= redeliverydelay %>'
 forwarddelay             = '<%= forwarddelay %>'
 templatename             = '<%= templatename %>'
@@ -84,6 +85,11 @@ try:
       #TimeToDeliver is a string MBean attribute
       cmo.setTimeToDeliver(timetodeliver)
 
+    if deliverymode:
+      print "Delivery Mode"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+      cmo.setDeliveryMode(deliverymode)
+
     if redeliverydelay:
       print "RedeliveryDelay"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
@@ -113,4 +119,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-

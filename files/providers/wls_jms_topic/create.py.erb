@@ -41,8 +41,12 @@ try:
 
     if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
-    else:
+    elif not subdeployment and defaulttargeting == "1":
       cmo.setDefaultTargetingEnabled(true)
+    elif subdeployment and defaulttargeting == "1":
+      raise Exception('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise Exception('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
     print "distributed: ",distributed
     if distributed == "true":

@@ -18,6 +18,7 @@ errordestination         = '<%= errordestination %>'
 expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
+deliverymode             = '<%= deliverymode %>'
 redeliverydelay          = '<%= redeliverydelay %>'
 messagelogging           = '<%= messagelogging %>'
 
@@ -28,16 +29,16 @@ try:
 
     cd('/')
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-     
+
     if distributed == "1":
         cmo.createUniformDistributedTopic(name)
         jmsWlsType = '/UniformDistributedTopics/'
     else:
         cmo.createTopic(name)
         jmsWlsType = '/Topics/'
-     
+
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
-    set('JNDIName',jndiname) 
+    set('JNDIName',jndiname)
 
     if subdeployment:
       set('SubDeploymentName',subdeployment)
@@ -53,7 +54,7 @@ try:
 
     if redeliverylimit:
       print "limit"
-      cmo.setRedeliveryLimit( int(redeliverylimit) )  
+      cmo.setRedeliveryLimit( int(redeliverylimit) )
 
     print "before"
     if errordestinationtype:
@@ -65,8 +66,8 @@ try:
         jmsErrType = 'Queues'
 
     print "after"
- 
-    print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination 
+
+    print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination
     if errordestination:
         cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination))
 
@@ -77,15 +78,20 @@ try:
       print "time To Live"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       #TimeToLive is an int MBean attribute
-      cmo.setTimeToLive( int(timetolive))   
+      cmo.setTimeToLive( int(timetolive))
 
     if timetodeliver:
       print "time To Deliver"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       #TimeToDeliver is a string MBean attribute
-      cmo.setTimeToDeliver(timetodeliver)                             
+      cmo.setTimeToDeliver(timetodeliver)
 
-    if redeliverydelay: 
+    if deliverymode:
+      print "Delivery Mode"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+      cmo.setDeliveryMode(deliverymode)
+
+    if redeliverydelay:
       print "RedeliveryDelay"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
       cmo.setRedeliveryDelay( int(redeliverydelay))
@@ -105,7 +111,7 @@ try:
       cmo.setMessageLoggingEnabled(false)
 
     save()
-    activate()          
+    activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
@@ -114,6 +120,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
-

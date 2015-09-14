@@ -53,6 +53,7 @@ module Puppet
     property :redeliverydelay
     property :timetodeliver
     property :timetolive
+    property :deliverymode
     property :messagelogging
 
     add_title_attributes(:jmsmodule, :topic_name) do

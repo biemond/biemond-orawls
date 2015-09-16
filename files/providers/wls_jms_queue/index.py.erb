@@ -52,22 +52,22 @@ def queue(token,token2,location,distributed):
     cd(location+'/DeliveryParamsOverrides/'+token2)
     timeToLive      = get('TimeToLive')
     timeToDeliver   = get('TimeToDeliver')
+    deliveryMode    = get('DeliveryMode')
     redeliveryDelay = get('RedeliveryDelay')
 
     cd(location+'/MessageLoggingParams/'+token2)
     messagelogging = get('MessageLoggingEnabled')
 
-    
     template=ls(location+'/Template',returnMap='true')
     if template:
       templatename = template[0]
     else:
       templatename = ''
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,forwardDelay,templatename,messagelogging,domain]))
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,deliveryMode,forwardDelay,templatename,messagelogging,domain]))
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;forwarddelay;templatename;messagelogging;domain"
+print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;deliverymode;forwarddelay;templatename;messagelogging;domain"
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:

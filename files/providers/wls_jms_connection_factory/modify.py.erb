@@ -37,11 +37,14 @@ try:
     cmo.setJNDIName(jndiname)
     cmo.setLocalJNDIName(localjndiname)
 
-    if subdeployment:
-      cmo.setDefaultTargetingEnabled(false)
+    if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
-    else:
+    elif not subdeployment and defaulttargeting == "1":
       cmo.setDefaultTargetingEnabled(true)
+    elif subdeployment and defaulttargeting == "1":
+      raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/TransactionParams/'+name)
     if xaenabled == '1':
@@ -88,4 +91,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-

@@ -17,6 +17,7 @@ errordestination         = '<%= errordestination %>'
 expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
+deliverymode             = '<%= deliverymode %>'
 redeliverydelay          = '<%= redeliverydelay %>'
 forwarddelay             = '<%= forwarddelay %>'
 templatename             = '<%= templatename %>'
@@ -43,8 +44,14 @@ try:
     if templatename:
       set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
 
-    if subdeployment:
-      set('SubDeploymentName',subdeployment)
+    if subdeployment and defaulttargeting == "0":
+      cmo.setSubDeploymentName(subdeployment)
+    elif not subdeployment and defaulttargeting == "1":
+      cmo.setDefaultTargetingEnabled(true)
+    elif subdeployment and defaulttargeting == "1":
+      raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
     if forwarddelay:
       print "ForwardDelay"
@@ -84,6 +91,11 @@ try:
       #TimeToDeliver is a string MBean attribute
       cmo.setTimeToDeliver(timetodeliver)
 
+    if deliverymode:
+      print "Delivery Mode"
+      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+      cmo.setDeliveryMode(deliverymode)
+
     if redeliverydelay:
       print "RedeliveryDelay"
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
@@ -113,4 +125,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-

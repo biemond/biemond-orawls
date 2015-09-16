@@ -26,8 +26,14 @@ try:
     if defaulttargeting  == '1':
       cmo.setDefaultTargetingEnabled(true)
 
-    if subdeployment:
+    if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
+    elif not subdeployment and defaulttargeting == "1":
+      cmo.setDefaultTargetingEnabled(true)
+    elif subdeployment and defaulttargeting == "1":
+      raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
     if connectionurl:
       cmo.setConnectionURL(connectionurl)
@@ -58,6 +64,3 @@ except:
     undo('true','y')
     stopEdit('y')
     raise
-
-
-

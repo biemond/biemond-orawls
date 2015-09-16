@@ -10,6 +10,7 @@ newproperty(:target, :array_matching => :all) do
   end
 
   def insync?(is)
+    is = [] if is == :absent or is.nil?
     is.sort == should.sort
   end
 

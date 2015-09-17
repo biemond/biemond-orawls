@@ -1,0 +1,31 @@
+
+
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+migratableTargets = ls('/MigratableTargets',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;domain;migratable_target_name;cluster;user_preferred_server;constrained_candidate_servers;number_of_restart_attempts;seconds_between_restarts;migration_policy"
+print 'migrate2'
+for migratableTarget in migratableTargets:
+    print '___migratableTarget_'+migratableTarget+'___'
+    cd('/MigratableTargets/'+migratableTarget)
+    print cmo.getName()
+    constrainedCandidateServers = ','.join(map(lambda server: server.getName(), cmo.getConstrainedCandidateServers()))
+    print >>f, ";".join(map(quote, [domain + '/' + cmo.getName(),
+            domain,
+            cmo.getName(),
+            cmo.getCluster().getName(),
+            cmo.getUserPreferredServer().getName(),
+            constrainedCandidateServers,
+            cmo.getNumberOfRestartAttempts(),
+            cmo.getSecondsBetweenRestarts(),
+            cmo.getMigrationPolicy()
+        ]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
+

@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../../orawls_core'
 
-
 module Puppet
   Type.newtype(:wls_migratable_target) do
     include EasyType
@@ -21,7 +20,6 @@ module Puppet
 
     on_create  do | command_builder |
       Puppet.info "create #{name} "
-      print "create #{name}"
       template('puppet:///modules/orawls/providers/wls_migratable_target/create.py.erb', binding)
     end
 
@@ -32,7 +30,6 @@ module Puppet
 
     on_destroy  do | command_builder |
       Puppet.info "destroy #{name} "
-      print "destroy target"
       template('puppet:///modules/orawls/providers/wls_migratable_target/destroy.py.erb', binding)
     end
 

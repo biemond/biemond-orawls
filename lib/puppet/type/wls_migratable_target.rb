@@ -14,7 +14,6 @@ module Puppet
     set_command(:wlst)
 
     to_get_raw_resources do
-      print "index"
       Puppet.info "index #{name}"
       environment = { 'action' => 'index', 'type' => 'wls_migratable_target' }
       wlst template('puppet:///modules/orawls/providers/wls_migratable_target/index.py.erb', binding), environment

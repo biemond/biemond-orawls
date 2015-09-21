@@ -6,6 +6,7 @@
 - statementcachesize bug with wls_datasource
 - wls_queue, wls_topic new attribute deliverymode
 - subdeployment and defaulttargeting checks for the jms wls types
+- new type wls_migratable_target
 
 ## 1.0.40
 - BAM only domain option

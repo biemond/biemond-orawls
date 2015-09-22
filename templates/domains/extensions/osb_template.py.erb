@@ -67,6 +67,7 @@ addTemplate('<%= @templateOSB %>')
 <% if @templateOWSM %>
 print('Adding OWSM template <%= @templateOWSM %>')
 addTemplate('<%= @templateOWSM %>')
+changeDatasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
 <% end %>
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)

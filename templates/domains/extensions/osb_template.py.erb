@@ -66,13 +66,17 @@ addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
 
 if OWSM_ENABLED == true:
-  #print 'Adding JRF Template'
-  #addTemplate('<%= @templateJRF %>')
+  print 'Adding JRF Template'
+  try:
+    addTemplate('<%= @templateJRF %>')
+  except:
+    print 'Error adding JRF Template:', sys.exc_info()[0]
+
   print 'Adding WSM PM Template'
   addTemplate('<%= @templateWSMPM %>')
   print 'Adding OWSM template'
   addTemplate('<%= @templateOWSM %>')
-  print 'Add advanced JAX-WS Template'
+  print 'Adding advanced JAX-WS Template'
   addTemplate('<%= @templateJaxWS %>')
   print 'Change datasource mds-owsm'
   changeDatasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)

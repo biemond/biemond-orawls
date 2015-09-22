@@ -64,6 +64,11 @@ print('Extend...osb domain with template <%= @templateOSB %>')
 addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
 
+<% if @templateOWSM %>
+print('Adding OWSM template <%= @templateOWSM %>')
+addTemplate('<%= @templateOWSM %>')
+<% end %>
+
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 <% if @apps_dir %>

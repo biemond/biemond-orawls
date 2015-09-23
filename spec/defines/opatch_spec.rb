@@ -14,30 +14,30 @@ describe 'orawls::opatch', :type => :define do
                   :patch_file               => 'p17584181_111170_Generic.zip',
                   :source                   => 'puppet:///middleware',
                 }}
-    let(:title) {'17584181'}
+    let(:title) {'patch1'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
                    :osfamily        => 'RedHat' }}
 
     describe "download patch" do
-      it { 
+      it {
            should contain_file("/install/p17584181_111170_Generic.zip").with({
              'source'  => 'puppet:///middleware/p17584181_111170_Generic.zip',
-           }).that_comes_before('Exec[extract opatch p17584181_111170_Generic.zip 17584181]')  
-         }  
+           }).that_comes_before('Exec[extract opatch p17584181_111170_Generic.zip patch1]')
+         }
     end
 
-    describe "extract patch" do
-      it { 
-           should contain_exec("extract opatch p17584181_111170_Generic.zip 17584181").with({
+    describe "extract patch p17584181_111170_Generic.zip patch1" do
+      it {
+           should contain_exec("extract opatch p17584181_111170_Generic.zip patch1").with({
              'command'  => 'unzip -n /install/p17584181_111170_Generic.zip -d /install',
-           }).that_comes_before('Opatch[17584181]')  
-         }  
+           }).that_comes_before('Opatch[17584181 patch1]')
+         }
     end
 
     describe "install OPatch" do
-      it { 
-           should contain_opatch("17584181").with({
+      it {
+           should contain_opatch("17584181 patch1").with({
              'ensure'                   => 'present',
              'oracle_product_home_dir'  => '/opt/oracle/middleware11g/Oracle_SOA1',
              'os_user'                  => 'oracle',
@@ -46,7 +46,7 @@ describe 'orawls::opatch', :type => :define do
              'extracted_patch_dir'      => "/install/17584181",
 
            })
-        }  
+        }
     end
   end
 
@@ -62,22 +62,22 @@ describe 'orawls::opatch', :type => :define do
                   :patch_file               => 'p17584181_111170_Generic.zip',
                   :source                   => '/mnt',
                 }}
-    let(:title) {'17584181'}
+    let(:title) {'patch1'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
                    :osfamily        => 'RedHat' }}
 
     describe "extract patch" do
-      it { 
-           should contain_exec("extract opatch p17584181_111170_Generic.zip 17584181").with({
+      it {
+           should contain_exec("extract opatch p17584181_111170_Generic.zip patch1").with({
              'command'  => 'unzip -n /mnt/p17584181_111170_Generic.zip -d /install',
-           }).that_comes_before('Opatch[17584181]')  
-         }  
+           }).that_comes_before('Opatch[17584181 patch1]')
+         }
     end
 
     describe "install OPatch" do
-      it { 
-           should contain_opatch("17584181").with({
+      it {
+           should contain_opatch("17584181 patch1").with({
              'ensure'                   => 'present',
              'oracle_product_home_dir'  => '/opt/oracle/middleware11g/Oracle_SOA1',
              'os_user'                  => 'oracle',
@@ -86,9 +86,8 @@ describe 'orawls::opatch', :type => :define do
              'extracted_patch_dir'      => "/install/17584181",
 
            })
-        }  
+        }
     end
   end
-
 
 end

@@ -1,5 +1,5 @@
 def quote(text):
-    if text:
+    if text or text == '':
         return "\"" + str(text).replace("\"", "\"\"") + "\""
     else:
         return ""

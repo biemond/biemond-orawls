@@ -16,8 +16,7 @@ try:
       mServerMBTLogStore.setDataSource(getMBean('/SystemResources/'+tlog_datasource))
       mServerMBTLogStore.setEnabled(true)
       mServerMBTLogStore.setPrefixName(tlog_datasource_prefix)
-
-    if tlog_enabled == 'false':
+    else:
       mServerMBTLogStore.setEnabled(false)
       mServerMBTLogStore.setPrefixName('TLOG_'+server_name+'_')
 

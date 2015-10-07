@@ -15,22 +15,16 @@ for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token+'/TransactionLogJDBCStore/'+token)
   prefixName = cmo.getPrefixName()
-  print prefixName
   enabled = cmo.isEnabled()
-  print str(enabled);
   dataSource = cmo.getDataSource()
-  print dataSource
   dataSourceName = ""
   if dataSource != None:
     dataSourceName = dataSource.getName()
-    print dataSourceName
 
   if enabled == 0:
     enabledBoolean = 'false'
-    print enabledBoolean
   if enabled == 1:
     enabledBoolean = 'true'
-    print enabledBoolean
   print >>f, ";".join(map(quote, [domain + '/' + token,
           enabledBoolean,
           dataSourceName,

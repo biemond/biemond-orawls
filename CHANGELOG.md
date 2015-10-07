@@ -1,5 +1,12 @@
 # History
 
+## 1.0.42
+- Allow opatch to apply the same patch multiple times on the same node
+- file resource adapter fix
+- fix permissions on wls_settings file
+- sanitised title in the fmw manifest
+- wls types empty attributes fix
+
 ## 1.0.41
 - fixed wls_group absent without user attribute bug
 - empty target fix on the wls types

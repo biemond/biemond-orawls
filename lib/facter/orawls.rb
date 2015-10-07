@@ -317,7 +317,7 @@ def get_domain(domain_path, n)
         planroot = subdoc.root
         planroot.elements['variable-definition'].elements.each('variable') do |eis|
           entry = eis.elements['value'].text
-          fileAdapterPlanEntries +=  eis.elements['value'].text + ';' if entry.include? 'eis'
+          fileAdapterPlanEntries +=  eis.elements['value'].text + ';'
         end
       end
     end

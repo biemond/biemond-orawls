@@ -27,14 +27,16 @@ define orawls::opatch(
 
   if $ensure == 'present' {
     if $remote_file == true {
-      file { "${download_dir}/${patch_file}":
-        ensure => file,
-        source => "${mountPoint}/${patch_file}",
-        backup => false,
-        mode   => '0775',
-        owner  => $os_user,
-        group  => $os_group,
-        before => Exec["extract opatch ${patch_file} ${title}"],
+      if ! defined(File["${download_dir}/${patch_file}"]) {
+        file { "${download_dir}/${patch_file}":
+          ensure => file,
+          source => "${mountPoint}/${patch_file}",
+          backup => false,
+          mode   => '0775',
+          owner  => $os_user,
+          group  => $os_group,
+          before => Exec["extract opatch ${patch_file} ${title}"],
+        }
       }
       $disk1_file = "${download_dir}/${patch_file}"
     } else {
@@ -48,7 +50,7 @@ define orawls::opatch(
       user      => $os_user,
       group     => $os_group,
       logoutput => false,
-      before    => Opatch[$patch_id],
+      before    => Opatch["${patch_id} ${title}"],
     }
   }
 
@@ -64,8 +66,9 @@ define orawls::opatch(
     }
   }
 
-  opatch{ $patch_id:
+  opatch{ "${patch_id} ${title}":
     ensure                  => $ensure,
+    patch_id                => $patch_id,
     os_user                 => $os_user,
     oracle_product_home_dir => $oracle_product_home_dir,
     orainst_dir             => $oraInstPath,

@@ -9,8 +9,8 @@ end
 gem 'puppet-lint'
 gem 'puppet', puppetversion
 gem 'rspec-puppet'
-gem 'rspec-system-puppet'
 gem 'puppetlabs_spec_helper'
+gem 'metadata-json-lint'
 gem 'puppet-syntax'
 gem 'facter', '>= 1.6.10'
 gem 'ci_reporter_rspec'

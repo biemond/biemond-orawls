@@ -7,7 +7,7 @@ Puppet::Type.type(:opatch).provide(:opatch) do
 
   def opatch(action)
     user                    = resource[:os_user]
-    patchName               = resource[:name]
+    patchName               = resource[:patch_id]
     oracle_product_home_dir = resource[:oracle_product_home_dir]
     jdk_home_dir            = resource[:jdk_home_dir]
     extracted_patch_dir     = resource[:extracted_patch_dir]
@@ -38,7 +38,7 @@ Puppet::Type.type(:opatch).provide(:opatch) do
 
   def opatch_status
     user                    = resource[:os_user]
-    patchName               = resource[:name]
+    patchName               = resource[:patch_id]
     oracle_product_home_dir = resource[:oracle_product_home_dir]
     orainst_dir             = resource[:orainst_dir]
 
@@ -73,7 +73,7 @@ Puppet::Type.type(:opatch).provide(:opatch) do
 
   def status
     output  = opatch_status
-    patchId = resource[:name]
+    patchId = resource[:patch_id]
     Puppet.debug "opatch_status output #{output} for patchId #{patchId}"
     if output == patchId
       return :present

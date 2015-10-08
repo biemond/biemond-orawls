@@ -1,0 +1,33 @@
+
+def quote(text):
+	if text:
+		return "\"" + str(text).replace("\"", "\"\"") + "\""
+	else:
+		return ""
+
+cd("/")
+m = ls('/Servers',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;tlog_enabled;tlog_datasource;tlog_datasource_prefix"
+
+for token in m:
+  print '___'+token+'___'
+  cd('/Servers/'+token+'/TransactionLogJDBCStore/'+token)
+  prefixName = cmo.getPrefixName()
+  enabled = cmo.isEnabled()
+  dataSource = cmo.getDataSource()
+  dataSourceName = ""
+  if dataSource != None:
+    dataSourceName = dataSource.getName()
+
+  if enabled == 0:
+    enabledBoolean = 'false'
+  if enabled == 1:
+    enabledBoolean = 'true'
+  print >>f, ";".join(map(quote, [domain + '/' + token,
+          enabledBoolean,
+          dataSourceName,
+          prefixName]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

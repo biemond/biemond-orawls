@@ -2,6 +2,7 @@
 
 ## 1.0.42
 - Allow opatch to apply the same patch multiple times on the same node
+- new wls_server_tlog resource for adding transaction logs to a database
 - file resource adapter fix
 - fix permissions on wls_settings file
 - sanitised title in the fmw manifest

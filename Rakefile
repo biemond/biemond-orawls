@@ -59,7 +59,7 @@ desc "Run syntax, lint, and spec tests."
 task :default => [
 	:spec_prep,
 	:syntax,
-	:test,
+	:spec_standalone,
 	:lint,
 	:spec_clean
 ]

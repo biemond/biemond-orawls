@@ -74,6 +74,6 @@ describe 'orawls::fmw', :type => :define do
                    :kernel          => 'Linux',
                    :osfamily        => 'RedHat' }}
     it { is_expected.to compile }
-    it { is_expected.to contain_file("/install/My_Oracle-SOA_Installation_silent_soa.rsp") }
+    it { is_expected.to contain_file("/install/My_Oracle-SOA_Installation_silent.rsp") }
   end
 end

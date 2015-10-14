@@ -31,7 +31,7 @@ describe 'orawls::fmw', :type => :define do
 
     describe "SOA Suite orainst" do
       it do 
-        should contain_orawls__utils__orainst('create oraInst for soa').with({
+        should contain_orawls__utils__orainst('create oraInst for soaPS6').with({
              'ora_inventory_dir'  => '/opt/oracle/oraInventory',
              'os_group'           => 'dba',
            })
@@ -41,7 +41,7 @@ describe 'orawls::fmw', :type => :define do
 
     describe "for SOA Suite response file" do
       it do 
-        should contain_file("/install/soaPS6_silent_soa.rsp")
+        should contain_file("/install/soaPS6_silent.rsp")
       end
     end
 
@@ -49,51 +49,57 @@ describe 'orawls::fmw', :type => :define do
       it { 
            should contain_file("/install/file1").with({
              'source'  => '/mnt/file1',
-           }).that_comes_before('Exec[extract file1]')  
+           }).that_comes_before('Exec[extract file1 for soaPS6]')  
          }  
     end
 
     describe "extract SOA Suite file1" do
       it { 
-           should contain_exec("extract file1").with({
-             'command'  => 'unzip -o /install/file1 -d /install/soa',
-             'creates'  => '/install/soa/Disk1',
-           }).that_requires('Orawls::Utils::Orainst[create oraInst for soa]')  
+           should contain_exec("extract file1 for soaPS6")
+             .with({
+               'command'  => 'unzip -o /install/file1 -d /install/soaPS6',
+               'creates'  => '/install/soaPS6/Disk1'})
+             .that_requires('Orawls::Utils::Orainst[create oraInst for soaPS6]')  
          }  
     end
 
     describe "for SOA Suite file2" do
       it do 
-        should contain_file("/install/file2").with({
-             'source'  => '/mnt/file2',
-           }).that_comes_before('Exec[extract file2]')  
+        should contain_file("/install/file2")
+          .with({'source'  => '/mnt/file2'})
+          .that_comes_before('Exec[extract file2 for soaPS6]')  
       end
     end
 
     describe "extract SOA Suite file2" do
       it { 
-           should contain_exec("extract file2").with({
-             'command'  => 'unzip -o /install/file2 -d /install/soa',
-             'creates'  => '/install/soa/Disk4',
-           }).that_requires('Exec[extract file1]').that_comes_before('Exec[install soa soaPS6]')   
+           should contain_exec("extract file2 for soaPS6")
+            .with({
+               'command'  => 'unzip -o /install/file2 -d /install/soaPS6',
+               'creates'  => '/install/soaPS6/Disk4'})
+            .that_requires('Exec[extract file1 for soaPS6]')
+            .that_comes_before('Exec[install soaPS6]')   
          }  
     end
 
 
     describe "create Oracle home" do
       it do 
-        should contain_file("/opt/oracle/middleware11gR1/Oracle_SOA1").with({
-             'ensure'  => 'directory',
-          }).that_comes_before('Exec[install soa soaPS6]')   
+        should contain_file("/opt/oracle/middleware11gR1/Oracle_SOA1")
+          .with({'ensure'  => 'directory'})
+          .that_comes_before('Exec[install soaPS6]')   
       end
     end
 
     describe "install SOA Suite" do
       it { 
-           should contain_exec("install soa soaPS6").with({
-             'command'      => "/bin/sh -c 'unset DISPLAY;/install/soa/Disk1/install/linux64/runInstaller -silent -response /install/soaPS6_silent_soa.rsp -waitforcompletion -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs -jreLoc /usr/java/jdk1.7.0_45 -Djava.io.tmpdir=/tmp'",
-             'environment'  => 'TEMP=/tmp',
-           }).that_requires('File[/install/soaPS6_silent_soa.rsp]').that_requires('Orawls::Utils::Orainst[create oraInst for soa]').that_requires('Exec[extract file1]')     
+           should contain_exec("install soaPS6")
+           .with({
+             'command'      => "/bin/sh -c 'unset DISPLAY;/install/soaPS6/Disk1/install/linux64/runInstaller -silent -response /install/soaPS6_silent.rsp -waitforcompletion -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs -jreLoc /usr/java/jdk1.7.0_45 -Djava.io.tmpdir=/tmp'",
+             'environment'  => 'TEMP=/tmp'})
+           .that_requires('File[/install/soaPS6_silent.rsp]')
+           .that_requires('Orawls::Utils::Orainst[create oraInst for soaPS6]')
+           .that_requires('Exec[extract file1 for soaPS6]')     
          }  
     end
 
@@ -129,42 +135,47 @@ describe 'orawls::fmw', :type => :define do
 
     describe "OSB orainst" do
       it do 
-        should contain_orawls__utils__orainst('create oraInst for osb').with({
+        should contain_orawls__utils__orainst('create oraInst for osbPS6')
+          .with({
              'ora_inventory_dir'  => '/opt/oracle/oraInventory',
              'os_group'           => 'dba',
-           })
+          })
       end
     end
 
     describe "for OSB response file" do
       it do 
-        should contain_file("/install/osbPS6_silent_osb.rsp")
+        should contain_file("/install/osbPS6_silent.rsp")
       end
     end
 
     describe "extract OSB file1" do
       it { 
-           should contain_exec("extract file1").with({
-             'command'  => 'unzip -o /mnt/file1 -d /install/osb',
-             'creates'  => '/install/osb/Disk1',
-           }).that_requires('Orawls::Utils::Orainst[create oraInst for osb]')  
+           should contain_exec("extract file1 for osbPS6")
+            .with({
+               'command'  => 'unzip -o /mnt/file1 -d /install/osbPS6',
+               'creates'  => '/install/osbPS6/Disk1'})
+            .that_requires('Orawls::Utils::Orainst[create oraInst for osbPS6]')  
          }  
     end
 
     describe "create Oracle home" do
       it do 
-        should contain_file("/opt/oracle/middleware11gR1/Oracle_OSB1").with({
-             'ensure'  => 'directory',
-          }).that_comes_before('Exec[install osb osbPS6]')   
+        should contain_file("/opt/oracle/middleware11gR1/Oracle_OSB1")
+          .with({'ensure'  => 'directory'})
+          .that_comes_before('Exec[install osbPS6]')   
       end
     end
 
     describe "install OSB" do
       it { 
-           should contain_exec("install osb osbPS6").with({
-             'command'      => "/bin/sh -c 'unset DISPLAY;/install/osb/Disk1/install/linux/runInstaller -silent -response /install/osbPS6_silent_osb.rsp -waitforcompletion -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs -jreLoc /usr/java/jdk1.7.0_45 -Djava.io.tmpdir=/tmp1'",
-             'environment'  => 'TEMP=/tmp1',
-           }).that_requires('File[/install/osbPS6_silent_osb.rsp]').that_requires('Orawls::Utils::Orainst[create oraInst for osb]').that_requires('Exec[extract file1]')     
+           should contain_exec("install osbPS6")
+            .with({
+               'command'      => "/bin/sh -c 'unset DISPLAY;/install/osbPS6/Disk1/install/linux/runInstaller -silent -response /install/osbPS6_silent.rsp -waitforcompletion -invPtrLoc /etc/oraInst.loc -ignoreSysPrereqs -jreLoc /usr/java/jdk1.7.0_45 -Djava.io.tmpdir=/tmp1'",
+               'environment'  => 'TEMP=/tmp1'})
+            .that_requires('File[/install/osbPS6_silent.rsp]')
+            .that_requires('Orawls::Utils::Orainst[create oraInst for osbPS6]')
+            .that_requires('Exec[extract file1 for osbPS6]')     
          }  
     end
 

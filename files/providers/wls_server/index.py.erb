@@ -96,7 +96,7 @@ for token in m:
   default_file_store = get('Directory')
 
   n = ls('/Servers/'+token+'/Machine')
-  machine = 'none'
+  machine = ''
   for token2 in n.split("drw-"):
       token2=token2.strip().lstrip().rstrip()
       if token2:

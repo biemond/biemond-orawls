@@ -5,9 +5,9 @@ manage_arguments      = False
 manage_classpath      = False
 manage_bea_home       = False
 manage_listenaddress  = False
+manage_machine        = False
 
 name          = '<%= server_name %>'
-machineName   = '<%= machine %>'
 
 <%- unless arguments.nil? then -%>
 arguments        = '''<%= arguments %>'''
@@ -27,6 +27,11 @@ manage_classpath = True
 <%- unless listenaddress.nil? then -%>
 listenAddress        = '<%= listenaddress %>'
 manage_listenaddress = True
+<% end %>
+
+<%- unless machine.nil? then -%>
+machineName    = '<%= machine %>'
+manage_machine = True
 <% end %>
 
 logFilename                      = '<%= logfilename %>'
@@ -99,7 +104,12 @@ def formatBoolean2(value):
 try:
 
     cd('/Servers/'+name)
-    set('Machine',getMBean('/Machines/'+machineName))
+
+    if manage_machine:
+      if machineName == "":
+        cmo.setMachine(None)
+      else:
+        set('Machine',getMBean('/Machines/'+machineName))
 
     print "Change Notes"
     if server_parameters and server_parameters != 'None':

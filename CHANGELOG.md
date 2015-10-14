@@ -1,5 +1,8 @@
 # History
 
+## 1.0.43
+- Allow multiple fmw installations of the same product on a middleware home
+
 ## 1.0.42
 - Allow opatch to apply the same patch multiple times on the same node
 - new wls_server_tlog resource for adding transaction logs to a database

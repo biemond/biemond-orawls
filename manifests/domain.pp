@@ -13,6 +13,7 @@ define orawls::domain (
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = true,  #only for SOA Suite 12.1.3
+  $owsm_enabled                          = false, #only for OSB domain_template on 10.3.6
   $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,
   $adminserver_name                      = hiera('domain_adminserver'            , 'AdminServer'),
@@ -82,6 +83,7 @@ define orawls::domain (
     if ( $version == 1036 or $version == 1111 ) {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"
       $templateWS        = "${weblogic_home_dir}/common/templates/applications/wls_webservice.jar"
+      $templateJaxWS     = "${weblogic_home_dir}/common/templates/applications/wls_webservice_jaxws.jar"
 
       $templateEM        = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.em_11_1_1_0_0_template.jar"
       $templateJRF       = "${middleware_home_dir}/oracle_common/common/templates/applications/jrf_template_11.1.1.jar"
@@ -89,6 +91,7 @@ define orawls::domain (
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.wsmpm_template_11.1.1.jar"
 
       $templateOSB          = "${middleware_home_dir}/Oracle_OSB1/common/templates/applications/wlsb.jar"
+      $templateOWSM         = "${middleware_home_dir}/Oracle_OSB1/common/templates/applications/wlsb_owsm.jar"
       $templateSOAAdapters  = "${middleware_home_dir}/Oracle_OSB1/common/templates/applications/oracle.soa.common.adapters_template_11.1.1.jar"
       $templateSOA          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.soa_template_11.1.1.jar"
       $templateBPM          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bpm_template_11.1.1.jar"

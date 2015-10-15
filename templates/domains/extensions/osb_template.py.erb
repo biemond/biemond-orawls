@@ -14,6 +14,7 @@ JSSE_ENABLED=<%= @jsse_enabled %>
 WEBLOGIC_VERSION=<%= @version %>
 WEBTIER_ENABLED=<%= @webtier_enabled %>
 ESS_ENABLED=<%= @ess_enabled %>
+OWSM_ENABLED=<%= @owsm_enabled %>
 
 ADMIN_SERVER='<%= @adminserver_name %>'
 ADMIN_USER='<%= @weblogic_user %>'
@@ -63,6 +64,24 @@ dumpStack();
 print('Extend...osb domain with template <%= @templateOSB %>')
 addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
+
+if WEBLOGIC_VERSION in (1036,1111) and OWSM_ENABLED == true:
+  print 'Adding JRF Template'
+  try:
+    addTemplate('<%= @templateJRF %>')
+  except:
+    print 'Error adding JRF Template:', sys.exc_info()[0]
+
+  print 'Adding WSM PM Template'
+  addTemplate('<%= @templateWSMPM %>')
+  print 'Adding OWSM template'
+  addTemplate('<%= @templateOWSM %>')
+  print 'Adding advanced JAX-WS Template'
+  addTemplate('<%= @templateJaxWS %>')
+  print 'Change datasource mds-owsm'
+  changeDatasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+  print 'Change datasource wlsbjmsrpDataSource'
+  changeDatasourceDriver('wlsbjmsrpDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL,'oracle.jdbc.OracleDriver')
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 

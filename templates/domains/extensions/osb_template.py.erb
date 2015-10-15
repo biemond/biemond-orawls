@@ -65,7 +65,7 @@ print('Extend...osb domain with template <%= @templateOSB %>')
 addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
 
-if OWSM_ENABLED == true:
+if WEBLOGIC_VERSION in (1036,1111) and OWSM_ENABLED == true:
   print 'Adding JRF Template'
   try:
     addTemplate('<%= @templateJRF %>')

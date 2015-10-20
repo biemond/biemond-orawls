@@ -128,24 +128,24 @@ define orawls::nodemanager (
   }
 
   $property_defaults = {
-    'log_limit'                          => '0',
-    'domains_dir_remote_sharing_enabled' => 'false',
-    'authentication_enabled'             => 'true',
+    'log_limit'                          => 0,
+    'domains_dir_remote_sharing_enabled' => false,
+    'authentication_enabled'             => true,
     'log_level'                          => 'INFO',
-    'domains_file_enabled'               => 'true',
+    'domains_file_enabled'               => true,
     'start_script_name'                  => 'startWebLogic.sh',
-    'native_version_enabled'             => 'true',
-    'log_to_stderr'                      => 'true',
+    'native_version_enabled'             => true,
+    'log_to_stderr'                      => true,
     'log_count'                          => '1',
-    'domain_registration_enabled'        => 'false',
-    'stop_script_enabled'                => 'true',
-    'quit_enabled'                       => 'false',
-    'log_append'                         => 'true',
-    'state_check_interval'               => '500',
-    'crash_recovery_enabled'             => 'true',
-    'start_script_enabled'               => 'true',
+    'domain_registration_enabled'        => false,
+    'stop_script_enabled'                => true,
+    'quit_enabled'                       => false,
+    'log_append'                         => true,
+    'state_check_interval'               => 500,
+    'crash_recovery_enabled'             => true,
+    'start_script_enabled'               => true,
     'log_formatter'                      => 'weblogic.nodemanager.server.LogFormatter',
-    'listen_backlog'                     => '50',
+    'listen_backlog'                     => 50,
   }
 
   $properties_merged = merge($property_defaults, $properties)

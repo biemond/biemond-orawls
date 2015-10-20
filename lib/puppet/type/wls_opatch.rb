@@ -64,12 +64,10 @@ module Puppet
       fail "puppet url's not (yet) supported."
     end
 
-
     def unzip(file)
       output = "/tmp/wls_opatch"
       Puppet.debug "Unzipping source #{source} to #{output}"
-      `unzip -o #{file} -d '#{output}'`
-      FileUtils.chmod_R(0777,output)
+      Puppet::Util::Execution.execute("/usr/bin/unzip -o #{file} -d #{output}" , :failonfail => true, :uid => os_user)
       "#{output}/#{patch_id}"
     end
 

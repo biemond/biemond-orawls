@@ -27,6 +27,7 @@ define orawls::nodemanager (
   $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
   $log_output                            = false, # true|false
   $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
+  $properties                            = {},
 )
 {
 
@@ -125,6 +126,29 @@ define orawls::nodemanager (
   } else {
     $replaceNodemanagerProperties = true
   }
+
+  $property_defaults = {
+    'log_limit'                          => '0',
+    'domains_dir_remote_sharing_enabled' => 'false',
+    'authentication_enabled'             => 'true',
+    'log_level'                          => 'INFO',
+    'domains_file_enabled'               => 'true',
+    'start_script_name'                  => 'startWebLogic.sh',
+    'native_version_enabled'             => 'true',
+    'log_to_stderr'                      => 'true',
+    'log_count'                          => '1',
+    'domain_registration_enabled'        => 'false',
+    'stop_script_enabled'                => 'true',
+    'quit_enabled'                       => 'false',
+    'log_append'                         => 'true',
+    'state_check_interval'               => '500',
+    'crash_recovery_enabled'             => 'true',
+    'start_script_enabled'               => 'true',
+    'log_formatter'                      => 'weblogic.nodemanager.server.LogFormatter',
+    'listen_backlog'                     => '50',
+  }
+
+  $properties_merged = merge($property_defaults, $properties)
 
   # nodemanager is part of the domain creation
   if ( $version == 1111 or $version == 1036 or $version == 1211 ){

@@ -51,10 +51,11 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     output = `su #{su_shell} - #{user} -c '#{command}'`
 
     output.each_line do |li|
-      opatch = li[5, li.index(':') - 5].strip + ';' if li['Patch'] && li[': applied on']
+      opatch = li[5, li.index(':') - 5].strip if li['Patch'] && li[': applied on']
       unless opatch.nil?
         Puppet.debug "line #{opatch}"
-        if opatch.include? patchName
+        patchNum = patchName.to_i
+        if opatch.to_i == patchNum
           Puppet.debug 'found patch'
           return patchName
         end

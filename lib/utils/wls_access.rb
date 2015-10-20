@@ -75,6 +75,7 @@ module Utils
       custom_trust              = domainValues['custom_trust']
       trust_keystore_file       = domainValues['trust_keystore_file']
       trust_keystore_passphrase = domainValues['trust_keystore_passphrase']
+      debug_module              = domainValues['debug_module']
 
       fail('weblogic_home_dir cannot be nil, check the wls_setting resource type') if weblogicHomeDir.nil?
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
@@ -90,6 +91,14 @@ module Utils
       end
 
       wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
+
+      if debug_module == 'true'
+        if !File.directory?('/tmp/orawls-archive')
+          FileUtils.mkdir('/tmp/orawls-archive')
+        end
+        FileUtils.cp(tmpFile.path, '/tmp/orawls-archive/')
+      end
+
       if timeout_specified
         wls_daemon.execute_script(tmpFile.path, timeout_specified)
       else

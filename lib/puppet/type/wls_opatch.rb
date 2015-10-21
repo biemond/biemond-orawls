@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../../orawls_core'
 
-
 module Puppet
   #
   Type.newtype(:wls_opatch) do
@@ -21,7 +20,7 @@ module Puppet
         fetched_source = source
       end
       if is_zipfile?(fetched_source)
-        extracted_source = unzip(fetched_source) 
+        extracted_source = unzip(fetched_source)
       else
         extracted_source = "#{source}/#{patch_id}"
       end
@@ -47,6 +46,7 @@ module Puppet
     parameter :jdk_home_dir
     parameter :source
     parameter :orainst_dir
+    parameter :tmp_dir
 
     def opatch(command, options = {})
       provider.opatch(command)
@@ -65,13 +65,14 @@ module Puppet
     end
 
     def unzip(file)
-      output = "/tmp/wls_opatch"
-      Puppet.debug "Unzipping source #{source} to #{output}"
-      Puppet::Util::Execution.execute("/usr/bin/unzip -o #{file} -d #{output}" , :failonfail => true, :uid => os_user)
+      output = "#{tmp_dir}/wls_opatch"
+      Puppet.info "Unzipping source #{source} to #{output}"
+      environment = {}
+      environment[:PATH] = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
+      Puppet::Util::Execution.execute("unzip -o #{file} -d #{output}", :failonfail => true, :uid => os_user, :custom_environment => environment )
+      Puppet.info "Done Unzipping source #{source} to #{output}"
       "#{output}/#{patch_id}"
     end
 
   end
-
-
 end

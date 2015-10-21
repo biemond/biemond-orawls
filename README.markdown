@@ -540,8 +540,6 @@ common.yaml
          source:                   "/vagrant"
          log_output:               true
 
-
-
 or when you set the defaults hiera variables
 
     ---

@@ -35,8 +35,8 @@ define orawls::opatch(
           mode   => '0775',
           owner  => $os_user,
           group  => $os_group,
-#          before => Exec["extract opatch ${patch_file} ${title}"],
-          before    => Opatch["${patch_id} ${title}"],
+          before => Opatch["${patch_id} ${title}"],
+#         before => Exec["extract opatch ${patch_file} ${title}"],
         }
       }
       $disk1_file = "${download_dir}/${patch_file}"

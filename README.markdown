@@ -1082,6 +1082,7 @@ __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware
       download_dir                => "/data/install",
       log_output                  => true,
       sleep                       => 20,
+      properties                  => {},
     }
 
 or when you set the defaults hiera variables
@@ -1153,6 +1154,49 @@ or with custom identity and custom truststore
         custom_identity_privatekey_passphrase: 'welcome'
         nodemanager_address:                   *domain_adminserver_address
 
+
+you can also set some extra nodemanager properties by using the properties parameter like this
+
+    nodemanager_instances:
+      'nodemanager12c':
+         version:                     1212
+         weblogic_home_dir:           "/opt/oracle/middleware12c/wlserver"
+         jdk_home_dir:                "/usr/java/jdk1.7.0_45"
+         nodemanager_port:            5556
+         nodemanager_secure_listener: true
+         domain_name:                 "Wls12c"
+         os_user:                     "oracle"
+         os_group:                    "dba"
+         log_dir:                     "/data/logs"
+         download_dir:                "/data/install"
+         log_output:                  true
+         properties:
+          'log_level':                'INFO'
+          'log_count':                '2'
+          'log_append':               true
+          'log_formatter':            'weblogic.nodemanager.server.LogFormatter'
+          'listen_backlog':           60
+
+here is an overview of all the parameters you can set with its defaults
+
+    'log_limit'                          => 0,
+    'domains_dir_remote_sharing_enabled' => false,
+    'authentication_enabled'             => true,
+    'log_level'                          => 'INFO',
+    'domains_file_enabled'               => true,
+    'start_script_name'                  => 'startWebLogic.sh',
+    'native_version_enabled'             => true,
+    'log_to_stderr'                      => true,
+    'log_count'                          => '1',
+    'domain_registration_enabled'        => false,
+    'stop_script_enabled'                => true,
+    'quit_enabled'                       => false,
+    'log_append'                         => true,
+    'state_check_interval'               => 500,
+    'crash_recovery_enabled'             => true,
+    'start_script_enabled'               => true,
+    'log_formatter'                      => 'weblogic.nodemanager.server.LogFormatter',
+    'listen_backlog'                     => 50,
 
 
 ### control

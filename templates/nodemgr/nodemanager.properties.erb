@@ -3,27 +3,27 @@ NodeManagerHome=<%= @weblogic_home_dir %>/common/nodemanager
 JavaHome=<%= @jdk_home_dir %>
 ListenPort=<%= @nodemanager_port %>
 LogFile=<%= @nodeMgrLogDir %>
-LogLimit=0
+LogLimit=<%= @properties_merged['log_limit'] %>
 PropertiesVersion=10.3
-DomainsDirRemoteSharingEnabled=false
-AuthenticationEnabled=true
-LogLevel=INFO
-DomainsFileEnabled=true
-StartScriptName=startWebLogic.sh
+DomainsDirRemoteSharingEnabled=<%= @properties_merged['domains_dir_remote_sharing_enabled'] %>
+AuthenticationEnabled=<%= @properties_merged['authentication_enabled'] %>
+LogLevel=<%= @properties_merged['log_level'] %>
+DomainsFileEnabled=<%= @properties_merged['domains_file_enabled'] %>
+StartScriptName=<%= @properties_merged['start_script_name'] %>
 ListenAddress=<%= @nodemanager_address %>
-NativeVersionEnabled=true
-LogToStderr=true
+NativeVersionEnabled=<%= @properties_merged['native_version_enabled'] %>
+LogToStderr=<%= @properties_merged['log_to_stderr'] %>
 SecureListener=<%= @nodemanager_secure_listener %>
-LogCount=1
-DomainRegistrationEnabled=false
-StopScriptEnabled=true
-QuitEnabled=false
-LogAppend=true
-StateCheckInterval=500
-CrashRecoveryEnabled=true
-StartScriptEnabled=true
-LogFormatter=weblogic.nodemanager.server.LogFormatter
-ListenBacklog=50
+LogCount=<%= @properties_merged['log_count'] %>
+DomainRegistrationEnabled=<%= @properties_merged['domain_registration_enabled'] %>
+StopScriptEnabled=<%= @properties_merged['stop_script_enabled'] %>
+QuitEnabled=<%= @properties_merged['quit_enabled'] %>
+LogAppend=<%= @properties_merged['log_append'] %>
+StateCheckInterval=<%= @properties_merged['state_check_interval'] %>
+CrashRecoveryEnabled=<%= @properties_merged['crash_recovery_enabled'] %>
+StartScriptEnabled=<%= @properties_merged['start_script_enabled'] %>
+LogFormatter=<%= @properties_merged['log_formatter'] %>
+ListenBacklog=<%= @properties_merged['listen_backlog'] %>
 <% if @custom_identity == true %>
 KeyStores=CustomIdentityAndCustomTrust
 CustomIdentityKeyStoreFileName=<%= @custom_identity_keystore_filename %>

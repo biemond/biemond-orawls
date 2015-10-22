@@ -35,7 +35,7 @@ define orawls::opatch(
           mode   => '0775',
           owner  => $os_user,
           group  => $os_group,
-          before => Opatch["${patch_id} ${title}"],
+          before => Wls_opatch["${oracle_product_home_dir}:${patch_id}"],
 #         before => Exec["extract opatch ${patch_file} ${title}"],
         }
       }

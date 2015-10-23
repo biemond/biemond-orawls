@@ -1767,6 +1767,33 @@ required for all the weblogic type/providers, this is a pointer to an WebLogic A
       post_classpath     => '/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar'
     }
 
+saving the WLST scripts of all the wls types to a temporary folder
+
+archive_path has /tmp/orawls-archive as default folder
+
+    wls_setting { 'default':
+      debug_module              => 'true',
+      archive_path              => '/var/tmp/install/default_domain',
+      connect_url               => 't3s://10.10.10.10:7002',
+      custom_trust              => 'true',
+      trust_keystore_file       => '/vagrant/truststore.jks',
+      trust_keystore_passphrase => 'welcome',
+      user                      => 'oracle',
+      weblogic_home_dir         => '/opt/oracle/middleware12c/wlserver',
+      weblogic_password         => 'weblogic1',
+      weblogic_user             => 'weblogic',
+    }
+    wls_setting { 'plain':
+      debug_module      => 'false',
+      archive_path      => '/tmp/orawls-archive',
+      connect_url       => 't3://10.10.10.10:7101',
+      custom_trust      => 'false',
+      user              => 'oracle',
+      weblogic_home_dir => '/opt/oracle/middleware12c/wlserver',
+      weblogic_password => 'weblogic1',
+      weblogic_user     => 'weblogic',
+    }
+
 or in hiera
 
     # and for with weblogic infra 12.1.3, use this post_classpath
@@ -1778,6 +1805,30 @@ or in hiera
         weblogic_user:      'weblogic'
         weblogic_password:  'weblogic1'
         post_classpath:     '/opt/oracle/middleware12c/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wlst_12.1.3.jar'
+
+    wls_setting_instances:
+      'default':
+        user:                      *wls_os_user
+        weblogic_home_dir:         *wls_weblogic_home_dir
+        connect_url:               "t3s://%{hiera('domain_adminserver_address')}:7002"
+        weblogic_user:             *wls_weblogic_user
+        weblogic_password:         *domain_wls_password
+        custom_trust:              *wls_custom_trust
+        trust_keystore_file:       *wls_trust_keystore_file
+        trust_keystore_passphrase: *wls_trust_keystore_passphrase
+        require:                   Orawls::Domain[Wls1213]
+        debug_module:              true
+        archive_path:              '/var/tmp/install/default_domain'
+      'plain':
+        user:                      *wls_os_user
+        weblogic_home_dir:         *wls_weblogic_home_dir
+        connect_url:               "t3://%{hiera('domain_adminserver_address')}:7101"
+        weblogic_user:             *wls_weblogic_user
+        weblogic_password:         *domain_wls_password
+        require:                   Orawls::Domain[plain_Wls]
+        debug_module:              false
+
+
 
 With t3s and custom trust
 

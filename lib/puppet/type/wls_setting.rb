@@ -22,6 +22,7 @@ module Puppet
     property :weblogic_password
     property :post_classpath
     property :debug_module
+    property :archive_path
 
     property :custom_trust
     property :trust_keystore_file

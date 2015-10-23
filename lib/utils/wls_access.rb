@@ -92,7 +92,7 @@ module Utils
 
       wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
 
-      if debug_module == 'true'
+      if debug_module.to_s == 'true'
         if !File.directory?('/tmp/orawls-archive')
           FileUtils.mkdir('/tmp/orawls-archive')
         end

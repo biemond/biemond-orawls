@@ -23,10 +23,12 @@ Dependency with
 - adrien/filemapper >= 1.1.1
 - reidmv/yamlfile >=0.2.0
 - fiddyspence/sleep => 1.1.2
+- puppetlabs/stdlib => 4.9.0
 
 
 ## Complete examples
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)
+- WebLogic 12.2.1 / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
 - WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
@@ -43,7 +45,7 @@ Dependency with
 
 ## Orawls WebLogic Features
 
-- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1 & 12.1.2 & 12.1.3 + FMW infra )
+- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1, 12.1.2, 12.1.3, 12.2.1 + its FMW infrastructure editions )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
 - [Create a WebLogic domain](#domain)
@@ -57,7 +59,7 @@ Dependency with
 - [StoreUserConfig](#storeuserconfig) for storing WebLogic Credentials and using in WLST
 - [Dynamic targetting](#Dynamictargetting) by using the notes field in WebLogic for resource targetting
 
-### Fusion Middleware Features 11g & 12.1.3
+### Fusion Middleware Features 11g & 12c
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - [WebTier](#webtier) Oracle HTTP server
 - [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
@@ -120,7 +122,7 @@ Dependency with
 all templates creates a WebLogic domain, logs the domain creation output
 
 - domain 'standard'    -> a default WebLogic
-- domain 'adf'         -> JRF + EM + Coherence (12.1.2 & 12.1.3) + OWSM (12.1.2 & 12.1.3) + JAX-WS Advanced + Soap over JMS (12.1.2 & 12.1.3)
+- domain 'adf'         -> JRF + EM + Coherence (12.1.2, 12.1.3, 12.2.1) + OWSM (12.1.2, 12.1.3, 12.2.1) + JAX-WS Advanced + Soap over JMS (12.1.2, 12.1.3, 12.2.1)
 - domain 'osb'         -> OSB + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
@@ -182,16 +184,29 @@ or hiera parameters of weblogic.pp
 
 Requires the JDK 7 or 8 JCE extension
 
+    jdk7::install7{ 'jdk-8u45-linux-x64':
+        version                     => "8u45" ,
+        full_version                => "jdk1.8.0_45",
+        alternatives_priority       => 18000,
+        x64                         => true,
+        download_dir                => "/var/tmp/install",
+        urandom_java_fix            => true,
+        rsa_key_size_fix            => true,
+        cryptography_extension_file => "jce_policy-8.zip",
+        source_path                 => "/software",
+    }
+
+
     jdk7::install7{ 'jdk1.7.0_51':
-        version                   => "7u51" ,
-        fullVersion               => "jdk1.7.0_51",
-        alternativesPriority      => 18000,
-        x64                       => true,
-        downloadDir               => "/data/install",
-        urandomJavaFix            => true,
-        rsakeySizeFix             => true,                          <!--
-        cryptographyExtensionFile => "UnlimitedJCEPolicyJDK7.zip",  <!---
-        sourcePath                => "/software",
+        version                     => "7u51" ,
+        full_version                => "jdk1.7.0_51",
+        alternatives_priority       => 18000,
+        x64                         => true,
+        download_dir                => "/data/install",
+        urandom_java_fix            => true,
+        rsa_key_size_fix            => true,                          <!--
+        cryptography_extension_file => "UnlimitedJCEPolicyJDK7.zip",  <!---
+        source_path                 => "/software",
     }
 
 To enable this in orawls you can set the jsse_enabled on the following manifests
@@ -415,7 +430,21 @@ common.yaml
 ## WebLogic Module Usage
 
 ### weblogic
-__orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2 & 12.1.3
+__orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2, 12.1.3, 12.2.1
+
+    class{'orawls::weblogic':
+      version              => 1221,                       # 1036|1211|1212|1213|1221
+      filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
+      jdk_home_dir         => '/usr/java/jdk1.8.0_45',
+      oracle_base_home_dir => "/opt/oracle",
+      middleware_home_dir  => "/opt/oracle/middleware12c",
+      weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
+      os_user              => "oracle",
+      os_group             => "dba",
+      download_dir         => "/data/install",
+      source               => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
+      log_output           => true,
+    }
 
     class{'orawls::weblogic':
       version              => 1212,                       # 1036|1211|1212|1213

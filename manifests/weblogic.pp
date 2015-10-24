@@ -1,14 +1,14 @@
 # == Class: orawls::weblogic
 #
 class orawls::weblogic (
-  $version              = 1111,  # 1036|1111|1211|1212|1214
+  $version              = 1111,  # 1036|1111|1211|1212|1213|1221
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
   $weblogic_home_dir    = undef, # /opt/oracle/middleware11gR1/wlserver
   $wls_domains_dir      = undef, # /opt/oracle/wlsdomains/domains
   $wls_apps_dir         = undef, # /opt/oracle/wlsdomains/applications
-  $fmw_infra            = false, # true|false 12.1.2/12.1.3 option -> plain weblogic or fmw infra
+  $fmw_infra            = false, # true|false 1212/1213/1221 option -> plain weblogic or fmw infra
   $jdk_home_dir         = undef, # /usr/java/jdk1.7.0_45
   $os_user              = undef, # oracle
   $os_group             = undef, # dba
@@ -44,7 +44,7 @@ class orawls::weblogic (
 
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = 'orawls/weblogic_silent_install.xml.erb'
-  } elsif ( $version == 1212 or $version == 1213 ) {
+  } elsif ( $version == 1212 or $version == 1213 or $version == 1221 ) {
 
     #The oracle home location. This can be an existing Oracle Home or a new Oracle Home
     if ( $fmw_infra == true ) {
@@ -166,7 +166,7 @@ class orawls::weblogic (
     $created_dir = $middleware_home_dir
   }
 
-  if ($version == 1212 or $version == 1213) {
+  if ($version == 1212 or $version == 1213 or $version == 1221) {
 
     $command = "-silent -responseFile ${download_dir}/weblogic_silent_install.xml "
 

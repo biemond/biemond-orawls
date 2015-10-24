@@ -1,5 +1,8 @@
 # History
 
+## 1.0.44
+- added support for WebLogic 12.2.1 ( standard and infrastructure edition )
+
 ## 1.0.43
 - Allow multiple fmw installations of the same product on a middleware home
 - optimized wls_opatch type/provider which will replace the opatch type

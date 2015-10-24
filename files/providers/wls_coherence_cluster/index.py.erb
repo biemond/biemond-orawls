@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/CoherenceClusterSystemResources',returnMap='true')
@@ -24,6 +24,16 @@ for token in m:
 
 
   cd('/CoherenceClusterSystemResources/'+token+'/CoherenceClusterResource/'+token+'/CoherenceClusterParams/'+token)
-  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),get('ClusteringMode'),get('UnicastListenAddress'),get('UnicastListenPort'),get('MulticastListenAddress'),get('MulticastListenPort'),domain]))
+
+  unicastListenAddress = ''
+  unicastListenPort = ''
+
+  try:
+    unicastListenAddress = get('UnicastListenAddress')
+    unicastListenPort = get('UnicastListenPort')
+  except:
+    print "unicast parameters does not exists, continue"
+
+  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),get('ClusteringMode'),unicastListenAddress,unicastListenPort,get('MulticastListenAddress'),get('MulticastListenPort'),domain]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

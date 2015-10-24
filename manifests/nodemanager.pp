@@ -41,7 +41,7 @@ define orawls::nodemanager (
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
     $startHome   = "${weblogic_home_dir}/server/bin"
-  } elsif $version == 1212 or $version == 1213 {
+  } elsif $version == 1212 or $version == 1213 or $version == 1221 {
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
     $startHome   = "${domains_dir}/${domain_name}/bin"
   } else {
@@ -80,7 +80,7 @@ define orawls::nodemanager (
 
   case $::kernel {
     'Linux': {
-      if ( $version == 1212 or $version == 1213 ){
+      if ( $version == 1212 or $version == 1213 or $version == 1221 ){
         $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
       } else {
         $checkCommand = '/bin/ps -ef | grep -v grep | /bin/grep \'weblogic.NodeManager\''
@@ -93,14 +93,14 @@ define orawls::nodemanager (
     'SunOS': {
       case $::kernelrelease {
         '5.11': {
-          if ( $version == 1212 or $version == 1213 ){
+          if ( $version == 1212 or $version == 1213 or $version == 1221 ){
             $checkCommand = "/bin/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
           } else {
             $checkCommand = '/bin/ps wwxa | /bin/grep -v grep | /bin/grep \'weblogic.NodeManager\''
           }
         }
         default: {
-          if ( $version == 1212 or $version == 1213 ){
+          if ( $version == 1212 or $version == 1213 or $version == 1221 ){
             $checkCommand = "/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
           } else {
             $checkCommand = '/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep \'weblogic.NodeManager\''

@@ -40,7 +40,7 @@ define orawls::copydomain (
   if ( $version == 1036 or $version == 1111 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
 
-  } elsif $version == 1212 or $version == 1213 {
+  } elsif ( $version == 1212 or $version == 1213 or $version == 1221 ) {
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
 
   } else {
@@ -162,8 +162,14 @@ define orawls::copydomain (
 
     $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
+    if ( $version == 1221 ) {
+      $bin_dir = "${middleware_home_dir}/oracle_common/common/bin/unpack.sh"
+    } else {
+      $bin_dir = "${weblogic_home_dir}/common/bin/unpack.sh"
+    }
+
     exec { "unpack ${domain_name}":
-      command   => "${weblogic_home_dir}/common/bin/unpack.sh ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
+      command   => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,

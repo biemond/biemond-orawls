@@ -1,7 +1,9 @@
 # History
 
 ## 1.0.44
-- added support for WebLogic 12.2.1 ( standard and infrastructure edition )
+- WebLogic 12.2.1 standard and infrastructure edition installation
+- FMW 12.2.1 Webtier (OHS) installation
+- 12.2.1 domains for standard, adf, adf_restricted which is new in 12.2.1 and requires no RCU/DB
 
 ## 1.0.43
 - Allow multiple fmw installations of the same product on a middleware home

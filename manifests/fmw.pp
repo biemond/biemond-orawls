@@ -4,7 +4,7 @@
 #
 ##
 define orawls::fmw (
-  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213
+  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213|1221
   $weblogic_home_dir    = hiera('wls_weblogic_home_dir'),    # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir  = hiera('wls_middleware_home_dir'),  # /opt/oracle/middleware11gR1
   $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
@@ -142,7 +142,13 @@ define orawls::fmw (
         $oracleHome = $oracle_home_dir
       }
     }
-  } elsif ( $fmw_product == 'b2b' ) {
+  }
+  elsif ( $fmw_product == 'b2b' ) {
+    if $healthcare == true {
+      $install_type = 'Healthcare'
+    } else {
+      $install_type = 'B2B'
+    }
 
     if $version == 1213 {
       $total_files = 1
@@ -151,12 +157,16 @@ define orawls::fmw (
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
       $type                     = 'java'
-      if $healthcare == true {
-        $install_type = 'Healthcare'
-      } else {
-        $install_type = 'B2B'
-      }
-    } else {
+    }
+    elsif $version == 1221 {
+      $total_files = 1
+      $fmw_silent_response_file = 'orawls/fmw_silent_b2b_1221.rsp.erb'
+      $binFile1                 = 'fmw_12.2.1.0.0_b2bhealthcare.jar'
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
+      $type                     = 'java'
+    }
+    else {
       fail('Unrecognized version for b2b')
     }
   } elsif ( $fmw_product == 'mft' ) {
@@ -222,13 +232,20 @@ define orawls::fmw (
       $binFile1                 = 'fmw_12.1.3.0.0_ohs_linux64.bin'
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'
-    } else {
+    }
+    elsif $version == 1221 {
+      $fmw_silent_response_file = 'orawls/web_http_server_1221.rsp.erb'
+      $binFile1                 = 'fmw_12.2.1.0.0_ohs_linux64.bin'
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $type                     = 'bin'
+    }
+    else {
       $fmw_silent_response_file = 'orawls/web_http_server.rsp.erb'
       $createFile1              = "${download_dir}/${sanitised_title}/Disk1"
     }
 
     if ($oracle_home_dir == undef) {
-      if $version == 1212 or $version == 1213 {
+      if ( $version == 1212 or $version == 1213 or $version == 1221 ) {
         $oracleHome = "${middleware_home_dir}/ohs"
       } else {
         $oracleHome = "${middleware_home_dir}/Oracle_WT1"
@@ -270,7 +287,7 @@ define orawls::fmw (
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons
-  if $version == 1212 or $version == 1213 {
+  if $version == 1212 or $version == 1213 or $version == 1221 {
     $continue = true
   } else {
     $found = orawls_oracle_exists($oracleHome)
@@ -463,9 +480,14 @@ define orawls::fmw (
       }
     }
 
-    $command = "-silent -response ${download_dir}/${sanitised_title}_silent.rsp -waitforcompletion"
+    if $version == 1221 {
+      $command = "-silent -responseFile ${download_dir}/${sanitised_title}_silent.rsp"
+    }
+    else {
+      $command = "-silent -response ${download_dir}/${sanitised_title}_silent.rsp -waitforcompletion"
+    }
 
-    if $version == 1212 or $version == 1213 {
+    if $version == 1212 or $version == 1213 or $version == 1221 {
       if $type == 'java' {
         $install = "java -Djava.io.tmpdir=${temp_directory} -jar "
       }
@@ -478,6 +500,7 @@ define orawls::fmw (
         environment => "TEMP=${temp_directory}",
         timeout     => 0,
         creates     => $oracleHome,
+        cwd         => $temp_directory,
         path        => $exec_path,
         user        => $os_user,
         group       => $os_group,
@@ -501,6 +524,7 @@ define orawls::fmw (
         environment => "TEMP=${temp_directory}",
         timeout     => 0,
         creates     => "${oracleHome}/OPatch",
+        cwd         => $temp_directory,
         path        => $exec_path,
         user        => $os_user,
         group       => $os_group,

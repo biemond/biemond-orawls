@@ -31,6 +31,11 @@ REPOS_DBURL='<%= @repository_database_url %>'
 REPOS_DBUSER_PREFIX='<%= @repository_prefix %>'
 REPOS_DBPASSWORD='<%= @repository_password %>'
 
+RESTRICTED=False
+<%- unless @restricted.nil? then -%>
+RESTRICTED=True
+<% end %>
+
 readDomain(DOMAIN_PATH)
 
 changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
@@ -50,22 +55,20 @@ dumpStack();
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
+if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION == 1221:
 
-    if WEBTIER_ENABLED == true:
-      print 'Adding OHS Template'
-      addTemplate('<%= @templateOHS %>')
-      #print 'Adding EM WebTier Template'
-      #addTemplate('<%= @templateEMWebTier %>')
+  if WEBTIER_ENABLED == true:
+    print 'Adding OHS Template'
+    addTemplate('<%= @templateOHS %>')
 
-    print 'Add advanced JAX-WS Template'
-    addTemplate('<%= @templateJaxWS %>')
-    print 'Add JAX-WS SOAP over JMS Template'
-    addTemplate('<%= @templateSoapJms %>')
+  print 'Add advanced JAX-WS Template'
+  addTemplate('<%= @templateJaxWS %>')
+  print 'Add JAX-WS SOAP over JMS Template'
+  addTemplate('<%= @templateSoapJms %>')
+
+  if RESTRICTED == False:
     print 'Add WSMPM Template'
     addTemplate('<%= @templateWSMPM %>')
-
-    print 'Change datasources'
 
     print 'Change datasource LocalScvTblDataSource'
     changeDatasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX+'_STB', REPOS_DBPASSWORD, REPOS_DBURL)
@@ -75,11 +78,16 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
 
     print 'end datasources'
 
+  if RESTRICTED == False:
     print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR for AdminServer'
     serverGroup = ["WSM-CACHE-SVR" , "WSMPM-MAN-SVR" , "JRF-MAN-SVR"]
-    setServerGroups(ADMIN_SERVER, serverGroup)
+  else:
+    print 'Add server groups JRF-MAN-SVR for AdminServer'
+    serverGroup = ["JRF-MAN-SVR"]
 
-    print 'end datasources'
+  setServerGroups(ADMIN_SERVER, serverGroup)
+
+  print 'end datasources'
 
 dumpStack();
 updateDomain()

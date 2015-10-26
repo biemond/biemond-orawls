@@ -29,6 +29,7 @@ Dependency with
 ## Complete examples
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)
 - WebLogic 12.2.1 / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
+- WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
 - WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
@@ -121,18 +122,19 @@ Dependency with
 
 all templates creates a WebLogic domain, logs the domain creation output
 
-- domain 'standard'    -> a default WebLogic
-- domain 'adf'         -> JRF + EM + Coherence (12.1.2, 12.1.3, 12.2.1) + OWSM (12.1.2, 12.1.3, 12.2.1) + JAX-WS Advanced + Soap over JMS (12.1.2, 12.1.3, 12.2.1)
-- domain 'osb'         -> OSB + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
-- domain 'osb_soa'     -> OSB + SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
-- domain 'osb_soa_bpm' -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
-- domain 'soa'         -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
-- domain 'soa_bpm'     -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
-- domain 'bam'         -> BAM ( only with soa suite installation)
-- domain 'wc_wcc_bpm'  -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
-- domain 'wc'          -> WC (webcenter) + JRF + EM + OWSM
-- domain 'oim'         -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
-- domain 'oud'         -> OUD (Oracle Unified Directory)
+- domain 'standard'       -> a default WebLogic
+- domain 'adf'            -> JRF + EM + Coherence (12.1.2, 12.1.3, 12.2.1) + OWSM (12.1.2, 12.1.3, 12.2.1) + JAX-WS Advanced + Soap over JMS (12.1.2, 12.1.3, 12.2.1)
+- domain 'adf_restricted' -> only for 12.2.1 (no RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS
+- domain 'osb'            -> OSB + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'osb_soa'        -> OSB + SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'osb_soa_bpm'    -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'soa'            -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'soa_bpm'        -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
+- domain 'bam'            -> BAM ( only with soa suite installation)
+- domain 'wc_wcc_bpm'     -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
+- domain 'wc'             -> WC (webcenter) + JRF + EM + OWSM
+- domain 'oim'            -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
+- domain 'oud'            -> OUD (Oracle Unified Directory)
 
 
 ## Puppet master with orawls module key points
@@ -1824,6 +1826,17 @@ archive_path has /tmp/orawls-archive as default folder
     }
 
 or in hiera
+
+    # and for with weblogic infra 12.2.1, use this post_classpath
+    wls_setting_instances:
+      'default':
+        user:               'oracle'
+        weblogic_home_dir:  '/opt/oracle/middleware12c/wlserver'
+        connect_url:        "t3://10.10.10.21:7001"
+        weblogic_user:      'weblogic'
+        weblogic_password:  'weblogic1'
+        post_classpath:     '/opt/oracle/middleware12c/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wlst.jar'
+
 
     # and for with weblogic infra 12.1.3, use this post_classpath
     wls_setting_instances:

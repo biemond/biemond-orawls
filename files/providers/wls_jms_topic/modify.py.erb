@@ -22,6 +22,7 @@ timetodeliver            = '<%= timetodeliver %>'
 deliverymode             = '<%= deliverymode %>'
 redeliverydelay          = '<%= redeliverydelay %>'
 messagelogging           = '<%= messagelogging %>'
+forwardingpolicy         = '<%= forwardingpolicy %>'
 
 edit()
 startEdit()
@@ -49,9 +50,16 @@ try:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
     print "distributed: ",distributed
-    if distributed == "true":
+    if distributed == "1":
       print "distributed"
-      cmo.setLoadBalancingPolicy(balancingpolicy)
+      if balancingpolicy != '':
+        cmo.setLoadBalancingPolicy(balancingpolicy)
+      elif balancingpolicy == '':
+        cmo.setLoadBalancingPolicy('Round-Robin')
+      if forwardingpolicy != '':
+        cmo.setForwardingPolicy(forwardingpolicy)
+        elif forwardingpolicy == '':
+        cmo.setForwardingPolicy('Replicated')
 
     if expirationpolicy:
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)

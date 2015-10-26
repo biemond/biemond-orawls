@@ -221,7 +221,7 @@ define orawls::fmw(
       $type                     = 'java'
       $total_files              = 1
       $oracleHome               = "${middleware_home_dir}/wcportal"
-      $install_type             = "WebCenter Portal"
+      $install_type             = 'WebCenter Portal'
     }
     else {
       $fmw_silent_response_file = 'orawls/fmw_silent_wc.rsp.erb'

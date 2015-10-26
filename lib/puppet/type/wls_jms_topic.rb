@@ -55,6 +55,7 @@ module Puppet
     property :timetolive
     property :deliverymode
     property :messagelogging
+    property :forwardingpolicy
 
     add_title_attributes(:jmsmodule, :topic_name) do
       /^((.*\/)?(.*):(.*)?)$/

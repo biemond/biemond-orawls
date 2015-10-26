@@ -17,10 +17,12 @@ def topic(token,token2,location,distributed):
        subdeployment = cmo.getSubDeploymentName()
 
 
-    if distributed == 1:
+    if distributed == '1':
       balancingPolicy  = get('LoadBalancingPolicy')
+      forwardingpolicy = get('ForwardingPolicy')
     else:
       balancingPolicy  = ''
+      forwardingpolicy = ''
 
     quotaMbean       = get('Quota')
     if quotaMbean:
@@ -55,12 +57,12 @@ def topic(token,token2,location,distributed):
     cd(location+'/MessageLoggingParams/'+token2)
     messagelogging = get('MessageLoggingEnabled')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,deliveryMode,redeliveryDelay,messagelogging,domain]))
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,deliveryMode,redeliveryDelay,messagelogging,forwardingpolicy,domain]))
 
 
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;deliverymode;redeliverydelay;messagelogging;domain"
+print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;deliverymode;redeliverydelay;messagelogging;forwardingpolicy;domain"
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:

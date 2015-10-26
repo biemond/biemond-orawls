@@ -67,7 +67,9 @@ Dependency with
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
 - [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate, Also Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
-- [Forms/Reports](#forms) Oracle Forms & Reports 11.1.1.7 or 11.1.2
+- [Forms/Reports](#forms) Oracle Forms & Reports 11.1.1.7, 11.1.2 or 12.2.1
+- [WC, WCC](#Webcenter) Webcenter portal, content 11g or 12.2.1
+
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
 
@@ -694,6 +696,31 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 common.yaml
 
 when you set the defaults hiera variables
+
+    # FMW installation on top of WebLogic 12.2.1
+    fmw_installations:
+      'webtier1221':
+        fmw_product:             "web"
+        fmw_file1:               "fmw_12.2.1.0.0_ohs_linux64_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'forms1221':
+        fmw_product:             "forms"
+        fmw_file1:               "fmw_12.2.1.0.0_fr_linux64_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'wcc1221':
+        fmw_product:             "wcc"
+        fmw_file1:               "fmw_12.2.1.0.0_wccontent_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+      'wc1221':
+        fmw_product:             "wc"
+        fmw_file1:               "fmw_12.2.1.0.0_wcportal_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+
+
 
     if ( defined(Orawls::Fmw["b2b1213"])) {
       Orawls::Fmw["soa1213"] -> Orawls::Fmw["b2b1213"]

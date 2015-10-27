@@ -63,7 +63,7 @@ Dependency with
 ### Fusion Middleware Features 11g & 12c
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - [WebTier](#webtier) Oracle HTTP server
-- [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate OPSS to the database )
+- [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate 11g OPSS to the database )
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
 - [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate, Also Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)

@@ -71,7 +71,7 @@ addTemplate('<%= @templateOSB %>')
 print 'Adding ApplCore Template'
 addTemplate('<%= @templateApplCore %>')
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
   #print 'Adding JRF Template'
   #addTemplate('<%= @templateJRF %>')
   print 'Adding WSM PM Template'
@@ -88,11 +88,11 @@ if BPM_ENABLED == true:
   print 'Adding BPM Template'
   addTemplate('<%= @templateBPM %>')
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
   print 'Adding EM Template'
   addTemplate('<%= @templateEM %>')
 
-if WEBLOGIC_VERSION == 1213:
+if WEBLOGIC_VERSION in [1213,1221]:
 
     if WEBTIER_ENABLED == true:
       print 'Adding OHS Template'
@@ -110,7 +110,7 @@ if WEBLOGIC_VERSION == 1213:
 dumpStack();
 
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
   cd('/')
   # destroy the normal one
   delete('LocalMachine','Machine')
@@ -143,7 +143,7 @@ changeManagedServer('osb_server1','LocalMachine','<%= @adminserver_address %>',8
 ### only for 11g
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
 
   print 'create opss datasource'
 
@@ -154,7 +154,7 @@ if WEBLOGIC_VERSION != 1213:
 
   createOPSSDataSource(target, REPOS_DBUSER_PREFIX, REPOS_DBPASSWORD, REPOS_DBURL)
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
 
   print 'Change datasources'
   changeDatasource('EDNDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
@@ -173,7 +173,7 @@ if WEBLOGIC_VERSION != 1213:
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION == 1213:
+if WEBLOGIC_VERSION in [1213,1221]:
 
     print 'Change datasources'
 

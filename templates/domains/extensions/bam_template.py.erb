@@ -54,7 +54,7 @@ addTemplate('<%= @templateJRF %>')
 print 'Adding BAM Template'
 addTemplate('<%= @templateBAM %>')
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
   print 'Adding EM Template'
   addTemplate('<%= @templateEM %>')
 
@@ -65,7 +65,7 @@ dumpStack();
 setOption( "AppDir", APP_PATH )
 <% end %>
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
   cd('/')
   # destroy the normal one
   delete('LocalMachine','Machine')
@@ -83,16 +83,13 @@ changeManagedServer('bam_server1','LocalMachine','<%= @adminserver_address %>',9
 ### only for 11g
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION != 1213:
+if WEBLOGIC_VERSION not in [1213,1221]:
 
   print 'create opss datasource'
 
   target = ADMIN_SERVER + ',bam_server1'
 
   createOPSSDataSource(target, REPOS_DBUSER_PREFIX, REPOS_DBPASSWORD, REPOS_DBURL)
-
-
-if WEBLOGIC_VERSION != 1213:
 
   print 'Change datasources'
 
@@ -102,7 +99,7 @@ if WEBLOGIC_VERSION != 1213:
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION == 1213:
+if WEBLOGIC_VERSION in [1213,1221]:
 
     print 'Change datasources'
 

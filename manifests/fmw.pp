@@ -112,7 +112,20 @@ define orawls::fmw(
 
   } elsif ( $fmw_product == 'soa' ) {
 
-    if $version == 1213 {
+    if $version == 1221 {
+      $total_files = 1
+      $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
+      $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $oracleHome               = "${middleware_home_dir}/soa/bin"
+      $type                     = 'java'
+      if $bpm == true {
+        $install_type = 'BPM'
+      } else {
+        $install_type = 'SOA Suite'
+      }
+    }
+    elsif $version == 1213 {
       $total_files = 1
       $fmw_silent_response_file = 'orawls/fmw_silent_soa_1213.rsp.erb'
       $binFile1                 = 'fmw_12.1.3.0.0_soa.jar'
@@ -124,8 +137,8 @@ define orawls::fmw(
       } else {
         $install_type = 'SOA Suite'
       }
-
-    } else {
+    }
+    else {
       $total_files = 2
       $fmw_silent_response_file = 'orawls/fmw_silent_soa.rsp.erb'
       $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
@@ -141,13 +154,21 @@ define orawls::fmw(
   } elsif ( $fmw_product == 'osb' ) {
 
     $total_files = 1
-    if $version == 1213 {
+    if $version == 1221 {
+      $fmw_silent_response_file = 'orawls/fmw_silent_osb_1221.rsp.erb'
+      $binFile1                 = 'fmw_12.2.1.0.0_osb.jar'
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $oracleHome               = "${middleware_home_dir}/osb/bin"
+      $type                     = 'java'
+    }
+    elsif $version == 1213 {
       $fmw_silent_response_file = 'orawls/fmw_silent_osb_1213.rsp.erb'
       $binFile1                 = 'fmw_12.1.3.0.0_osb.jar'
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/osb/bin"
       $type                     = 'java'
-    } else {
+    }
+    else {
       $fmw_silent_response_file = 'orawls/fmw_silent_osb.rsp.erb'
       $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
       if ($oracle_home_dir == undef) {

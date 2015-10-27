@@ -2,7 +2,7 @@
 
 ## 1.0.44
 - WebLogic 12.2.1 standard and infrastructure edition installation
-- FMW 12.2.1 Webtier (OHS), Forms, B2B, WC, WCC ( Webcenter portal, Webcenter content) installation
+- FMW 12.2.1 SOA Suite, OSB, Webtier (OHS), Forms, B2B, WC, WCC ( Webcenter portal, Webcenter content) installation
 - 12.2.1 domains for standard, adf, adf_restricted which is new in 12.2.1 and requires no RCU/DB
 - wls_jms_topic distributed fix plus new attribute ForwardingPolicy
 

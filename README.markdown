@@ -699,22 +699,39 @@ when you set the defaults hiera variables
 
     # FMW installation on top of WebLogic 12.2.1
     fmw_installations:
+      'soa1221':
+        version:                 1221
+        fmw_product:             "soa"
+        fmw_file1:               "fmw_12.2.1.0.0_soa_Disk1_1of1.zip"
+        bpm:                     true
+        log_output:              true
+        remote_file:             false
+      'osb1221':
+        version:                 1221
+        fmw_product:             "osb"
+        fmw_file1:               "fmw_12.2.1.0.0_osb_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
       'webtier1221':
+        version:                 1221
         fmw_product:             "web"
         fmw_file1:               "fmw_12.2.1.0.0_ohs_linux64_Disk1_1of1.zip"
         log_output:              true
         remote_file:             false
       'forms1221':
+        version:                 1221
         fmw_product:             "forms"
         fmw_file1:               "fmw_12.2.1.0.0_fr_linux64_Disk1_1of1.zip"
         log_output:              true
         remote_file:             false
       'wcc1221':
+        version:                 1221
         fmw_product:             "wcc"
         fmw_file1:               "fmw_12.2.1.0.0_wccontent_Disk1_1of1.zip"
         log_output:              true
         remote_file:             false
       'wc1221':
+        version:                 1221
         fmw_product:             "wc"
         fmw_file1:               "fmw_12.2.1.0.0_wcportal_Disk1_1of1.zip"
         log_output:              true

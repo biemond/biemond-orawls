@@ -85,10 +85,10 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
   print 'Adding WLS Coherence Template'
   addTemplate('<%= @templateCoherence %>')
 
-if DOMAIN_CREDENTIAL:
-  print "Change domain credential"
-  cd('/SecurityConfiguration/' + DOMAIN)
-  set('CredentialEncrypted',encrypt(DOMAIN_CREDENTIAL,DOMAIN_PATH))
+# if DOMAIN_CREDENTIAL:
+#   print "Change domain credential"
+#   cd('/SecurityConfiguration/' + DOMAIN)
+#   set('CredentialEncrypted',encrypt(DOMAIN_CREDENTIAL,DOMAIN_PATH))
 
 updateDomain()
 closeDomain();

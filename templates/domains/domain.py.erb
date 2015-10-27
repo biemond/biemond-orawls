@@ -21,7 +21,7 @@ ADMIN_PASSWORD='<%= @weblogic_password %>'
 
 JAVA_HOME='<%= @jdk_home_dir %>'
 
-DOMAIN_CREDENTIAL = '<%= @domain_credential %>'
+DOMAIN_PASSWORD = '<%= @domain_password %>'
 
 ADMINSERVER_LISTEN_ON_ALL_INTERFACES=<%= @adminserver_listen_on_all_interfaces %>
 NODEMANAGER_SECURE_LISTENER=<%= @nodemanager_secure_listener %>
@@ -85,7 +85,7 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
   print 'Adding WLS Coherence Template'
   addTemplate('<%= @templateCoherence %>')
 
-# if DOMAIN_CREDENTIAL:
+# if DOMAIN_PASSWORD:
 #   print "Change domain credential"
 #   cd('/SecurityConfiguration/' + DOMAIN)
 #   set('CredentialEncrypted',encrypt(DOMAIN_CREDENTIAL,DOMAIN_PATH))

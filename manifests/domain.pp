@@ -27,7 +27,7 @@ define orawls::domain (
   $nodemanager_secure_listener           = true,
   $weblogic_user                         = hiera('wls_weblogic_user'             , 'weblogic'),
   $weblogic_password                     = hiera('domain_wls_password'),
-  $domain_credential                     = undef, # If not specfied the domain generates it own credential
+  $domain_password                       = undef, # If not specfied the domain generates it own credential
   $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
   $webtier_enabled                       = false,
   $os_user                               = hiera('wls_os_user'), # oracle

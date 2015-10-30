@@ -4,7 +4,9 @@
 - WebLogic 12.2.1 standard and infrastructure edition installation
 - FMW 12.2.1 SOA Suite, OSB, Webtier (OHS), Forms, B2B, WC, WCC ( Webcenter portal, Webcenter content) installation
 - 12.2.1 domains for standard, soa, osb, bam, adf, adf_restricted which is new in 12.2.1 and requires no RCU/DB
+- 12.2.1 fmwcluster support for Service Bus (OSB)
 - wls_jms_topic distributed fix plus new attribute ForwardingPolicy
+- wls_server ruby 1.8.7 modify fix
 
 ## 1.0.43
 - Allow multiple fmw installations of the same product on a middleware home

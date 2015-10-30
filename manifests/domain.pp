@@ -12,7 +12,7 @@ define orawls::domain (
   $domain_template                       = hiera('domain_template'               , 'standard'), # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
-  $ess_enabled                           = true,  #only for SOA Suite 12.1.3
+  $ess_enabled                           = false, #only for SOA Suite 12.1.3
   $owsm_enabled                          = false, #only for OSB domain_template on 10.3.6
   $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,

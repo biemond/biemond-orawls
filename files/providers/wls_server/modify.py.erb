@@ -9,27 +9,27 @@ manage_machine        = False
 
 name          = '<%= server_name %>'
 
-<%- unless arguments.nil? then -%>
+<% unless @arguments %>
 arguments        = '''<%= arguments %>'''
 manage_arguments = True
 <% end %>
 
-<%- unless bea_home.nil? then -%>
+<% unless @bea_home %>
 bea_home         = '<%= bea_home %>'
 manage_bea_home  = True
 <% end %>
 
-<%- unless classpath.nil? then -%>
+<% unless @classpath %>
 classpath        = '<%= classpath %>'
 manage_classpath = True
 <% end %>
 
-<%- unless listenaddress.nil? then -%>
+<% unless @listenaddress %>
 listenAddress        = '<%= listenaddress %>'
 manage_listenaddress = True
 <% end %>
 
-<%- unless machine.nil? then -%>
+<% unless @machine %>
 machineName    = '<%= machine %>'
 manage_machine = True
 <% end %>
@@ -79,7 +79,7 @@ weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
 auto_restart                           = '<%= auto_restart %>'
 autokillwfail                          = '<%= autokillwfail %>'
 
-server_parameters		       = '<%= server_parameters %>'
+server_parameters          = '<%= server_parameters %>'
 
 frontend_host                  = '<%= frontendhost %>'
 frontend_http_port             = '<%= frontendhttpport %>'
@@ -218,7 +218,7 @@ try:
     if sslListenPort:
       set('ListenPort', int(sslListenPort))
     if useservercerts:
-      set('UseServerCerts' , formatBoolean(useservercerts)) 
+      set('UseServerCerts' , formatBoolean(useservercerts))
 
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:

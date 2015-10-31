@@ -140,7 +140,7 @@ all templates creates a WebLogic domain, logs the domain creation output
 
 
 ## Puppet master with orawls module key points
-it should work on every PE or opensource puppet master, customers and I succesfull tested orawls on PE 3.0, 3.1, 3.2, 3.3. See also the puppet master vagrant box
+it should work on every PE or opensource puppet master, customers and I successfully tested orawls on PE 3.0, 3.1, 3.2, 3.3. See also the puppet master vagrant box
 
 But when it fails you can do the following actions.
 - Check the time difference/timezone between all the puppet master and agent machines.

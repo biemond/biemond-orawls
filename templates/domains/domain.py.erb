@@ -22,6 +22,8 @@ ADMIN_PASSWORD='<%= @weblogic_password %>'
 JAVA_HOME='<%= @jdk_home_dir %>'
 
 DOMAIN_PASSWORD = '<%= @domain_password %>'
+NODEMANAGER_USERNAME = '<%= @nodemanager_username %>'
+NODEMANAGER_PASSWORD = '<%= @nodemanager_password %>'
 
 ADMINSERVER_LISTEN_ON_ALL_INTERFACES=<%= @adminserver_listen_on_all_interfaces %>
 NODEMANAGER_SECURE_LISTENER=<%= @nodemanager_secure_listener %>
@@ -81,23 +83,42 @@ closeTemplate()
 
 readDomain(DOMAIN_PATH)
 
-if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
+if WEBLOGIC_VERSION in [1212,1213,1221]:
   print 'Adding WLS Coherence Template'
   addTemplate('<%= @templateCoherence %>')
 
-# if DOMAIN_PASSWORD:
-#   print "Change domain credential"
-#   cd('/SecurityConfiguration/' + DOMAIN)
-#   set('CredentialEncrypted',encrypt(DOMAIN_CREDENTIAL,DOMAIN_PATH))
 
 updateDomain()
 closeDomain();
 
-es = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
-
 readDomain(DOMAIN_PATH)
 
-setDomainPassword(DOMAIN,es,ADMIN_USER)
+
+#
+# Setting the domain password. If it isn't specfied, we use the admin password
+#
+if DOMAIN_PASSWORD == None or DOMAIN_PASSWORD == '':
+  print 'Using default for domain password'
+  encrypted_domain_password = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+else:
+  encrypted_domain_password = encrypt(DOMAIN_PASSWORD,DOMAIN_PATH)
+
+setDomainPassword(DOMAIN,encrypted_domain_password)
+
+#
+# Setting the nodemanager password. If it isn't specfied, we use the admin password
+#
+if NODEMANAGER_PASSWORD == None or NODEMANAGER_PASSWORD == '':
+  print 'Using default for nodemanager password'
+  encrypted_nodemanager_password = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+else:
+  encrypted_nodemanager_password = encrypt(NODEMANAGER_PASSWORD,DOMAIN_PATH)
+
+if NODEMANAGER_USERNAME == None or NODEMANAGER_USERNAME == '':
+  print 'Using default for nodemanager username'
+  NODEMANAGER_USERNAME = ADMIN_USER
+
+setNodemanagerPassword(DOMAIN, encrypted_nodemanager_password, NODEMANAGER_USERNAME)
 
 updateDomain()
 closeDomain()

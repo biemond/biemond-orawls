@@ -180,16 +180,18 @@ def changeCustomIdentityStore(server, ks_filename, ks_passphrase, trust_ks_filen
   set('ServerPrivateKeyAlias'                    ,alias)
   set('ServerPrivateKeyPassPhraseEncrypted'      ,alias_passphrase)
 
-def setDomainPassword(domain,password,adminUser):
+def setDomainPassword(domain,password):
   print('set domain password...')
   cd('/SecurityConfiguration/'+domain)
   set('CredentialEncrypted', password)
-  print('Set nodemanager password')
-  set('NodeManagerUsername', adminUser)
+
+def setNodemanagerPassword(domain,password,userName):
+  print('set nodemanager password...')
+  set('NodeManagerUsername', userName)
   set('NodeManagerPasswordEncrypted', password)
 
 def setWebLogicPassword(user,password):
-  print('Set password...')
+  print('Set weblogic password...')
   cd('/')
   cd('Security/base_domain/User/weblogic')
   # weblogic user name + password

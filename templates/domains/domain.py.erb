@@ -83,7 +83,7 @@ closeTemplate()
 
 readDomain(DOMAIN_PATH)
 
-if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213:
+if WEBLOGIC_VERSION in [1212,1213,1221]:
   print 'Adding WLS Coherence Template'
   addTemplate('<%= @templateCoherence %>')
 

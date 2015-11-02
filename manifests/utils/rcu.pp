@@ -40,7 +40,7 @@ define orawls::utils::rcu(
   }
   elsif $fmw_product == 'soa' {
     if $version == 1221 {
-      $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSUMS -component ESS -component SOAINFRA -component STB  '
+      $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB -component UCSUMS -component ESS -component SOAINFRA '
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
     else {

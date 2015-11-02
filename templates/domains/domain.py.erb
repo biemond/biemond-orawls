@@ -78,22 +78,18 @@ setOption('JavaHome', JAVA_HOME)
 print('write domain...')
 # write path + domain name
 writeDomain(DOMAIN_PATH)
-
 closeTemplate()
 
-readDomain(DOMAIN_PATH)
-
 if WEBLOGIC_VERSION in [1212,1213,1221]:
+  readDomain(DOMAIN_PATH)
+
   print 'Adding WLS Coherence Template'
   addTemplate('<%= @templateCoherence %>')
 
-
-updateDomain()
-closeDomain();
+  updateDomain()
+  closeDomain()
 
 readDomain(DOMAIN_PATH)
-
-
 #
 # Setting the domain password. If it isn't specfied, we use the admin password
 #

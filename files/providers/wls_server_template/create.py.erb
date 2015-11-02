@@ -20,34 +20,34 @@ def formatBoolean(value):
     if value == 1:
         return 'True'
     else:
-        return 'False'    
+        return 'False'
 
 def formatBoolean2(value):
   if value == '1':
     return true
   else:
-    return false    
+    return false
 
 
 try:
 
     cd('/')
     cmo.createServerTemplate(name)
-  
+
     cd('/ServerTemplates/'+name)
-    
+
     if listenAddress:
         set('ListenAddress',listenAddress)
 
     set('ListenPort', listenPort)
 
-    if classpath:    
+    if classpath:
         set('ServerStart/'+name+'/ClassPath', classpath)
 
-    if arguments:    
+    if arguments:
         set('ServerStart/'+name+'/Arguments', arguments)
 
-    
+
     cd('/ServerTemplates/'+name+'/SSL/'+name)
 
     set('Enabled', formatBoolean(sslEnabled))
@@ -58,8 +58,8 @@ try:
     cd('/')
 
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 
 except:

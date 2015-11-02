@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/JMSSystemResources',returnMap='true')
@@ -21,39 +21,39 @@ for token in m:
                 remoteContextMbean  = cmo.getSAFRemoteContext()
                 if remoteContextMbean:
                    path = getPath(remoteContextMbean)
-                   cd("/"+path) 
+                   cd("/"+path)
                    remoteContext  = get('Name')
                    cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
                 else:
                    remoteContext = ''
-                
+
                 errorHandlingMbean = cmo.getSAFErrorHandling()
                 if errorHandlingMbean:
                    path = getPath(errorHandlingMbean)
-                   cd("/"+path) 
+                   cd("/"+path)
                    errorHandling = get('Name')
                    cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
                 else:
                    errorHandling = ''
 
-                timeToLiveDefault = cmo.getTimeToLiveDefault()   
+                timeToLiveDefault = cmo.getTimeToLiveDefault()
                 if not (timeToLiveDefault):
                   useSAFTimeToLiveDefault = '0'
                 else:
-                  useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')  
-                
+                  useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')
+
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
-                
-                
+
+
                 defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
                 if defaultTargetingEnabled == '1':
                   subDeploymentName = ''
                 else:
-                  subDeploymentName = cmo.getSubDeploymentName()     
+                  subDeploymentName = cmo.getSubDeploymentName()
 
                 print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,subDeploymentName,defaultTargetingEnabled,domain]))
- 
+
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 
 

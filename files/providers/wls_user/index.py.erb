@@ -5,7 +5,7 @@ from weblogic.management.security.authentication import UserReaderMBean
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
@@ -25,10 +25,10 @@ for i in authProvider:
       description = i.getUserDescription(user)
       print >>f, ";".join(map(quote, [domain+'/'+user, realmName.getName(), authName,description,domain]))
       userName.advance(cursor)
-    
+
     userName.close(cursor)
 
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 
 

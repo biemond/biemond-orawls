@@ -192,8 +192,8 @@ try:
     if sslListenPort:
       set('ListenPort', int(sslListenPort))
     if useservercerts:
-      set('UseServerCerts', formatBoolean(useservercerts)) 
-      
+      set('UseServerCerts', formatBoolean(useservercerts))
+
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:
       set('FileName', logFilename)
@@ -269,7 +269,7 @@ try:
     createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
     save()
     activate()
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 
 except:

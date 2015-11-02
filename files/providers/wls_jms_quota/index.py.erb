@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/JMSSystemResources',returnMap='true')
@@ -19,7 +19,7 @@ for token in m:
         print 'cd(\''+'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2+'\')'
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2)
         print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,get('BytesMaximum'),get('MessagesMaximum'),get('Policy'),str(get('Shared')),domain]))
-        
+
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

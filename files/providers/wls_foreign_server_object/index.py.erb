@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 def object(token,token2,token3,location,type):
@@ -23,13 +23,13 @@ for token in m:
             cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
             l = ls('ForeignDestinations',returnMap='true')
             for token3 in l:
-                   object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignDestinations/'+token3,"destination") 
+                   object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignDestinations/'+token3,"destination")
             cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
             l = ls('ForeignConnectionFactories',returnMap='true')
             for token3 in l:
-                   object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignConnectionFactories/'+token3,"connectionfactory") 
+                   object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignConnectionFactories/'+token3,"connectionfactory")
 
- 
+
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

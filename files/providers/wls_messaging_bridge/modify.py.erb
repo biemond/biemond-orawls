@@ -29,7 +29,7 @@ try:
 
     cmo.setBatchInterval(int(batchinterval))
     cmo.setBatchSize(int(batchsize))
-    
+
     if asyncenabled == '1':
       cmo.setAsyncEnabled(true)
     else:
@@ -69,7 +69,7 @@ try:
     cmo.setTransactionTimeout(int(transactiontimeout))
 
     print "deployments"
-    
+
     cd('/Deployments/' + name )
 
     print "target: "     +  target
@@ -86,7 +86,7 @@ try:
 
     save()
     activate()
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

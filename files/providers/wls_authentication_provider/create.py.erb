@@ -80,7 +80,7 @@ try:
     # Authentication Provider Ordering
     if order:
         print "setting order"
-        
+
         cd('/'+path)
         order_val = int(order)
         ap = get('AuthenticationProviders')
@@ -111,7 +111,7 @@ try:
     print "done"
     save()
     activate()
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

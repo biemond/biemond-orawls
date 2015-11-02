@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/SAFAgents',returnMap='true')
@@ -36,5 +36,5 @@ for token in m:
 
         print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,serviceType,domain]))
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

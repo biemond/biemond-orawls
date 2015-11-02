@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 f = open("/tmp/wlstScript.out", "w")
@@ -15,7 +15,7 @@ cd('/')
 print 'apps'
 myapps=cmo.getAppDeployments()
 for appName in myapps:
-  cd('/AppDeployments/'+appName.getName() ) 
+  cd('/AppDeployments/'+appName.getName() )
 
   app               = get('ApplicationName')
   deploymenttype    = get('Type')
@@ -37,7 +37,7 @@ print 'libs'
 cd('/')
 mylibs=cmo.getLibraries()
 for libName in mylibs:
-  cd('/Libraries/'+libName.getName() ) 
+  cd('/Libraries/'+libName.getName() )
 
   lib               = get('ApplicationName')
   deploymenttype    = get('Type')
@@ -57,5 +57,5 @@ for libName in mylibs:
 
 
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

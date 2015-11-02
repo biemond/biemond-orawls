@@ -16,9 +16,9 @@ try:
 
     print 'create group: ',name
     atnr.createGroup(name,description)
-    for user in users:        
+    for user in users:
       atnr.addMemberToGroup(name,user)
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

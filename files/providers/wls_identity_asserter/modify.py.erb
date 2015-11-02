@@ -25,7 +25,7 @@ try:
     if activetypes:
       list_values=String(activetypes).split("::")
       set('ActiveTypes',jarray.array(list_values, String))
-      
+
     if defaultmappertype:
         set('DefaultUserNameMapperAttributeType',defaultmappertype)
 
@@ -76,7 +76,7 @@ try:
 
     if order:
         print "setting order"
-        
+
         cd('/'+path)
         order_val = int(order)
         ap = get('AuthenticationProviders')
@@ -105,7 +105,7 @@ try:
 
     save()
     activate()
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

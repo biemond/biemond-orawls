@@ -5,7 +5,7 @@ from weblogic.management.security.authentication import GroupReaderMBean
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
@@ -24,16 +24,16 @@ for i in authProvider:
     while groupReader.haveCurrent(cursor):
       group       = groupReader.getCurrentName(cursor)
       description = i.getGroupDescription(group)
-      usergroup   = i.listAllUsersInGroup(group,"*",0) 
+      usergroup   = i.listAllUsersInGroup(group,"*",0)
       users       = []
-      for user in usergroup: 
+      for user in usergroup:
         users.append(user)
 
       print >>f, ";".join(map(quote, [domain+'/'+group, realmName.getName(), authName,','.join(users),description,domain]))
       groupReader.advance(cursor)
-    
+
     groupReader.close(cursor)
 
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

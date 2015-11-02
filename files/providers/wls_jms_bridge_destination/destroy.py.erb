@@ -14,8 +14,8 @@ try:
     cmo.destroyJMSBridgeDestination(getMBean('/JMSBridgeDestinations/'+name))
 
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

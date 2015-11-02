@@ -8,7 +8,7 @@ target                     = '<%= target %>'
 targettype                 = '<%= targettype %>'
 jndinames                  = '<%= jndinames %>'
 datasources                = '<%= datasources %>'
-algorithmtype              = '<%= algorithmtype %>' 
+algorithmtype              = '<%= algorithmtype %>'
 testfrequency              = '<%= testfrequency %>'
 
 edit()
@@ -28,10 +28,10 @@ try:
 
     cmo.setAlgorithmType(algorithmtype)
     cmo.setDataSourceList(datasources)
-        
-    cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)    
+
+    cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)
     set('TestFrequencySeconds',int(testfrequency))
-    
+
     cd('/SystemResources/' + name )
 
     targets     = String(target).split(",")
@@ -39,13 +39,13 @@ try:
     targetList  = []
     for i in range(len(targets)):
       print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )   
+      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
 
     set('Targets',jarray.array(targetList, ObjectName))
 
     save()
     activate()
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()

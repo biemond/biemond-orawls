@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/JMSSystemResources',returnMap='true')
@@ -26,8 +26,8 @@ for token in m:
                    targetType.append(get('Type'))
 
             print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
-        
+
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 
 

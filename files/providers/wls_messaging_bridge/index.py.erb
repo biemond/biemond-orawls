@@ -32,7 +32,7 @@ for token in m:
     sourcedestinationMbean = cmo.getSourceDestination()
     if sourcedestinationMbean:
        path = getPath(sourcedestinationMbean)
-       cd("/"+path) 
+       cd("/"+path)
        sourcedestination  = get('Name')
        cd('/MessagingBridges/'+token)
     else:
@@ -41,7 +41,7 @@ for token in m:
     targetdestinationMbean = cmo.getTargetDestination()
     if targetdestinationMbean:
        path = getPath(targetdestinationMbean)
-       cd("/"+path) 
+       cd("/"+path)
        targetdestination  = get('Name')
        cd('/MessagingBridges/'+token)
     else:
@@ -58,4 +58,4 @@ for token in m:
 #]
     print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),asyncenabled,batchinterval,batchsize,durabilityenabled,idletimemax,preservemsgproperty,qosdegradationallowed,qos,reconnectdelayincrease,reconnectdelaymax,reconnectdelaymin,selector,started,transactiontimeout,sourcedestination,targetdestination]))
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"

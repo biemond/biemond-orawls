@@ -35,16 +35,16 @@ try:
     if timetolivedefault:
       cmo.setTimeToLiveDefault(long(timetolivedefault))
     else:
-      cmo.setTimeToLiveDefault(0)  
+      cmo.setTimeToLiveDefault(0)
 
     if usetimetolivedefault == '1':
       cmo.setUseSAFTimeToLiveDefault(true)
     else:
-      cmo.setUseSAFTimeToLiveDefault(false)   
-    
+      cmo.setUseSAFTimeToLiveDefault(false)
+
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

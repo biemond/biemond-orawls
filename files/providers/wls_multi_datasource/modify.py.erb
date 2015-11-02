@@ -7,7 +7,7 @@ target                     = '<%= target %>'
 targettype                 = '<%= targettype %>'
 jndinames                  = '<%= jndinames %>'
 datasources                = '<%= datasources %>'
-algorithmtype              = '<%= algorithmtype %>' 
+algorithmtype              = '<%= algorithmtype %>'
 testfrequency              = '<%= testfrequency %>'
 
 edit()
@@ -24,12 +24,12 @@ try:
 
     cmo.setAlgorithmType(algorithmtype)
     cmo.setDataSourceList(datasources)
-        
-    cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)    
+
+    cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)
     set('TestFrequencySeconds',int(testfrequency))
-    
+
     cd('/JDBCSystemResources/' + name)
-    
+
     # Removing current targets
     currentTargets = cmo.getTargets()
     for currentTarget in currentTargets:
@@ -48,7 +48,7 @@ try:
 
     save()
     activate()
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 cd('/')
@@ -17,8 +17,8 @@ for serverTemplate in serverTemplates:
     if get('ListenAddress') == None:
       listenAddress = ''
     else:
-      listenAddress = get('ListenAddress') 
-          
+      listenAddress = get('ListenAddress')
+
     listenPort    = str(get('ListenPort'))
 
     cd('/ServerTemplates/'+serverTemplate+'/SSL/'+serverTemplate)
@@ -37,4 +37,4 @@ for serverTemplate in serverTemplates:
 
     print >>f, ";".join(map(quote, [domain+'/'+serverTemplate, listenAddress, listenPort, sslListenPort, sslEnabled, classpath, arguments,domain]))
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"

@@ -27,7 +27,7 @@ try:
     cmo.setDestinationJNDIName(destinationjndi)
     cmo.setDestinationType(destinationtype)
     cmo.setInitialContextFactory(initialcontextfactory)
-    
+
     if user_name:
         cmo.setUserName(user_name)
 
@@ -35,8 +35,8 @@ try:
         cmo.setUserPassword(password)
 
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

@@ -3,7 +3,7 @@
 def quote(text):
 	if text:
 		return "\"" + str(text).replace("\"", "\"\"") + "\""
-	else: 
+	else:
 		return ""
 
 m = ls('/VirtualHosts',returnMap='true')
@@ -28,5 +28,5 @@ for token in m:
         print >>f, ";".join(map(quote, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts)]))
 
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

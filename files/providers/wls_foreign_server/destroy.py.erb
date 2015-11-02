@@ -17,8 +17,8 @@ try:
     cmo.destroyForeignServer(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name'))
 
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESSFUL~~~~"
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:
     print "Unexpected error:", sys.exc_info()[0]

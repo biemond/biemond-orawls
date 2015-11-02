@@ -3,7 +3,7 @@
 def quote(text):
     if text:
         return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
+    else:
         return ""
 
 m = ls('/JMSSystemResources',returnMap='true')
@@ -18,7 +18,7 @@ for token in m:
         for token2 in n:
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFRemoteContexts/'+token2+'/SAFLoginContext/'+token2)
                 print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,cmo.getLoginURL(),cmo.getUsername(),domain]))
- 
+
 f.close()
-print "~~~~COMMAND SUCCESSFUL~~~~"
+print "~~~~COMMAND SUCCESFULL~~~~"
 

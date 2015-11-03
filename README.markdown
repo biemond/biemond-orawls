@@ -105,6 +105,7 @@ Dependency with
 - [wls_safagent](#wls_safagent)
 - [wls_jms_module](#wls_jms_module)
 - [wls_jms_quota](#wls_jms_quota)
+- [wls_jms_sort_destination_key](#wls_jms_sort_destination_key)
 - [wls_jms_subdeployment](#wls_jms_subdeployment)
 - [wls_jms_queue](#wls_jms_queue)
 - [wls_jms_topic](#wls_jms_topic)
@@ -3608,6 +3609,18 @@ in hiera
         redeliverydelay: '-1'
         redeliverylimit: '-1'
 
+### wls_jms_sort_destination_key
+
+it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
+
+```puppet
+wls_jms_sort_destination_key { 'standard/jms_module:keyName':
+  ensure        => present,
+  key_type      => 'String',
+  property_name => 'JmsMessageId',  # Or a user defined name
+  sort_order    => 'Descending',
+}
+```
 
 ### wls_connection_factory
 

@@ -6,7 +6,9 @@
 - 12.2.1 domains for standard, soa, osb, bam, adf, adf_restricted which is new in 12.2.1 and requires no RCU/DB
 - 12.2.1 fmwcluster support for Service Bus (OSB)
 - wls_jms_topic distributed fix plus new attribute ForwardingPolicy
-- wls_server ruby 1.8.7 modify fix
+- wls_server modify fix for arguments, classpath etc. plus multiple arguments as an array are converted to a space as separator instead of newline
+- new type wls_jms_sort_destination_key 
+- domain.pp allow to set a separate domain password, nodemanager_username + password on a domain
 
 ## 1.0.43
 - Allow multiple fmw installations of the same product on a middleware home

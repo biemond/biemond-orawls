@@ -10,7 +10,7 @@ manage_machine        = False
 name          = '<%= server_name %>'
 
 <% unless arguments.nil? %>
-arguments        = '''<%= arguments %>'''
+arguments        = '<%= arguments.join(' ') %>'
 manage_arguments = True
 <% end %>
 

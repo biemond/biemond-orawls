@@ -9,27 +9,27 @@ manage_machine        = False
 
 name          = '<%= server_name %>'
 
-<%- unless arguments.nil? then -%>
+<% unless arguments.nil? %>
 arguments        = '''<%= arguments %>'''
 manage_arguments = True
 <% end %>
 
-<%- unless bea_home.nil? then -%>
+<% unless bea_home.nil? %>
 bea_home         = '<%= bea_home %>'
 manage_bea_home  = True
 <% end %>
 
-<%- unless classpath.nil? then -%>
+<% unless classpath.nil? %>
 classpath        = '<%= classpath %>'
 manage_classpath = True
 <% end %>
 
-<%- unless listenaddress.nil? then -%>
+<% unless listenaddress.nil? %>
 listenAddress        = '<%= listenaddress %>'
 manage_listenaddress = True
 <% end %>
 
-<%- unless machine.nil? then -%>
+<% unless machine.nil? %>
 machineName    = '<%= machine %>'
 manage_machine = True
 <% end %>

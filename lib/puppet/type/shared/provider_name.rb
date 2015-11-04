@@ -6,3 +6,5 @@ newparam(:provider_name) do
   desc 'The provider name'
 
 end
+
+autorequire(:wls_foreign_jndi_provider) { "#{domain}/#{provider_name}" }

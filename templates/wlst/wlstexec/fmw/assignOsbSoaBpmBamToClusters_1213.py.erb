@@ -372,7 +372,7 @@ if bamEnabled == true:
 
 
     print "create BAM JMS"
-    createJMSServers(BAMClusterName, 'Bam', 1)
+    createJMSServers(BAMClusterName, 'Bam', 1, Admin)
 
     # print "create BAM JMSSystemResource"
     # cd('/')
@@ -430,7 +430,7 @@ if bamEnabled == true:
 
     print "create BAM CQ JMS"
     cd('/')
-    createJMSServers(BAMClusterName, 'BamCQ', 1)
+    createJMSServers(BAMClusterName, 'BamCQ', 1, Admin)
 
     print "create BAM CQ JMSSystemResource"
     cd('/')

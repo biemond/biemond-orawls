@@ -22,7 +22,7 @@ class WlsDaemon < EasyType::Daemon
     @trust_keystore_file = trust_keystore_file
     @trust_keystore_passphrase = trust_keystore_passphrase
 
-    if @custom_trust
+    if @custom_trust.to_s == 'true'
       trust_parameters = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
       Puppet.debug "trust parameters #{trust_parameters}"
     else

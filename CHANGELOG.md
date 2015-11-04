@@ -8,7 +8,8 @@
 - wls_jms_topic distributed fix plus new attribute ForwardingPolicy
 - wls_server modify fix for arguments, classpath etc. plus multiple arguments as an array are converted to a space as separator instead of newline
 - new type wls_jms_sort_destination_key 
-- domain.pp allow to set a separate domain password, nodemanager_username + password on a domain
+- new type wls_foreign_jndi_provider 
+- domain.pp allows you to set a separate domain password, nodemanager_username + password on a domain
 
 ## 1.0.43
 - Allow multiple fmw installations of the same product on a middleware home

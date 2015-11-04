@@ -101,6 +101,7 @@ Dependency with
 - [wls_datasource](#wls_datasource)
 - [wls_file_persistence_store](#wls_file_persistence_store)
 - [wls_jdbc_persistence_store](#wls_jdbc_persistence_store)
+- [wls_foreign_jndi_provider ](#wls_foreign_jndi_provider )
 - [wls_jmsserver](#wls_jmsserver)
 - [wls_safagent](#wls_safagent)
 - [wls_jms_module](#wls_jms_module)
@@ -3288,6 +3289,56 @@ in hiera
           target:      ['wlsServer1']
           targettype:  ['Server']
 
+## wls_foreign_jndi_provider 
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_foreign_jndi_provider 
+
+    wls_foreign_jndi_provider { 'DomainA':
+      ensure                  => 'present',
+      initial_context_factory => 'weblogic.jndi.WLInitialContextFactory',
+      provider_properties     => ['bbb=aaaa', 'xxx=123'],
+      provider_url            => 't3://10.10.10.100:7001',
+      target                  => ['WebCluster'],
+      targettype              => ['Cluster'],
+      user                    => 'weblogic',
+      password                => 'weblogic1',
+    }
+    wls_foreign_jndi_provider { 'default/LDAP':
+      ensure                  => 'present',
+      initial_context_factory => 'com.sun.jndi.ldap.LdapCtxFactory',
+      provider_properties     => ['referral=follow'],
+      provider_url            => 'ldap://:10.10.10.100:389',
+      target                  => ['AdminServer'],
+      targettype              => ['Server'],
+      user                    => 'cn=orcladmin',
+      password                => 'weblogic1',
+    }
+
+in hiera
+
+
+    wls_foreign_jndi_provider_instances:
+      'DomainA':
+        ensure:                  'present'
+        initial_context_factory: 'weblogic.jndi.WLInitialContextFactory'
+        provider_properties:     ['bbb=aaaa', 'xxx=123']
+        provider_url:            't3://10.10.10.100:7001'
+        target:                  ['WebCluster']
+        targettype:              ['Cluster']
+        user:                    'weblogic'
+        password:                'weblogic1'
+      'LDAP':
+        ensure:                  'present'
+        initial_context_factory: 'com.sun.jndi.ldap.LdapCtxFactory'
+        provider_properties:     ['java.naming.referral=follow']
+        provider_url:            'ldap://:10.10.10.100:389'
+        target:                  ['AdminServer']
+        targettype:              ['Server']
+        user:                    'cn=orcladmin'
+        password:                'weblogic1'
+
+
 
 ### wls_file_persistence_store
 it needs wls_setting and when identifier is not provided it will use the 'default'.
@@ -3613,14 +3664,48 @@ in hiera
 
 it needs wls_setting and when identifier is not provided it will use the 'default', title must also contain the jms module name
 
-```puppet
-wls_jms_sort_destination_key { 'standard/jms_module:keyName':
-  ensure        => present,
-  key_type      => 'String',
-  property_name => 'JmsMessageId',  # Or a user defined name
-  sort_order    => 'Descending',
-}
-```
+
+    wls_jms_sort_destination_key { 'jmsClusterModule:JMSPriority':
+      ensure        => 'present',
+      key_type      => 'Int',
+      property_name => 'JMSPriority',
+      sort_order    => 'Ascending',
+    }
+    wls_jms_sort_destination_key { 'default/jmsClusterModule:JMSRedelivered':
+      ensure        => 'present',
+      key_type      => 'Boolean',
+      property_name => 'JMSRedelivered',
+      sort_order    => 'Ascending',
+    }
+    wls_jms_sort_destination_key { 'default/jmsClusterModule:JmsMessageId':
+      ensure        => 'present',
+      key_type      => 'String',
+      property_name => 'JmsMessageId',
+      sort_order    => 'Descending',
+    }
+
+in Hiera
+
+    jms_sort_destination_key_instances:
+       'jmsClusterModule:JmsMessageId':
+          ensure:        'present'
+          key_type:      'String'
+          property_name: 'JmsMessageId'
+          sort_order:    'Descending'
+          require:        Wls_jms_module[jmsClusterModule]
+       'jmsClusterModule:JMSPriority':
+          ensure:        'present'
+          key_type:      'Int'
+          property_name: 'JMSPriority'
+          sort_order:    'Ascending'
+          require:        Wls_jms_module[jmsClusterModule]
+       'jmsClusterModule:JMSRedelivered':
+          ensure:        'present'
+          key_type:      'Boolean'
+          property_name: 'JMSRedelivered'
+          sort_order:    'Ascending'
+          require:        Wls_jms_module[jmsClusterModule]
+
 
 ### wls_connection_factory
 

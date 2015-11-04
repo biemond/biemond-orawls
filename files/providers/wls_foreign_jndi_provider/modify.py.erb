@@ -1,0 +1,65 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name                    = '<%= provider_name %>'
+target                  = '<%= target %>'
+targettype              = '<%= targettype %>'
+initial_context_factory = '<%= initial_context_factory %>'
+provider_properties     = '<%= provider_properties %>'
+provider_url            = '<%= provider_url %>'
+user                    = '<%= user %>'
+password                = '<%= password %>'
+
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/ForeignJNDIProviders/' + name)
+
+    if initial_context_factory:
+        cmo.setInitialContextFactory(initial_context_factory)
+
+    if provider_url:
+        cmo.setProviderURL(provider_url)
+
+    if user:
+        cmo.setUser(user)
+
+    if password:
+        cmo.setPassword(password)
+
+    print "target: "     +  target
+    print "targettype: " +  targettype
+
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
+    targetList  = []
+
+    for i in range(len(targets)):
+        print "target "+targets[i] + " " + targettypes[i]
+        targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+    set('Targets',jarray.array(targetList, ObjectName))
+
+    if provider_properties:
+        cd('/ForeignJNDIProviders/' + name)
+        properties=provider_properties.split(",")
+        new_properties = Properties()
+        for property in properties:
+            propname, val = property.split("=")
+            new_properties.setProperty(propname, val)
+        cmo.setProperties(new_properties)
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+

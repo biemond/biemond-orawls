@@ -1,0 +1,33 @@
+def quote(text):
+    if text or text == '':
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+provider_list = ls('/ForeignJNDIProviders',returnMap='true')
+
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;target;targettype;deployment_order;initial_context_factory;provider_properties;provider_url;user"
+
+
+for provider in provider_list:
+    print '___'+provider+'___'
+    cd('/ForeignJNDIProviders/'+provider)
+
+    DeploymentOrder       = cmo.getDeploymentOrder()
+    InitialContextFactory = cmo.getInitialContextFactory()
+    Properties            = cmo.getProperties()
+    ProviderURL           = cmo.getProviderURL()
+    User                  = cmo.getUser()
+
+    target_folder = ls('/ForeignJNDIProviders/'+provider+'/Targets',returnMap='true')
+    target     = []
+    targetType = []
+    for target_object in target_folder:
+        target.append(target_object)
+        cd('/ForeignJNDIProviders/'+provider+'/Targets/'+target_object)
+        targetType.append(get('Type'))
+    print  >>f, ";".join(map(quote, [domain+'/'+provider,','.join(target),','.join(targetType),DeploymentOrder, InitialContextFactory, Properties,ProviderURL, User]))
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

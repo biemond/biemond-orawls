@@ -23,6 +23,7 @@ deliverymode             = '<%= deliverymode %>'
 redeliverydelay          = '<%= redeliverydelay %>'
 messagelogging           = '<%= messagelogging %>'
 forwardingpolicy         = '<%= forwardingpolicy %>'
+destination_keys         = String('<%= destination_keys.join(',') %>').split(',')
 
 edit()
 startEdit()
@@ -39,6 +40,7 @@ try:
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     set('JNDIName',jndiname)
+    set('DestinationKeys',jarray.array(destination_keys, String))
 
     if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
@@ -58,7 +60,7 @@ try:
         cmo.setLoadBalancingPolicy('Round-Robin')
       if forwardingpolicy != '':
         cmo.setForwardingPolicy(forwardingpolicy)
-        elif forwardingpolicy == '':
+      elif forwardingpolicy == '':
         cmo.setForwardingPolicy('Replicated')
 
     if expirationpolicy:

@@ -48,7 +48,7 @@ if osbEnabled == true:
     AdapterArray.append('<%= @osb_cluster_name %>')
     AllArray.append('<%= @osb_cluster_name %>')
 
-if oamEnabled == true:    
+if oamEnabled == true:
     AllArray.append('<%= @oam_cluster_name %>')
 
 if oimEnabled == true:
@@ -57,7 +57,7 @@ if oimEnabled == true:
 All       = ','.join(AllArray)
 Adapters  = ','.join(AdapterArray)
 
-def getFirstClusterServer(cluster):
+def getFirstClusterServer(cluster, adminserver_name):
     s = ls('/Server')
     clustername = " "
     for token in s.split("drw-"):
@@ -69,7 +69,7 @@ def getFirstClusterServer(cluster):
             searchClusterStr = cluster+":"
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
-                return token    
+                return token
 
 readDomain(DOMAIN_PATH)
 
@@ -89,10 +89,10 @@ if osbEnabled == true:
 updateDomain()
 
 if osbEnabled == true:
-    OSBServer1Name = getFirstClusterServer(OSBClusterName)
+    OSBServer1Name = getFirstClusterServer(OSBClusterName, Admin)
 
 if bamEnabled == true:
-    BAMServer1Name = getFirstClusterServer(BAMClusterName)
+    BAMServer1Name = getFirstClusterServer(BAMClusterName, Admin)
 
 cd('/')
 
@@ -176,7 +176,7 @@ elif oimEnabled:
     assign('AppDeployment', 'usermessagingdriver-email'  , 'Target', SOAClusterName)
     assign('AppDeployment', 'TaskDetails'                , 'Target', SOAClusterName)
     assign('AppDeployment', 'usermessagingserver'        , 'Target', SOAClusterName)
-    assign('AppDeployment', 'wsm-pm'                     , 'Target', OIMClusterName)    
+    assign('AppDeployment', 'wsm-pm'                     , 'Target', OIMClusterName)
 elif soaEnabled == true:
     assign('AppDeployment', 'usermessagingdriver-email'  , 'Target', SOAClusterName)
     assign('AppDeployment', 'usermessagingserver'        , 'Target', SOAClusterName)
@@ -332,7 +332,7 @@ elif bamEnabled == true:
     assign('Library', 'oracle.sdp.client#11.1.1@11.1.1'                , 'Target', SoaBam)
     assign('Library', 'oracle.rules#11.1.1@11.1.1'                     , 'Target', SoaBamAdmin)
     assign('Library', 'oracle.soa.rules_dict_dc.webapp#11.1.1@11.1.1'  , 'Target', SoaBam)
-    
+
 elif soaEnabled == true:
     assign('Library', 'oracle.sdp.client#11.1.1@11.1.1'                , 'Target', SOAClusterName)
     assign('Library', 'oracle.rules#11.1.1@11.1.1'                     , 'Target', SoaAdmin)
@@ -416,15 +416,15 @@ if osbEnabled == true:
     assign('Library', 'wls-commonslogging-bridge-war#1.0@1.1'           , 'Target', OsbAdmin)
 
 if oamEnabled == true:
-    assign('Library', 'oracle.oaam.libs#11.1.2.0.0@11.1.2.0.0' , 'Target', OAMClusterName) 
-    assign('Library', 'oracle.idm.ipf#11.1.2@11.1.2'           , 'Target', OamAdmin) 
-    assign('Library', 'coherence#3.7.1.1@3.7.1.1'              , 'Target', OamAdmin) 
-    assign('Library', 'coherence#3.7.1.1@3.7.1.1'              , 'Target', OamAdmin) 
-     
+    assign('Library', 'oracle.oaam.libs#11.1.2.0.0@11.1.2.0.0' , 'Target', OAMClusterName)
+    assign('Library', 'oracle.idm.ipf#11.1.2@11.1.2'           , 'Target', OamAdmin)
+    assign('Library', 'coherence#3.7.1.1@3.7.1.1'              , 'Target', OamAdmin)
+    assign('Library', 'coherence#3.7.1.1@3.7.1.1'              , 'Target', OamAdmin)
+
 
 if oimEnabled == true:
-    assign('Library', 'oracle.iam.ui.model#1.0@11.1.1.5.0'     , 'Target', OIMClusterName) 
-    assign('Library', 'oracle.iam.ui.view#11.1.1@11.1.1'       , 'Target', OIMClusterName) 
+    assign('Library', 'oracle.iam.ui.model#1.0@11.1.1.5.0'     , 'Target', OIMClusterName)
+    assign('Library', 'oracle.iam.ui.view#11.1.1@11.1.1'       , 'Target', OIMClusterName)
     assign('Library', 'oracle.iam.ui.oia-view#11.1.1@11.1.1'   , 'Target', OIMClusterName)
     assign('Library', 'oracle.iam.ui.custom#11.1.1@11.1.1'     , 'Target', OIMClusterName)
     assign('Library', 'oracle.grcc.oaacg#8.6.1@8.6.1'          , 'Target', OIMClusterName)
@@ -470,7 +470,7 @@ if soaEnabled == true:
 
 if oamEnabled == true:
     assign('JdbcSystemResource', 'oamDS'               , 'Target', OamAdmin)
-    
+
 if oimEnabled == true:
     assign('JdbcSystemResource', 'oimOperationsDB'     , 'Target', OIMClusterName)
     assign('JdbcSystemResource', 'mds-oim'             , 'Target', OIMClusterName)
@@ -494,4 +494,4 @@ dumpStack();
 
 print 'Successfully Updated SOA Domain.'
 
-closeDomain() 
+closeDomain()

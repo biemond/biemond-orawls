@@ -15,6 +15,7 @@ Puppet::Type.type(:wls_exec).provide(:sqlplus) do
   end
 
   def execute
+    domain     = resource[:domain]
     cwd        = resource[:cwd]
     statement  = resource[:statement]
     #
@@ -22,7 +23,7 @@ Puppet::Type.type(:wls_exec).provide(:sqlplus) do
     #
     if is_script?(statement)
       file_name = statement.split('@').last
-      fail "File #{file_name} doesn't exsist. " unless File.exists?(file_name)
+      fail "File #{file_name} doesn't exist. " unless File.exists?(file_name)
       statement = File.read(file_name)
     end
 

@@ -136,8 +136,7 @@ def createJMSServers(cluster, track, currentServerCnt, adminserver_name):
                     fileStoreName = 'BamServerJmsFileStore_auto_'+str(serverCnt)
                 elif track == 'ums':
                     jmsServerName = 'UMSJMSServer_auto_'+str(serverCnt)
-                    fileStoreName = 'UMSJMSServerFileStore_auto_'+str(serverCnt)
-
+                    fileStoreName = 'UMSJMSFileStore_auto_'+str(serverCnt)
 
                 createFileStore(fileStoreName, token)
                 print "Created File Store :- ", fileStoreName
@@ -159,7 +158,7 @@ def getCurrentUMSServerCnt():
     count = s.count("UMSJMSServer_auto")
     return count + 1
 
-def getClusterName(targetServer):
+def getClusterName(targetServer, adminserver_name):
         targetServerStr = str(targetServer)
         s = ls('/Server')
         print ' '
@@ -168,12 +167,12 @@ def getClusterName(targetServer):
                 token=token.strip().lstrip().rstrip()
                 path="/Server/"+token
                 cd(path)
-                if not token == 'AdminServer' and not token == '':
+                if not token == adminserver_name and not token == '':
                         if not targetServerStr.find(token+":") == -1:
                                 clustername = get('Cluster')
         return clustername
 
-def getUMSJMSServers(cluster):
+def getUMSJMSServers(cluster, adminserver_name):
         s = ls('/JMSServers')
         jmsServersStr = " "
         print ' '
@@ -183,7 +182,7 @@ def getUMSJMSServers(cluster):
                 if not token == '' and not token.find("UMSJMSServer_auto") == -1:
                         cd('/JMSServers/'+token)
                         targetServer = get('Target')
-                        clustername = getClusterName(targetServer)
+                        clustername = getClusterName(targetServer, adminserver_name)
                         searchClusterStr = cluster+":"
                         clusterNameStr = str(clustername)
                         print "searchClusterStr = ",searchClusterStr
@@ -605,7 +604,6 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         print "fix ESS UMS JMS"
         createJMSServers(ESSClusterName, 'ums', getCurrentUMSServerCnt(), Admin)
 
-
     print "create UMSJMSSystemResource"
     cd('/')
     create('UMSJMSSystemResource','JMSSystemResource')
@@ -628,6 +626,18 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
     create('TransactionParams', 'TransactionParams')
     cd('TransactionParams/NO_NAME_0')
     cmo.setXAConnectionFactoryEnabled(true)
+    cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0/ConnectionFactory/OraSDPMQueueConnectionFactory')
+    create('DefaultDeliveryParams', 'DefaultDeliveryParams')
+    cd('DefaultDeliveryParams/NO_NAME_0')
+    cmo.setDefaultDeliveryMode('Persistent')
+    cmo.setDefaultRedeliveryDelay(400)
+
+    cd('/')
+    cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+    dk1=create('Priority','DestinationKey')
+    dk1.setProperty('JMSPriority')
+    dk1.setKeyType('Int')
+    dk1.setSortOrder('Descending')
 
     if soaEnabled == true:
         print "create subdeployment SOA UMS JMS"
@@ -635,85 +645,152 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         cd('JMSSystemResource/UMSJMSSystemResource')
         create('UMSJMSSubDMSOA', 'SubDeployment')
 
-        umsJMSServerStr = getUMSJMSServers(SOAClusterName)
+        umsJMSServerStr = getUMSJMSServers(SOAClusterName, Admin)
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMSOA', 'Target', umsJMSServerStr)
 
         print ("*** Creating Queues for UMS ***")
         cd('/')
-        cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         print ' '
 
-        udd=create('OraSDPMEngineSndQ1_soa','UniformDistributedQueue')
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        udd= create('OraSDPMEngineSndQ1_soa','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_soa')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEngineRcvQ1_soa','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
+        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_soa')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMDriverDefSndQ1_soa','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_soa')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        uddError=create('OraSDPMAppDefRcvErrorQ1_soa','UniformDistributedQueue')
+        uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
+        uddError.setSubDeploymentName('UMSJMSSubDMSOA')
+
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMAppDefRcvQ1_soa','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
+        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_soa')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
+        dfp.setErrorDestination(uddError)
 
-        udd=create('OraSDPMAppDefRcvErrorQ1_soa','UniformDistributedQueue')
-        udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
-        udd.setSubDeploymentName('UMSJMSSubDMSOA')
-
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMWSRcvQ1_soa','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
+        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_soa')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEnginePendingRcvQ_soa','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
+        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_soa')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
     if bamEnabled == true:
+
         print "create subdeployment BAM UMS JMS"
         cd('/')
         cd('JMSSystemResource/UMSJMSSystemResource')
         create('UMSJMSSubDMBAM', 'SubDeployment')
 
-        umsJMSServerStr = getUMSJMSServers(BAMClusterName)
+        umsJMSServerStr = getUMSJMSServers(BAMClusterName, Admin)
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMBAM', 'Target', umsJMSServerStr)
 
         print ("*** Creating Queues for UMS ***")
         cd('/')
-        cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         print ' '
 
-        udd=create('OraSDPMEngineSndQ1_bam','UniformDistributedQueue')
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        udd= create('OraSDPMEngineSndQ1_bam','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_bam')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEngineRcvQ1_bam','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
+        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_bam')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMDriverDefSndQ1_bam','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_bam')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        uddError=create('OraSDPMAppDefRcvErrorQ1_bam','UniformDistributedQueue')
+        uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
+        uddError.setSubDeploymentName('UMSJMSSubDMBAM')
+
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMAppDefRcvQ1_bam','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
+        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_bam')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
+        dfp.setErrorDestination(uddError)
 
-        udd=create('OraSDPMAppDefRcvErrorQ1_bam','UniformDistributedQueue')
-        udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
-        udd.setSubDeploymentName('UMSJMSSubDMBAM')
-
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMWSRcvQ1_bam','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
+        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_bam')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEnginePendingRcvQ_bam','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
+        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_bam')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
     if osbEnabled == true:
         print "create subdeployment OSB UMS JMS"
@@ -721,85 +798,152 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         cd('JMSSystemResource/UMSJMSSystemResource')
         create('UMSJMSSubDMOSB', 'SubDeployment')
 
-        umsJMSServerStr = getUMSJMSServers(OSBClusterName)
+        umsJMSServerStr = getUMSJMSServers(OSBClusterName, Admin)
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMOSB', 'Target', umsJMSServerStr)
 
         print ("*** Creating Queues for UMS ***")
         cd('/')
-        cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         print ' '
 
-        udd=create('OraSDPMEngineSndQ1_osb','UniformDistributedQueue')
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        udd= create('OraSDPMEngineSndQ1_osb','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_osb')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEngineRcvQ1_osb','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
+        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_osb')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMDriverDefSndQ1_osb','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_osb')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        uddError=create('OraSDPMAppDefRcvErrorQ1_osb','UniformDistributedQueue')
+        uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
+        uddError.setSubDeploymentName('UMSJMSSubDMOSB')
+
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMAppDefRcvQ1_osb','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
+        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_osb')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
+        dfp.setErrorDestination(uddError)
 
-        udd=create('OraSDPMAppDefRcvErrorQ1_osb','UniformDistributedQueue')
-        udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
-        udd.setSubDeploymentName('UMSJMSSubDMOSB')
-
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMWSRcvQ1_osb','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
+        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_osb')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEnginePendingRcvQ_osb','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
+        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_osb')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
     if essEnabled == true and ESSClusterName:
+
         print "create subdeployment ESS UMS JMS"
         cd('/')
         cd('JMSSystemResource/UMSJMSSystemResource')
         create('UMSJMSSubDMESS', 'SubDeployment')
 
-        umsJMSServerStr = getUMSJMSServers(ESSClusterName)
+        umsJMSServerStr = getUMSJMSServers(ESSClusterName, Admin)
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMESS', 'Target', umsJMSServerStr)
 
         print ("*** Creating Queues for UMS ***")
         cd('/')
-        cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         print ' '
 
-        udd=create('OraSDPMEngineSndQ1_ess','UniformDistributedQueue')
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        udd= create('OraSDPMEngineSndQ1_ess','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_ess')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEngineRcvQ1_ess','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
+        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_ess')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMDriverDefSndQ1_ess','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
+        udd.setDestinationKeys(jarray.array([String('Priority')],String))
+        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_ess')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
+        uddError=create('OraSDPMAppDefRcvErrorQ1_ess','UniformDistributedQueue')
+        uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
+        uddError.setSubDeploymentName('UMSJMSSubDMESS')
+
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMAppDefRcvQ1_ess','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
+        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_ess')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
+        dfp.setErrorDestination(uddError)
 
-        udd=create('OraSDPMAppDefRcvErrorQ1_ess','UniformDistributedQueue')
-        udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
-        udd.setSubDeploymentName('UMSJMSSubDMESS')
-
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMWSRcvQ1_ess','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
+        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_ess')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
+        cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
         udd=create('OraSDPMEnginePendingRcvQ_ess','UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
+        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_ess')
+        dfp = create('dfpName', 'DeliveryFailureParams')
+        dfp.setRedeliveryLimit(2)
+        dfp.setExpirationPolicy('Log')
 
     updateDomain()
     dumpStack()

@@ -1,6 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+
 name                    = '<%= provider_name %>'
 target                  = '<%= target %>'
 targettype              = '<%= targettype %>'
@@ -9,9 +10,10 @@ provider_properties     = '<%= provider_properties %>'
 provider_url            = '<%= provider_url %>'
 user                    = '<%= user %>'
 password                = '<%= password %>'
-
-
-print provider_properties
+links                   = String('<%= links.keys.join(",") %>').split(",")
+local_jndi_names        = String('<%= links.to_a.flatten.collect{|e| e.is_a?(Hash) ? e['local_jndi_name'] : nil}.compact.join(",") %>').split(",")
+remote_jndi_names       = String('<%= links.to_a.flatten.collect{|e| e.is_a?(Hash) ? e['remote_jndi_name'] : nil}.compact.join(",") %>').split(",")
+number_of_links         = len(links)
 
 edit()
 startEdit()
@@ -35,6 +37,17 @@ try:
     if password:
         cmo.setPassword(password)
 
+    for link_no in range(number_of_links):
+        cd('/ForeignJNDIProviders/' + name)
+        link_name        = links[link_no]
+        remote_jndi_name = remote_jndi_names[link_no]
+        local_jndi_name  = local_jndi_names[link_no]
+        print "setting remote_jndi_name to " + remote_jndi_name + " and local_jndi_name to " + local_jndi_name + " on link " + link_name
+        cmo.createForeignJNDILink(link_name)
+        cd('/ForeignJNDIProviders/' + name +'/ForeignJNDILinks/' + link_name)
+        cmo.setLocalJNDIName(local_jndi_name)
+        cmo.setRemoteJNDIName(remote_jndi_name)
+
     print "target: "     +  target
     print "targettype: " +  targettype
 
@@ -42,6 +55,7 @@ try:
     targettypes = String(targettype).split(",")
     targetList  = []
 
+    cd('/ForeignJNDIProviders/' + name)
     for i in range(len(targets)):
         print "target "+targets[i] + " " + targettypes[i]
         targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )

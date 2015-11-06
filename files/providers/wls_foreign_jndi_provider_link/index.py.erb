@@ -1,0 +1,27 @@
+def quote(text):
+    if text or text == '':
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+provider_list = ls('/ForeignJNDIProviders',returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;local_jndi_name;remote_jndi_name"
+
+
+for provider in provider_list:
+    print '___'+provider+'___'
+    cd('/ForeignJNDIProviders/'+provider)
+
+    links_folder = ls('/ForeignJNDIProviders/'+provider+'/ForeignJNDILinks',returnMap='true')
+    for link_object in links_folder:
+        print '__' + link_object + '__'
+        cd('/ForeignJNDIProviders/'+provider+'/ForeignJNDILinks/'+link_object)
+        local_jndi_name = cmo.getLocalJNDIName()
+        remote_jndi_name = cmo.getRemoteJNDIName()
+
+        print  >>f, ";".join(map(quote, [domain+'/'+provider+':'+link_object, local_jndi_name, remote_jndi_name]))
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

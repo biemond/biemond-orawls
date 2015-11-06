@@ -4,11 +4,11 @@
 - WebLogic 12.2.1 standard and infrastructure edition installation
 - FMW 12.2.1 SOA Suite, OSB, Webtier (OHS), Forms, B2B, WC, WCC ( Webcenter portal, Webcenter content) installation
 - 12.2.1 domains for standard, soa, osb, bam, adf, adf_restricted which is new in 12.2.1 and requires no RCU/DB
-- 12.2.1 fmwcluster support for Service Bus (OSB)
+- 12.2.1 fmwcluster support for Service Bus (OSB), SOA Suite (BPM, ESS, BAM)
 - wls_jms_topic distributed fix plus new attribute ForwardingPolicy
 - wls_server modify fix for arguments, classpath etc. plus multiple arguments as an array are converted to a space as separator instead of newline
-- new type wls_jms_sort_destination_key 
-- new type wls_foreign_jndi_provider 
+- new type wls_jms_sort_destination_key  and added this parameter to wls_queue + wls_topic
+- new type wls_foreign_jndi_provider  + links
 - domain.pp allows you to set a separate domain password, nodemanager_username + password on a domain
 
 ## 1.0.43

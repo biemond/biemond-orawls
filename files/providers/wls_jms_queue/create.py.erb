@@ -22,7 +22,7 @@ redeliverydelay          = '<%= redeliverydelay %>'
 forwarddelay             = '<%= forwarddelay %>'
 templatename             = '<%= templatename %>'
 messagelogging           = '<%= messagelogging %>'
-destination_keys         = String('<%= destination_keys.join(',') %>').split(',')
+destination_keys         = '<%= destination_keys %>'
 
 edit()
 startEdit()
@@ -41,7 +41,11 @@ try:
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     set('JNDIName',jndiname)
-    set('DestinationKeys',jarray.array(destination_keys, String))
+
+    if destination_keys:
+      print "jms destinationkeys: " + destination_keys
+      key_entries = destination_keys.split(',')
+      set('DestinationKeys',jarray.array(key_entries, String))
 
     if templatename:
       set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))

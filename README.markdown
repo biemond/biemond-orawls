@@ -102,6 +102,7 @@ Dependency with
 - [wls_file_persistence_store](#wls_file_persistence_store)
 - [wls_jdbc_persistence_store](#wls_jdbc_persistence_store)
 - [wls_foreign_jndi_provider ](#wls_foreign_jndi_provider )
+- [wls_foreign_jndi_provider _link](#wls_foreign_jndi_provider _link)
 - [wls_jmsserver](#wls_jmsserver)
 - [wls_safagent](#wls_safagent)
 - [wls_jms_module](#wls_jms_module)
@@ -3331,13 +3332,57 @@ in hiera
       'LDAP':
         ensure:                  'present'
         initial_context_factory: 'com.sun.jndi.ldap.LdapCtxFactory'
-        provider_properties:     ['java.naming.referral=follow']
+        provider_properties:     ['referral=follow']
         provider_url:            'ldap://:10.10.10.100:389'
         target:                  ['AdminServer']
         targettype:              ['Server']
         user:                    'cn=orcladmin'
         password:                'weblogic1'
 
+
+## wls_foreign_jndi_provider _link
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_foreign_jndi_provider _link
+
+    wls_foreign_jndi_provider_link { 'default/DomainA:aaaa':
+      ensure           => 'present',
+      local_jndi_name  => 'aaaa',
+      remote_jndi_name => 'bbbb',
+    }
+    wls_foreign_jndi_provider_link { 'default/LDAP:aaaaa':
+      ensure           => 'present',
+      local_jndi_name  => 'aaaaa',
+      remote_jndi_name => 'bbbbb',
+    }
+    wls_foreign_jndi_provider_link { 'default/LDAP:ccccc':
+      ensure           => 'present',
+      local_jndi_name  => 'ccccc',
+      remote_jndi_name => 'ddddd',
+    }
+
+in hiera
+
+
+    wls_foreign_jndi_provider_link_instances:
+      'DomainA:aaaa':
+        ensure:                  'present'
+        local_jndi_name:         'aaaa'
+        remote_jndi_name:        'bbbb'
+        require:
+          - Wls_foreign_jndi_provider[DomainA]
+      'LDAP:aaaaa':
+        ensure:                  'present'
+        local_jndi_name:         'aaaaa'
+        remote_jndi_name:        'bbbbb'
+        require:
+          - Wls_foreign_jndi_provider[LDAP]
+      'LDAP:ccccc':
+        ensure:                  'present'
+        local_jndi_name:         'ccccc'
+        remote_jndi_name:        'ddddd'
+        require:
+          - Wls_foreign_jndi_provider[LDAP]
 
 
 ### wls_file_persistence_store
@@ -3796,6 +3841,7 @@ or use puppet resource wls_jms_queue
       timetodeliver    => '-1',
       timetolive       => '300000',
       messagelogging   => '1',
+      destination_keys => ['JMSPriority', 'JmsMessageId'],
     }
     wls_jms_queue { 'jmsClusterModule:Queue2':
       ensure                  => 'present',
@@ -3835,6 +3881,9 @@ in hiera
          errordestination:         'ErrorQueue'
          expirationpolicy:         'Redirect'
          jndiname:                 'jms/Queue1'
+         destination_keys:
+            - 'JMSPriority'
+            - 'JmsMessageId'
          redeliverydelay:          '2000'
          redeliverylimit:          '3'
          subdeployment:            'jmsServers'
@@ -3865,16 +3914,35 @@ or use puppet resource wls_jms_topic
 
     wls_jms_topic { 'jmsClusterModule:Topic1':
       ensure           => 'present',
+      balancingpolicy  => 'Round-Robin',
       defaulttargeting => '0',
+      deliverymode     => 'No-Delivery',
+      destination_keys => ['JMSPriority', 'JmsMessageId'],
       distributed      => '1',
       expirationpolicy => 'Discard',
+      forwardingpolicy => 'Replicated',
       jndiname         => 'jms/Topic1',
       redeliverydelay  => '2000',
       redeliverylimit  => '2',
       subdeployment    => 'jmsServers',
       timetodeliver    => '-1',
       timetolive       => '300000',
-      messagelogging   => '1',
+    }
+    wls_jms_topic { 'default/jmsClusterModule:Topic2':
+      ensure           => 'present',
+      balancingpolicy  => 'Round-Robin',
+      defaulttargeting => '0',
+      deliverymode     => 'No-Delivery',
+      distributed      => '1',
+      errordestination => 'ErrorQueue',
+      expirationpolicy => 'Redirect',
+      forwardingpolicy => 'Replicated',
+      jndiname         => 'jms/Topic2',
+      redeliverydelay  => '2000',
+      redeliverylimit  => '3',
+      subdeployment    => 'jmsServers',
+      timetodeliver    => '-1',
+      timetolive       => '300000',
     }
 
 in hiera
@@ -3892,6 +3960,9 @@ in hiera
          timetodeliver:     '-1'
          timetolive:        '300000'
          messagelogging:    '0'
+         destination_keys:
+            - 'JMSPriority'
+            - 'JmsMessageId'
 
 
 ### wls_jms_quota

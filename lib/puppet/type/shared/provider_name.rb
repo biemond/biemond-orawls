@@ -7,4 +7,4 @@ newparam(:provider_name) do
 
 end
 
-autorequire(:wls_foreign_jndi_provider) { "#{domain}/#{provider_name}" }
+#autorequire(:wls_foreign_jndi_provider) { "#{domain}/#{provider_name}" }

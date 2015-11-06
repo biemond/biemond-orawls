@@ -9,4 +9,12 @@ newproperty(:destination_keys, :array_matching => :all) do
     end
   end
 
+  # def insync?(is)
+  #   is = [] if is == :absent or is.nil?
+  # end
+
+end
+
+def destination_keys
+  self[:destination_keys] ? self[:destination_keys].join(',') : ''
 end

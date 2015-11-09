@@ -1,3 +1,5 @@
+require 'utils/indent'
+
 newproperty(:statement) do
   include Utils::WlsAccess
   include ::EasyType::Helpers
@@ -26,6 +28,7 @@ newproperty(:statement) do
       fail "File #{file_name} doesn't exist. " unless File.exists?(file_name)
       statement = File.read(file_name)
     end
+    statement = statement.indent(2)  # Make sure the script has 2 spaces indenting
     environment = { 'action' => 'index', 'type' => 'wls_exec' }
     output = wlst template('puppet:///modules/orawls/providers/wls_exec/execute.py.erb', binding), environment
     !output.empty?
@@ -34,6 +37,5 @@ newproperty(:statement) do
   def is_script?(statement)
     statement.chars.first == '@'
   end
-
 
 end

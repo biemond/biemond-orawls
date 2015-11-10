@@ -1,68 +1,68 @@
 # load common defs
 execfile('<%= @download_dir %>/utils.py')
 
-WLHOME='<%= @weblogic_home_dir %>'
-DOMAIN_PATH='<%= @domain_dir %>'
-DOMAIN='<%= @domain_name %>'
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
 <% if @apps_dir %>
-APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
 # security
-JSSE_ENABLED=<%= @jsse_enabled %>
-CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
-DEVELOPMENT_MODE=<%= @development_mode %>
+JSSE_ENABLED = <%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
 
-WEBLOGIC_VERSION=<%= @version %>
+WEBLOGIC_VERSION = <%= @version %>
 
-ADMIN_SERVER='<%= @adminserver_name %>'
-ADMIN_USER='<%= @weblogic_user %>'
-ADMIN_PASSWORD='<%= @weblogic_password %>'
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
 
-JAVA_HOME='<%= @jdk_home_dir %>'
+JAVA_HOME = '<%= @jdk_home_dir %>'
 
 DOMAIN_PASSWORD = '<%= @domain_password %>'
 NODEMANAGER_USERNAME = '<%= @nodemanager_username %>'
 NODEMANAGER_PASSWORD = '<%= @nodemanager_password %>'
 
-ADMINSERVER_LISTEN_ON_ALL_INTERFACES=<%= @adminserver_listen_on_all_interfaces %>
-NODEMANAGER_SECURE_LISTENER=<%= @nodemanager_secure_listener %>
+ADMINSERVER_LISTEN_ON_ALL_INTERFACES = <%= @adminserver_listen_on_all_interfaces %>
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
 
 <% if @java_arguments["ADM"] %>
-ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments["ADM"] %>'
 <% else %>
-ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
 
 print('Start normal domain... with template <%= @template %>')
 readTemplate('<%= @template %>')
 
 print('Set crossdomain')
-setCrossDomain()
+set_cross_domain()
 
 cd('/')
 print('Set domain log')
-changeLog('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
+change_log('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 
 print('Create machine LocalMachine with type UnixMachine')
-createMachine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>',NODEMANAGER_SECURE_LISTENER)
+create_machine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
 
 if ADMINSERVER_LISTEN_ON_ALL_INTERFACES:
-  changeAdminServer(ADMIN_SERVER, 'LocalMachine', None, <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
+  change_admin_server(ADMIN_SERVER, 'LocalMachine', None, <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
 else:
-  changeAdminServer(ADMIN_SERVER, 'LocalMachine', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
+  change_admin_server(ADMIN_SERVER, 'LocalMachine', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
 
-changeSSLwithPort(ADMIN_SERVER, JSSE_ENABLED, '<%= @adminserver_ssl_port %>')
+change_ssl_with_port(ADMIN_SERVER, JSSE_ENABLED, '<%= @adminserver_ssl_port %>')
 
-if CUSTOM_IDENTITY_ENABLED == true:
+if CUSTOM_IDENTITY_ENABLED == True:
   print('Set adminserver custom identity')
-  changeCustomIdentityStore(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
+  change_custom_identity_store(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
 
 print('Change AdminServer log')
-changeLog('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
+change_log('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
 
 print('Set password...')
-setWebLogicPassword(ADMIN_USER, ADMIN_PASSWORD)
+set_weblogic_password(ADMIN_USER, ADMIN_PASSWORD)
 
 # Set domain save options:
 # - ServerStartMode: Set mode to development.
@@ -95,33 +95,33 @@ readDomain(DOMAIN_PATH)
 #
 if DOMAIN_PASSWORD == None or DOMAIN_PASSWORD == '':
   print 'Using default for domain password'
-  encrypted_domain_password = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+  encrypted_domain_password = encrypt(ADMIN_PASSWORD, DOMAIN_PATH)
 else:
-  encrypted_domain_password = encrypt(DOMAIN_PASSWORD,DOMAIN_PATH)
+  encrypted_domain_password = encrypt(DOMAIN_PASSWORD, DOMAIN_PATH)
 
-setDomainPassword(DOMAIN,encrypted_domain_password)
+set_domain_password(DOMAIN, encrypted_domain_password)
 
 #
 # Setting the nodemanager password. If it isn't specfied, we use the admin password
 #
 if NODEMANAGER_PASSWORD == None or NODEMANAGER_PASSWORD == '':
   print 'Using default for nodemanager password'
-  encrypted_nodemanager_password = encrypt(ADMIN_PASSWORD,DOMAIN_PATH)
+  encrypted_nodemanager_password = encrypt(ADMIN_PASSWORD, DOMAIN_PATH)
 else:
-  encrypted_nodemanager_password = encrypt(NODEMANAGER_PASSWORD,DOMAIN_PATH)
+  encrypted_nodemanager_password = encrypt(NODEMANAGER_PASSWORD, DOMAIN_PATH)
 
 if NODEMANAGER_USERNAME == None or NODEMANAGER_USERNAME == '':
   print 'Using default for nodemanager username'
   NODEMANAGER_USERNAME = ADMIN_USER
 
-setNodemanagerPassword(DOMAIN, encrypted_nodemanager_password, NODEMANAGER_USERNAME)
+set_nodemanager_password(DOMAIN, encrypted_nodemanager_password, NODEMANAGER_USERNAME)
 
 updateDomain()
 closeDomain()
 
-createAdminStartupPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/data/nodemanager',ADM_JAVA_ARGUMENTS)
-createBootPropertiesFile(DOMAIN_PATH+'/servers/'+ADMIN_SERVER+'/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-createBootPropertiesFile(DOMAIN_PATH+'/config/nodemanager','nm_password.properties',ADMIN_USER,ADMIN_PASSWORD)
+create_admin_startup_properties_file(DOMAIN_PATH + '/servers/'+ ADMIN_SERVER + '/data/nodemanager', ADM_JAVA_ARGUMENTS)
+create_boot_properties_file(DOMAIN_PATH + '/servers/' + ADMIN_SERVER + '/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+create_boot_properties_file(DOMAIN_PATH + '/config/nodemanager', 'nm_password.properties', ADMIN_USER, ADMIN_PASSWORD)
 
-print('Exiting...')
+print 'Exiting...'
 exit()

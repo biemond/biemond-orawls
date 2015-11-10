@@ -1,36 +1,36 @@
 # load common defs
 execfile('<%= @download_dir %>/utils.py')
 
-WLHOME='<%= @weblogic_home_dir %>'
-DOMAIN_PATH='<%= @domain_dir %>'
-DOMAIN='<%= @domain_name %>'
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
 <% if @apps_dir %>
-APP_PATH='<%= @apps_dir %>/<%= @domain_name %>'
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
 # security
-JSSE_ENABLED=<%= @jsse_enabled %>
-CUSTOM_IDENTITY_ENABLED=<%= @custom_identity %>
-DEVELOPMENT_MODE=<%= @development_mode %>
+JSSE_ENABLED = <%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
 
-WEBLOGIC_VERSION=<%= @version %>
+WEBLOGIC_VERSION = <%= @version %>
 
-ADMIN_SERVER='<%= @adminserver_name %>'
-ADMIN_USER='<%= @weblogic_user %>'
-ADMIN_PASSWORD='<%= @weblogic_password %>'
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
 
-JAVA_HOME='<%= @jdk_home_dir %>'
-NODEMANAGER_SECURE_LISTENER=<%= @nodemanager_secure_listener %>
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
 
-<% if @java_arguments["ADM"] %>
-ADM_JAVA_ARGUMENTS='<%= @java_arguments["ADM"] %>'
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments["ADM"] %>'
 <% else %>
-ADM_JAVA_ARGUMENTS='-XX:PermSize=256m -XX:MaxPermSize=378m -Xms752m -Xmx752m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=378m -Xms752m -Xmx752m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
 
 readDomain(DOMAIN_PATH)
 
-changeServerArguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
+change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 print 'Adding OUD template Template'
 addTemplate('<%= @templateOUD %>')
@@ -38,5 +38,5 @@ addTemplate('<%= @templateOUD %>')
 updateDomain()
 closeDomain()
 
-print('Exiting...')
+print 'Exiting...'
 exit()

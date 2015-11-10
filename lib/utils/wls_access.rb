@@ -31,31 +31,42 @@ module Utils
       csv_string = ''
       domains = configuration
 
-      if action == 'index'
+      case action
+      when 'index' then
         # if index do all domains
         i = 1
-        domains.each { |key, values|
+        domains.each do |key, values|
           Puppet.info "domain found #{key}"
-          csv_domain_string = execute_wlst(script, tmpFile, parameters, key, values, action)
+          csv_domain_string = execute_wlst(script, tmpFile, parameters, key, values, :return_output => true)
           if i > 1
             # with multi domain, remove first line if it is a header
             csv_domain_string = csv_domain_string.lines.to_a[1..-1].join
           end
           csv_string += csv_domain_string
           i += 1
-        }
+        end
         convert_csv_data_to_hash(csv_string, [], :col_sep => ';')
-      else
-        #  Puppet.info "domain found #{domain}"
-        domains.each { |key, values|
+      when 'execute' then
+        domains.each do |key, values|
           # check content if we do this for the right domain
           if content.include? "real_domain='" + key
-            Puppet.info "Got the right domain #{key} script, now execute WLST"
-            execute_wlst(script, tmpFile, parameters, key, values, action)
+            csv_string = execute_wlst(script, tmpFile, parameters, key, values, :return_output => true)
           else
             Puppet.info "Skip WLST for domain #{key}"
           end
-        }
+        end
+        convert_csv_data_to_hash(csv_string, [], :col_sep => ';')
+      else
+        #  Puppet.info "domain found #{domain}"
+        domains.each do |key, values|
+          # check content if we do this for the right domain
+          if content.include? "real_domain='" + key
+            Puppet.info "Got the right domain #{key} script, now execute WLST"
+            execute_wlst(script, tmpFile, parameters, key, values, :return_output => false)
+          else
+            Puppet.info "Skip WLST for domain #{key}"
+          end
+        end
       end
     end
 
@@ -65,7 +76,7 @@ module Utils
       Pathname.new(DEFAULT_FILE).expand_path
     end
 
-    def execute_wlst(script, tmpFile, parameters, domain, domainValues, action)
+    def execute_wlst(script, tmpFile, parameters, domain, domainValues, options = {})
       operatingSystemUser       = domainValues['user']              || 'oracle'
       weblogicHomeDir           = domainValues['weblogic_home_dir']
       weblogicUser              = domainValues['weblogic_user']     || 'weblogic'
@@ -77,6 +88,7 @@ module Utils
       trust_keystore_passphrase = domainValues['trust_keystore_passphrase']
       debug_module              = domainValues['debug_module']
       archive_path              = domainValues['archive_path']
+      return_output              = options.fetch(:return_output) { false }
 
       fail('weblogic_home_dir cannot be nil, check the wls_setting resource type') if weblogicHomeDir.nil?
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
@@ -105,7 +117,7 @@ module Utils
       else
         wls_daemon.execute_script(tmpFile.path)
       end
-      File.read('/tmp/' + script + '.out') if action == 'index'
+      File.read('/tmp/' + script + '.out') if return_output
     end
 
     def timeout_specified

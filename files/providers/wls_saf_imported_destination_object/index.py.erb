@@ -15,7 +15,7 @@ def object(token,token2,token3,location,type):
     localjndiname     = cmo.getLocalJNDIName()
     unitoforder       = cmo.getUnitOfOrderRouting()
 
-    timeToLiveDefault = cmo.getTimeToLiveDefault()
+    timeToLiveDefault = str(cmo.getTimeToLiveDefault())
     if not (timeToLiveDefault):
       useSAFTimeToLiveDefault = '0'
     else:

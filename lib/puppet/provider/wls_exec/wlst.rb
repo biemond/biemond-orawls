@@ -1,6 +1,7 @@
 require 'easy_type/helpers'
 require 'fileutils'
 require File.dirname(__FILE__) + '/../../../orawls_core'
+require 'utils/indent'
 
 Puppet::Type.type(:wls_exec).provide(:sqlplus) do
   include EasyType::Helpers
@@ -26,6 +27,7 @@ Puppet::Type.type(:wls_exec).provide(:sqlplus) do
       fail "File #{file_name} doesn't exist. " unless File.exists?(file_name)
       statement = File.read(file_name)
     end
+    statement = statement.indent(2)
 
     fail "Working directory '#{cwd}' does not exist" if cwd && !File.directory?(cwd)
     FileUtils.cd(resource[:cwd]) if resource[:cwd]

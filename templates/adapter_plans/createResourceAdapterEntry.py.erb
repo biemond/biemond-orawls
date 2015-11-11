@@ -47,7 +47,14 @@ def main():
       myPlan.save();
 
       pList = propertyName.split(';')
-      vList = cfName.split(';')
+
+      encodedValues = cfName.replace('\;','#') # Replace escaped semicolons for a dash
+      encodedList = encodedValues.split(';')
+
+      vList = []
+      for valueString in encodedList:
+        vList.append(valueString.replace('#', ';'))
+
       if len(pList) == len(vList):
         i = 0
         for p in pList:

@@ -4,12 +4,13 @@ real_domain='<%= domain %>'
 try:
 
   puppet = open("/tmp/wlstScript.out", "w")
-  print >>puppet, "output"
+  print >>puppet, "output" # This is the header for the conversion
 
-  <%= statement %>
+<%= statement %>
 
   puppet.close()
   print "~~~~COMMAND SUCCESFULL~~~~"
+
 
 except:
   print "Unexpected error:", sys.exc_info()[0]

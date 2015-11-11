@@ -3,7 +3,7 @@ newproperty(:statement) do
   include ::EasyType::Helpers
   include ::EasyType::Template
 
-  desc "The wlst statement or script to execute"
+  desc 'The wlst statement or script to execute'
 
   #
   # Let the insync? check for the parameter unless and the refreshonly
@@ -34,6 +34,4 @@ newproperty(:statement) do
   def is_script?(statement)
     statement.chars.first == '@'
   end
-
-
 end

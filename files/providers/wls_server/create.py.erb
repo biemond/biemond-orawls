@@ -3,7 +3,9 @@ real_domain='<%= domain %>'
 
 name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
+<% unless arguments.nil? %>
 arguments     = '<%= arguments.join(' ') %>'
+<% end %>
 machineName   = '<%= machine %>'
 bea_home      = '<%= bea_home %>'
 

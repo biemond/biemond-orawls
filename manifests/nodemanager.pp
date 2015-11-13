@@ -73,6 +73,7 @@ define orawls::nodemanager (
           owner   => $os_user,
           group   => $os_group,
           require => Exec["create ${log_dir} directory"],
+          before  => Exec["startNodemanager ${title}"],
         }
       }
       $nodeMgrLogDir = "${log_dir}/nodemanager.log"

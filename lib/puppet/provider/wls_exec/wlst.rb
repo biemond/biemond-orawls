@@ -20,6 +20,11 @@ Puppet::Type.type(:wls_exec).provide(:sqlplus) do
     cwd        = resource[:cwd]
     statement  = resource[:statement]
     #
+    # First fo to the specified working dirctory if specified
+    #
+    fail "Working directory '#{cwd}' does not exist" if cwd && !File.directory?(cwd)
+    FileUtils.cd(resource[:cwd]) if resource[:cwd]
+    #
     # If the statement start's with a @, it is a script. The content will be executed
     #
     if is_script?(statement)
@@ -27,10 +32,8 @@ Puppet::Type.type(:wls_exec).provide(:sqlplus) do
       fail "File #{file_name} doesn't exist. " unless File.exists?(file_name)
       statement = File.read(file_name)
     end
-    statement = statement.indent(2)
 
-    fail "Working directory '#{cwd}' does not exist" if cwd && !File.directory?(cwd)
-    FileUtils.cd(resource[:cwd]) if resource[:cwd]
+    statement = statement.indent(2)
     environment = { 'action' => 'execute', 'type' => 'wls_exec' }
     output = wlst template('puppet:///modules/orawls/providers/wls_exec/execute.py.erb', binding), environment
     Puppet.debug(output) if resource.logoutput == :true

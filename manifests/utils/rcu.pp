@@ -58,7 +58,7 @@ define orawls::utils::rcu(
   file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt":
     ensure  => present,
     content => template('orawls/utils/rcu_passwords.txt.erb'),
-    mode    => '0775',
+    mode    => '0600',
     owner   => $os_user,
     group   => $os_group,
     backup  => false,

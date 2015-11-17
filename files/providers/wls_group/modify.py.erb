@@ -1,6 +1,6 @@
+from sets import Set
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
-
 
 
 name                   = '<%= group_name %>'
@@ -14,10 +14,23 @@ try:
 
     atnr=cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProvider(authenticationprovider)
 
+    print 'get current users'
+    usergroup = atnr.listAllUsersInGroup(name,"*",0)
+    current_users = []
+    for user in usergroup:
+        current_users.append(user)
+
+    users_to_add    = Set(users) - Set(current_users)
+    users_to_remove = Set(current_users) - Set(users)
+
     print 'modify group: ',name
-    atnr.setGroupDescription(name,description)
-    for user in users:
+    atnr.setGroupDescription(name,description)    
+    for user in users_to_add:
+      print 'Adding user: ' + user
       atnr.addMemberToGroup(name,user)
+    for user in users_to_remove:
+      print 'Removing user: ' + user
+      atnr.removeMemberFromGroup(name,user)
     print "~~~~COMMAND SUCCESFULL~~~~"
 
 except:

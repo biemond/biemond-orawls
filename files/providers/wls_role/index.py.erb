@@ -1,0 +1,21 @@
+def quote(text):
+    if text:
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;realm;expression;domain"
+
+realmName = cmo.getSecurityConfiguration().getDefaultRealm()
+mapper    = realmName.lookupRoleMapper('XACMLRoleMapper');
+roles     = mapper.listRolesForResource('')
+
+for role in roles:
+  expression = mapper.getRoleExpression(None,role);
+  print >>f, ";".join(map(quote, [domain+'/'+role, realmName.getName(), expression, domain]))
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
+
+

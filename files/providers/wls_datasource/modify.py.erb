@@ -27,6 +27,7 @@ rowprefetchenabled                      = '<%= rowprefetchenabled %>'
 rowprefetchsize                         = '<%= rowprefetchsize %>'
 initsql                                 = "<%= (initsql||'').gsub('"','\"') %>"
 shrinkfrequencyseconds                  = '<%= shrinkfrequencyseconds %>'
+wrapdatatypes                           = '<%= wrapdatatypes %>'
 
 edit()
 startEdit()
@@ -84,6 +85,10 @@ try:
     if shrinkfrequencyseconds:
       set('ShrinkFrequencySeconds', int(shrinkfrequencyseconds))
 
+    if wrapdatatypes == '1':
+      set('WrapTypes', 'true')
+    else:
+      set('WrapTypes', 'false')
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)
@@ -177,7 +182,6 @@ try:
             targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )
 
     else:
-
         for i in range(len(targets)):
           print "target "+targets[i] + " " + targettypes[i]
           targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )

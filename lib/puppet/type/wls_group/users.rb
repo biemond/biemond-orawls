@@ -17,6 +17,17 @@ newproperty(:users, :array_matching => :all) do
     end
   end
 
+  def change_to_s(current, should)
+    message = ''
+    unless ((current - should).inspect) == '[]'
+      message << "removing #{(current-should).inspect} "
+    end
+    unless ((should - current).inspect) == '[]'
+      message << "adding #{(should - current).inspect} "
+    end
+    message
+  end
+
 end
 
 def users

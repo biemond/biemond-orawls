@@ -68,13 +68,11 @@ startEdit()
 def createBootPropertiesFile(directoryPath,fileName, username, password):
   serverDir = File(directoryPath)
   bool = serverDir.mkdirs()
-  fullFileName = directoryPath + '/' + fileName
-  fileNew=open(fullFileName, 'w')
+  fileNew=open(directoryPath + '/'+fileName, 'w')
   fileNew.write('username=%s\n' % username)
   fileNew.write('password=%s\n' % password)
   fileNew.flush()
   fileNew.close()
-  os.system('chmod 600 ' + fullFileName)
 
 def formatBoolean(value):
     if value == '1' or value == 1:

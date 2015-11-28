@@ -1,5 +1,16 @@
 # History
 
+## 1.0.45
+- wls_migratable_target fixes with constrained_candidate_servers
+- resource adapters option to escape values
+- wls_server fix when no arguments is provided
+- Nodemanager fails to start first time if param log_dir is used and directory doesn't exist
+- security/permissions fixes with files which can contain passwords
+- wls_group allow additions & removal of users in group
+- wls_datasource new attribute wrapdatatypes
+- wls_role new type
+- wls_rcu show now the error output when it fails
+
 ## 1.0.44
 - WebLogic 12.2.1 standard and infrastructure edition installation
 - FMW 12.2.1 SOA Suite, OSB, Webtier (OHS), Forms, B2B, WC, WCC ( Webcenter portal, Webcenter content) installation

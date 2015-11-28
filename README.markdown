@@ -82,6 +82,8 @@ Dependency with
 - [wls_domain](#wls_domain)
 - [wls_deployment](#wls_deployment)
 - [wls_domain](#wls_domain)
+- [wls_group](#wls_group)
+- [wls_role](#wls_role)
 - [wls_user](#wls_user)
 - [wls_authentication_provider](#wls_authentication_provider)
 - [wls_identity_asserter](#wls_identity_asserter)
@@ -2297,6 +2299,23 @@ in hiera
         realm:                  'myrealm'
         users:
           - 'testuser2'
+
+### wls_role
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_role
+
+    # this will use default as wls_setting identifier
+
+in hiera
+
+    $default_params = {}
+    $role_instances = hiera('role_instances', {})
+    create_resources('wls_role',$role_instances, $default_params)
+
+    # this will use default as wls_setting identifier
+    role_instances:
 
 ### wls_authentication_provider
 

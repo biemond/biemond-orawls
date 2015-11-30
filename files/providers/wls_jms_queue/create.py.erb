@@ -23,6 +23,9 @@ forwarddelay             = '<%= forwarddelay %>'
 templatename             = '<%= templatename %>'
 messagelogging           = '<%= messagelogging %>'
 destination_keys         = '<%= destination_keys %>'
+consumtion_paused        = '<%= consumtionpaused %>'
+insertion_paused         = '<%= insertionpaused %>'
+production_paused        = '<%= productionpaused %>'
 
 edit()
 startEdit()
@@ -41,6 +44,27 @@ try:
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     set('JNDIName',jndiname)
+
+    if consumtion_paused:
+      print 'setting consumtion_paused to ' + consumtion_paused
+      if consumtion_paused == '1':
+        set('ConsumptionPausedAtStartup', true)
+      else:
+        set('ConsumptionPausedAtStartup', false)
+
+    if insertion_paused:
+      print 'setting insertion_paused to ' + insertion_paused
+      if insertion_paused == '1':
+        set('InsertionPausedAtStartup',true)
+      else:
+        set('InsertionPausedAtStartup',false)
+
+    if production_paused:
+      print 'setting production_paused to ' + production_paused
+      if production_paused == '1':
+        set('ProductionPausedAtStartup',true)
+      else:
+        set('ProductionPausedAtStartup',false)
 
     if destination_keys:
       print "jms destinationkeys: " + destination_keys

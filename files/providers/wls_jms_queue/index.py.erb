@@ -8,8 +8,11 @@ def quote(text):
 
 def queue(token,token2,location,distributed):
     cd(location)
-    jndiname         = get('JNDIName')
-    destination_keys = get('DestinationKeys')
+    jndiname          = get('JNDIName')
+    destination_keys  = get('DestinationKeys')
+    insertion_paused  = str(get('InsertionPausedAtStartup'))
+    consumtion_paused = str(get('ConsumptionPausedAtStartup'))
+    production_paused = str(get('ProductionPausedAtStartup'))
 
     forwardDelay = ''
     try:
@@ -65,10 +68,10 @@ def queue(token,token2,location,distributed):
     else:
       templatename = ''
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,deliveryMode,forwardDelay,templatename,messagelogging,domain,','.join(destination_keys)]))
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,deliveryMode,forwardDelay,templatename,messagelogging,domain,','.join(destination_keys), insertion_paused, consumtion_paused, production_paused]))
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;deliverymode;forwarddelay;templatename;messagelogging;domain;destination_keys"
+print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;deliverymode;forwarddelay;templatename;messagelogging;domain;destination_keys;insertionpaused;consumptionpaused;productionpaused"
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:

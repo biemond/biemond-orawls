@@ -1,13 +1,14 @@
-newproperty(:distributed) do
+newproperty(:consumtionpaused) do
   include EasyType
   include EasyType::Mungers::Integer
 
-  desc 'Distributed topic'
+  desc <<-EOD
+
+  EOD
   newvalues(1, 0)
-  defaultto 0
 
   to_translate_to_resource do | raw_resource|
-    raw_resource['distributed']
+    raw_resource['consumptionpaused']
   end
 
 end

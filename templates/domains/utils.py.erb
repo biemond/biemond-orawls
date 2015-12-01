@@ -3,21 +3,25 @@
 def create_boot_properties_file(directory_path, file_name, username, password):
     server_dir = File(directory_path)
     server_dir.mkdirs()
-    file_new = open(directory_path + '/' + file_name, 'w')
+    full_file_name = directory_path + '/' + file_name
+    file_new = open(full_file_name, 'w')
     file_new.write('username=%s\n' % username)
     file_new.write('password=%s\n' % password)
     file_new.flush()
     file_new.close()
+    os.system('chmod 600 ' + full_file_name)
 
 def create_admin_startup_properties_file(directory_path, args):
     adminserver_dir = File(directory_path)
     adminserver_dir.mkdirs()
-    file_new = open(directory_path + '/startup.properties', 'w')
+    full_file_name = directory_path + '/startup.properties'
+    file_new = open(full_file_name, 'w')
     args = args.replace(':', '\\:')
     args = args.replace('=', '\\=')
     file_new.write('Arguments=%s\n' % args)
     file_new.flush()
     file_new.close()
+    os.system('chmod 600 ' + full_file_name)
 
 def create_machine(machine_type, name, address, nodemanager_secure_listener):
     cd('/')

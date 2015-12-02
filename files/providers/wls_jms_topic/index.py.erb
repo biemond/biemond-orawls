@@ -8,11 +8,11 @@ def quote(text):
 
 def topic(token,token2,location,distributed):
     cd(location)
-    jndiname         = get('JNDIName')
-    destination_keys = get('DestinationKeys')
-    insertion_paused  = str(get('InsertionPausedAtStartup'))
-    consumtion_paused = str(get('ConsumptionPausedAtStartup'))
-    production_paused = str(get('ProductionPausedAtStartup'))
+    jndiname           = get('JNDIName')
+    destination_keys   = get('DestinationKeys')
+    insertion_paused   = str(get('InsertionPausedAtStartup'))
+    consumption_paused = str(get('ConsumptionPausedAtStartup'))
+    production_paused  = str(get('ProductionPausedAtStartup'))
 
     defaultTargeting   = str(get('DefaultTargetingEnabled'))
     if defaultTargeting == '1':
@@ -61,7 +61,7 @@ def topic(token,token2,location,distributed):
     cd(location+'/MessageLoggingParams/'+token2)
     messagelogging = get('MessageLoggingEnabled')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,deliveryMode,redeliveryDelay,messagelogging,forwardingpolicy,domain,','.join(destination_keys), insertion_paused, consumtion_paused, production_paused]))
+    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,deliveryMode,redeliveryDelay,messagelogging,forwardingpolicy,domain,','.join(destination_keys), insertion_paused, consumption_paused, production_paused]))
 
 
 

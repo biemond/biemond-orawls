@@ -10,6 +10,7 @@
 - wls_datasource new attribute wrapdatatypes
 - wls_role new type
 - wls_rcu show now the error output when it fails
+- wls_jms_queue, wls_jms_topic new attributes insertionpaused, consumptionpaused, productionpaused
 
 ## 1.0.44
 - WebLogic 12.2.1 standard and infrastructure edition installation

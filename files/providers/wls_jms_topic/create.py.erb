@@ -23,7 +23,7 @@ redeliverydelay          = '<%= redeliverydelay %>'
 messagelogging           = '<%= messagelogging %>'
 forwardingpolicy         = '<%= forwardingpolicy %>'
 destination_keys         = '<%= destination_keys %>'
-consumtion_paused        = '<%= consumtionpaused %>'
+consumption_paused       = '<%= consumptionpaused %>'
 insertion_paused         = '<%= insertionpaused %>'
 production_paused        = '<%= productionpaused %>'
 
@@ -45,9 +45,9 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     set('JNDIName',jndiname)
 
-    if consumtion_paused:
-      print 'setting consumtion_paused to ' + consumtion_paused
-      if consumtion_paused == '1':
+    if consumption_paused:
+      print 'setting consumption_paused to ' + consumption_paused
+      if consumption_paused == '1':
         set('ConsumptionPausedAtStartup', true)
       else:
         set('ConsumptionPausedAtStartup', false)

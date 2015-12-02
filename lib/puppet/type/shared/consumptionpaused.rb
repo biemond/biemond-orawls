@@ -1,4 +1,4 @@
-newproperty(:consumtionpaused) do
+newproperty(:consumptionpaused) do
   include EasyType
   include EasyType::Mungers::Integer
 

@@ -3834,18 +3834,21 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 or use puppet resource wls_jms_queue
 
     wls_jms_queue { 'jmsClusterModule:ErrorQueue':
-      ensure           => 'present',
-      defaulttargeting => '0',
-      distributed      => '1',
-      expirationpolicy => 'Discard',
-      jndiname         => 'jms/ErrorQueue',
-      redeliverydelay  => '-1',
-      redeliverylimit  => '-1',
-      subdeployment    => 'jmsServers',
-      timetodeliver    => '-1',
-      timetolive       => '-1',
-      templatename     => 'Template',
-      messagelogging   => '1',
+      ensure            => 'present',
+      defaulttargeting  => '0',
+      distributed       => '1',
+      expirationpolicy  => 'Discard',
+      jndiname          => 'jms/ErrorQueue',
+      redeliverydelay   => '-1',
+      redeliverylimit   => '-1',
+      subdeployment     => 'jmsServers',
+      timetodeliver     => '-1',
+      timetolive        => '-1',
+      templatename      => 'Template',
+      messagelogging    => '1',
+      consumptionpaused => '0',
+      insertionpaused   => '0',
+      productionpaused  => '0',
     }
     wls_jms_queue { 'jmsClusterModule:Queue1':
       ensure           => 'present',
@@ -3894,6 +3897,9 @@ in hiera
          timetolive:               '-1'
          templatename:             'Template'
          messagelogging:           '1'
+         insertionpaused:          '0'
+         productionpaused:         '0'
+         consumptionpaused:        '0'
        'jmsClusterModule:Queue1':
          ensure:                   'present'
          distributed:              '1'
@@ -3933,20 +3939,23 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 or use puppet resource wls_jms_topic
 
     wls_jms_topic { 'jmsClusterModule:Topic1':
-      ensure           => 'present',
-      balancingpolicy  => 'Round-Robin',
-      defaulttargeting => '0',
-      deliverymode     => 'No-Delivery',
-      destination_keys => ['JMSPriority', 'JmsMessageId'],
-      distributed      => '1',
-      expirationpolicy => 'Discard',
-      forwardingpolicy => 'Replicated',
-      jndiname         => 'jms/Topic1',
-      redeliverydelay  => '2000',
-      redeliverylimit  => '2',
-      subdeployment    => 'jmsServers',
-      timetodeliver    => '-1',
-      timetolive       => '300000',
+      ensure            => 'present',
+      balancingpolicy   => 'Round-Robin',
+      defaulttargeting  => '0',
+      deliverymode      => 'No-Delivery',
+      destination_keys  => ['JMSPriority', 'JmsMessageId'],
+      distributed       => '1',
+      expirationpolicy  => 'Discard',
+      forwardingpolicy  => 'Replicated',
+      jndiname          => 'jms/Topic1',
+      redeliverydelay   => '2000',
+      redeliverylimit   => '2',
+      subdeployment     => 'jmsServers',
+      timetodeliver     => '-1',
+      timetolive        => '300000',
+      consumptionpaused => '0',
+      insertionpaused   => '0',
+      productionpaused  => '0',
     }
     wls_jms_topic { 'default/jmsClusterModule:Topic2':
       ensure           => 'present',
@@ -3980,6 +3989,9 @@ in hiera
          timetodeliver:     '-1'
          timetolive:        '300000'
          messagelogging:    '0'
+         insertionpaused:   '0'
+         productionpaused:  '1'
+         consumptionpaused: '0'
          destination_keys:
             - 'JMSPriority'
             - 'JmsMessageId'

@@ -38,5 +38,6 @@ define orawls::packdomain (
     user      => $os_user,
     group     => $os_group,
     logoutput => $log_output,
+    environment => "JAVA_HOME=${jdk_home_dir}",
   }
 }

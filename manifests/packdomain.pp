@@ -32,12 +32,12 @@ define orawls::packdomain (
   $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
   exec { "pack domain ${domain_name} ${title}":
-    command	=> $packCommand,
-    creates	=> "${download_dir}/domain_${domain_name}.jar",
-    path	=> $exec_path,
-    user	=> $os_user,
-    group	=> $os_group,
-    logoutput	=> $log_output,
-    environment	=> "JAVA_HOME=${jdk_home_dir}",
+    command     => $packCommand,
+    creates     => "${download_dir}/domain_${domain_name}.jar",
+    path        => $exec_path,
+    user        => $os_user,
+    group       => $os_group,
+    logoutput   => $log_output,
+    environment => "JAVA_HOME=${jdk_home_dir}",
   }
 }

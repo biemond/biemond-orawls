@@ -169,13 +169,14 @@ define orawls::copydomain (
     }
 
     exec { "unpack ${domain_name}":
-      command   => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-      timeout   => 0,
-      require   => [File[$domains_dir],
+      command     => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
+      environment => ["JAVA_HOME=${jdk_home_dir}"],
+      path        => $exec_path,
+      user        => $os_user,
+      group       => $os_group,
+      logoutput   => $log_output,
+      timeout     => 0,
+      require     => [File[$domains_dir],
                     Exec["copy domain jar ${domain_name}"]],
     }
 

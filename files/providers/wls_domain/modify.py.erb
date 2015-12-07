@@ -23,6 +23,7 @@ setinternalappdeploymentondemandenable             = '<%= setinternalappdeployme
 setarchiveconfigurationcount                       = '<%= setarchiveconfigurationcount %>'
 setconfigbackupenabled                             = '<%= setconfigbackupenabled %>'
 setconfigurationaudittype                          = '<%= setconfigurationaudittype %>'
+exalogicoptimizationsenabled                       = '<%= exalogicoptimizationsenabled %>'
 
 def formatBoolean(value):
   if value == '1':
@@ -90,6 +91,7 @@ try:
 
     cd('/')
 
+
     if setinternalappdeploymentondemandenable:
       print "Change Internal App deployment flag"
       cmo.setInternalAppsDeployOnDemandEnabled(formatBoolean(setinternalappdeploymentondemandenable))
@@ -103,6 +105,9 @@ try:
 
     if setconfigurationaudittype:
       cmo.setConfigurationAuditType(setconfigurationaudittype)
+
+    if exalogicoptimizationsenabled:
+      cmo.setExalogicOptimizationsEnabled(formatBoolean(exalogicoptimizationsenabled))
 
     print "save"
     save()

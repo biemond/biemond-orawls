@@ -6,11 +6,14 @@
 - wls_server fix when no arguments is provided
 - Nodemanager fails to start first time if param log_dir is used and directory doesn't exist
 - security/permissions fixes with files which can contain passwords
+- Fix easy_type load issues in specific situation (puppet master)
+- added JAVA_HOME to (un)pack
 - wls_group allow additions & removal of users in group
 - wls_datasource new attribute wrapdatatypes
 - wls_role new type
 - wls_rcu show now the error output when it fails
 - wls_jms_queue, wls_jms_topic new attributes insertionpaused, consumptionpaused, productionpaused
+- wls_domain, new attribute exalogicoptimizationsenabled
 
 ## 1.0.44
 - WebLogic 12.2.1 standard and infrastructure edition installation

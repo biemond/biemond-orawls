@@ -54,6 +54,7 @@ module Puppet
     property :setconfigurationaudittype
     property :setconfigbackupenabled
     property :setarchiveconfigurationcount
+    property :exalogicoptimizationsenabled
 
     add_title_attributes(:weblogic_domain_name) do
       /^((.*\/)?(.*)?)$/

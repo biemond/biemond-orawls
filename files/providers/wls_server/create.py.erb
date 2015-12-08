@@ -23,6 +23,7 @@ log_rotationtype            = '<%= log_rotationtype %>'
 log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
 log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
+log_date_pattern              = '<%= log_date_pattern %>'
 
 restart_max       = '<%= restart_max %>'
 listenAddress     = '<%= listenaddress %>'
@@ -211,6 +212,9 @@ try:
       cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
     if log_file_min_size:
       cmo.setFileMinSize(int(log_file_min_size))
+    if log_date_pattern:
+      print "change log_date_pattern"
+      cmo.setDateFormatPattern(log_date_pattern)
 
     if log_redirect_stderr_to_server == '1':
       cmo.setRedirectStderrToServerLogEnabled(true)
@@ -245,8 +249,6 @@ try:
       cmo.setLogFileFormat(log_http_format_type)
     if log_http_format:
       cmo.setELFFields(log_http_format)
-
-
 
     print "datasource server log: " + name
     cd('/Servers/'+name+'/DataSource/'+name+'/DataSourceLogFile/'+name)

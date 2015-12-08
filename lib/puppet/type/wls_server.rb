@@ -73,6 +73,7 @@ module Puppet
     property :log_datasource_filename
     property :log_redirect_stdout_to_server
     property :log_redirect_stderr_to_server
+    property :log_date_pattern
 
     property :log_http_filename
     property :log_http_format_type

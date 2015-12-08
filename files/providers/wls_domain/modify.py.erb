@@ -18,6 +18,7 @@ log_filecount                                      = '<%= log_filecount %>'
 log_rotate_logon_startup                           = '<%= log_rotate_logon_startup %>'
 log_rotationtype                                   = '<%= log_rotationtype %>'
 log_number_of_files_limited                        = '<%= log_number_of_files_limited %>'
+log_date_pattern                                   = '<%= log_date_pattern %>'
 
 setinternalappdeploymentondemandenable             = '<%= setinternalappdeploymentondemandenable %>'
 setarchiveconfigurationcount                       = '<%= setarchiveconfigurationcount %>'
@@ -58,6 +59,9 @@ try:
     if log_file_min_size:
       print "change log 6"
       cmo.setFileMinSize(int(log_file_min_size))
+    if log_date_pattern:
+      print "change log_date_pattern"
+      cmo.setDateFormatPattern(log_date_pattern)
 
     print "change jta"
     cd('/JTA/'+name)

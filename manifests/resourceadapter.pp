@@ -161,8 +161,23 @@ define orawls::resourceadapter(
         }
       }
     }
+    'MQSeriesAdapter' : {
+      $connectionFactoryInterface='javax.resource.cci.ConnectionFactory'
+      if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
+        file { "${adapter_plan_dir}/${adapter_plan}":
+          ensure  => present,
+          mode    => '0744',
+          replace => false,
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+          path    => "${adapter_plan_dir}/${adapter_plan}",
+          content => template('orawls/adapter_plans/Plan_MQSeries.xml.erb'),
+        }
+      }
+    }
     default: {
-      fail("adapter_name ${adapter_name} is unknown, choose for FileAdapter, DbAdapter, JmsAdapter, FtpAdapter or AqAdapter ")
+      fail("adapter_name ${adapter_name} is unknown, choose FileAdapter, DbAdapter, JmsAdapter, FtpAdapter, MQSeriesAdapter or AqAdapter ")
     }
   }
 

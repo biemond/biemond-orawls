@@ -489,6 +489,47 @@ def get_domain(domain_path, n)
     end
   end
 
+
+  mQSeriesAdapterPlan = ''
+  mQSeriesAdapterPlanEntries = ''
+  root.elements.each("app-deployment[name = 'MQSeriesAdapter']") do |apps|
+    unless apps.elements['plan-path'].nil?
+      unless apps.elements['plan-dir'].attributes['xsi:nil'] == 'true'
+        mQSeriesAdapterPlan += apps.elements['plan-dir'].text + '/' + apps.elements['plan-path'].text
+      else
+        mQSeriesAdapterPlan += apps.elements['plan-path'].text
+      end
+      Puppet.debug "mqseries #{mQSeriesAdapterPlan}"
+      if FileTest.exists?(mQSeriesAdapterPlan)
+
+        subfile = File.read(mQSeriesAdapterPlan)
+        subdoc = REXML::Document.new subfile
+
+        planroot = subdoc.root
+        planroot.elements['variable-definition'].elements.each('variable') do |eis|
+          entry = eis.elements['value'].text
+          Puppet.debug "mqesries found entry #{entry}"
+          if entry != nil and entry.include? 'eis'
+            Puppet.debug "mqseries eis entry " + eis.elements['value'].text
+            mQSeriesAdapterPlanEntries +=  eis.elements['value'].text + ';'
+          end
+        end
+      end
+    end
+  end
+
+  Facter.add("#{prefix}_domain_#{n}_eis_mqseriesadapter_plan") do
+    setcode do
+      mQSeriesAdapterPlan
+    end
+  end
+
+  Facter.add("#{prefix}_domain_#{n}_eis_mqseriesadapter_entries") do
+    setcode do
+      mQSeriesAdapterPlanEntries
+    end
+  end
+
   jrfTargets  = nil
   libraries   = ''
   root.elements.each('library') do |libs|

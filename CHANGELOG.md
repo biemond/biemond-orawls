@@ -1,5 +1,11 @@
 # History
 
+## 1.0.46
+- added support for 12.2.1 fast rest management interface, requires 12.2.1 or higher & only works for now on wls_cluster (lib/puppet/type/wls_server.rb plus wls_setting must contain a http connect url)
+- fix for wls_clusters without servers
+- new log_date_pattern attribute for wls_server, wls_domain
+- added MQ adapter for resourceadapter
+
 ## 1.0.45
 - wls_migratable_target fixes with constrained_candidate_servers
 - resource adapters option to escape values

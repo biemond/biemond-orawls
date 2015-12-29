@@ -5,7 +5,13 @@ real_domain='<%= domain %>'
 
 name                      = '<%= cluster_name %>'
 clusteraddress            = '<%= clusteraddress %>'
+
+manage_servers            = False
+<% unless servers == '' %>
 clusterNodesTargets       = String('<%= servers %>').split(",")
+manage_servers            = True
+<% end %>
+
 messagingmode             = '<%= messagingmode %>'
 migrationbasis            = '<%= migrationbasis %>'
 migration_table_name      = '<%= migration_table_name %>'
@@ -69,22 +75,24 @@ try:
   if datasourceforjobscheduler:
     cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))
 
-  clustered = []
-  p = ls('/Servers/',returnMap='true')
-  if 'inherited' not in clusterNodesTargets:
-    for node in clusterNodesTargets:
-      cd('/Servers/'+node)
-      cmo.setCluster(getMBean('/Clusters/'+name))
-  else:
-    for token3 in p:
-      notes = get('/Servers/'+token3+'/Notes')
-      if notes:
-        if name in String(notes).split(","):
-          clustered.append(token3)
+  if manage_servers:
+      print 'add servers to cluster'
+      clustered = []
+      p = ls('/Servers/',returnMap='true')
+      if 'inherited' not in clusterNodesTargets:
+          for node in clusterNodesTargets:
+              cd('/Servers/'+node)
+              cmo.setCluster(getMBean('/Clusters/'+name))
+      else:
+          for token3 in p:
+              notes = get('/Servers/'+token3+'/Notes')
+              if notes:
+                if name in String(notes).split(","):
+                  clustered.append(token3)
 
-    for i in clustered:
-      cd('/Servers/'+i)
-      cmo.setCluster(getMBean('/Clusters/'+name))
+          for i in clustered:
+              cd('/Servers/'+i)
+              cmo.setCluster(getMBean('/Clusters/'+name))
 
   save()
   activate()

@@ -73,9 +73,12 @@ Dependency with
 - [WC, WCC](#Webcenter) Webcenter portal, content 11g or 12.2.1
 
 - [Change FMW log](#fmwlogdir) location of a managed server
-- [Resource Adapter](#resourceadapter) plan and entries for AQ, DB and JMS
+- [Resource Adapter](#resourceadapter) plan and entries for AQ, DB, MQ, FTP, File and JMS
 
 ## Wls types and providers
+
+This will use WLST to retrieve the current state and to the changes. With WebLogic 12.2.1 we can also use the rest management api's, it's already working in this module but we will slowly support this for all wls types
+
 - [wls_setting](#wls_setting), set the default wls parameters for the other types and also used by puppet resource
 - [wls_adminserver](#wls_adminserver) control the adminserver or subscribe to changes
 - [wls_managedserver](#wls_managedserver) control the managed server,cluster or subscribe to changes
@@ -1560,7 +1563,7 @@ or when you set the defaults hiera variables
 
 
 ### resourceadapter
-__orawls::resourceadapter__ Add a Resource adapter plan for File, FTP, Aq , DB or JMS with some entries
+__orawls::resourceadapter__ Add a Resource adapter plan for File, FTP, AQ, MQ, DB or JMS with some entries
 when you set the defaults hiera variables
 
     $default_params = {}

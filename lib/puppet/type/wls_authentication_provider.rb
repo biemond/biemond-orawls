@@ -8,7 +8,27 @@ module Puppet
     include Utils::WlsAccess
     extend Utils::TitleParser
 
-    desc 'This resource allows you to manage authentication providers in an WebLogic domain.'
+    desc <<-EOD
+      This resource allows you to manage authentication providers in an WebLogic domain.
+
+      Here is an example:
+
+          wls_authentication_provider { 'domain/MyLDAPAuthenticator':
+            control_flag       => 'REQUIRED',
+            order              => '0',
+            providerclassname  => 'weblogic.security.providers.authentication.LDAPAuthenticator',
+            provider_specific  => {
+              'ResultsTimeLimit' => 300,
+            },
+          }
+
+      **ATTENTION:**
+
+      After the creation or modification of a wls_authentication_provider you'll need a restart from the 
+      Admin server. If you don't restart the server, the changes will not be applied. In some cases this means
+      that Puppet will try to re-create the wls_authentication_provider and will produce an WLST error.
+
+    EOD
 
     ensurable
 
@@ -45,6 +65,7 @@ module Puppet
     parameter :attributes
     parameter :attributesvalues
     parameter :order
+    property  :provider_specific
 
     add_title_attributes(:authentication_provider_name) do
       /^((.*\/)?(.*)?)$/

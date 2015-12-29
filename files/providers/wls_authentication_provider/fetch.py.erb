@@ -1,0 +1,37 @@
+real_domain='<%= current_resource.domain %>'
+
+def quote(text):
+    if text or text == '':
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
+name            = '<%= current_resource.authentication_provider_name %>'
+attribute_names = <%= current_resource.provider_specific.keys %>
+realmName       = cmo.getSecurityConfiguration().getDefaultRealm()
+cd('/')
+path            = getPath(realmName)
+cd(path + '/AuthenticationProviders/' + name)
+
+try:
+  puppet = open("/tmp/wlstScript.out", "w")
+  print >>puppet, ';'.join(attribute_names)
+  #
+  # Get all specified values
+  #
+<% current_resource.provider_specific.keys.each do | key | -%>
+  <%= key -%> = str(get('<%= key -%>'))
+  print '<%= key -%> is ' + <%= key %>
+<% end -%>
+  #
+  # All values fetched
+  #
+  print >>puppet, ';'.join(map(quote,[<%= current_resource.provider_specific.keys.join(',') -%>]))
+  puppet.close()
+  print "~~~~COMMAND SUCCESFULL~~~~"
+
+
+except:
+  print "Unexpected error:", sys.exc_info()[0]
+  print "~~~~COMMAND FAILED~~~~"
+  raise

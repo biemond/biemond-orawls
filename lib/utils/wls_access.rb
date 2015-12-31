@@ -43,7 +43,7 @@ module Utils
           csv_string = ''
           domains.each do |key, domainValues|
             Puppet.info "domain found #{key}"
-            result = wlst2 content, parameters, action, key, domains[key]
+            result = wlst2 content, action, key, domains[key], parameters
             if i > 1
               # with multi domain, remove first line if it is a header
               result = result.lines.to_a[1..-1].join
@@ -54,7 +54,7 @@ module Utils
           return convert_csv_data_to_hash(csv_string, [], :col_sep => ';')
         else
           key = parameters['attributes'][0]['domain']
-          wlst2 content, parameters, action, key, domains[key]
+          wlst2 content, action, key, domains[key], parameters
         end
       else
         case action
@@ -129,7 +129,7 @@ module Utils
       end
     end
 
-    def wlst2(content, parameters = {}, action, domain, domain_values)
+    def wlst2(content, action, domain, domain_values, parameters = {})
       script = 'wlstScript'
 
       tmpFile = Tempfile.new([script, '.py'])

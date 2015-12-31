@@ -7,7 +7,6 @@ def quote(text):
         return ""
 
 name            = '<%= current_resource.authentication_provider_name %>'
-attribute_names = <%= current_resource.provider_specific.keys %>
 realmName       = cmo.getSecurityConfiguration().getDefaultRealm()
 cd('/')
 path            = getPath(realmName)
@@ -15,7 +14,7 @@ cd(path + '/AuthenticationProviders/' + name)
 
 try:
   puppet = open("/tmp/wlstScript.out", "w")
-  print >>puppet, ';'.join(attribute_names)
+  print >>puppet, ';'.join('<%= current_resource.provider_specific.keys.join(',') -%>'.split(","))
   #
   # Get all specified values
   #

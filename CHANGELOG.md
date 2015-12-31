@@ -5,6 +5,7 @@
 - fix for wls_clusters without servers
 - new log_date_pattern attribute for wls_server, wls_domain
 - added MQ adapter for resourceadapter
+- add support for provider_specific attributes on wls_authentication_provider
 
 ## 1.0.45
 - wls_migratable_target fixes with constrained_candidate_servers

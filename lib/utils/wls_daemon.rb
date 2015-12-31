@@ -55,7 +55,7 @@ class WlsDaemon < EasyType::Daemon
   end
 
   def pass_credentials
-    Puppet.debug 'Passing credintials to WLST'
+    Puppet.debug 'Passing credentials to WLST'
     execute_command "weblogicUser = '#{@weblogicUser}'"
     execute_command "weblogicPassword = '#{@weblogicPassword}'"
   end

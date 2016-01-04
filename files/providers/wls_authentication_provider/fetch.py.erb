@@ -19,8 +19,12 @@ try:
   # Get all specified values
   #
 <% current_resource.provider_specific.keys.each do | key | -%>
-  <%= key -%> = str(get('<%= key -%>'))
-  print '<%= key -%> is ' + <%= key %>
+  try:
+    <%= key -%> = str(get('<%= key -%>'))
+    print '<%= key -%> is ' + <%= key %>
+  except:
+    print 'Troubles fetching <%= key -%>. Using empty value'
+    <%= key -%> = None
 <% end -%>
   #
   # All values fetched

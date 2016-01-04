@@ -10,7 +10,7 @@ define orawls::fmw(
   $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
   $oracle_home_dir      = undef,                             # /opt/oracle/middleware/Oracle_SOA
   $jdk_home_dir         = hiera('wls_jdk_home_dir'),         # /usr/java/jdk1.7.0_45
-  $fmw_product          = undef,                             # adf|soa|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b|forms
+  $fmw_product          = undef,                             # adf|soa|soaqs|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b|forms
   $fmw_file1            = undef,
   $fmw_file2            = undef,
   $fmw_file3            = undef,
@@ -149,6 +149,40 @@ define orawls::fmw(
       else {
         $oracleHome = $oracle_home_dir
       }
+    }
+
+  } elsif ( $fmw_product == 'soaqs' ) {
+
+    if $version == 1221 {
+      $total_files = 2
+      $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
+      $binFile1                 = 'fmw_12.2.1.0.0_soa_quickstart.jar'
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $binFile2                 = 'fmw_12.2.1.0.0_soa_quickstart2.jar'
+      $createFile2              = "${download_dir}/${sanitised_title}/${binFile2}"
+      $oracleHome               = "${middleware_home_dir}/soa/bin"
+      $type                     = 'java'
+      if $bpm == true {
+        $install_type = 'BPM'
+      } else {
+        $install_type = 'SOA Suite'
+      }
+    }
+    elsif $version == 1213 {
+      $total_files = 1
+      $fmw_silent_response_file = 'orawls/fmw_silent_soa_1213.rsp.erb'
+      $binFile1                 = 'fmw_12.1.3.0.0_soa_quickstart.jar'
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $oracleHome               = "${middleware_home_dir}/soa/bin"
+      $type                     = 'java'
+      if $bpm == true {
+        $install_type = 'BPM'
+      } else {
+        $install_type = 'SOA Suite'
+      }
+    }
+    else {
+      fail('Unrecognized version for soaqs')
     }
 
   } elsif ( $fmw_product == 'osb' ) {
@@ -343,7 +377,7 @@ define orawls::fmw(
     $total_files = 1
 
   } else {
-    fail('unknown fmw_product value choose adf|soa|osb|oim|oam|wc|wcc|web|webgate|oud')
+    fail('unknown fmw_product value choose adf|soa|soaqs|osb|oim|oam|wc|wcc|web|webgate|oud')
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons

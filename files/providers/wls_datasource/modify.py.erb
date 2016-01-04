@@ -2,6 +2,7 @@
 real_domain='<%= domain %>'
 
 name                                    = '<%= datasource_name %>'
+password                                = '<%= password %>'
 target                                  = '<%= target %>'
 targettype                              = '<%= targettype %>'
 drivername                              = '<%= drivername %>'
@@ -54,6 +55,7 @@ try:
       cmo.setUseXaDataSourceInterface(true)
     else:
       cmo.setUseXaDataSourceInterface(false)
+    set_password(password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))

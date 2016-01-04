@@ -1,6 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+
 name                                    = '<%= datasource_name %>'
 password                                = '<%= password %>'
 target                                  = '<%= target %>'
@@ -56,7 +57,7 @@ try:
       cmo.setUseXaDataSourceInterface(true)
     else:
       cmo.setUseXaDataSourceInterface(false)
-    cmo.setPassword(password)
+    set_password(password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity', int(maxcapacity))

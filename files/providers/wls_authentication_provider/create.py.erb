@@ -109,10 +109,24 @@ try:
     #
     # Set resource specific values
     #
-    cd('AuthenticationProviders/'+name)
 <% provider_specific.each do | name, value | -%>
-    print 'Setting property <%= name -%> to <%= value -%>'
-    set('<%= name -%>','<%= value -%>')
+    current_value = get('<%= name -%>')
+    type_array = re.search("<type '(.*)'>", str(type(current_value)))
+    current_type = type_array.group(1)
+    if current_type == 'int':
+        print 'Setting integer property <%= name -%> to <%= value -%>'
+        set('<%= name -%>',int('<%= value -%>'))
+    elif current_type == 'float':
+        print 'Setting float property <%= name -%> to <%= value -%>'
+        set('<%= name -%>',float('<%= value -%>'))
+    elif current_type == 'array':
+        print 'Setting array property <%= name -%> to <%= value-%>'
+        set('<%= name -%>', jarray.array('<%= value -%>', String))
+    else:
+        print 'Setting property <%= name -%> to <%= value -%>'
+        #
+        # Type is a string or a NoneType
+        set('<%= name -%>','<%= value -%>')
 <% end -%>
 
     print "done"

@@ -27,7 +27,7 @@ newproperty(:password) do
     A method to get the encrypted value would be:
 
     1. Set the password through the WebLogic management interface
-    2. User `puppet resource wls_datasource datsource_name` to get all information including the 
+    2. User `puppet resource wls_datasource datasource_name` to get all information including the 
        encrypted password.
 
     Usage with a clear text password:
@@ -43,11 +43,13 @@ newproperty(:password) do
   EOD
 
   def insync?(is)
-    #
     # If the specified password in the manifest is encrypted, we compare it
-    # with the fetched password (which is also encrypted). If the specified password 
-    # is a plain text password, we ask WLS to decrypt is for us before comparing it to the
-    # specified value.
+    # with the fetched password (which is also encrypted). 
+    #
+    # If the password in the puppet manifest is a plan text password, Puppet asks 
+    # Weblogic to decrypt the current datasource password stored in the domain and 
+    # return this to puppet for comparison. The Puppet code does not store the decrypted password
+    # on disk.
     #
     if encrypted_password?
       is == should

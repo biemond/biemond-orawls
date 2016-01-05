@@ -6,6 +6,12 @@ import re
 
 print 'Defining all common functions'
 
+def quote(text):
+    if text or text == '':
+        return "\"" + str(text).replace("\"", "\"\"") + "\""
+    else:
+        return ""
+
 def set_password(password):
     if password:
         print 'set unencrypted password'
@@ -24,5 +30,51 @@ def decrypt_value(encrypted_value):
     ces = weblogic.security.internal.encryption.ClearOrEncryptedService(encrypt_srv)
     password = ces.decrypt(encrypted_value)
     return password
+
+def type_for(key):
+    key_description = man(key)
+    type_array = re.search("\|interfaceclassname : (.*)\|\|", key_description)
+    if type_array:
+        return type_array.group(1)
+    else:
+        return 'str'
+
+def is_encrypted(full_key):
+    elements = full_key.split('/')
+    key      = elements.pop()
+    path     = '/'.join(elements)
+    print path
+    print key
+    old_path = pwd()
+    cd(path)
+    key_description = man(key)
+    cd(old_path)
+    return re.search("\|encrypted : (true)\|\|", key_description) != None
+
+def auto_typed_set(key, value):
+    key_type = type_for(key)
+    #
+    # Don't do anything if the value is not specified
+    #
+    if value == None:
+        return
+    if key_type == 'int' or key_type == 'long':
+        print 'Setting integer property ' + key + ' to ' + value
+        set(key,int(value))
+    if key_type == 'boolean':
+        print 'Setting boolean property ' + key + ' to ' + value
+        real_value = (value == 'True' or value == 'true' or value == '1')
+        set(key,real_value)
+    elif key_type == 'float':
+        print 'Setting float property ' + key + ' to ' + value
+        set(key,float(value))
+    elif key_type == 'array':
+        print 'Setting array property ' + key + ' to ' + value
+        set(key, jarray.array(value, String))
+    else:
+        print 'Setting generic property ' + key + ' to ' + value
+        set(key,value)
+
+
 
 print 'done defining all common functions'

@@ -23,6 +23,14 @@ try:
     cmo.createAuthenticationProvider(name, providerclassname)
 
     cd('AuthenticationProviders/'+name)
+    #
+    # Set resource specific values
+    #
+<% provider_specific.each do | name, value | -%>
+    auto_typed_set('<%= name -%>', '<%= value -%>')
+<% end -%>
+
+
     if control_flag:
       cmo.setControlFlag(control_flag)
 
@@ -106,14 +114,6 @@ try:
             # Apply the new order
             set('AuthenticationProviders', ap)
 
-    #
-    # Set resource specific values
-    #
-    cd('AuthenticationProviders/'+name)
-<% provider_specific.each do | name, value | -%>
-    print 'Setting property <%= name -%> to <%= value -%>'
-    set('<%= name -%>','<%= value -%>')
-<% end -%>
 
     print "done"
     save()

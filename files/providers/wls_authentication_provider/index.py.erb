@@ -1,10 +1,4 @@
 
-def quote(text):
-    if text or text == '':
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 cd('/')
 realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
 path = getPath(realmName)

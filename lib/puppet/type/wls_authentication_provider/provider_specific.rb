@@ -1,5 +1,8 @@
+require 'utils/wls_functions'
+
 newproperty(:provider_specific) do
   include EasyType
+  include Utils::WlsFunctions
 
   desc <<-EOD
     The provider specific properties.
@@ -59,8 +62,20 @@ newproperty(:provider_specific) do
 
   def change_to_s(from, to)
     return_value = []
+    realm_path = wls_get_realm_path('', provider)
+    base_path = "#{realm_path}/AuthenticationProviders/#{resource['authentication_provider_name']}"
     from.keys.each do | property|
-      return_value << "property #{property} from #{from[property]} to #{to[property]}" if to[property] != from[property]
+      if to[property] != from[property]      
+        full_key = "#{base_path}/#{property}"
+        #
+        # If the key is encrypted, we don't show it's content
+        #
+        if wls_is_encrypted(full_key, provider) == '1'
+          return_value << "property #{property} from [old value redacted] to [new value redacted]" 
+        else
+          return_value << "property #{property} from #{from[property]} to #{to[property]}"
+        end
+      end
     end
     "Changed #{return_value.join(' and ')}."
   end

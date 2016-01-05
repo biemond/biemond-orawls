@@ -7,23 +7,9 @@ import re
 print 'Defining all common functions'
 
 def set_password(password):
-    if is_encypted(password):
-        print 'set encrypted password'
-        set('PasswordEncrypted', password)
-    else:
+    if password:
         print 'set unencrypted password'
         set('Password', password)
-
-def is_encypted(value):
-    search = re.search("\A\{[0-9A-Z]*\}.*\Z", value)
-    if search:
-        return true
-    else:
-        return false
-
-def get_password():
-    encrypted_password = get('PasswordEncrypted')
-    return password_to_string(encrypted_password)
 
 def password_to_string(value):
     string_value = ''

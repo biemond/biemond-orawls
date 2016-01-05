@@ -1,3 +1,5 @@
+require 'utils/indent'
+
 module Utils
   #
   # This module contains all WLS functions that can be directly called from ruby. These
@@ -6,22 +8,25 @@ module Utils
   #
   module WlsFunctions
 
-    ##
-    #
-    # decrypt the specified value. 
-    #
-    def wls_decrypt_value(value, resource)
-      wls_function('wls_decrypt_value', binding)
-    end
+    wls_functions = [
+      :wls_get_value,       # get the value at a specified key
+      :wls_get_password,    # get the decrypted password string at a specified key. 
+    ]
 
+    wls_functions.each do | method_name|
+      define_method(method_name) do |value, resource|
+        wls_function(method_name, binding)
+      end
+    end
 
 private
 
-    def wls_function(function_name, caller_binding)
-      eval("function_name = '#{function_name}'", caller_binding)  # Add functio name to binding
+    def wls_function(method_name, caller_binding)
       environment = { 'action' => 'execute', 'type' => :wls_functions }
-      value = wlst template("puppet:///modules/orawls/functions/#{function_name}.py.erb", caller_binding), environment
-      value.first[function_name]
+      function_content = template("puppet:///modules/orawls/functions/#{method_name}.py.erb", caller_binding)
+      function_content = function_content.indent(4)
+      value = wlst template("puppet:///modules/orawls/functions/function_base.py.erb", binding), environment
+      value.first['value']
     end
 
   end

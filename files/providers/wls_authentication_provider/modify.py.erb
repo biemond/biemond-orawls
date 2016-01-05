@@ -18,13 +18,11 @@ try:
     cd(path)
 
     cd('AuthenticationProviders/'+name)
-
     #
     # Set resource specific values
     #
 <% provider_specific.each do | name, value | -%>
-    print 'Setting property <%= name -%> to <%= value -%>'
-    set('<%= name -%>','<%= value -%>')
+    auto_typed_set('<%= name -%>', '<%= value -%>')
 <% end -%>
 
     if control_flag:

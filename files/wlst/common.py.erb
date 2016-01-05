@@ -1,0 +1,28 @@
+#
+# The functions in this file are available in all WLST sessions within the daemon. You can use
+# them in all actions.
+#
+import re
+
+print 'Defining all common functions'
+
+def set_password(password):
+    if password:
+        print 'set unencrypted password'
+        set('Password', password)
+
+def password_to_string(value):
+    string_value = ''
+    for byte in value:
+        string_value = string_value + chr(byte)
+    return string_value
+
+def decrypt_value(encrypted_value):
+    domain_dir = get('RootDirectory')
+    domain_dir_path = os.path.abspath(domain_dir)
+    encrypt_srv = weblogic.security.internal.SerializedSystemIni.getEncryptionService(domain_dir_path)
+    ces = weblogic.security.internal.encryption.ClearOrEncryptedService(encrypt_srv)
+    password = ces.decrypt(encrypted_value)
+    return password
+
+print 'done defining all common functions'

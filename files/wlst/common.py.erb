@@ -15,7 +15,7 @@ def set_password(password):
         set('Password', password)
 
 def is_encypted(value):
-    search = re.search("\A\{[A-Z]{3}\}.*\Z", value)
+    search = re.search("\A\{[0-9A-Z]*\}.*\Z", value)
     if search:
         return true
     else:

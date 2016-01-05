@@ -78,11 +78,11 @@ newproperty(:password) do
 
   private
     #
-    # If the password starts with {AES} or 3 other capitals between curly braces,
-    # we treat the password as an encrypted value.
+    # If the password starts with {AES}, {2DES} or an other combination if capitals and numbers 
+    # between curly braces, we treat the password as an encrypted value.
     #
     def encrypted_password?
-      !should.scan(/\A\{[A-Z]{3}\}.*\Z/).empty?
+      !should.scan(/\A\{[0-9A-Z]*\}.*\Z/).empty?
     end
 
 end

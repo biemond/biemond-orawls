@@ -27,7 +27,8 @@ describe 'orawls::urandomfix' , :type => :class do
   describe "CentOS" do
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
-                   :osfamily        => 'RedHat' }}
+                   :osfamily        => 'RedHat',
+                   :operatingsystemmajrelease => '6' }}
 
     describe "on operatingsystem CentOS" do
       it do
@@ -53,7 +54,8 @@ describe 'orawls::urandomfix' , :type => :class do
   describe "RedHat" do
     let(:facts) {{ :operatingsystem => 'RedHat' ,
                    :kernel          => 'Linux',
-                   :osfamily        => 'RedHat' }}
+                   :osfamily        => 'RedHat',
+                   :operatingsystemmajrelease => '6' }}
 
     describe "on operatingsystem RedHat" do
       it do
@@ -79,7 +81,8 @@ describe 'orawls::urandomfix' , :type => :class do
   describe "OracleLinux" do
     let(:facts) {{ :operatingsystem => 'OracleLinux' ,
                    :kernel          => 'Linux',
-                   :osfamily        => 'RedHat' }}
+                   :osfamily        => 'RedHat',
+                   :operatingsystemmajrelease => '6' }}
 
     describe "on operatingsystem OracleLinux" do
       it do

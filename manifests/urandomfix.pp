@@ -15,59 +15,73 @@
 class orawls::urandomfix() {
   $path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
-  package { 'rng-tools':
+  case $::operatingsystemmajrelease {
+    5:       { $rng_package = 'rng-utils' }
+    default: { $rng_package = 'rng-tools' }
+  }
+
+  package { $rng_package:
     ensure => present,
   }
 
   case $::osfamily {
     'RedHat': {
-      if ( $::operatingsystemmajrelease == '7') {
-        exec { 'set urandom /lib/systemd/system/rngd.service':
-          command => "sed -i -e's/ExecStart=\\/sbin\\/rngd -f/ExecStart=\\/sbin\\/rngd -r \\/dev\\/urandom -o \\/dev\\/random -f/g' /lib/systemd/system/rngd.service;systemctl daemon-reload;systemctl restart rngd.service",
-          unless  => "/bin/grep 'ExecStart=/sbin/rngd -r /dev/urandom -o /dev/random -f' /lib/systemd/system/rngd.service",
-          require => Package['rng-tools'],
-          user    => 'root',
-          path    => $path,
-        }
+      case $::operatingsystemmajrelease {
+        '7': {
+          exec { 'set urandom /lib/systemd/system/rngd.service':
+            command => "sed -i -e's/ExecStart=\\/sbin\\/rngd -f/ExecStart=\\/sbin\\/rngd -r \\/dev\\/urandom -o \\/dev\\/random -f/g' /lib/systemd/system/rngd.service;systemctl daemon-reload;systemctl restart rngd.service",
+            unless  => "/bin/grep 'ExecStart=/sbin/rngd -r /dev/urandom -o /dev/random -f' /lib/systemd/system/rngd.service",
+            require => Package[$rng_package],
+            user    => 'root',
+            path    => $path,
+          }
 
-        exec { 'systemctl-daemon-reload':
-          command     => 'systemctl --system daemon-reload',
-          path        => $path,
-          subscribe   => Exec['set urandom /lib/systemd/system/rngd.service'],
-          refreshonly => true,
-          notify      => Service['rngd'],
-        }
+          exec { 'systemctl-daemon-reload':
+            command     => 'systemctl --system daemon-reload',
+            path        => $path,
+            subscribe   => Exec['set urandom /lib/systemd/system/rngd.service'],
+            refreshonly => true,
+            notify      => Service['rngd'],
+          }
 
-        service { 'rngd':
-          ensure  => 'running',
-          enable  => true,
-          require => Exec['systemctl-daemon-reload'],
+          service { 'rngd':
+            ensure  => 'running',
+            enable  => true,
+            require => Exec['systemctl-daemon-reload'],
+          }
         }
+        '6': {
+          exec { 'set urandom /etc/sysconfig/rngd':
+            command   => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
+            unless    => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
+            require   => Package[$rng_package],
+            path      => $path,
+            logoutput => true,
+            user      => 'root',
+            notify    => Service['rngd'],
+          }
 
-      } else {
-        exec { 'set urandom /etc/sysconfig/rngd':
-          command   => "sed -i -e's/EXTRAOPTIONS=\"\"/EXTRAOPTIONS=\"-r \\/dev\\/urandom -o \\/dev\\/random -b\"/g' /etc/sysconfig/rngd",
-          unless    => "/bin/grep '^EXTRAOPTIONS=\"-r /dev/urandom -o /dev/random -b\"' /etc/sysconfig/rngd",
-          require   => Package['rng-tools'],
-          path      => $path,
-          logoutput => true,
-          user      => 'root',
-          notify    => Service['rngd'],
+          service { 'rngd':
+            ensure  => 'running',
+            enable  => true,
+            require => Exec['set urandom /etc/sysconfig/rngd'],
+          }
+
+          exec { 'chkconfig rngd':
+            command   => 'chkconfig --add rngd',
+            require   => Service['rngd'],
+            unless    => "chkconfig | /bin/grep 'rngd'",
+            path      => $path,
+            logoutput => true,
+            user      => 'root',
+          }
         }
-
-        service { 'rngd':
-          ensure  => 'running',
-          enable  => true,
-          require => Exec['set urandom /etc/sysconfig/rngd'],
-        }
-
-        exec { 'chkconfig rngd':
-          command   => 'chkconfig --add rngd',
-          require   => Service['rngd'],
-          unless    => "chkconfig | /bin/grep 'rngd'",
-          path      => $path,
-          logoutput => true,
-          user      => 'root',
+        '5': {
+          exec{'enable_entropy_daemon':
+            command => '/sbin/rngd -r /dev/urandom -t 10',
+            unless  => '/bin/ps -ef | grep urandom | grep -v grep',
+            require => Package[$rng_package],
+          }
         }
       }
     }
@@ -75,7 +89,7 @@ class orawls::urandomfix() {
       exec { 'set urandom /etc/default/rng-tools':
         command   => "sed -i -e's/#HRNGDEVICE=\\/dev\\/null/HRNGDEVICE=\\/dev\\/urandom/g' /etc/default/rng-tools",
         unless    => "/bin/grep '^HRNGDEVICE=/dev/urandom' /etc/default/rng-tools",
-        require   => Package['rng-tools'],
+        require   => Package[$rng_package],
         path      => $path,
         logoutput => true,
         user      => 'root',

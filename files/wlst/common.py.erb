@@ -18,10 +18,14 @@ def set_password(password):
         set('Password', password)
 
 def password_to_string(value):
-    string_value = ''
-    for byte in value:
-        string_value = string_value + chr(byte)
-    return string_value
+    if value == None:
+        return None
+    else:
+        string_value = ''
+        for byte in value:
+            string_value = string_value + chr(byte)
+        return string_value
+
 
 def decrypt_value(encrypted_value):
     domain_dir = get('RootDirectory')
@@ -49,7 +53,12 @@ def is_encrypted(full_key):
     cd(path)
     key_description = man(key)
     cd(old_path)
-    return re.search("\|encrypted : (true)\|\|", key_description) != None
+    encrypted = re.search("\|(?:com.bea.)?encrypted : (true)\|\|", key_description) != None
+    if encrypted:
+        print 'attribute ' + full_key + ' is encrypted.'
+    else:
+        print 'attribute ' + full_key + ' is NOT encrypted.'
+    return encrypted
 
 def auto_typed_set(key, value):
     key_type = type_for(key)
@@ -63,7 +72,10 @@ def auto_typed_set(key, value):
         set(key,int(value))
     if key_type == 'boolean':
         print 'Setting boolean property ' + key + ' to ' + value
-        real_value = (value == 'True' or value == 'true' or value == '1')
+        if value == 'True' or value == 'true' or value == '1':
+            real_value = 'true'
+        else:
+            real_value = 'false'
         set(key,real_value)
     elif key_type == 'float':
         print 'Setting float property ' + key + ' to ' + value

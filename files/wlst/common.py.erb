@@ -12,11 +12,6 @@ def quote(text):
     else:
         return ""
 
-def set_password(password):
-    if password:
-        print 'set unencrypted password'
-        set('Password', password)
-
 def password_to_string(value):
     if value == None:
         return None
@@ -67,22 +62,26 @@ def auto_typed_set(key, value):
     #
     if value == None:
         return
-    if key_type == 'int' or key_type == 'long':
-        print 'Setting integer property ' + key + ' to ' + value
-        set(key,int(value))
-    if key_type == 'boolean':
-        print 'Setting boolean property ' + key + ' to ' + value
-        if value == 'True' or value == 'true' or value == '1':
-            real_value = 'true'
-        else:
-            real_value = 'false'
+    if key_type == 'int': # or key_type == 'long':
+        if value.strip(): # Value is a non empty string
+            print 'Setting integer property ' + key + ' to ' + value
+            set(key,int(value))
+    elif key_type == 'boolean':
+        if value.strip(): # Value is a non empty string
+            print 'Setting boolean property ' + key + ' to ' + value
+            if value == 'True' or value == 'true' or value == '1':
+                real_value = 'true'
+            else:
+                real_value = 'false'
         set(key,real_value)
     elif key_type == 'float':
-        print 'Setting float property ' + key + ' to ' + value
-        set(key,float(value))
+        if value.strip(): # Value is a non empty string
+            print 'Setting float property ' + key + ' to ' + value
+            set(key,float(value))
     elif key_type == 'array':
-        print 'Setting array property ' + key + ' to ' + value
-        set(key, jarray.array(value, String))
+        if value.strip(): # Value is a non empty string
+            print 'Setting array property ' + key + ' to ' + value
+            set(key, jarray.array(value, String))
     else:
         print 'Setting generic property ' + key + ' to ' + value
         set(key,value)

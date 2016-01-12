@@ -55,7 +55,7 @@ try:
       cmo.setUseXaDataSourceInterface(true)
     else:
       cmo.setUseXaDataSourceInterface(false)
-    set_password(password)
+    auto_typed_set('Password', password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     set('MaxCapacity'    , int(maxcapacity))

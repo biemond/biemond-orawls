@@ -2354,11 +2354,11 @@ or use puppet resource wls_authentication_provider
       provider_specific => {
            'Principal'                     => 'ldapuser',
            'Host'                          => 'ldapserver',
-           'Port'                          => '389',
-           'CacheTTL'                      => '60',
-           'CacheSize'                     => '1024',
-           'MaxGroupMembershipSearchLevel' => '4',
-           'SSLEnabled'                    => 'true',
+           'Port'                          => 389,
+           'CacheTTL'                      => 60,
+           'CacheSize'                     => 1024,
+           'MaxGroupMembershipSearchLevel' => 4,
+           'SSLEnabled'                    => 1,
       }
       order             =>  '0'
     }
@@ -2382,16 +2382,17 @@ in hiera
         control_flag:       'SUFFICIENT'
         providerclassname:  'weblogic.security.providers.authentication.LDAPAuthenticator'
         provider_specific:
-           'Principal':                     'ldapuser'
-           'Host':                          'ldapserver'
-           'Port':                          '389'
-           'CacheTTL':                      '60'
-           'CacheSize':                     '1024'
-           'MaxGroupMembershipSearchLevel': '4'
-           'SSLEnabled':                    'true'
+          'Principal':                     'ldapuser'
+          'Host':                          'ldapserver'
+          'Port':                          389
+          'CacheTTL':                      60
+          'CacheSize':                     1024
+          'MaxGroupMembershipSearchLevel': 4
+          'SSLEnabled':                    1
+          'ConnectTimeout':                2
+          'ConnectionRetryLimit':          2
         order:              '1'
-
-
+        before:             Wls_domain[Wls1036]
       'ActiveDirectoryAuthenticator':
         ensure:             'present'
         control_flag:       'SUFFICIENT'
@@ -2402,12 +2403,16 @@ in hiera
           'GroupFromNameFilter':            '(&(sAMAccountName=%g)(objectclass=group))'
           'GroupMembershipSearching':       'limited'
           'Host':                           'ad.company.org'
-          'MaxGroupMembershipSearchLevel':  0
+          'MaxGroupMembershipSearchLevel':  4
           'Principal':                      'CN=SER_WASadmin,OU=Service Accounts,DC=ad,DC=company,DC=org'
           'UserBaseDN':                     'DC=ad,DC=company,DC=org'
           'UserFromNameFilter':             '(&(sAMAccountName=%u)(objectclass=user))'
           'UserNameAttribute':              'sAMAccountName'
           'Port':                           389
+          'CacheTTL':                       60
+          'CacheSize':                      1024
+          'ConnectTimeout':                 2
+          'ConnectionRetryLimit':           2
         order:              '2'
 
 ### wls_identity_asserter

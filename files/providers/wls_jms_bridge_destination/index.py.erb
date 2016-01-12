@@ -1,11 +1,5 @@
 
 
-def quote(text):
-    if text or text == '':
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 m = ls('/JMSBridgeDestinations',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")

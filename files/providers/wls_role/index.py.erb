@@ -1,8 +1,3 @@
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
 
 f = open("/tmp/wlstScript.out", "w")
 print >>f, "name;realm;expression;domain"

@@ -2,11 +2,6 @@
 
 from weblogic.management.security.authentication import UserReaderMBean
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
 
 realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
 authProvider = realmName.getAuthenticationProviders()

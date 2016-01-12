@@ -1,11 +1,5 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 def object(token,token2,token3,location,type):
     cd(location)
     print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,cmo.getLocalJNDIName(),cmo.getRemoteJNDIName(),domain]))

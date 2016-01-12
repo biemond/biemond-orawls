@@ -19,6 +19,7 @@ log_rotate_logon_startup                           = '<%= log_rotate_logon_start
 log_rotationtype                                   = '<%= log_rotationtype %>'
 log_number_of_files_limited                        = '<%= log_number_of_files_limited %>'
 log_date_pattern                                   = '<%= log_date_pattern %>'
+credential                                         = '<%= credential %>'
 
 setinternalappdeploymentondemandenable             = '<%= setinternalappdeploymentondemandenable %>'
 setarchiveconfigurationcount                       = '<%= setarchiveconfigurationcount %>'
@@ -79,6 +80,7 @@ try:
     cd('/SecurityConfiguration/'+name)
     if security_crossdomain:
       cmo.setCrossDomainSecurityEnabled(formatBoolean(security_crossdomain))
+    auto_typed_set('Credential', credential)
 
     print "change jmx"
     cd('/JMX/'+name)

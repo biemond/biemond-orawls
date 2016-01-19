@@ -45,6 +45,10 @@ module Puppet
     property :bytes_maximum
     property :store_enabled
     property :allows_persistent_downgrade
+    property :insertionpaused
+    property :consumptionpaused
+    property :productionpaused
+
 
     add_title_attributes(:jmsserver_name) do
       /^((.*\/)?(.*)?)$/

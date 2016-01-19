@@ -11,6 +11,9 @@ persistentstoretype         = '<%= persistentstoretype %>'
 bytes_maximum               = '<%= bytes_maximum %>'
 allows_persistent_downgrade = '<%= allows_persistent_downgrade %>'
 store_enabled               = '<%= store_enabled %>'
+consumption_paused          = '<%= consumptionpaused %>'
+insertion_paused            = '<%= insertionpaused %>'
+production_paused           = '<%= productionpaused %>'
 
 edit()
 startEdit()
@@ -35,6 +38,18 @@ try:
         set('StoreEnabled','True')
       elif store_enabled == '0':
         set('StoreEnabled','False')
+
+    if consumption_paused:
+      print 'setting consumption_paused to ' + consumption_paused
+      set('ConsumptionPausedAtStartup', translate(consumption_paused))
+
+    if insertion_paused:
+      print 'setting insertion_paused to ' + insertion_paused
+      set('InsertionPausedAtStartup', translate(insertion_paused))
+
+    if production_paused:
+      print 'setting production_paused to ' + production_paused
+      set('ProductionPausedAtStartup', translate(production_paused))
 
     cd('/Deployments/'+name)
 

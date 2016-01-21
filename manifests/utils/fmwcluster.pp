@@ -86,6 +86,7 @@ define orawls::utils::fmwcluster (
     if ( $version == 1213 or $version == 1221 ) {
       #shutdown adminserver for offline WLST scripts
       orawls::control{"ShutdownAdminServerForSoa${title}":
+        middleware_home_dir => $middleware_home_dir,
         weblogic_home_dir   => $weblogic_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,
@@ -196,6 +197,7 @@ define orawls::utils::fmwcluster (
 
       #shutdown adminserver for offline WLST scripts
       orawls::control{"ShutdownAdminServerForSoa${title}":
+        middleware_home_dir => $middleware_home_dir,
         weblogic_home_dir   => $weblogic_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,
@@ -360,6 +362,7 @@ define orawls::utils::fmwcluster (
 
       #startup adminserver for offline WLST scripts
       orawls::control{"StartupAdminServerForSoa${title}":
+        middleware_home_dir => $middleware_home_dir,
         weblogic_home_dir   => $weblogic_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,

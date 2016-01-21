@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-def translate(value)
+def translate(value):
   if value == '0':
     return 'false'
   elif value == '1':
@@ -47,7 +47,7 @@ try:
       elif store_enabled == '0':
         set('StoreEnabled','False')
 
-   if consumption_paused:
+    if consumption_paused:
       print 'setting consumption_paused to ' + consumption_paused
       set('ConsumptionPausedAtStartup', translate(consumption_paused))
 

@@ -80,7 +80,8 @@ try:
     cd('/SecurityConfiguration/'+name)
     if security_crossdomain:
       cmo.setCrossDomainSecurityEnabled(formatBoolean(security_crossdomain))
-    auto_typed_set('Credential', credential)
+    if credential:
+      auto_typed_set('Credential', credential)
 
     print "change jmx"
     cd('/JMX/'+name)

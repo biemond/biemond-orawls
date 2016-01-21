@@ -25,6 +25,7 @@ define orawls::nodemanager (
   $os_group                              = hiera('wls_os_group'), # dba
   $download_dir                          = hiera('wls_download_dir'), # /data/install
   $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
+  $log_file                              = 'nodemanager.log',
   $log_output                            = false, # true|false
   $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
   $properties                            = {},
@@ -52,7 +53,7 @@ define orawls::nodemanager (
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
   if $log_dir == undef {
-    $nodeMgrLogDir = "${nodeMgrHome}/nodemanager.log"
+    $nodeMgrLogDir = "${nodeMgrHome}/${log_file}"
   } else {
       # create all folders
       if !defined(Exec["create ${log_dir} directory"]) {
@@ -76,7 +77,7 @@ define orawls::nodemanager (
           before  => Exec["startNodemanager ${title}"],
         }
       }
-      $nodeMgrLogDir = "${log_dir}/nodemanager.log"
+      $nodeMgrLogDir = "${log_dir}/${log_file}"
   }
 
   case $::kernel {

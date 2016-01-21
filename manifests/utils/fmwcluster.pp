@@ -129,6 +129,7 @@ define orawls::utils::fmwcluster (
       }
       #startup adminserver for offline WLST scripts
       orawls::control{"StartupAdminServerForSoa${title}":
+        middleware_home_dir => $middleware_home_dir,
         weblogic_home_dir   => $weblogic_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,

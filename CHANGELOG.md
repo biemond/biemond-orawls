@@ -9,6 +9,7 @@
 - be able to change the password on wls_datasource
 - fix for wls_clusters without servers
 - new log_date_pattern attribute for wls_server, wls_domain
+- fmwcluster manifest with trust parameters
 
 ## 1.0.45
 - wls_migratable_target fixes with constrained_candidate_servers

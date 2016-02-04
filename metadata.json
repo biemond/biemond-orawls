@@ -22,12 +22,12 @@
       "version_requirement": ">=4.9.0"
     }
   ],
-  "description": "Only for Linux & Solaris \nOracle WebLogic module optimized for Hiera and Puppet 3\nwls native types & providers like wls_machine, wls_server and wls_cluster\n\nbased on the wls module",
+  "description": "Only for Linux & Solaris \nOracle WebLogic module\nwls native types & providers like wls_machine, wls_server, wls_cluster and many more\n",
   "license": "Apache-2.0",
   "name": "biemond-orawls",
   "project_page": "https://github.com/biemond/biemond-orawls",
   "source": "https://github.com/biemond/biemond-orawls",
-  "summary": "Oracle WebLogic puppet module v2 for Linux & Solaris with wls puppey types & providers, optimized for Hiera",
+  "summary": "Oracle WebLogic puppet module v2 for Linux & Solaris with wls puppet types & providers",
   "version": "1.0.47",
   "tags": [
     "weblogic",

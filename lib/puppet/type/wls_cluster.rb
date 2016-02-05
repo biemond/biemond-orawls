@@ -196,5 +196,6 @@ module Puppet
        "#{domain}/#{datasourceforjobscheduler}"]
     }
 
+    autorequire(:wls_server_channel) { self[:servers].nil? ? '' : self[:servers].collect { |s| "#{domain}/#{s}:#{unicastbroadcastchannel}" } if unicastbroadcastchannel}
   end
 end

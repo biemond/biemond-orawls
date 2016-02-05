@@ -44,13 +44,13 @@ cd('/')
 print('Set domain log')
 change_log('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
 
-print('Create machine LocalMachine with type UnixMachine')
-create_machine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
+print('Create machine <%= @adminserver_machine_name %> with type UnixMachine')
+create_machine('UnixMachine', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
 
 if ADMINSERVER_LISTEN_ON_ALL_INTERFACES:
-  change_admin_server(ADMIN_SERVER, 'LocalMachine', None, <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
+  change_admin_server(ADMIN_SERVER, '<%= @adminserver_machine_name %>', None, <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
 else:
-  change_admin_server(ADMIN_SERVER, 'LocalMachine', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
+  change_admin_server(ADMIN_SERVER, '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', <%= @adminserver_port %>, ADM_JAVA_ARGUMENTS, JAVA_HOME)
 
 change_ssl_with_port(ADMIN_SERVER, JSSE_ENABLED, '<%= @adminserver_ssl_port %>')
 

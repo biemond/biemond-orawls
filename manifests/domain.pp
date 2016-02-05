@@ -17,6 +17,7 @@ define orawls::domain (
   $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,
   $adminserver_name                      = hiera('domain_adminserver'            , 'AdminServer'),
+  $adminserver_machine_name              = hiera('domain_adminserver_machine_name', 'LocalMachine')
   $adminserver_address                   = hiera('domain_adminserver_address'    , undef),
   $adminserver_port                      = hiera('domain_adminserver_port'       , 7001),
   $adminserver_ssl_port                  = undef,

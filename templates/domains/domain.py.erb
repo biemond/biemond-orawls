@@ -42,7 +42,7 @@ set_cross_domain()
 
 cd('/')
 print('Set domain log')
-change_log('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>')
+change_log('domain', DOMAIN, '<%= @admin_nodemanager_log_dir %>', <%= @domain_log_filecount %>, <%= @domain_log_file_min_size %>, '<%= @domain_log_rotationtype %>', <%= @domain_log_file_timespan %>, <%= @domain_log_number_of_files_limited %>)
 
 print('Create machine <%= @adminserver_machine_name %> with type UnixMachine')
 create_machine('UnixMachine', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
@@ -59,7 +59,9 @@ if CUSTOM_IDENTITY_ENABLED == True:
   change_custom_identity_store(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
 
 print('Change AdminServer log')
-change_log('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>')
+change_log('server', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>', <%= @adminserver_log_filecount %>, <%= @adminserver_log_file_min_size %>, '<%= @adminserver_log_rotationtype %>', <%= @adminserver_log_file_timespan %>, <%= @adminserver_log_number_of_files_limited %>, <%= @adminserver_log_redirect_stdout_to_server %>, <%= @adminserver_log_redirect_stderr_to_server %>)
+print('Change AdminServer webserverlog')
+change_log('webserver', ADMIN_SERVER, '<%= @admin_nodemanager_log_dir %>', <%= @adminserver_log_http_filecount %>, <%= @adminserver_log_http_file_min_size %>, '<%= @adminserver_log_http_rotationtype %>', <%= @adminserver_log_http_file_timespan %>, <%= @adminserver_log_http_number_of_files_limited %> )
 
 print('Set password...')
 set_weblogic_password(ADMIN_USER, ADMIN_PASSWORD)

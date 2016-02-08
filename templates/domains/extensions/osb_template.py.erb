@@ -117,7 +117,7 @@ if WEBLOGIC_VERSION in [1213,1221]:
     print 'Change datasources'
 
     print 'Change datasource LocalScvTblDataSource for service table'
-    changeDatasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 
     print 'Call getDatabaseDefaults which reads the service table'
     getDatabaseDefaults()

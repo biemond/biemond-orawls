@@ -33,17 +33,18 @@ for token in m:
   for token2 in n:
     servers.append(token2)
 
-  print "1"
+  print "10"
   p = ls('/Servers/',returnMap='true')
   clustered = []
   present = 1
   cluster_result = ''
 
-  print "1"
+  print "11"
   for token3 in p:
     print "2 "+ token3
     notes = get('/Servers/'+token3+'/Notes')
     if notes:
+      print "30 "+ notes
       if token in notes:
          print "3 "+ token3
          clustered.append(token3)
@@ -59,8 +60,6 @@ for token in m:
       cluster_result = 'inherited'
 
   cd('/Clusters/'+token)
-  pwd()
-  ls()
   if not clustered:
     print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
   else:

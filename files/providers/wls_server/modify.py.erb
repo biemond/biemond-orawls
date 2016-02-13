@@ -113,7 +113,7 @@ try:
         set('Machine',getMBean('/Machines/'+machineName))
 
     print "Change Notes"
-    if server_parameters and server_parameters != 'None':
+    if server_parameters:
       cmo.setNotes(server_parameters)
 
     if manage_listenaddress:

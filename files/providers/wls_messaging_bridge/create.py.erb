@@ -24,14 +24,6 @@ targetdestination       = '<%= targetdestination %>'
 edit()
 startEdit()
 
-def target_list(targets, targettypes):
-    targetList = []
-    for i in range(len(targets)):
-        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i])
-        targetList.append(bean)
-
-    return jarray.array(targetList, ObjectName)
-
 try:
     cd('/')
     cmo.createMessagingBridge(name)

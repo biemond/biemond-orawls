@@ -15,14 +15,6 @@ uriprefix        = '<%= uriprefix %>'
 edit()
 startEdit()
 
-def target_list(targets, targettypes):
-    targetList = []
-    for i in range(len(targets)):
-        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i])
-        targetList.append(bean)
-
-    return jarray.array(targetList, ObjectName)
-
 try:
 
     print 'action = ' + wlst_action
@@ -53,9 +45,6 @@ try:
         set('HostNames',jarray.array(hosts, String))
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
-    for obj in targetList:
-        print obj
-
     set('Targets', targetList)
 
     save()

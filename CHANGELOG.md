@@ -1,7 +1,9 @@
 # History
 
 ## 1.0.47
-- option to override the default machine in the domain
+- some WLST refactoring
+- wls_virtual_target new type but only for WebLogic 12.2.1
+- option to override the default machine in the domain manifest
 - MQ resource adapter mininal template
 - OSB domain template fix
 - wls_datasource, new attribute remove_infected_connections 

@@ -2,7 +2,7 @@
 m = ls('/JDBCSystemResources',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds;wrapdatatypes"
+print >>f, "name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds;wrapdatatypes;removeinfectedconnections"
 for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -40,6 +40,11 @@ for token in m:
           wrapdatatypes = '1'
         else:
           wrapdatatypes = '0'
+
+        if get('RemoveInfectedConnections'):
+          removeinfectedconnections = '1'
+        else:
+          removeinfectedconnections = '0'
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
         jndinames = get('JNDINames')
@@ -130,10 +135,10 @@ for token in m:
                 missing = 1
 
         if not tagged:
-            print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes]))
+            print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections]))
         elif missing == 0:
-            print >>f, ";".join(map(quote, [domain+'/'+token,'inherited','inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes]))
+            print >>f, ";".join(map(quote, [domain+'/'+token,'inherited','inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections]))
         else:
-            print >>f, ";".join(map(quote, [domain+'/'+token,'not_inherited','not_inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes]))
+            print >>f, ";".join(map(quote, [domain+'/'+token,'not_inherited','not_inherited',driver,','.join(jndinames),url,usexa,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections]))
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

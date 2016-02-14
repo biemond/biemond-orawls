@@ -92,6 +92,10 @@ try:
     else:
       set('WrapTypes', 'false')
 
+<% unless removeinfectedconnections.nil? -%>
+    set('RemoveInfectedConnections', <% if removeinfectedconnections == :true -%>True<% else %>False<% end %>)
+<% end -%>
+
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
     cmo.setTestTableName(testtablename)
 

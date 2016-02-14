@@ -67,6 +67,7 @@ module Puppet
     property :initsql
     property :shrinkfrequencyseconds
     property :wrapdatatypes
+    property :removeinfectedconnections
 
     add_title_attributes(:datasource_name) do
       /^((.*\/)?(.*)?)$/

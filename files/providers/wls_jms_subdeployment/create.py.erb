@@ -11,6 +11,14 @@ targettype         = '<%= targettype %>'
 edit()
 startEdit()
 
+def target_list(targets, targettypes):
+    targetList = []
+    for i in range(len(targets)):
+        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i])
+        targetList.append(bean)
+
+    return jarray.array(targetList, ObjectName)
+
 try:
 
 
@@ -19,13 +27,8 @@ try:
     cmo.createSubDeployment(name)
     cd('/SystemResources/'+jmsmodule+'/SubDeployments/'+name)
 
-    targets     = String(target).split(",")
-    targettypes = String(targettype).split(",")
-    targetList = []
-    for i in range(len(targets)):
-       targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
-
-    set('Targets',jarray.array(targetList, ObjectName))
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
 
     save()
     activate()

@@ -1,11 +1,4 @@
 
-
-def quote(text):
-	if text:
-		return "\"" + str(text).replace("\"", "\"\"") + "\""
-	else:
-		return ""
-
 m = ls('/VirtualHosts',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")

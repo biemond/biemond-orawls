@@ -12,8 +12,8 @@ module Utils
 
     wls_functions = [
       :wls_get_value,       # get the value at a specified key
-      :wls_get_password,    # get the decrypted password string at a specified key. 
-      :wls_get_realm_path,  # Get the path of the default realm 
+      :wls_get_password,    # get the decrypted password string at a specified key.
+      :wls_get_realm_path,  # Get the path of the default realm
       :wls_is_encrypted,    # Check if the specified attribute is encrypted
     ]
 
@@ -33,6 +33,5 @@ private
       value = wlst template("puppet:///modules/orawls/functions/function_base.py.erb", binding), environment
       value.first['value']
     end
-
   end
 end

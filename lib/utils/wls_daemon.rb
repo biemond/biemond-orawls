@@ -69,7 +69,7 @@ class WlsDaemon < EasyType::Daemon
   end
 
   def define_common_methods
-    Puppet.debug "Defining common methods..."
+    Puppet.debug 'Defining common methods...'
     execute_command template('puppet:///modules/orawls/wlst/common.py.erb', binding)
   end
 end

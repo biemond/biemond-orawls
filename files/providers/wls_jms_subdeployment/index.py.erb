@@ -12,15 +12,15 @@ for token in m:
     n = ls('SubDeployments',returnMap='true')
     for token2 in n:
 
-            m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets',returnMap='true')
-            target     = []
-            targetType = []
-            for token3 in m:
-                   target.append(token3)
-                   cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
-                   targetType.append(get('Type'))
+        m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets',returnMap='true')
+        target     = []
+        targetType = []
+        for token3 in m:
+            target.append(token3)
+            cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
+            targetType.append(get('Type'))
 
-            print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
+        print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

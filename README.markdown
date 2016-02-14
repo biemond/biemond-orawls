@@ -140,6 +140,8 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_dynamic_cluster](#wls_dynamic_cluster)
 
 12.2.1 Multitenancy
+- [wls_virtual_target](#wls_virtual_target)
+
 
 ## Domain creation options (Dev or Prod mode)
 
@@ -4489,3 +4491,54 @@ in hiera
         targettype:
          - 'Server'
          - 'Cluster'
+
+
+### wls_virtual_target
+
+Only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_virtual_target
+
+    wls_virtual_target { 'default/CustomerA':
+      ensure             => 'present',
+      channel            => 'aaaa',
+      port               => '8011',
+      target             => ['WebCluster'],
+      targettype         => ['Cluster'],
+      uriprefix          => '/customer_a',
+      virtual_host_names => ['10.10.10.100', '10.10.10.200'],
+    }
+    wls_virtual_target { 'default/CustomerB':
+      ensure             => 'present',
+      channel            => 'PartitionChannel',
+      portoffset         => '5',
+      target             => ['WebCluster'],
+      targettype         => ['Cluster'],
+      uriprefix          => '/customer_b',
+      virtual_host_names => ['10.10.10.100', '10.10.10.200'],
+    }
+
+in hiera
+
+    # this will use default as wls_setting identifier
+    virtual_target_instances:
+      'CustomerA':
+        ensure:             'present'
+        channel:            'PartitionChannel'
+        port:               '8011'
+        target:             'WebCluster'
+        targettype:         'Cluster'
+        uriprefix:          '/customer_a'
+        virtual_host_names:
+          - '10.10.10.100'
+          - '10.10.10.200'
+      'CustomerB':
+        ensure:             'present'
+        channel:            'PartitionChannel'
+        portoffset:         '5'
+        target:             'WebCluster'
+        targettype:         'Cluster'
+        uriprefix:          '/customer_b'
+        virtual_host_names:
+          - '10.10.10.100'
+          - '10.10.10.200'

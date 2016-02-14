@@ -12,6 +12,13 @@ vhost_names      = '<%= virtual_host_names %>'
 edit()
 startEdit()
 
+def target_list(targets, targettypes):
+    targetList = []
+    for i in range(len(targets)):
+        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i])
+        targetList.append(bean)
+
+    return jarray.array(targetList, ObjectName)
 
 try:
 
@@ -24,18 +31,8 @@ try:
       hosts     = String(vhost_names).split(",")
       set('VirtualHostNames',jarray.array(hosts, String))
 
-    print "target: "     +  target
-    print "targettype: " +  targettype
-
-    targets     = String(target).split(",")
-    targettypes = String(targettype).split(",")
-    targetList  = []
-    for i in range(len(targets)):
-      print "target "+targets[i] + " " + targettypes[i]
-      targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
-
-    set('Targets',jarray.array(targetList, ObjectName))
-
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
 
     save()
     activate()

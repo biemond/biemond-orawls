@@ -12,6 +12,14 @@ def quote(text):
     else:
         return ""
 
+def translate(value):
+    if value == 'true':
+        return '1'
+    elif value == 'false':
+        return '0'
+    else:
+        return str(value)
+
 def password_to_string(value):
     if value == None:
         return None

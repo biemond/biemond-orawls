@@ -1,0 +1,70 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name             = '<%= virtual_target_name %>'
+channel          = '<%= channel %>'
+target           = '<%= target %>'
+targettype       = '<%= targettype %>'
+host_names       = '<%= virtual_host_names %>'
+port             = '<%= port %>'
+portoffset       = '<%= portoffset %>'
+uriprefix        = '<%= uriprefix %>'
+
+edit()
+startEdit()
+
+def target_list(targets, targettypes):
+    targetList = []
+    for i in range(len(targets)):
+        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i])
+        targetList.append(bean)
+
+    return jarray.array(targetList, ObjectName)
+
+try:
+
+    print 'action = ' + wlst_action
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createVirtualTarget(name)
+
+    cd('/VirtualTargets/'+name)
+    if channel:
+        set('PartitionChannel', channel)
+    else:
+        set('PartitionChannel', 'PartitionChannel')
+
+    if portoffset:
+        set('PortOffset', portoffset)
+    else:
+        set('PortOffset', '0')
+
+    if port:
+        set('ExplicitPort', port)
+    else:
+        set('ExplicitPort', '0')
+
+    set('UriPrefix', uriprefix)
+
+    if host_names:
+        hosts = String(host_names).split(",")
+        set('HostNames',jarray.array(hosts, String))
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    for obj in targetList:
+        print obj
+
+    set('Targets', targetList)
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise

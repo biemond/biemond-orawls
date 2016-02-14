@@ -1,14 +1,6 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-def translate(value):
-  if value == '0':
-    return 'false'
-  elif value == '1':
-    return 'true'
-  else:
-    return value
-
 name                        = '<%= jmsserver_name %>'
 target                      = '<%= target %>'
 targettype                  = '<%= targettype %>'

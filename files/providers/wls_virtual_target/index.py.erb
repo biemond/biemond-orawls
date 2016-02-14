@@ -1,0 +1,31 @@
+
+
+wlst_name = '/VirtualTargets/'
+
+m = ls(wlst_name, returnMap='true')
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;channelname;target;targettype;domain;virtualhostnames;port;portoffset;uriprefix"
+for token in m:
+    print '___'+token+'___'
+    cd(wlst_name + token)
+
+    channelname = get('PartitionChannel')
+    hosts = get('HostNames')
+    port = get('ExplicitPort')
+    portoffset = get('PortOffset')
+    uriprefix = get('UriPrefix')
+
+    n = ls('Targets',returnMap='true')
+    target     = []
+    targetType = []
+    for token2 in n:
+        target.append(token2)
+        cd(wlst_name + token + '/Targets/'+token2)
+        targetType.append(get('Type'))
+
+    print >>f, ";".join(map(quote, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts),port,portoffset,uriprefix]))
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"
+

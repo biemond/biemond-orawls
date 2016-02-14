@@ -1,13 +1,4 @@
 
-def translate(value):
-  if value == 'true':
-    return '1'
-  elif value == 'false':
-    return '0'
-  else:
-    return str(value)
-
-
 m = ls('/JMSServers',returnMap='true')
 
 f = open("/tmp/wlstScript.out", "w")

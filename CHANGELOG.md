@@ -2,6 +2,9 @@
 
 ## 1.0.47
 - option to override the default machine in the domain
+- MQ resource adapter mininal template
+- OSB domain template fix
+- wls_datasource, new attribute remove_infected_connections 
 
 ## 1.0.46
 - added support for 12.2.1 fast rest management interface, requires 12.2.1 or higher & only works for now on wls_cluster (lib/puppet/type/wls_server.rb plus wls_setting must contain a http connect url)

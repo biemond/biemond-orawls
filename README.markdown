@@ -104,10 +104,6 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_cluster](#wls_cluster)
 - [wls_migratable_target](#wls_migratable_target)
 - [wls_singleton_service](#wls_singleton_service)
-- [wls_coherence_cluster](#wls_coherence_cluster)
-- [wls_coherence_server](#wls_coherence_server)
-- [wls_server_template](#wls_server_template)
-- [wls_dynamic_cluster](#wls_dynamic_cluster)
 - [wls_virtual_host](#wls_virtual_host)
 - [wls_workmanager_constraint](#wls_workmanager_constraint)
 - [wls_workmanager](#wls_workmanager)
@@ -137,23 +133,38 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_jms_bridge_destination](#wls_jms_bridge_destination)
 - [wls_messaging_bridge](#wls_messaging_bridge)
 
+12.1.3 Coherence & Dynamic clusters
+- [wls_coherence_cluster](#wls_coherence_cluster)
+- [wls_coherence_server](#wls_coherence_server)
+- [wls_server_template](#wls_server_template)
+- [wls_dynamic_cluster](#wls_dynamic_cluster)
+
+12.2.1 Multitenancy
+
 ## Domain creation options (Dev or Prod mode)
 
 all templates creates a WebLogic domain, logs the domain creation output
 
+For all WebLogic or FMW versions
 - domain 'standard'       -> a default WebLogic
 - domain 'adf'            -> JRF + EM + Coherence (12.1.2, 12.1.3, 12.2.1) + OWSM (12.1.2, 12.1.3, 12.2.1) + JAX-WS Advanced + Soap over JMS (12.1.2, 12.1.3, 12.2.1)
-- domain 'adf_restricted' -> only for 12.2.1 (no RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS
 - domain 'osb'            -> OSB + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'osb_soa'        -> OSB + SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'osb_soa_bpm'    -> OSB + SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'soa'            -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'soa_bpm'        -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'bam'            -> BAM ( only with soa suite installation)
+
+11g
 - domain 'wc_wcc_bpm'     -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
 - domain 'wc'             -> WC (webcenter) + JRF + EM + OWSM
+
+11gR2
 - domain 'oim'            -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
 - domain 'oud'            -> OUD (Oracle Unified Directory)
+
+12.2.1
+- domain 'adf_restricted' -> only for 12.2.1 (no RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS
 
 
 ## Puppet master with orawls module key points
@@ -205,10 +216,10 @@ or hiera parameters of weblogic.pp
 
 Requires the JDK 7 or 8 JCE extension
 
-    jdk7::install7{ 'jdk-8u45-linux-x64':
-        version                     => "8u45" ,
-        full_version                => "jdk1.8.0_45",
-        alternatives_priority       => 18000,
+    jdk7::install7{ 'jdk-8u72-linux-x64':
+        version                     => "8u72" ,
+        full_version                => "jdk1.8.0_72",
+        alternatives_priority       => 18001,
         x64                         => true,
         download_dir                => "/var/tmp/install",
         urandom_java_fix            => true,
@@ -223,12 +234,13 @@ Requires the JDK 7 or 8 JCE extension
         full_version                => "jdk1.7.0_51",
         alternatives_priority       => 18000,
         x64                         => true,
-        download_dir                => "/data/install",
+        download_dir                => "/var/tmp/install",
         urandom_java_fix            => true,
         rsa_key_size_fix            => true,                          <!--
         cryptography_extension_file => "UnlimitedJCEPolicyJDK7.zip",  <!---
         source_path                 => "/software",
     }
+
 
 To enable this in orawls you can set the jsse_enabled on the following manifests
 - nodemanager.pp

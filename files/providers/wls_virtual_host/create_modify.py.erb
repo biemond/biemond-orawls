@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name             = '<%= virtual_host_name %>'
 channel          = '<%= channel %>'
@@ -15,14 +15,16 @@ startEdit()
 try:
 
     cd('/')
-    cmo.createVirtualHost(name)
+    if wlst_action == 'create':
+        cmo.createVirtualHost(name)
+
     cd('/VirtualHosts/'+name)
     if channel:
-      channelname = set('NetworkAccessPoint',channel)
+        channelname = set('NetworkAccessPoint',channel)
 
     if vhost_names:
-      hosts     = String(vhost_names).split(",")
-      set('VirtualHostNames',jarray.array(hosts, String))
+        hosts     = String(vhost_names).split(",")
+        set('VirtualHostNames',jarray.array(hosts, String))
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
     set('Targets', targetList)

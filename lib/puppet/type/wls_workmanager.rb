@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/../../orawls_core'
 
-
 module Puppet
   Type.newtype(:wls_workmanager) do
     include EasyType
@@ -20,13 +19,15 @@ module Puppet
     end
 
     on_create do | command_builder |
+      wlst_action = 'create'
       Puppet.info "create #{name} "
-      template('puppet:///modules/orawls/providers/wls_workmanager/create.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_workmanager/create_modify.py.erb', binding)
     end
 
     on_modify do | command_builder |
+      wlst_action = 'modify'
       Puppet.info "modify #{name} "
-      template('puppet:///modules/orawls/providers/wls_workmanager/modify.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_workmanager/create_modify.py.erb', binding)
     end
 
     on_destroy do | command_builder |

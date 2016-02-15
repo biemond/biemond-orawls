@@ -1,16 +1,16 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
 
-
-name                 = '<%= workmanager_name %>'
-stuckthreads         = '<%= stuckthreads %>'
-target               = '<%= target %>'
-targettype           = '<%= targettype %>'
-minthreadsconstraint = '<%= minthreadsconstraint %>'
-maxthreadsconstraint = '<%= maxthreadsconstraint %>'
+name                  = '<%= workmanager_name %>'
+stuckthreads          = '<%= stuckthreads %>'
+target                = '<%= target %>'
+targettype            = '<%= targettype %>'
+minthreadsconstraint  = '<%= minthreadsconstraint %>'
+maxthreadsconstraint  = '<%= maxthreadsconstraint %>'
 fairsharerequestclass = '<%= fairsharerequestclass %>'
-capacity             = '<%= capacity %>'
+capacity              = '<%= capacity %>'
 
 edit()
 startEdit()
@@ -21,7 +21,8 @@ try:
     domain = get('Name')
 
     cd('/SelfTuning/'+domain)
-    cmo.createWorkManager(name)
+    if wlst_action == 'create':
+        cmo.createWorkManager(name)
 
     cd('/SelfTuning/'+domain+'/WorkManagers/'+name)
 
@@ -34,10 +35,12 @@ try:
     set('Targets', targetList)
 
     cmo.setResponseTimeRequestClass(None)
+
     if fairsharerequestclass:
       cmo.setFairShareRequestClass(getMBean('/SelfTuning/'+domain+'/FairShareRequestClasses/'+fairsharerequestclass))
     else:
       cmo.setFairShareRequestClass(None)
+
     cmo.setContextRequestClass(None)
 
     if minthreadsconstraint:
@@ -59,6 +62,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-
-

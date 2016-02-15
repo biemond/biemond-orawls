@@ -31,6 +31,12 @@ def translate(value):
     else:
         return str(value)
 
+def format_boolean(value):
+    if value == 1:
+        return 'True'
+    else:
+        return 'False'
+
 def retrieve_target_list(wlst_name):
     cd(wlst_name)
     nn = ls('Targets', returnMap='true')

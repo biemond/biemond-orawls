@@ -20,13 +20,15 @@ module Puppet
     end
 
     on_create do | command_builder |
+      wlst_action = 'create'
       Puppet.info "create #{name} "
-      template('puppet:///modules/orawls/providers/wls_virtual_host/create.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_virtual_host/create_modify.py.erb', binding)
     end
 
     on_modify do | command_builder |
+      wlst_action = 'modify'
       Puppet.info "modify #{name} "
-      template('puppet:///modules/orawls/providers/wls_virtual_host/modify.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_virtual_host/create_modify.py.erb', binding)
     end
 
     on_destroy do | command_builder |

@@ -1,8 +1,7 @@
 
 m = ls('/Servers',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain;two_way_ssl;client_certificate_enforced;custom_identity_alias;channel_identity_customized"
+f = open_file("name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain;two_way_ssl;client_certificate_enforced;custom_identity_alias;channel_identity_customized")
 for token in m:
         print '___'+token+'___'
         cd('/Servers/'+token)
@@ -26,9 +25,7 @@ for token in m:
                custom_identity_alias       = str(get('CustomPrivateKeyAlias'))
                channel_identity_customized = str(get('ChannelIdentityCustomized'))
 
-               print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicport,max_message_size,publicaddress,domain,two_way_ssl,client_certificate_enforced,custom_identity_alias,channel_identity_customized]))
+               add_index_entry(f, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicport,max_message_size,publicaddress,domain,two_way_ssl,client_certificate_enforced,custom_identity_alias,channel_identity_customized])
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
-
-

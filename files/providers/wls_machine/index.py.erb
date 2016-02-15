@@ -1,10 +1,7 @@
 
-
-
 m = ls('/Machines',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;machinetype;nmtype;listenaddress;listenport;domain"
+f = open_file("name;machinetype;nmtype;listenaddress;listenport;domain")
 for token in m:
     print '___'+token+'___'
     cd('/Machines/'+token)
@@ -15,9 +12,7 @@ for token in m:
     if not (listenAddress):
        listenAddress = ''
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain]))
+    add_index_entry(f, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain])
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"
-
-

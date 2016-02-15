@@ -1,8 +1,7 @@
 
 m = ls('/Clusters',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication"
+f = open_file("name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication")
 for token in m:
   print '___'+token+'___'
   cd('/Clusters/'+token)
@@ -61,8 +60,9 @@ for token in m:
 
   cd('/Clusters/'+token)
   if not clustered:
-    print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
+    add_index_entry(f,[domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
   else:
-    print >>f, ";".join(map(quote, [domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')]))
+    add_index_entry(f,[domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

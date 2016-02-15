@@ -54,12 +54,10 @@ def topic(token,token2,location,distributed):
     cd(location+'/MessageLoggingParams/'+token2)
     messagelogging = get('MessageLoggingEnabled')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,deliveryMode,redeliveryDelay,messagelogging,forwardingpolicy,domain,','.join(destination_keys), insertion_paused, consumption_paused, production_paused]))
+    add_index_entry(f, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,deliveryMode,redeliveryDelay,messagelogging,forwardingpolicy,domain,','.join(destination_keys), insertion_paused, consumption_paused, production_paused])
 
 
-
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;deliverymode;redeliverydelay;messagelogging;forwardingpolicy;domain;destination_keys;insertionpaused;consumptionpaused;productionpaused"
+f = open_file("name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;deliverymode;redeliverydelay;messagelogging;forwardingpolicy;domain;destination_keys;insertionpaused;consumptionpaused;productionpaused")
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:

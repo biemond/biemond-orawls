@@ -1,7 +1,6 @@
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;key_name;key_type;property_name;sort_order;domain"
+f = open_file("name;jmsmodule;key_name;key_type;property_name;sort_order;domain")
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
@@ -10,7 +9,7 @@ for token in m:
     for token2 in n:
         print 'cd(\''+'/JMSSystemResources/'+token+'/JMSResource/'+token+'/DestinationKeys/'+token2+'\')'
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/DestinationKeys/'+token2)
-        print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,token2,get('KeyType'),get('Property'),get('SortOrder'),domain]))
+        add_index_entry(f, [domain+'/'+token+":"+token2,token,token2,get('KeyType'),get('Property'),get('SortOrder'),domain])
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

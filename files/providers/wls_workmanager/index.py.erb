@@ -1,8 +1,7 @@
 
 m = ls('/SelfTuning',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity;fairsharerequestclass"
+f = open_file("name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity;fairsharerequestclass")
 for token in m:
         print '___'+token+'___'
         cd('/SelfTuning/'+token)
@@ -57,7 +56,7 @@ for token in m:
                         cd('/SelfTuning/'+token+'/WorkManagers/'+token2+'/Targets/'+token3)
                         targetType.append(get('Type'))
 
-                print >>f, ";".join(map(quote, [domain+'/'+token2,stuckthreads,','.join(target),','.join(targetType),domain,minThreadsConstraint,maxThreadsConstraint,capacity,fairshareRequestClass]))
+                add_index_entry(f, [domain+'/'+token2,stuckthreads,','.join(target),','.join(targetType),domain,minThreadsConstraint,maxThreadsConstraint,capacity,fairshareRequestClass])
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

@@ -2,9 +2,7 @@
 cd("/")
 m = ls('/Servers',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;tlog_enabled;tlog_datasource;tlog_datasource_prefix"
-
+f = open_file("name;tlog_enabled;tlog_datasource;tlog_datasource_prefix")
 for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token+'/TransactionLogJDBCStore/'+token)
@@ -19,9 +17,9 @@ for token in m:
     enabledBoolean = 'false'
   if enabled == 1:
     enabledBoolean = 'true'
-  print >>f, ";".join(map(quote, [domain + '/' + token,
+  add_index_entry(f, [domain + '/' + token,
           enabledBoolean,
           dataSourceName,
-          prefixName]))
+          prefixName])
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

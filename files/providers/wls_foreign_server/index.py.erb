@@ -2,8 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain"
+f = open_file("name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain")
 
 for token in m:
     print '_jmsmodule_'+token+'___'
@@ -26,7 +25,7 @@ for token in m:
             else:
               subDeploymentName = cmo.getSubDeploymentName()
 
-            print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain]))
+            add_index_entry(f, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain])
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

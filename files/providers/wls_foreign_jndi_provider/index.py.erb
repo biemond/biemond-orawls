@@ -1,10 +1,7 @@
 
 provider_list = ls('/ForeignJNDIProviders',returnMap='true')
 
-
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;initial_context_factory;provider_properties;provider_url;user;links;local_jndi_names;remote_jndi_names"
-
+f = open_file("name;target;targettype;initial_context_factory;provider_properties;provider_url;user;links;local_jndi_names;remote_jndi_names")
 
 for provider in provider_list:
     print '___'+provider+'___'
@@ -38,14 +35,8 @@ for provider in provider_list:
             remote_jndi_name = ''
         remote_jndi_names.append(remote_jndi_name)
 
-    target_folder = ls('/ForeignJNDIProviders/'+provider+'/Targets',returnMap='true')
-    target     = []
-    targetType = []
-    for target_object in target_folder:
-        print '__' + target_object + '__'
-        target.append(target_object)
-        cd('/ForeignJNDIProviders/'+provider+'/Targets/'+target_object)
-        targetType.append(get('Type'))
-    print  >>f, ";".join(map(quote, [domain+'/'+provider,','.join(target),','.join(targetType), InitialContextFactory, Properties,ProviderURL, User, ','.join(links), ','.join(local_jndi_names), ','.join(remote_jndi_names)]))
+    target, targetType = retrieve_target_list('/ForeignJNDIProviders/'+provider)
+
+    add_index_entry(f, [domain+'/'+provider,','.join(target),','.join(targetType), InitialContextFactory, Properties,ProviderURL, User, ','.join(links), ','.join(local_jndi_names), ','.join(remote_jndi_names)])
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

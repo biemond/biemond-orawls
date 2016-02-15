@@ -11,8 +11,7 @@ for ap in m2:
   if 'identityasserter' not in ap.lower():
     m.append(ap)
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;authentication_provider_name;control_flag;domain;order"
+f = open_file("name;authentication_provider_name;control_flag;domain;order")
 for token in m:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)
@@ -36,6 +35,7 @@ for token in m:
       i=i+1
 
     cd('../')
-    print >>f, ";".join(map(quote, [domain+'/'+token,token,control_flag,domain,order]))
+    add_index_entry(f, [domain+'/'+token,token,control_flag,domain,order])
+
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

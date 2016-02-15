@@ -4,9 +4,7 @@ from weblogic.management.security.authentication import GroupReaderMBean
 realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
 authProvider = realmName.getAuthenticationProviders()
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;realm;authenticationprovider;users;description;domain"
-
+f = open_file("name;realm;authenticationprovider;users;description;domain")
 for i in authProvider:
   if isinstance(i,GroupReaderMBean) and "ldap" not in i.getProviderClassName().lower():
 
@@ -22,7 +20,7 @@ for i in authProvider:
       for user in usergroup:
         users.append(user)
 
-      print >>f, ";".join(map(quote, [domain+'/'+group, realmName.getName(), authName,','.join(users),description,domain]))
+      add_index_entry(f, [domain+'/'+group, realmName.getName(), authName,','.join(users),description,domain])
       groupReader.advance(cursor)
 
     groupReader.close(cursor)

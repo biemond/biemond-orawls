@@ -1,7 +1,6 @@
 
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain"
+f = open_file("name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain")
 
 domainConfig()
 
@@ -16,14 +15,7 @@ for appName in myapps:
   versionidentifier = get('VersionIdentifier')
   stagingmode       = get('StagingMode')
 
-  n = ls('/AppDeployments/'+appName.getName()+'/Targets',returnMap='true')
-
-  target     = []
-  targetType = []
-  for token2 in n:
-         target.append(token2)
-         cd('/AppDeployments/'+appName.getName()+'/Targets/'+token2)
-         targetType.append(get('Type'))
+  target, targetType = retrieve_target_list('/AppDeployments/'+appName.getName())
 
   print >>f, ";".join(map(quote, [domain+'/'+app,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
 
@@ -38,16 +30,9 @@ for libName in mylibs:
   versionidentifier = get('VersionIdentifier')
   stagingmode       = get('StagingMode')
 
-  n = ls('/Libraries/'+libName.getName()+'/Targets',returnMap='true')
+  target, targetType = retrieve_target_list('/Libraries/'+libName.getName())
 
-  target     = []
-  targetType = []
-  for token2 in n:
-         target.append(token2)
-         cd('/Libraries/'+libName.getName()+'/Targets/'+token2)
-         targetType.append(get('Type'))
-
-  print >>f, ";".join(map(quote, [domain+'/'+lib,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
+  add_index_entry(f, [domain+'/'+lib,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain])
 
 
 f.close()

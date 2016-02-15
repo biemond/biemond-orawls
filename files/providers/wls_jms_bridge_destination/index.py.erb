@@ -2,8 +2,7 @@
 
 m = ls('/JMSBridgeDestinations',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password"
+f = open_file("name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password")
 for token in m:
     print '___'+token+'___'
 
@@ -19,6 +18,6 @@ for token in m:
     user_name = get('UserName')
     password = ''
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,adapter,classpath,connectionfactoryjndi,connectionurl,destinationjndi,destinationtype,initialcontextfactory,user_name,password]))
+    add_index_entry(f, [domain+'/'+token,adapter,classpath,connectionfactoryjndi,connectionurl,destinationjndi,destinationtype,initialcontextfactory,user_name,password])
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

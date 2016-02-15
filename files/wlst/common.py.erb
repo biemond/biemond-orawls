@@ -15,6 +15,14 @@ def quote(text):
     else:
         return ""
 
+def open_file(fields):
+    f = open("/tmp/wlstScript.out", "w")
+    print >>f, fields
+    return f
+
+def add_index_entry(file_handle, values):
+    print >>file_handle, ";".join(map(quote, values))
+
 def translate(value):
     if value == 'true':
         return '1'
@@ -22,6 +30,17 @@ def translate(value):
         return '0'
     else:
         return str(value)
+
+def retrieve_target_list(wlst_name):
+    cd(wlst_name)
+    nn = ls('Targets', returnMap='true')
+    target     = []
+    targetType = []
+    for token_target in nn:
+        target.append(token_target)
+        cd(wlst_name + '/Targets/'+token_target)
+        targetType.append(get('Type'))
+    return target, targetType
 
 def target_list(targets, targettypes):
     targetList = []

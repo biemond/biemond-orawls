@@ -1,9 +1,7 @@
 
 provider_list = ls('/ForeignJNDIProviders',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;local_jndi_name;remote_jndi_name"
-
+f = open_file("name;local_jndi_name;remote_jndi_name")
 
 for provider in provider_list:
     print '___'+provider+'___'
@@ -16,7 +14,7 @@ for provider in provider_list:
         local_jndi_name = cmo.getLocalJNDIName()
         remote_jndi_name = cmo.getRemoteJNDIName()
 
-        print  >>f, ";".join(map(quote, [domain+'/'+provider+':'+link_object, local_jndi_name, remote_jndi_name]))
+        add_index_entry(f, [domain+'/'+provider+':'+link_object, local_jndi_name, remote_jndi_name])
 
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

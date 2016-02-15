@@ -62,10 +62,9 @@ def queue(token,token2,location,distributed):
     else:
       templatename = ''
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,deliveryMode,forwardDelay,templatename,messagelogging,domain,','.join(destination_keys), insertion_paused, consumption_paused, production_paused]))
+    add_index_entry(f, [domain+'/'+token+":"+token2,token,str(distributed),jndiname,subdeployment,balancingPolicy,quota,defaultTargeting,redeliveryLimit,expirationPolicy,errorDestination,expirationLoggingPolicy,timeToLive,timeToDeliver,redeliveryDelay,deliveryMode,forwardDelay,templatename,messagelogging,domain,','.join(destination_keys), insertion_paused, consumption_paused, production_paused])
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;deliverymode;forwarddelay;templatename;messagelogging;domain;destination_keys;insertionpaused;consumptionpaused;productionpaused"
+f = open_file("name;jmsmodule;distributed;jndiname;subdeployment;balancingpolicy;quota;defaulttargeting;redeliverylimit;expirationpolicy;errordestination;expirationloggingpolicy;timetolive;timetodeliver;redeliverydelay;deliverymode;forwarddelay;templatename;messagelogging;domain;destination_keys;insertionpaused;consumptionpaused;productionpaused")
 
 m = ls('/JMSSystemResources',returnMap='true')
 for token in m:

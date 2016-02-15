@@ -1,8 +1,7 @@
 
 m = ls('/MailSessions',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;jndiname;mailproperty;"
+f = open_file("name;target;targettype;jndiname;mailproperty")
 for token in m:
         print '___'+token+'___'
         cd('/MailSessions/'+token)
@@ -13,13 +12,7 @@ for token in m:
         for pair in mailproperties:
             properties.append(pair)
 
-        n = ls('/MailSessions/'+token+'/Targets',returnMap='true')
-        target     = []
-        targetType = []
-        for token2 in n:
-            target.append(token2)
-            cd('/MailSessions/'+token+'/Targets/'+token2)
-            targetType.append(get('Type'))
+        target, targetType = retrieve_target_list('/MailSessions/'+token)
 
         tagged = []
         i = ls('/Servers/', returnMap='true')
@@ -44,10 +37,10 @@ for token in m:
                 missing = 1
 
         if not tagged:
-            print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),jndiname,','.join(properties)]))
+            add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),jndiname,','.join(properties)])
         elif missing == 0:
-            print >>f, ";".join(map(quote, [domain+'/'+token,'inherited','inherited',jndiname,','.join(properties)]))
+            add_index_entry(f, [domain+'/'+token,'inherited','inherited',jndiname,','.join(properties)])
         else:
-            print >>f, ";".join(map(quote, [domain+'/'+token,'not_inherited','not_inherited',jndiname,','.join(properties)]))
+            add_index_entry(f, [domain+'/'+token,'not_inherited','not_inherited',jndiname,','.join(properties)])
 f.close()
 print "~~~~COMMAND SUCCESFULL~~~~"

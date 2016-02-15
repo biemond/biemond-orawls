@@ -20,13 +20,15 @@ module Puppet
     end
 
     on_create  do | command_builder |
+      wlst_action = 'create'
       Puppet.info 'create'
-      template('puppet:///modules/orawls/providers/wls_jms_sort_destination_key/create.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_jms_sort_destination_key/create_modify.py.erb', binding)
     end
 
     on_modify  do | command_builder |
+      wlst_action = 'modify'
       Puppet.info 'modify'
-      template('puppet:///modules/orawls/providers/wls_jms_sort_destination_key/modify.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_jms_sort_destination_key/create_modify.py.erb', binding)
     end
 
     on_destroy  do | command_builder |

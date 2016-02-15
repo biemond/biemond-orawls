@@ -1,9 +1,9 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
 
-
-name                     = '<%= queue_name %>'
+name                     = '<%= topic_name %>'
 jmsmodule                = '<%= jmsmodule %>'
 distributed              = '<%= distributed %>'
 jndiname                 = '<%= jndiname %>'
@@ -13,15 +13,15 @@ quota                    = '<%= quota %>'
 defaulttargeting         = '<%= defaulttargeting %>'
 redeliverylimit          = '<%= redeliverylimit %>'
 expirationpolicy         = '<%= expirationpolicy %>'
+errordestinationtype     = '<%= errordestinationtype %>'
 errordestination         = '<%= errordestination %>'
 expirationloggingpolicy  = '<%= expirationloggingpolicy %>'
 timetolive               = '<%= timetolive %>'
 timetodeliver            = '<%= timetodeliver %>'
 deliverymode             = '<%= deliverymode %>'
 redeliverydelay          = '<%= redeliverydelay %>'
-forwarddelay             = '<%= forwarddelay %>'
-templatename             = '<%= templatename %>'
 messagelogging           = '<%= messagelogging %>'
+forwardingpolicy         = '<%= forwardingpolicy %>'
 destination_keys         = '<%= destination_keys %>'
 consumption_paused       = '<%= consumptionpaused %>'
 insertion_paused         = '<%= insertionpaused %>'
@@ -36,11 +36,13 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
 
     if distributed == "1":
-        cmo.createUniformDistributedQueue(name)
-        jmsWlsType = '/UniformDistributedQueues/'
+        if wlst_action == 'create':
+            cmo.createUniformDistributedTopic(name)
+        jmsWlsType = '/UniformDistributedTopics/'
     else:
-        cmo.createQueue(name)
-        jmsWlsType = '/Queues/'
+        if wlst_action == 'create':
+            cmo.createTopic(name)
+        jmsWlsType = '/Topics/'
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     set('JNDIName',jndiname)
@@ -71,9 +73,6 @@ try:
       key_entries = destination_keys.split(',')
       set('DestinationKeys',jarray.array(key_entries, String))
 
-    if templatename:
-      set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
-
     if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
     elif not subdeployment and defaulttargeting == "1":
@@ -83,16 +82,19 @@ try:
     else:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
-    if forwarddelay:
-      print "ForwardDelay"
-      cmo.setForwardDelay( int(forwarddelay))
-
     print "distributed: ",distributed
-    if distributed == "true":
+    if distributed == "1":
       print "distributed"
-      cmo.setLoadBalancingPolicy(balancingpolicy)
+      if balancingpolicy != '':
+        cmo.setLoadBalancingPolicy(balancingpolicy)
+      elif balancingpolicy == '':
+        cmo.setLoadBalancingPolicy('Round-Robin')
+      if forwardingpolicy != '':
+        cmo.setForwardingPolicy(forwardingpolicy)
+      elif forwardingpolicy == '':
+        cmo.setForwardingPolicy('Replicated')
 
-    if expirationpolicy :
+    if expirationpolicy:
       cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
       cmo.setExpirationPolicy(expirationpolicy)
 
@@ -100,11 +102,20 @@ try:
       print "limit"
       cmo.setRedeliveryLimit( int(redeliverylimit) )
 
-    if errordestination:
+    print "before"
+    if errordestinationtype:
+      jmsErrType = errordestinationtype
+    else:
       if distributed == "1":
-        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/UniformDistributedQueues/'+errordestination))
+        jmsErrType = 'UniformDistributedQueues'
       else:
-        cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Queues/'+errordestination))
+        jmsErrType = 'Queues'
+
+    print "after"
+
+    print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination
+    if errordestination:
+      cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination))
 
     if expirationloggingpolicy:
       cmo.setExpirationLoggingPolicy(expirationloggingpolicy)

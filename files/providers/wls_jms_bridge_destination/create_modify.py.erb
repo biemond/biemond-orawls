@@ -1,6 +1,8 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
+
 name                        = '<%= bridge_destination_name %>'
 adapter                     = '<%= adapter %>'
 classpath                   = '<%= classpath %>'
@@ -18,7 +20,10 @@ startEdit()
 try:
 
     cd('/')
-    cmo.createJMSBridgeDestination(name)
+
+    if wlst_action == 'create':
+        cmo.createJMSBridgeDestination(name)
+
     cd('/JMSBridgeDestinations/' + name)
     cmo.setName(name)
     cmo.setAdapterJNDIName(adapter)

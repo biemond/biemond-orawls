@@ -1,6 +1,8 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
+
 name                    = '<%= provider_name %>'
 target                  = '<%= target %>'
 targettype              = '<%= targettype %>'
@@ -10,14 +12,17 @@ provider_url            = '<%= provider_url %>'
 user                    = '<%= user %>'
 password                = '<%= password %>'
 
-
 edit()
 startEdit()
 
 try:
 
     cd('/')
+    if wlst_action == 'create':
+        cmo.createForeignJNDIProvider(name)
+
     cd('/ForeignJNDIProviders/' + name)
+    cmo.setName(name)
 
     if initial_context_factory:
         cmo.setInitialContextFactory(initial_context_factory)

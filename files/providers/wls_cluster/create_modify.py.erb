@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                      = '<%= cluster_name %>'
 clusteraddress            = '<%= clusteraddress %>'
@@ -35,8 +35,9 @@ startEdit()
 try:
 
   cd('/')
-  print 'Create Cluster';
-  cmo.createCluster(name)
+  if wlst_action == 'create':
+    print 'Create Cluster';
+    cmo.createCluster(name)
 
   cd('/Clusters/'+name)
   cmo.setClusterMessagingMode(messagingmode)
@@ -53,13 +54,13 @@ try:
 
   if securereplication == '1':
     cmo.setSecureReplicationEnabled(true)
+  else:
+    cmo.setSecureReplicationEnabled(false)
 
   cmo.setMigrationBasis(migrationbasis)
   if migrationbasis == 'database':
-
     if migration_datasource:
       cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
-
     if migration_table_name:
       cmo.setAutoMigrationTableName(migration_table_name)
 

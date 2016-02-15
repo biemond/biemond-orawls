@@ -1,6 +1,8 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
+
 name          = '<%= server_name %>'
 classpath     = '<%= classpath %>'
 <% unless arguments.nil? %>
@@ -65,31 +67,6 @@ frontend_https_port            = '<%= frontendhttpsport %>'
 edit()
 startEdit()
 
-# create with java a boot.properties file
-def createBootPropertiesFile(directoryPath,fileName, username, password):
-  serverDir = File(directoryPath)
-  bool = serverDir.mkdirs()
-  fullFileName = directoryPath + '/' + fileName
-  fileNew=open(fullFileName, 'w')
-  fileNew.write('username=%s\n' % username)
-  fileNew.write('password=%s\n' % password)
-  fileNew.flush()
-  fileNew.close()
-  os.system('chmod 600 ' + fullFileName)
-
-def formatBoolean(value):
-    if value == '1' or value == 1:
-        return 'True'
-    else:
-        return 'False'
-
-def formatBoolean2(value):
-  if value == '1' or value == 1:
-    return true
-  else:
-    return false
-
-
 try:
 
     cd('/')
@@ -114,7 +91,7 @@ try:
       set('ListenPort', int(listenPort))
 
     if listenPortEnabled and listenPortEnabled != '-1':
-      set('ListenPortEnabled', formatBoolean(listenPortEnabled))
+      set('ListenPortEnabled', format_boolean(listenPortEnabled))
 
     if logintimeout:
       set('LoginTimeoutMillis', int(logintimeout))
@@ -135,10 +112,10 @@ try:
       set('ServerStart/'+name+'/Arguments', arguments)
 
     if tunnelingenabled:
-      set('TunnelingEnabled', formatBoolean(tunnelingenabled))
+      set('TunnelingEnabled', format_boolean(tunnelingenabled))
 
     if weblogic_plugin_enabled:
-      set('WeblogicPluginEnabled', formatBoolean(weblogic_plugin_enabled))
+      set('WeblogicPluginEnabled', format_boolean(weblogic_plugin_enabled))
 
     if custom_identity == '1':
       set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
@@ -183,21 +160,21 @@ try:
     cd('/Servers/'+name+'/SSL/'+name)
 
     if sslEnabled and sslEnabled != '-1':
-      set('Enabled', formatBoolean(sslEnabled))
+      set('Enabled', format_boolean(sslEnabled))
     if jsseenabled and jsseenabled != '-1':
-      set('JSSEEnabled', formatBoolean(jsseenabled))
+      set('JSSEEnabled', format_boolean(jsseenabled))
     if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != '-1':
-      set('HostnameVerificationIgnored', formatBoolean(sslHostnameVerificationIgnored))
+      set('HostnameVerificationIgnored', format_boolean(sslHostnameVerificationIgnored))
       if sslHostnameVerificationIgnored == '0' and sslhostnameverifier:
         set('HostnameVerifier', sslhostnameverifier)
     if two_way_ssl:
-      set('TwoWaySSLEnabled'           , formatBoolean(two_way_ssl))
+      set('TwoWaySSLEnabled'           , format_boolean(two_way_ssl))
     if client_certificate_enforced:
-      set('ClientCertificateEnforced'  , formatBoolean(client_certificate_enforced))
+      set('ClientCertificateEnforced'  , format_boolean(client_certificate_enforced))
     if sslListenPort:
       set('ListenPort', int(sslListenPort))
     if useservercerts:
-      set('UseServerCerts', formatBoolean(useservercerts))
+      set('UseServerCerts', format_boolean(useservercerts))
 
     cd('/Servers/'+name+'/Log/'+name)
     if logFilename:
@@ -205,7 +182,7 @@ try:
     if log_rotationtype:
       cmo.setRotationType(log_rotationtype)
     if log_rotate_logon_startup:
-      cmo.setRotateLogOnStartup(formatBoolean2(log_rotate_logon_startup))
+      cmo.setRotateLogOnStartup(format_boolean2(log_rotate_logon_startup))
     if log_filecount:
       cmo.setFileCount(int(log_filecount))
     if log_number_of_files_limited:
@@ -238,7 +215,7 @@ try:
     if log_rotationtype:
       cmo.setRotationType(log_rotationtype)
     if log_rotate_logon_startup:
-      cmo.setRotateLogOnStartup(formatBoolean2(log_rotate_logon_startup))
+      cmo.setRotateLogOnStartup(format_boolean2(log_rotate_logon_startup))
     if log_filecount:
       cmo.setFileCount(int(log_filecount))
     if log_number_of_files_limited:
@@ -257,7 +234,7 @@ try:
     if log_rotationtype:
       cmo.setRotationType(log_rotationtype)
     if log_rotate_logon_startup:
-      cmo.setRotateLogOnStartup(formatBoolean2(log_rotate_logon_startup))
+      cmo.setRotateLogOnStartup(format_boolean2(log_rotate_logon_startup))
     if log_filecount:
       cmo.setFileCount(int(log_filecount))
     if log_number_of_files_limited:
@@ -272,7 +249,7 @@ try:
     cd('/')
     DOMAIN_PATH = get('RootDirectory')
 
-    createBootPropertiesFile(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
+    create_boot_properties_file(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
     save()
     activate()
     print "~~~~COMMAND SUCCESFULL~~~~"

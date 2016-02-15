@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                 = '<%= safagent_name %>'
 target               = '<%= target %>'
@@ -16,6 +16,9 @@ startEdit()
 try:
 
     cd('/')
+    if wlst_action == 'create':
+      cmo.createSAFAgent(name)
+
     cd('/SAFAgents/'+name)
 
     if persistentstoretype == "FileStore":

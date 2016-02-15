@@ -1,7 +1,9 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-name                       = '<%= connection_factory_name %>'
+wlst_action = '<%= wlst_action %>'
+
+name                       = '<%= template_name %>'
 jmsmodule                  = '<%= jmsmodule %>'
 redeliverydelay            = '<%= redeliverydelay %>'
 redeliverylimit            = '<%= redeliverylimit %>'
@@ -10,9 +12,10 @@ edit()
 startEdit()
 
 try:
-
     cd('/')
-    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name)
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if wlst_action == 'create':
+        cmo.createTemplate(name)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryParamsOverrides/'+name)
     if redeliverydelay:

@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                     = '<%= queue_name %>'
 jmsmodule                = '<%= jmsmodule %>'
@@ -36,8 +36,12 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
 
     if distributed == "1":
+        if wlst_action == 'create':
+            cmo.createUniformDistributedQueue(name)
         jmsWlsType = '/UniformDistributedQueues/'
     else:
+        if wlst_action == 'create':
+            cmo.createQueue(name)
         jmsWlsType = '/Queues/'
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
@@ -69,6 +73,9 @@ try:
       key_entries = destination_keys.split(',')
       set('DestinationKeys',jarray.array(key_entries, String))
 
+    if templatename:
+      set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
+
     if subdeployment and defaulttargeting == "0":
       cmo.setSubDeploymentName(subdeployment)
     elif not subdeployment and defaulttargeting == "1":
@@ -77,9 +84,6 @@ try:
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
-
-    if templatename:
-      set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
 
     if forwarddelay:
       print "ForwardDelay"

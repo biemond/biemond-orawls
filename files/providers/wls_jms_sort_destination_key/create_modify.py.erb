@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                     = '<%= key_name %>'
 jmsmodule                = '<%= jmsmodule %>'
@@ -15,6 +15,11 @@ startEdit()
 try:
 
     cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+
+    if wlst_action == 'create':
+        cmo.createDestinationKey(name)
+
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/DestinationKeys/'+name)
 
     if property_name:

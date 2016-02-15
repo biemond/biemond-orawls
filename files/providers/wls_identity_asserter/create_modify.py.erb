@@ -1,14 +1,15 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                      = '<%= authentication_provider_name %>'
+providerclassname         = '<%= providerclassname %>'
+attributes                = '<%= attributes %>'
+attributesvalues          = '<%= attributesvalues %>'
 order                     = '<%= order %>'
 activetypes               = '<%= activetypes %>'
 defaultmappertype         = '<%= defaultmappertype %>'
-attributes                = '<%= attributes %>'
-attributesvalues          = '<%= attributesvalues %>'
 
 edit()
 startEdit()
@@ -19,6 +20,9 @@ try:
     realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
     path = getPath(realmName)
     cd(path)
+
+    if wlst_action == 'create':
+        cmo.createAuthenticationProvider(name, providerclassname)
 
     cd('AuthenticationProviders/'+name)
 
@@ -73,7 +77,7 @@ try:
 
             i = i + 1
 
-
+    # Authentication Provider Ordering
     if order:
         print "setting order"
 
@@ -102,7 +106,7 @@ try:
             # Apply the new order
             set('AuthenticationProviders', ap)
 
-
+    print "done"
     save()
     activate()
     print "~~~~COMMAND SUCCESFULL~~~~"
@@ -113,5 +117,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-
-

@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                   = '<%= object_name %>'
 jmsmodule              = '<%= jmsmodule %>'
@@ -19,11 +19,15 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name)
 
     if object_type == "destination":
-        cmo.createForeignDestination(name)
+        if wlst_action == 'create':
+            cmo.createForeignDestination(name)
+
         cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignDestinations/'+name)
 
     if object_type == "connectionfactory":
-        cmo.createForeignConnectionFactory(name)
+        if wlst_action == 'create':
+            cmo.createForeignConnectionFactory(name)
+
         cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignConnectionFactories/'+name)
 
     cmo.setLocalJNDIName(localjndiname)

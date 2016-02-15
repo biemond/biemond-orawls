@@ -21,10 +21,12 @@ module Puppet
     end
 
     on_create  do | command_builder |
+      wlst_action = 'create'
       fail('create of a domain is not allowed')
     end
 
     on_modify  do | command_builder |
+      wlst_action = 'modify'
       Puppet.info "modify #{name} "
       template('puppet:///modules/orawls/providers/wls_domain/modify.py.erb', binding)
     end

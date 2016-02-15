@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 machineName    = '<%= machine_name %>'
 machineDnsName = '<%= listenaddress %>'
@@ -14,10 +14,11 @@ startEdit()
 
 try:
     cd('/')
-    if machineType == 'UnixMachine':
-      cmo.createUnixMachine(machineName)
-    else:
-      cmo.createMachine(machineName)
+    if wlst_action == 'create':
+        if machineType == 'UnixMachine':
+          cmo.createUnixMachine(machineName)
+        else:
+          cmo.createMachine(machineName)
 
     cd('/Machines/'+machineName+'/NodeManager/'+machineName)
     cmo.setNMType(nmType)

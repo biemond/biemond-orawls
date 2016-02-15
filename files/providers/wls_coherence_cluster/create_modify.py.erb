@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name                    = '<%= coherence_cluster_name %>'
 
@@ -21,8 +21,9 @@ startEdit()
 try:
 
     cd('/')
-    print 'Create Coherence Cluster';
-    cmo.createCoherenceClusterSystemResource(name)
+    if wlst_action == 'create':
+        print 'Create Coherence Cluster';
+        cmo.createCoherenceClusterSystemResource(name)
 
     coherence_cluster = getMBean('/CoherenceClusterSystemResources/'+name)
 

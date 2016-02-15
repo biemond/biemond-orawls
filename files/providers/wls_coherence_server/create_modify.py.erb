@@ -1,6 +1,8 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
+
 name                    = '<%= coherence_server_name %>'
 
 unicastaddress          = '<%= unicastaddress %>'
@@ -14,7 +16,10 @@ startEdit()
 try:
 
     cd('/')
-    print 'Modify Coherence Server';
+    if wlst_action == 'create':
+        print 'Create Coherence Server';
+        cmo.createCoherenceServer(name)
+
     cd('/CoherenceServers/'+name)
 
     if unicastaddress:
@@ -43,4 +48,3 @@ except:
     stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
     raise
-

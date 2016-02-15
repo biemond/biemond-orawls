@@ -63,6 +63,7 @@ module Puppet
     end
 
     on_create  do | command_builder |
+      wlst_action = 'create'
       Puppet.info "create #{name} "
       environment = { 'action' => 'create', 'type' => 'wls_cluster'}
       # all_actions = Array.new
@@ -98,10 +99,11 @@ module Puppet
 
       # environment['attributes'] = all_actions
       # controller template('puppet:///modules/orawls/providers/wls_cluster/create.py.erb', binding), environment
-      template('puppet:///modules/orawls/providers/wls_cluster/create.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_cluster/create_modify.py.erb', binding)
     end
 
     on_modify  do | command_builder |
+      wlst_action = 'modify'
       Puppet.info "modify #{name} "
 
       environment = { 'action' => 'modify', 'type' => 'wls_cluster'}
@@ -139,7 +141,7 @@ module Puppet
       # environment['attributes'] = all_actions
 
       # controller template('puppet:///modules/orawls/providers/wls_cluster/modify.py.erb', binding), environment
-      template('puppet:///modules/orawls/providers/wls_cluster/modify.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_cluster/create_modify.py.erb', binding)
     end
 
     on_destroy  do | command_builder |

@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name           = '<%= jdbc_persistence_name %>'
 datasource     = '<%= datasource %>'
@@ -14,7 +14,9 @@ startEdit()
 
 try:
     cd('/')
-    cmo.createJDBCStore(name)
+    if wlst_action == 'create':
+        cmo.createJDBCStore(name)
+
     cd('/JDBCStores/'+name)
     cmo.setDataSource(getMBean('/SystemResources/'+datasource))
     cmo.setPrefixName(prefix_name)

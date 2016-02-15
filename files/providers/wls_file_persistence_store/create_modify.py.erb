@@ -1,7 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
+wlst_action = '<%= wlst_action %>'
 
 name           = '<%= file_persistence_name %>'
 directory      = '<%= directory %>'
@@ -13,7 +13,9 @@ startEdit()
 
 try:
     cd('/')
-    cmo.createFileStore(name)
+    if wlst_action == 'create':
+        cmo.createFileStore(name)
+
     cd('/FileStores/'+name)
     cmo.setDirectory(directory)
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))

@@ -71,7 +71,7 @@ try:
     cmo.setMulticastAddress(multicastaddress)
 
   if multicastport:
-    cmo.setMulticastPort(multicastport)
+    cmo.setMulticastPort(int(multicastport))
 
   if datasourceforjobscheduler:
     cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))

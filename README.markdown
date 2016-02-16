@@ -3748,6 +3748,28 @@ in hiera
          targettype:
            - 'Cluster'
 
+### wls_jms_security_policy
+
+it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_jms_security_policy
+
+   # this will use default as wls_setting identifier
+   wls_jms_security_policy { 'jmsClusterModule:Topic1:receive':
+      ensure           => 'present',
+      destinationtype  => 'topic',
+      policyexpression => 'Usr(testuser1)',
+   }
+
+in hiera
+
+   # this will use default as wls_setting identifier
+   jms_security_policy_instances:
+      'jmsClusterModule:Topic1:receive':
+          ensure:           'present'
+          destinationtype:  'topic',
+          policyexpression: 'Usr(testuser1)',
+
 ### wls_jms_template
 
 it needs wls_setting and when identifier is not provided it will use the 'default'.

@@ -1,0 +1,53 @@
+from weblogic.security.service import JMSResource
+
+f = open("/tmp/wlstScript.out", "w")
+print >>f, "name;domain;authorizationprovider;jmsmodule;destinationtype;resourcename;action;policyexpression"
+
+securityRealm = cmo.getSecurityConfiguration().getDefaultRealm()
+authorizer = securityRealm.lookupAuthorizer('XACMLAuthorizer')
+
+# get all jms resources
+jmsModules = ls('/JMSSystemResources',returnMap='true')
+resourceTypes = [
+    ('Topics','topic'),
+    ('Queues','queue'),
+    ('DistributedTopics','topic'),
+    ('DistributedQueues','queue'),
+    ('UniformDistributedTopics','topic'),
+    ('UniformDistributedQueues','queue')
+]
+jmsResources = []
+
+# First, collect all JMS resources (queues/topics) in the domain
+for jmsModule in jmsModules:
+  cd('/JMSSystemResources/'+jmsModule+'/JMSResource/'+jmsModule)
+  for resourceType in resourceTypes:
+      resources = ls(resourceType[0],returnMap='true')
+      for resource in resources:
+          for action in [None, 'send', 'receive', 'browse']:
+              jmsResources.append(JMSResource(jmsModule, resourceType[1], resource, action))
+
+# Now find all JMS resources that have security policies defined
+for jmsResource in jmsResources:
+    resourceId = jmsResource.toString()
+    print resourceId
+    if authorizer.policyExists(resourceId):
+        if authorizer.getPolicyExpression(resourceId) == None:
+            policyExpression = ""
+        else:
+            policyExpression = authorizer.getPolicyExpression(resourceId)
+
+        authorizerName  = authorizer.getName()
+        jmsModuleName   = jmsResource.getApplicationName()
+        resourceName    = jmsResource.getResourceName()
+        destinationType = jmsResource.getDestinationType()
+        if jmsResource.getActionName() == None:
+            actionName = 'all'
+        else:
+            actionName = jmsResource.getActionName()
+
+        print resourceId + ', policyexpression=' + policyExpression
+        print >>f, ";".join(map(quote, [domain+'/'+jmsModuleName+":"+resourceName+":"+actionName,domain,authorizerName,jmsModuleName,destinationType,resourceName,actionName,policyExpression]))
+
+f.close()
+print "~~~~COMMAND SUCCESFULL~~~~"

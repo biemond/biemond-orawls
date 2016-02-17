@@ -40,38 +40,24 @@ try:
     cmo.createCluster(name)
 
   cd('/Clusters/'+name)
-  cmo.setClusterMessagingMode(messagingmode)
+  set_attribute_value('ClusterMessagingMode', messagingmode)
+  set_attribute_value('ClusterAddress'      , clusteraddress)
+  set_attribute_value('FrontendHost'        , frontendhost)
+  set_attribute_value('FrontendHTTPPort'    , frontendhttpport)
+  set_attribute_value('FrontendHTTPSPort'   , frontendhttpsport)
 
-  if clusteraddress:
-    cmo.setClusterAddress(clusteraddress)
+  set_attribute_value('SecureReplicationEnabled', securereplication)
+  set_attribute_value('MigrationBasis'          , migrationbasis)
+  set_attribute_value('ClusterAddress'          , clusteraddress)
 
-  if frontendhost:
-    cmo.setFrontendHost(frontendhost)
-  if frontendhttpport:
-    cmo.setFrontendHTTPPort(int(frontendhttpport))
-  if frontendhttpsport:
-    cmo.setFrontendHTTPSPort(int(frontendhttpsport))
-
-  if securereplication == '1':
-    cmo.setSecureReplicationEnabled(true)
-  else:
-    cmo.setSecureReplicationEnabled(false)
-
-  cmo.setMigrationBasis(migrationbasis)
   if migrationbasis == 'database':
     if migration_datasource:
       cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/'+migration_datasource))
-    if migration_table_name:
-      cmo.setAutoMigrationTableName(migration_table_name)
+    set_attribute_value('AutoMigrationTableName', migration_table_name)
 
-  if unicastbroadcastchannel:
-    cmo.setClusterBroadcastChannel(unicastbroadcastchannel)
-
-  if multicastaddress:
-    cmo.setMulticastAddress(multicastaddress)
-
-  if multicastport:
-    cmo.setMulticastPort(int(multicastport))
+  set_attribute_value('ClusterBroadcastChannel', unicastbroadcastchannel)
+  set_attribute_value('MulticastAddress'       , multicastaddress)
+  set_attribute_value('MulticastPort'          , multicastport)
 
   if datasourceforjobscheduler:
     cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/'+datasourceforjobscheduler))

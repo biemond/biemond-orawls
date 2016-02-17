@@ -148,3 +148,52 @@ def auto_typed_set(key, value):
     else:
         print 'Setting generic property ' + key + ' to ' + value
         set(key,value)
+
+def set_attribute_value(mbean_attribute, value = None):
+    print "set att " + mbean_attribute + " with value " + str(value)
+    attribute_fields = ['interfaceclassname', 'defaultValue', 'com.bea.defaultValueNull', 'maxValue', 'minValue']
+    fields = cmo.getMBeanInfo().getAttribute(mbean_attribute).getDescriptor().getFieldValues(attribute_fields)
+    print fields
+    key_type      = fields[0]
+    # have default value
+    default_value = fields[1]
+    # defaulvalue is null
+    null_value    = fields[2]
+    #
+    # if the value is not specified set the default value if it defined
+    if value:
+        attribute_value = value
+    else:
+        print "found empty value, try to use the defaults"
+        if default_value != None:
+            # assign default to value
+            print 'found default value instead of empty'
+            attribute_value = str(default_value)
+        elif null_value == 1:
+            # set None and return
+            set(mbean_attribute, None)
+            return
+        else:
+            return
+    if key_type == 'int': # or key_type == 'long':
+        # possible check min max
+        if attribute_value.strip(): # Value is a non empty string
+            print 'Setting integer property ' + mbean_attribute + ' to ' + attribute_value
+            set(mbean_attribute, int(attribute_value))
+    elif key_type == 'boolean':
+        if attribute_value.strip(): # Value is a non empty string
+            print 'Setting boolean property ' + mbean_attribute + ' to ' + attribute_value
+            if attribute_value == 'True' or attribute_value == 'true' or attribute_value == '1':
+                real_value = 'true'
+            else:
+                real_value = 'false'
+        set(mbean_attribute, real_value)
+    elif key_type == 'float':
+        if attribute_value.strip(): # Value is a non empty string
+            print 'Setting float property ' + mbean_attribute + ' to ' + attribute_value
+            set(mbean_attribute, float(attribute_value))
+    else:
+        print 'Setting generic property ' + mbean_attribute + ' to ' + attribute_value
+        set(mbean_attribute, attribute_value)
+
+# print 'end of common'

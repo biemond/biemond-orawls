@@ -42,7 +42,7 @@ try:
           cd('/SelfTuning/'+domain+'/FairShareRequestClasses/'+name)
 
     if type == 'FairShareRequestClasses':
-      set('FairShare', int(count))
+      set_attribute_value('FairShare', count)
     else:
       cmo.setCount(int(count))
 

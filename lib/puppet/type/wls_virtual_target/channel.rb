@@ -7,4 +7,6 @@ newproperty(:channel) do
     raw_resource['channelname']
   end
 
+  defaultto 'PartitionChannel'
+
 end

@@ -7,4 +7,6 @@ newproperty(:uriprefix) do
     raw_resource['uriprefix']
   end
 
+  defaultto '/'
+
 end

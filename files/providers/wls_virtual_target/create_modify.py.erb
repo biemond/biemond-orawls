@@ -22,27 +22,17 @@ try:
     if wlst_action == 'create':
         cmo.createVirtualTarget(name)
 
-    cd('/VirtualTargets/'+name)
-    if channel:
-        set('PartitionChannel', channel)
-    else:
-        set('PartitionChannel', 'PartitionChannel')
-
-    if portoffset:
-        set('PortOffset', portoffset)
-    else:
-        set('PortOffset', '0')
-
-    if port:
-        set('ExplicitPort', port)
-    else:
-        set('ExplicitPort', '0')
-
-    set('UriPrefix', uriprefix)
+    cd('/VirtualTargets/' + name)
+    set_attribute_value('PartitionChannel', channel)
+    set_attribute_value('PortOffset'      , portoffset)
+    set_attribute_value('ExplicitPort'    , port)
+    set_attribute_value('UriPrefix'       , uriprefix)
 
     if host_names:
         hosts = String(host_names).split(",")
         set('HostNames',jarray.array(hosts, String))
+    else:
+        set('HostNames', None)
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
     set('Targets', targetList)

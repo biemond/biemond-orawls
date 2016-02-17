@@ -19,8 +19,7 @@ try:
         cmo.createVirtualHost(name)
 
     cd('/VirtualHosts/'+name)
-    if channel:
-        channelname = set('NetworkAccessPoint',channel)
+    set_attribute_value('NetworkAccessPoint', channel)
 
     if vhost_names:
         hosts     = String(vhost_names).split(",")

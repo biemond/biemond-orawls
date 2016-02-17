@@ -26,10 +26,7 @@ try:
 
     cd('/SelfTuning/'+domain+'/WorkManagers/'+name)
 
-    if stuckthreads == '1':
-      cmo.setIgnoreStuckThreads(true)
-    else:
-      cmo.setIgnoreStuckThreads(false)
+    set_attribute_value('IgnoreStuckThreads', stuckthreads)
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
     set('Targets', targetList)

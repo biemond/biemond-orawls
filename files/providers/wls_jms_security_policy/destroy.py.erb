@@ -23,9 +23,9 @@ try:
     resourceId = resource.toString()
     authorizer.removePolicy(resourceId)
 
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
-    print "~~~~COMMAND FAILED~~~~"
+    report_back_error()
     raise

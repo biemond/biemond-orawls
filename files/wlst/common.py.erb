@@ -7,8 +7,6 @@ import jarray
 import javax.management.ObjectName
 import wl
 
-print 'Defining all common functions'
-
 def quote(text):
     if text or text == '':
         return "\"" + str(text).replace("\"", "\"\"") + "\""
@@ -19,6 +17,12 @@ def open_file(fields):
     f = open("/tmp/wlstScript.out", "w")
     print >>f, fields
     return f
+
+def report_back_success():
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+def report_back_error():
+    print "~~~~COMMAND FAILED~~~~"
 
 def add_index_entry(file_handle, values):
     print >>file_handle, ";".join(map(quote, values))
@@ -144,7 +148,3 @@ def auto_typed_set(key, value):
     else:
         print 'Setting generic property ' + key + ' to ' + value
         set(key,value)
-
-
-
-print 'done defining all common functions'

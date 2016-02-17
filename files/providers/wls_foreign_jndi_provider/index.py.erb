@@ -39,4 +39,4 @@ for provider in provider_list:
 
     add_index_entry(f, [domain+'/'+provider,','.join(target),','.join(targetType), InitialContextFactory, Properties,ProviderURL, User, ','.join(links), ','.join(local_jndi_names), ','.join(remote_jndi_names)])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

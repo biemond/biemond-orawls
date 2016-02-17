@@ -29,4 +29,4 @@ for serverTemplate in serverTemplates:
 
     add_index_entry(f, [domain+'/'+serverTemplate, listenAddress, listenPort, sslListenPort, sslEnabled, classpath, arguments,domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

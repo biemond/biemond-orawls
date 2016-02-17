@@ -39,7 +39,7 @@ for jmsModule in jmsModules:
                 jmsResources.append(JMSResource(jmsModule, None, resourceType[1], resource, action))
               except:
                 print "Unexpected error:", sys.exc_info()[0]
-                print "~~~~COMMAND FAILED~~~~"
+                report_back_error()
                 raise
 
 print "done retrieving"
@@ -68,4 +68,4 @@ for jmsResource in jmsResources:
         add_index_entry(f, [domain+'/'+jmsModuleName+":"+resourceName+":"+actionName,domain,authorizerName,jmsModuleName,destinationType,resourceName,actionName,policyExpression])
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

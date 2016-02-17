@@ -54,9 +54,9 @@ try:
     authorizer.addPolicy(policy)
     authorizer.setPolicyExpression(resourceid, policyexpression)
 
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
-    print "~~~~COMMAND FAILED~~~~"
+    report_back_error()
     raise

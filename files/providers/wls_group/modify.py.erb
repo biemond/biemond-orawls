@@ -24,18 +24,18 @@ try:
     users_to_remove = Set(current_users) - Set(users)
 
     print 'modify group: ',name
-    atnr.setGroupDescription(name,description)    
+    atnr.setGroupDescription(name,description)
     for user in users_to_add:
       print 'Adding user: ' + user
       atnr.addMemberToGroup(name,user)
     for user in users_to_remove:
       print 'Removing user: ' + user
       atnr.removeMemberFromGroup(name,user)
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
-    print "~~~~COMMAND FAILED~~~~"
+    report_back_error()
     raise
 
 

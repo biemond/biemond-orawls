@@ -22,4 +22,4 @@ for token in m:
 
   add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),get('ClusteringMode'),unicastListenAddress,unicastListenPort,get('MulticastListenAddress'),get('MulticastListenPort'),domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

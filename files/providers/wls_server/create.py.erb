@@ -252,14 +252,14 @@ try:
     create_boot_properties_file(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
     save()
     activate()
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 
 except:
     print "Unexpected error:", sys.exc_info()[0]
     undo('true','y')
     stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
+    report_back_error()
     raise
 
 

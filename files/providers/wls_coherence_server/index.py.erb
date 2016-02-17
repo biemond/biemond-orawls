@@ -17,4 +17,4 @@ for token in m:
 
     add_index_entry(f, [domain+'/'+token,get('AutoRestart'),machine,get('RestartDelaySeconds'),get('RestartIntervalSeconds'),get('RestartMax'),get('UnicastListenAddress'),get('UnicastListenPort'),get('CoherenceServerStart/'+machine+'_coherence/ClassPath'),domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

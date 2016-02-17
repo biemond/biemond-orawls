@@ -9,12 +9,12 @@ try:
 <%= statement %>
 
   puppet.close()
-  print "~~~~COMMAND SUCCESFULL~~~~"
+  report_back_success()
 
 
 except:
   print "Unexpected error:", sys.exc_info()[0]
   undo('true','y')
   stopEdit('y')
-  print "~~~~COMMAND FAILED~~~~"
+  report_back_error()
   raise

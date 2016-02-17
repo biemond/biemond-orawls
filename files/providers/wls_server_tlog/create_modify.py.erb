@@ -1,0 +1,35 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+server_name                    = '<%= server_name %>'
+tlog_enabled                   = '<%= tlog_enabled %>'
+tlog_datasource                = '<%= tlog_datasource %>'
+tlog_datasource_prefix         = '<%= tlog_datasource_prefix %>'
+
+edit()
+startEdit()
+
+try:
+    mServerMBTLogStore = getMBean('/Servers/'+server_name+'/TransactionLogJDBCStore/'+server_name)
+
+    if tlog_enabled == 'true':
+      mServerMBTLogStore.setDataSource(getMBean('/SystemResources/'+tlog_datasource))
+      mServerMBTLogStore.setEnabled(true)
+      mServerMBTLogStore.setPrefixName(tlog_datasource_prefix)
+    else:
+      mServerMBTLogStore.setEnabled(false)
+      mServerMBTLogStore.setPrefixName('TLOG_'+server_name+'_')
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
+    dumpStack()
+    undo('true','y')
+    stopEdit('y')
+    raise

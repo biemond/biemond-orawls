@@ -1,0 +1,96 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= bridge_name %>'
+target                  = '<%= target %>'
+targettype              = '<%= targettype %>'
+asyncenabled            = '<%= asyncenabled %>'
+batchinterval           = '<%= batchinterval %>'
+batchsize               = '<%= batchsize %>'
+durabilityenabled       = '<%= durabilityenabled %>'
+idletimemax             = '<%= idletimemax %>'
+preservemsgproperty     = '<%= preservemsgproperty %>'
+qosdegradationallowed   = '<%= qosdegradationallowed %>'
+qos                     = '<%= qos %>'
+reconnectdelayincrease  = '<%= reconnectdelayincrease %>'
+reconnectdelaymax       = '<%= reconnectdelaymax %>'
+reconnectdelaymin       = '<%= reconnectdelaymin %>'
+selector                = '<%= selector %>'
+started                 = '<%= started %>'
+transactiontimeout      = '<%= transactiontimeout %>'
+sourcedestination       = '<%= sourcedestination %>'
+targetdestination       = '<%= targetdestination %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if wlst_action == 'create':
+      cmo.createMessagingBridge(name)
+
+    cd('/MessagingBridges/' + name)
+    cmo.setName(name)
+
+    cmo.setBatchInterval(int(batchinterval))
+    cmo.setBatchSize(int(batchsize))
+
+    if asyncenabled == '1':
+      cmo.setAsyncEnabled(true)
+    else:
+      cmo.setAsyncEnabled(false)
+
+    if durabilityenabled == '1':
+      cmo.setDurabilityEnabled(true)
+    else:
+      cmo.setDurabilityEnabled(false)
+
+    cmo.setIdleTimeMaximum(int(idletimemax))
+
+    if preservemsgproperty == '1':
+      cmo.setPreserveMsgProperty(true)
+    else:
+      cmo.setPreserveMsgProperty(false)
+
+    if qosdegradationallowed == '1':
+      cmo.setQOSDegradationAllowed(true)
+    else:
+      cmo.setQOSDegradationAllowed(false)
+
+    cmo.setReconnectDelayIncrease(int(reconnectdelayincrease))
+    cmo.setReconnectDelayMaximum(int(reconnectdelaymax))
+    cmo.setReconnectDelayMinimum(int(reconnectdelaymin))
+
+    cmo.setSourceDestination(getMBean('/JMSBridgeDestinations/'+sourcedestination))
+    cmo.setTargetDestination(getMBean('/JMSBridgeDestinations/'+targetdestination))
+    cmo.setSelector(selector)
+    cmo.setQualityOfService(qos)
+
+    if started == '1':
+      cmo.setStarted(true)
+    else:
+      cmo.setStarted(false)
+
+    cmo.setTransactionTimeout(int(transactiontimeout))
+
+    print "deployments"
+
+    cd('/Deployments/' + name )
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    print "~~~~COMMAND FAILED~~~~"
+    raise
+
+data

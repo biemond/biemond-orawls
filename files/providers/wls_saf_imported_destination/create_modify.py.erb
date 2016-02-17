@@ -1,0 +1,69 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                   = '<%= imported_destination_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+errorhandling          = '<%= errorhandling %>'
+remotecontext          = '<%= remotecontext %>'
+jndiprefix             = '<%= jndiprefix %>'
+timetolivedefault      = '<%= timetolivedefault %>'
+usetimetolivedefault   = '<%= usetimetolivedefault %>'
+defaulttargeting       = '<%= defaulttargeting %>'
+subdeployment          = '<%= subdeployment %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if wlst_action == 'create':
+      cmo.createSAFImportedDestinations(name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name)
+    cmo.setSAFRemoteContext(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+remotecontext))
+
+    cmo.setJNDIPrefix(jndiprefix)
+
+    if errorhandling:
+      cmo.setSAFErrorHandling(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFErrorHandlings/'+errorhandling))
+    else:
+      cmo.setSAFErrorHandling(None)
+
+    if timetolivedefault:
+      cmo.setTimeToLiveDefault(long(timetolivedefault))
+    else:
+      cmo.setTimeToLiveDefault(0)
+
+    if usetimetolivedefault == '1':
+      cmo.setUseSAFTimeToLiveDefault(true)
+    else:
+      cmo.setUseSAFTimeToLiveDefault(false)
+
+    if defaulttargeting  == '1':
+      cmo.setDefaultTargetingEnabled(true)
+
+    if subdeployment and defaulttargeting == "0":
+      cmo.setSubDeploymentName(subdeployment)
+    elif not subdeployment and defaulttargeting == "1":
+      cmo.setDefaultTargetingEnabled(true)
+    elif subdeployment and defaulttargeting == "1":
+      raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
+    dumpStack()
+    undo('true','y')
+    stopEdit('y')
+    raise

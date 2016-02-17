@@ -1,0 +1,62 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                   = '<%= object_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+imported_destination   = '<%= imported_destination %>'
+timetolivedefault      = '<%= timetolivedefault %>'
+usetimetolivedefault   = '<%= usetimetolivedefault %>'
+object_type            = '<%= object_type %>'
+unitoforderrouting     = '<%= unitoforderrouting %>'
+nonpersistentqos       = '<%= nonpersistentqos %>'
+remotejndiname         = '<%= remotejndiname %>'
+localjndiname          = '<%= localjndiname %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination)
+
+    if object_type == "queue":
+        if wlst_action == 'create':
+            cmo.createSAFQueue(name)
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFQueues/'+name)
+    else:
+        if wlst_action == 'create':
+            cmo.createSAFTopic(name)
+        cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFTopics/'+name)
+
+    cmo.setRemoteJNDIName(remotejndiname)
+    cmo.setNonPersistentQos(nonpersistentqos)
+    cmo.setLocalJNDIName(localjndiname)
+    cmo.setUnitOfOrderRouting(unitoforderrouting)
+
+    if timetolivedefault:
+      cmo.setTimeToLiveDefault(long(timetolivedefault))
+    else:
+      cmo.setTimeToLiveDefault(0)
+
+    if usetimetolivedefault == '1':
+      cmo.setUseSAFTimeToLiveDefault(true)
+    else:
+      cmo.setUseSAFTimeToLiveDefault(false)
+
+    save()
+    activate()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
+    dumpStack()
+    undo('true','y')
+    stopEdit('y')
+    raise
+
+
+

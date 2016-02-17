@@ -108,10 +108,11 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_workmanager_constraint](#wls_workmanager_constraint)
 - [wls_workmanager](#wls_workmanager)
 - [wls_datasource](#wls_datasource)
-- [wls_file_persistence_store](#wls_file_persistence_store)
-- [wls_jdbc_persistence_store](#wls_jdbc_persistence_store)
+- [wls_multi_datasource](#wls_multi_datasource)
 - [wls_foreign_jndi_provider ](#wls_foreign_jndi_provider )
 - [wls_foreign_jndi_provider _link](#wls_foreign_jndi_provider _link)
+- [wls_file_persistence_store](#wls_file_persistence_store)
+- [wls_jdbc_persistence_store](#wls_jdbc_persistence_store)
 - [wls_jmsserver](#wls_jmsserver)
 - [wls_safagent](#wls_safagent)
 - [wls_jms_module](#wls_jms_module)
@@ -120,8 +121,11 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_jms_subdeployment](#wls_jms_subdeployment)
 - [wls_jms_queue](#wls_jms_queue)
 - [wls_jms_topic](#wls_jms_topic)
+- [wls_jms_security_policy](#wls_jms_security_policy)
 - [wls_jms_connection_factory](#wls_jms_connection_factory)
 - [wls_jms_template](#wls_jms_template)
+- [wls_jms_bridge_destination](#wls_jms_bridge_destination)
+- [wls_messaging_bridge](#wls_messaging_bridge)
 - [wls_saf_remote_context](#wls_saf_remote_context)
 - [wls_saf_error_handler](#wls_saf_error_handler)
 - [wls_saf_imported_destination](#wls_saf_imported_destination)
@@ -129,9 +133,6 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_foreign_server](#wls_foreign_server)
 - [wls_foreign_server_object](#wls_foreign_server_object)
 - [wls_mail_session](#wls_mail_session)
-- [wls_multi_datasource](#wls_multi_datasource)
-- [wls_jms_bridge_destination](#wls_jms_bridge_destination)
-- [wls_messaging_bridge](#wls_messaging_bridge)
 
 12.1.3 Coherence & Dynamic clusters
 - [wls_coherence_cluster](#wls_coherence_cluster)

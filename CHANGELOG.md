@@ -1,7 +1,8 @@
 # History
 
 ## 1.0.47
-- some WLST refactoring
+- some WLST refactoring for all the wls types
+- wls_jms_security_policy new type
 - wls_virtual_target new type but only for WebLogic 12.2.1
 - option to override the default machine in the domain manifest
 - MQ resource adapter mininal template

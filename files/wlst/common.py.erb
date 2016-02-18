@@ -151,8 +151,15 @@ def auto_typed_set(key, value):
 
 def set_attribute_value(mbean_attribute, value = None):
     print "set att " + mbean_attribute + " with value " + str(value)
-    attribute_fields = ['interfaceclassname', 'defaultValue', 'com.bea.defaultValueNull', 'maxValue', 'minValue']
-    fields = cmo.getMBeanInfo().getAttribute(mbean_attribute).getDescriptor().getFieldValues(attribute_fields)
+    attribute_fields = ['interfaceclassname', 'defaultValue', 'com.bea.defaultValueNull']
+    try:
+        fields = getMBI().getAttribute(mbean_attribute).getDescriptor().getFieldValues(attribute_fields)
+    except:
+        print "error retrieving fields do ls()"
+        ls()
+        print "Unexpected error:", sys.exc_info()[0]
+        raise
+
     print fields
     key_type      = fields[0]
     # have default value
@@ -162,7 +169,7 @@ def set_attribute_value(mbean_attribute, value = None):
     #
     # if the value is not specified set the default value if it defined
     if value:
-        attribute_value = value
+        attribute_value = str(value)
     else:
         print "found empty value, try to use the defaults"
         if default_value != None:

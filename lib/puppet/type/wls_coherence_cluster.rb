@@ -43,7 +43,6 @@ module Puppet
     parameter :coherence_cluster_name
     parameter :storage_enabled
     property :clusteringmode
-    property :unicastaddress
     property :unicastport
     property :multicastaddress
     property :multicastport

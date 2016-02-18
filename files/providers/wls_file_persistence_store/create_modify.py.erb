@@ -17,7 +17,7 @@ try:
         cmo.createFileStore(name)
 
     cd('/FileStores/'+name)
-    cmo.setDirectory(directory)
+    set_attribute_value('Directory', directory)
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
 
     save()

@@ -27,14 +27,6 @@ setconfigbackupenabled                             = '<%= setconfigbackupenabled
 setconfigurationaudittype                          = '<%= setconfigurationaudittype %>'
 exalogicoptimizationsenabled                       = '<%= exalogicoptimizationsenabled %>'
 
-def formatBoolean(value):
-  if value == '1':
-    return true
-  else:
-    return false
-
-print "start edit"
-
 edit()
 startEdit()
 
@@ -42,81 +34,46 @@ try:
 
     print "change log"
     cd('/Log/'+name)
-    if log_rotationtype:
-      print "change log 1" +log_rotationtype
-      cmo.setRotationType(log_rotationtype)
-    if log_rotate_logon_startup:
-      print "change log 2 " + str(log_rotate_logon_startup)
-      cmo.setRotateLogOnStartup(formatBoolean(log_rotate_logon_startup))
-    if log_filecount:
-      print "change log 3" + str(log_filecount)
-      cmo.setFileCount(int(log_filecount))
-    if log_number_of_files_limited:
-      print "change log 4"
-      cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
-    if log_filename:
-      print "change log 5"
-      cmo.setFileName(log_filename)
-    if log_file_min_size:
-      print "change log 6"
-      cmo.setFileMinSize(int(log_file_min_size))
-    if log_date_pattern:
-      print "change log_date_pattern"
-      cmo.setDateFormatPattern(log_date_pattern)
+    set_attribute_value('RotationType'        , log_rotationtype)
+    set_attribute_value('RotateLogOnStartup'  , log_rotate_logon_startup)
+    set_attribute_value('FileCount'           , log_filecount)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited)
+    set_attribute_value('FileName'            , log_filename)
+    set_attribute_value('FileMinSize'         , log_file_min_size)
+    set_attribute_value('DateFormatPattern'   , log_date_pattern)
 
     print "change jta"
     cd('/JTA/'+name)
-    if jta_transaction_timeout:
-      cmo.setTimeoutSeconds(int(jta_transaction_timeout))
-    if jta_max_transactions:
-      cmo.setMaxTransactions(int(jta_max_transactions))
+    set_attribute_value('TimeoutSeconds' , jta_transaction_timeout)
+    set_attribute_value('MaxTransactions', jta_max_transactions)
 
     print "change jpa"
     cd('/JPA/'+name)
-    if jpa_default_provider:
-      cmo.setDefaultJPAProvider(jpa_default_provider)
+    set_attribute_value('DefaultJPAProvider', jpa_default_provider)
 
     print "change security"
     cd('/SecurityConfiguration/'+name)
-    if security_crossdomain:
-      cmo.setCrossDomainSecurityEnabled(formatBoolean(security_crossdomain))
+    set_attribute_value('CrossDomainSecurityEnabled', security_crossdomain)
     if credential:
       auto_typed_set('Credential', credential)
 
     print "change jmx"
     cd('/JMX/'+name)
-    if jmx_platform_mbean_server_enabled:
-      cmo.setPlatformMBeanServerEnabled(formatBoolean(jmx_platform_mbean_server_enabled))
-    if jmx_platform_mbean_server_used:
-      cmo.setPlatformMBeanServerUsed(formatBoolean(jmx_platform_mbean_server_used))
+    set_attribute_value('PlatformMBeanServerEnabled', jmx_platform_mbean_server_enabled)
+    set_attribute_value('PlatformMBeanServerUsed'   , jmx_platform_mbean_server_used)
 
     print "change web app container"
     cd('/WebAppContainer/'+name)
-    if web_app_container_show_archived_real_path_enabled:
-      cmo.setShowArchivedRealPathEnabled(formatBoolean(web_app_container_show_archived_real_path_enabled))
-
+    set_attribute_value('ShowArchivedRealPathEnabled', web_app_container_show_archived_real_path_enabled)
 
     cd('/')
 
+    set_attribute_value('InternalAppsDeployOnDemandEnabled', setinternalappdeploymentondemandenable)
+    set_attribute_value('ArchiveConfigurationCount', setarchiveconfigurationcount)
+    set_attribute_value('ConfigBackupEnabled', setconfigbackupenabled)
+    set_attribute_value('ConfigurationAuditType', setconfigurationaudittype)
+    set_attribute_value('ExalogicOptimizationsEnabled', exalogicoptimizationsenabled)
 
-    if setinternalappdeploymentondemandenable:
-      print "Change Internal App deployment flag"
-      cmo.setInternalAppsDeployOnDemandEnabled(formatBoolean(setinternalappdeploymentondemandenable))
-
-    if setarchiveconfigurationcount:
-      print "Change configuration backup settings"
-      cmo.setArchiveConfigurationCount(int(setarchiveconfigurationcount))
-
-    if setconfigbackupenabled:
-      cmo.setConfigBackupEnabled(formatBoolean(setconfigbackupenabled))
-
-    if setconfigurationaudittype:
-      cmo.setConfigurationAuditType(setconfigurationaudittype)
-
-    if exalogicoptimizationsenabled:
-      cmo.setExalogicOptimizationsEnabled(formatBoolean(exalogicoptimizationsenabled))
-
-    print "save"
     save()
     activate()
     report_back_success()

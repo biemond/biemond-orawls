@@ -28,31 +28,15 @@ try:
 
     cd('/JMSServers/'+name)
 
-    if bytes_maximum:
-      set('BytesMaximum',bytes_maximum)
-
-    if allows_persistent_downgrade == '1':
-      set('AllowsPersistentDowngrade','True')
-    else:
-      set('AllowsPersistentDowngrade','False')
+    set_attribute_value('BytesMaximum', bytes_maximum)
+    set_attribute_value('AllowsPersistentDowngrade', allows_persistent_downgrade)
 
     if "10.3" in version:
-      if store_enabled == '1':
-        set('StoreEnabled','True')
-      elif store_enabled == '0':
-        set('StoreEnabled','False')
+      set_attribute_value('StoreEnabled', store_enabled)
 
-    if consumption_paused:
-      print 'setting consumption_paused to ' + consumption_paused
-      set('ConsumptionPausedAtStartup', translate(consumption_paused))
-
-    if insertion_paused:
-      print 'setting insertion_paused to ' + insertion_paused
-      set('InsertionPausedAtStartup', translate(insertion_paused))
-
-    if production_paused:
-      print 'setting production_paused to ' + production_paused
-      set('ProductionPausedAtStartup', translate(production_paused))
+    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused)
+    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused)
+    set_attribute_value('ProductionPausedAtStartup' , production_paused)
 
     cd('/Deployments/'+name)
 

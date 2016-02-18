@@ -22,11 +22,8 @@ try:
 
     cd('/CoherenceServers/'+name)
 
-    if unicastaddress:
-       set('UnicastListenAddress',unicastaddress)
-
-    if unicastport:
-       set('UnicastListenPort',unicastport)
+    set_attribute_value('UnicastListenAddress', unicastaddress)
+    set_attribute_value('UnicastListenPort'   , unicastport)
 
     if machine:
        cd('/')
@@ -35,8 +32,7 @@ try:
        set('Machine', m)
 
     cd('/CoherenceServers/'+name+'/CoherenceServerStart/'+name)
-    if classpath:
-      cmo.setClassPath(classpath)
+    set_attribute_value('ClassPath', classpath)
 
     save()
     activate()

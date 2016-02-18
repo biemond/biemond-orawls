@@ -21,14 +21,10 @@ try:
           cmo.createMachine(machineName)
 
     cd('/Machines/'+machineName+'/NodeManager/'+machineName)
-    cmo.setNMType(nmType)
 
-    if machineDnsName:
-      cmo.setListenAddress(machineDnsName)
-    else:
-      cmo.setListenAddress(None)
-
-    cmo.setListenPort(portNumber)
+    set_attribute_value('NMType'       , nmType)
+    set_attribute_value('ListenAddress', machineDnsName)
+    set_attribute_value('ListenPort'   , portNumber)
 
     save()
     activate()

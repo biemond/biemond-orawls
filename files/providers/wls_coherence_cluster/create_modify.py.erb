@@ -9,7 +9,6 @@ clusteringmode          = '<%= clusteringmode %>'
 
 multicastaddress        = '<%= multicastaddress %>'
 multicastport           = '<%= multicastport %>'
-unicastaddress          = '<%= unicastaddress %>'
 unicastport             = '<%= unicastport %>'
 target                  = '<%= target %>'
 targettype              = '<%= targettype %>'
@@ -29,19 +28,11 @@ try:
 
     cd('/CoherenceClusterSystemResources/'+name+'/CoherenceClusterResource/'+name+'/CoherenceClusterParams/'+name)
 
-    set('ClusteringMode',clusteringmode)
+    set_attribute_value('ClusteringMode', clusteringmode)
 
-    if multicastaddress:
-       set('MulticastListenAddress',multicastaddress)
-
-    if multicastport:
-       set('MulticastListenPort',multicastport)
-
-    if unicastaddress:
-       set('UnicastListenAddress',unicastaddress)
-
-    if unicastport:
-       set('UnicastListenPort',unicastport)
+    set_attribute_value('MulticastListenAddress', multicastaddress)
+    set_attribute_value('MulticastListenPort'   , multicastport)
+    set_attribute_value('UnicastListenPort'     , unicastport)
 
     print "target: "     +  target
     print "targettype: " +  targettype

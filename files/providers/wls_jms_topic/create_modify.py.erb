@@ -31,7 +31,6 @@ edit()
 startEdit()
 
 try:
-
     cd('/')
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
 
@@ -45,28 +44,11 @@ try:
         jmsWlsType = '/Topics/'
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
-    set('JNDIName',jndiname)
+    set_attribute_value('JNDIName', jndiname)
 
-    if consumption_paused:
-      print 'setting consumption_paused to ' + consumption_paused
-      if consumption_paused == '1':
-        set('ConsumptionPausedAtStartup', true)
-      else:
-        set('ConsumptionPausedAtStartup', false)
-
-    if insertion_paused:
-      print 'setting insertion_paused to ' + insertion_paused
-      if insertion_paused == '1':
-        set('InsertionPausedAtStartup',true)
-      else:
-        set('InsertionPausedAtStartup',false)
-
-    if production_paused:
-      print 'setting production_paused to ' + production_paused
-      if production_paused == '1':
-        set('ProductionPausedAtStartup',true)
-      else:
-        set('ProductionPausedAtStartup',false)
+    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused)
+    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused)
+    set_attribute_value('ProductionPausedAtStartup' , production_paused)
 
     if destination_keys:
       print "jms destinationkeys: " + destination_keys
@@ -74,9 +56,9 @@ try:
       set('DestinationKeys',jarray.array(key_entries, String))
 
     if subdeployment and defaulttargeting == "0":
-      cmo.setSubDeploymentName(subdeployment)
+      set_attribute_value('SubDeploymentName', subdeployment)
     elif not subdeployment and defaulttargeting == "1":
-      cmo.setDefaultTargetingEnabled(true)
+      set_attribute_value('DefaultTargetingEnabled', true)
     elif subdeployment and defaulttargeting == "1":
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:
@@ -86,23 +68,19 @@ try:
     if distributed == "1":
       print "distributed"
       if balancingpolicy != '':
-        cmo.setLoadBalancingPolicy(balancingpolicy)
+        set_attribute_value('LoadBalancingPolicy', balancingpolicy)
       elif balancingpolicy == '':
-        cmo.setLoadBalancingPolicy('Round-Robin')
+        set_attribute_value('LoadBalancingPolicy', 'Round-Robin')
+
       if forwardingpolicy != '':
-        cmo.setForwardingPolicy(forwardingpolicy)
+        set_attribute_value('ForwardingPolicy', forwardingpolicy)
       elif forwardingpolicy == '':
-        cmo.setForwardingPolicy('Replicated')
+        set_attribute_value('ForwardingPolicy', 'Replicated')
 
-    if expirationpolicy:
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
-      cmo.setExpirationPolicy(expirationpolicy)
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
+    set_attribute_value('ExpirationPolicy', expirationpolicy)
+    set_attribute_value('RedeliveryLimit' , redeliverylimit)
 
-    if redeliverylimit:
-      print "limit"
-      cmo.setRedeliveryLimit( int(redeliverylimit) )
-
-    print "before"
     if errordestinationtype:
       jmsErrType = errordestinationtype
     else:
@@ -111,50 +89,28 @@ try:
       else:
         jmsErrType = 'Queues'
 
-    print "after"
-
     print "errorbean "+'/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination
     if errordestination:
       cmo.setErrorDestination(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/'+jmsErrType+'/'+errordestination))
+    else:
+      cmo.setErrorDestination(None)
 
-    if expirationloggingpolicy:
-      cmo.setExpirationLoggingPolicy(expirationloggingpolicy)
+    set_attribute_value('ExpirationLoggingPolicy', expirationloggingpolicy)
 
-    if timetolive:
-      print "time To Live"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
-      #TimeToLive is an int MBean attribute
-      cmo.setTimeToLive( int(timetolive))
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
+    set_attribute_value('TimeToLive'     , timetolive)
+    set_attribute_value('TimeToDeliver'  , timetodeliver)
+    set_attribute_value('DeliveryMode'   , deliverymode)
+    set_attribute_value('RedeliveryDelay', redeliverydelay)
 
-    if timetodeliver:
-      print "time To Deliver"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
-      #TimeToDeliver is a string MBean attribute
-      cmo.setTimeToDeliver(timetodeliver)
-
-    if deliverymode:
-      print "Delivery Mode"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
-      cmo.setDeliveryMode(deliverymode)
-
-    if redeliverydelay:
-      print "RedeliveryDelay"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
-      cmo.setRedeliveryDelay( int(redeliverydelay))
-
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     if quota:
-      print "jms Quota"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
       cmo.setQuota(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Quotas/'+quota ))
+    else:
+      cmo.setQuota(None)
 
-    if messagelogging == '1':
-      print "message logging"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
-      cmo.setMessageLoggingEnabled(true)
-    elif messagelogging == '0':
-      print "message logging"
-      cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
-      cmo.setMessageLoggingEnabled(false)
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
+    set_attribute_value('MessageLoggingEnabled', messagelogging)
 
     save()
     activate()

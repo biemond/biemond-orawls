@@ -70,6 +70,8 @@ module Puppet
     property :shrinkfrequencyseconds
     property :wrapdatatypes
     property :removeinfectedconnections
+    property :inactiveconnectiontimeoutseconds
+    property :connectionreservetimeoutseconds
 
     add_title_attributes(:datasource_name) do
       /^((.*\/)?(.*)?)$/

@@ -24,17 +24,10 @@ try:
     cd('/ForeignJNDIProviders/' + name)
     cmo.setName(name)
 
-    if initial_context_factory:
-        cmo.setInitialContextFactory(initial_context_factory)
-
-    if provider_url:
-        cmo.setProviderURL(provider_url)
-
-    if user:
-        cmo.setUser(user)
-
-    if password:
-        cmo.setPassword(password)
+    set_attribute_value('InitialContextFactory', initial_context_factory)
+    set_attribute_value('ProviderURL', provider_url)
+    set_attribute_value('User', user)
+    set_attribute_value('Password', password)
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
     set('Targets', targetList)

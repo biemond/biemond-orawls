@@ -34,6 +34,7 @@ wrapdatatypes                           = '<%= wrapdatatypes %>'
 inactiveconnectiontimeoutseconds        = '<%= inactiveconnectiontimeoutseconds %>'
 connectionreservetimeoutseconds         = '<%= connectionreservetimeoutseconds %>'
 
+
 edit()
 startEdit()
 
@@ -48,67 +49,50 @@ try:
     if jndinames:
       jndis = String(jndinames).split(",")
       set('JNDINames',jarray.array(jndis, String))
-    if rowprefetchenabled:
-      cmo.setRowPrefetch(int(rowprefetchenabled))
-    if rowprefetchsize:
-      cmo.setRowPrefetchSize(int(rowprefetchsize))
+
+    set_attribute_value('RowPrefetch', rowprefetchenabled)
+    set_attribute_value('RowPrefetchSize', rowprefetchsize)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
-    cmo.setUrl(url)
-    cmo.setDriverName( drivername )
-    if usexa == '1':
-      cmo.setUseXaDataSourceInterface(true)
-    else:
-      cmo.setUseXaDataSourceInterface(false)
+    set_attribute_value('Url', url)
+    set_attribute_value('DriverName', drivername)
+    set_attribute_value('UseXaDataSourceInterface', usexa)
+
     auto_typed_set('Password',password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
-    set('MaxCapacity', int(maxcapacity))
-    set('InitialCapacity', int(initialcapacity))
+    set_attribute_value('MaxCapacity', maxcapacity)
+    set_attribute_value('InitialCapacity', initialcapacity)
 
-    if mincapacity:
-       set('MinCapacity',int(mincapacity))
+    set_attribute_value('MinCapacity', mincapacity)
+    set_attribute_value('StatementCacheSize', statementcachesize)
+    set_attribute_value('TestConnectionsOnReserve', testconnectionsonreserve)
+    set_attribute_value('SecondsToTrustAnIdlePoolConnection', secondstotrustidlepoolconnection)
 
-    if statementcachesize:
-       set('StatementCacheSize',int(statementcachesize))
+    set_attribute_value('TestFrequencySeconds', testfrequency)
 
-    if testconnectionsonreserve and testconnectionsonreserve == '1':
-       set('TestConnectionsOnReserve','true')
-    else:
-       set('TestConnectionsOnReserve','false')
+    set_attribute_value('InactiveConnectionTimeoutSeconds', inactiveconnectiontimeoutseconds)
+    set_attribute_value('ConnectionReserveTimeoutSeconds', connectionreservetimeoutseconds)
 
-    if secondstotrustidlepoolconnection:
-      set('SecondsToTrustAnIdlePoolConnection', int(secondstotrustidlepoolconnection))
+   if inactiveconnectiontimeoutseconds:
+ +      set('InactiveConnectionTimeoutSeconds', int(inactiveconnectiontimeoutseconds))
+ +
+ +    if connectionreservetimeoutseconds:
+ +      set('ConnectionReserveTimeoutSeconds', int(connectionreservetimeoutseconds))
+ +
 
-    if testfrequency:
-      set('TestFrequencySeconds', int(testfrequency))
+    set_attribute_value('ConnectionCreationRetryFrequencySeconds', connectioncreationretryfrequency)
+    set_attribute_value('InitSql', initsql)
 
-    if inactiveconnectiontimeoutseconds:
-      set('InactiveConnectionTimeoutSeconds', int(inactiveconnectiontimeoutseconds))
-
-    if connectionreservetimeoutseconds: 
-      set('ConnectionReserveTimeoutSeconds', int(connectionreservetimeoutseconds))
-
-    if connectioncreationretryfrequency:
-      set('ConnectionCreationRetryFrequencySeconds', int(connectioncreationretryfrequency))
-
-    if initsql:
-      set('InitSql', initsql)
-
-    if shrinkfrequencyseconds:
-      set('ShrinkFrequencySeconds', int(shrinkfrequencyseconds))
-
-    if wrapdatatypes == '1':
-      set('WrapTypes', 'true')
-    else:
-      set('WrapTypes', 'false')
+    set_attribute_value('ShrinkFrequencySeconds', shrinkfrequencyseconds)
+    set_attribute_value('WrapTypes', wrapdatatypes)
 
 <% unless removeinfectedconnections.nil? -%>
     set('RemoveInfectedConnections', <% if removeinfectedconnections == :true -%>True<% else %>False<% end %>)
 <% end -%>
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
-    cmo.setTestTableName(testtablename)
+    set_attribute_value('TestTableName', testtablename)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
     cmo.createProperty('user')
@@ -139,15 +123,12 @@ try:
             print "%s is not a valid attribute type" % (propname)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
-    cmo.setGlobalTransactionsProtocol(globaltransactionsprotocol)
+    set_attribute_value('GlobalTransactionsProtocol', globaltransactionsprotocol)
 
     try:
         cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCOracleParams/' + name )
-        if fanenabled == '1':
-            cmo.setFanEnabled(true)
-        else:
-            cmo.setFanEnabled(false)
-        cmo.setOnsNodeList(onsnodelist)
+        set_attribute_value('FanEnabled', fanenabled)
+        set_attribute_value('OnsNodeList', onsnodelist)
     except:
         print "Datasource Driver %s does not support ONS parameters." % drivername
 

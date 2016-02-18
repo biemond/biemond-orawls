@@ -27,7 +27,7 @@ try:
       cmo.setStore(getMBean('/JDBCStores/'+persistentstore))
 
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
-    cmo.setServiceType(servicetype)
+    set_attribute_value('ServiceType', servicetype)
 
     save()
     activate()

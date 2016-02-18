@@ -25,20 +25,16 @@ try:
         cmo.createJMSBridgeDestination(name)
 
     cd('/JMSBridgeDestinations/' + name)
-    cmo.setName(name)
-    cmo.setAdapterJNDIName(adapter)
-    cmo.setClasspath(classpath)
-    cmo.setConnectionFactoryJNDIName(connectionfactoryjndi)
-    cmo.setConnectionURL(connectionurl)
-    cmo.setDestinationJNDIName(destinationjndi)
-    cmo.setDestinationType(destinationtype)
-    cmo.setInitialContextFactory(initialcontextfactory)
-
-    if user_name:
-        cmo.setUserName(user_name)
-
-    if password:
-        cmo.setUserPassword(password)
+    set_attribute_value('Name', name)
+    set_attribute_value('AdapterJNDIName', adapter)
+    set_attribute_value('Classpath', classpath)
+    set_attribute_value('ConnectionFactoryJNDIName', connectionfactoryjndi)
+    set_attribute_value('ConnectionURL', connectionurl)
+    set_attribute_value('DestinationJNDIName', destinationjndi)
+    set_attribute_value('DestinationType', destinationtype)
+    set_attribute_value('InitialContextFactory', initialcontextfactory)
+    set_attribute_value('UserName', user_name)
+    set_attribute_value('UserPassword', password)
 
     save()
     activate()

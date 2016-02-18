@@ -27,7 +27,7 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name)
     cmo.setSAFRemoteContext(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+remotecontext))
 
-    cmo.setJNDIPrefix(jndiprefix)
+    set_attribute_value('JNDIPrefix', jndiprefix)
 
     if errorhandling:
       cmo.setSAFErrorHandling(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFErrorHandlings/'+errorhandling))
@@ -35,22 +35,14 @@ try:
       cmo.setSAFErrorHandling(None)
 
     if timetolivedefault:
-      cmo.setTimeToLiveDefault(long(timetolivedefault))
-    else:
-      cmo.setTimeToLiveDefault(0)
-
-    if usetimetolivedefault == '1':
-      cmo.setUseSAFTimeToLiveDefault(true)
-    else:
-      cmo.setUseSAFTimeToLiveDefault(false)
-
-    if defaulttargeting  == '1':
-      cmo.setDefaultTargetingEnabled(true)
+      set_attribute_value('TimeToLiveDefault', long(timetolivedefault))
+    set_attribute_value('UseSAFTimeToLiveDefault', usetimetolivedefault)
+    set_attribute_value('DefaultTargetingEnabled', defaulttargeting)
 
     if subdeployment and defaulttargeting == "0":
-      cmo.setSubDeploymentName(subdeployment)
+      set_attribute_value('SubDeploymentName', subdeployment)
     elif not subdeployment and defaulttargeting == "1":
-      cmo.setDefaultTargetingEnabled(true)
+      set_attribute_value('DefaultTargetingEnabled', true)
     elif subdeployment and defaulttargeting == "1":
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:

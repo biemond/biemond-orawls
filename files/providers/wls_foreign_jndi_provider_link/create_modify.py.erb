@@ -18,8 +18,8 @@ try:
         cmo.createForeignJNDILink(name)
 
     cd('/ForeignJNDIProviders/' + provider_name + '/ForeignJNDILinks/' + name)
-    cmo.setLocalJNDIName(local_jndi_name)
-    cmo.setRemoteJNDIName(remote_jndi_name)
+    set_attribute_value('LocalJNDIName', local_jndi_name)
+    set_attribute_value('RemoteJNDIName', remote_jndi_name)
 
     save()
     activate()

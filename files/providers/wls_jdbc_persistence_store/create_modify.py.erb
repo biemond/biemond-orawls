@@ -19,7 +19,7 @@ try:
 
     cd('/JDBCStores/'+name)
     cmo.setDataSource(getMBean('/SystemResources/'+datasource))
-    cmo.setPrefixName(prefix_name)
+    set_attribute_value('PrefixName', prefix_name)
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
 
     save()

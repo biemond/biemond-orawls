@@ -190,10 +190,10 @@ def set_attribute_value(mbean_attribute, value = None):
         if attribute_value.strip(): # Value is a non empty string
             print 'Setting boolean property ' + mbean_attribute + ' to ' + attribute_value
             if attribute_value == 'True' or attribute_value == 'true' or attribute_value == '1':
-                real_value = 'true'
+                real_value = 'True'
             else:
-                real_value = 'false'
-        set(mbean_attribute, real_value)
+                real_value = 'False'
+            set(mbean_attribute, real_value)
     elif key_type == 'float':
         if attribute_value.strip(): # Value is a non empty string
             print 'Setting float property ' + mbean_attribute + ' to ' + attribute_value

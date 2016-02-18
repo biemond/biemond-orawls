@@ -28,11 +28,11 @@ try:
       jndis = String(jndinames).split(",")
       set('JNDINames',jarray.array(jndis, String))
 
-    cmo.setAlgorithmType(algorithmtype)
-    cmo.setDataSourceList(datasources)
+    set_attribute_value('AlgorithmType', algorithmtype)
+    set_attribute_value('DataSourceList', datasources)
 
     cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)
-    set('TestFrequencySeconds',int(testfrequency))
+    set_attribute_value('TestFrequencySeconds', testfrequency)
 
     cd('/JDBCSystemResources/' + name)
 

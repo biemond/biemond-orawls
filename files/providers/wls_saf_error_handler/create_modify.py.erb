@@ -26,12 +26,8 @@ try:
     # else:
     #   cmo.setSAFErrorDestination(None)
 
-    cmo.setPolicy(policy)
-
-    if logformat:
-      cmo.setLogFormat(logformat)
-    else:
-      cmo.setLogFormat(None)
+    set_attribute_value('LogFormat', logformat)
+    set_attribute_value('Policy', policy)
 
     save()
     activate()

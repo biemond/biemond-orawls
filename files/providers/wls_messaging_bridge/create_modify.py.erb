@@ -34,49 +34,28 @@ try:
     cd('/MessagingBridges/' + name)
     cmo.setName(name)
 
-    cmo.setBatchInterval(int(batchinterval))
-    cmo.setBatchSize(int(batchsize))
+    set_attribute_value('BatchInterval', batchinterval)
+    set_attribute_value('BatchSize', batchsize)
+    set_attribute_value('AsyncEnabled', asyncenabled)
+    set_attribute_value('DurabilityEnabled', durabilityenabled)
+    set_attribute_value('IdleTimeMaximum', idletimemax)
 
-    if asyncenabled == '1':
-      cmo.setAsyncEnabled(true)
-    else:
-      cmo.setAsyncEnabled(false)
+    set_attribute_value('PreserveMsgProperty', preservemsgproperty)
+    set_attribute_value('QOSDegradationAllowed', qosdegradationallowed)
 
-    if durabilityenabled == '1':
-      cmo.setDurabilityEnabled(true)
-    else:
-      cmo.setDurabilityEnabled(false)
-
-    cmo.setIdleTimeMaximum(int(idletimemax))
-
-    if preservemsgproperty == '1':
-      cmo.setPreserveMsgProperty(true)
-    else:
-      cmo.setPreserveMsgProperty(false)
-
-    if qosdegradationallowed == '1':
-      cmo.setQOSDegradationAllowed(true)
-    else:
-      cmo.setQOSDegradationAllowed(false)
-
-    cmo.setReconnectDelayIncrease(int(reconnectdelayincrease))
-    cmo.setReconnectDelayMaximum(int(reconnectdelaymax))
-    cmo.setReconnectDelayMinimum(int(reconnectdelaymin))
+    set_attribute_value('ReconnectDelayIncrease', reconnectdelayincrease)
+    set_attribute_value('ReconnectDelayMaximum', reconnectdelaymax)
+    set_attribute_value('ReconnectDelayMinimum', reconnectdelaymin)
 
     cmo.setSourceDestination(getMBean('/JMSBridgeDestinations/'+sourcedestination))
     cmo.setTargetDestination(getMBean('/JMSBridgeDestinations/'+targetdestination))
-    cmo.setSelector(selector)
-    cmo.setQualityOfService(qos)
 
-    if started == '1':
-      cmo.setStarted(true)
-    else:
-      cmo.setStarted(false)
-
-    cmo.setTransactionTimeout(int(transactiontimeout))
+    set_attribute_value('Selector', selector)
+    set_attribute_value('QualityOfService', qos)
+    set_attribute_value('Started', started)
+    set_attribute_value('TransactionTimeout', transactiontimeout)
 
     print "deployments"
-
     cd('/Deployments/' + name )
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))

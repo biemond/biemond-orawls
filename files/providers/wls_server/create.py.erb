@@ -81,26 +81,19 @@ try:
 
     print "Change Notes"
     if server_parameters and server_parameters != 'None':
-      cmo.setNotes(server_parameters)
+      set_attribute_value('Notes', server_parameters)
 
     print "Change listenAddress"
     if listenAddress and not listenAddress.isspace():
-      set('ListenAddress',listenAddress)
+      set_attribute_value('ListenAddress', listenAddress)
 
-    if listenPort:
-      set('ListenPort', int(listenPort))
-
+    set_attribute_value('ListenPort', listenPort)
     if listenPortEnabled and listenPortEnabled != '-1':
-      set('ListenPortEnabled', format_boolean(listenPortEnabled))
+      set_attribute_value('ListenPortEnabled', listenPortEnabled)
 
-    if logintimeout:
-      set('LoginTimeoutMillis', int(logintimeout))
-
-    if max_message_size:
-      set('MaxMessageSize',max_message_size)
-
-    if restart_max:
-      set('RestartMax',restart_max)
+    set_attribute_value('LoginTimeoutMillis', logintimeout)
+    set_attribute_value('MaxMessageSize', max_message_size)
+    set_attribute_value('RestartMax', restart_max)
 
     if classpath:
       set('ServerStart/'+name+'/ClassPath', classpath)
@@ -111,140 +104,85 @@ try:
     if arguments:
       set('ServerStart/'+name+'/Arguments', arguments)
 
-    if tunnelingenabled:
-      set('TunnelingEnabled', format_boolean(tunnelingenabled))
-
-    if weblogic_plugin_enabled:
-      set('WeblogicPluginEnabled', format_boolean(weblogic_plugin_enabled))
+    set_attribute_value('TunnelingEnabled', tunnelingenabled)
+    set_attribute_value('WeblogicPluginEnabled', weblogic_plugin_enabled)
 
     if custom_identity == '1':
-      set('KeyStores'                                ,'CustomIdentityAndCustomTrust')
-      set('CustomIdentityKeyStoreFileName'           ,custom_identity_keystore_filename)
-      set('CustomIdentityKeyStorePassPhrase'         ,custom_identity_keystore_passphrase)
-      set('CustomTrustKeyStoreFileName'              ,trust_keystore_file)
-      set('CustomTrustKeyStorePassPhrase'            ,trust_keystore_passphrase)
+      set_attribute_value('KeyStores', 'CustomIdentityAndCustomTrust')
+      set_attribute_value('CustomIdentityKeyStoreFileName', custom_identity_keystore_filename)
+      set_attribute_value('CustomIdentityKeyStorePassPhrase', custom_identity_keystore_passphrase)
+      set_attribute_value('CustomTrustKeyStoreFileName', trust_keystore_file)
+      set_attribute_value('CustomTrustKeyStorePassPhrase', trust_keystore_passphrase)
+
       cd('SSL/'+name)
-      set('ServerPrivateKeyAlias'                    ,custom_identity_alias)
-      set('ServerPrivateKeyPassPhrase'               ,custom_identity_privatekey_passphrase)
+      set_attribute_value('ServerPrivateKeyAlias', custom_identity_alias)
+      set_attribute_value('ServerPrivateKeyPassPhrase', custom_identity_privatekey_passphrase)
+
     if custom_identity == '0':
-      set('KeyStores'                                ,'DemoIdentityAndDemoTrust')
+      set_attribute_value('KeyStores', 'DemoIdentityAndDemoTrust')
 
     cd('/Servers/'+name)
-    if auto_restart == '0':
-      print "Change AutoRestart"
-      set('AutoRestart','False')
-    else:
-      print "Change AutoRestart"
-      set('AutoRestart','True')
-
-    if autokillwfail == '1':
-      print "Change AutoKillIfFailed"
-      set('AutoKillIfFailed','True')
-    else:
-      print "Change AutoKillIfFailed"
-      set('AutoKillIfFailed','False')
+    set_attribute_value('AutoRestart', auto_restart)
+    set_attribute_value('AutoKillIfFailed', autokillwfail)
 
     cd('/Servers/'+name+'/WebServer/'+name)
 
-    if frontend_host:
-      print "Setting Frontend Host"
-      cmo.setFrontendHost(frontend_host)
-
-    print "Setting Frontend HTTP Port"
-    cmo.setFrontendHTTPPort(int(frontend_http_port))
-
-    print "Setting Frontend HTTPS Port"
-    cmo.setFrontendHTTPSPort(int(frontend_https_port))
+    set_attribute_value('FrontendHost', frontend_host)
+    set_attribute_value('FrontendHTTPPort', frontend_http_port)
+    set_attribute_value('FrontendHTTPSPort', frontend_https_port)
 
     print "Change SSL"
     cd('/Servers/'+name+'/SSL/'+name)
 
     if sslEnabled and sslEnabled != '-1':
-      set('Enabled', format_boolean(sslEnabled))
+      set_attribute_value('Enabled', sslEnabled)
     if jsseenabled and jsseenabled != '-1':
-      set('JSSEEnabled', format_boolean(jsseenabled))
+      set_attribute_value('JSSEEnabled', jsseenabled)
     if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != '-1':
-      set('HostnameVerificationIgnored', format_boolean(sslHostnameVerificationIgnored))
+      set_attribute_value('HostnameVerificationIgnored', sslHostnameVerificationIgnored)
       if sslHostnameVerificationIgnored == '0' and sslhostnameverifier:
-        set('HostnameVerifier', sslhostnameverifier)
-    if two_way_ssl:
-      set('TwoWaySSLEnabled'           , format_boolean(two_way_ssl))
-    if client_certificate_enforced:
-      set('ClientCertificateEnforced'  , format_boolean(client_certificate_enforced))
-    if sslListenPort:
-      set('ListenPort', int(sslListenPort))
-    if useservercerts:
-      set('UseServerCerts', format_boolean(useservercerts))
+        set_attribute_value('HostnameVerifier', sslhostnameverifier)
+
+    set_attribute_value('TwoWaySSLEnabled', two_way_ssl)
+    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced)
+    set_attribute_value('ListenPort', sslListenPort)
+    set_attribute_value('UseServerCerts', useservercerts)
 
     cd('/Servers/'+name+'/Log/'+name)
-    if logFilename:
-      set('FileName', logFilename)
-    if log_rotationtype:
-      cmo.setRotationType(log_rotationtype)
-    if log_rotate_logon_startup:
-      cmo.setRotateLogOnStartup(format_boolean2(log_rotate_logon_startup))
-    if log_filecount:
-      cmo.setFileCount(int(log_filecount))
-    if log_number_of_files_limited:
-      cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
-    if log_file_min_size:
-      cmo.setFileMinSize(int(log_file_min_size))
-    if log_date_pattern:
-      print "change log_date_pattern"
-      cmo.setDateFormatPattern(log_date_pattern)
-
-    if log_redirect_stderr_to_server == '1':
-      cmo.setRedirectStderrToServerLogEnabled(true)
-    else:
-      cmo.setRedirectStderrToServerLogEnabled(false)
-
-    if log_redirect_stdout_to_server == '1':
-      cmo.setRedirectStdoutToServerLogEnabled(true)
-    else:
-      cmo.setRedirectStdoutToServerLogEnabled(false)
-
+    set_attribute_value('FileName', logFilename)
+    set_attribute_value('RotationType', log_rotationtype)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup)
+    set_attribute_value('FileCount', log_filecount)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited)
+    set_attribute_value('FileMinSize', log_file_min_size)
+    set_attribute_value('DateFormatPattern', log_date_pattern)
+    set_attribute_value('RedirectStderrToServerLogEnabled', log_redirect_stderr_to_server)
+    set_attribute_value('RedirectStdoutToServerLogEnabled', log_redirect_stdout_to_server)
 
     print "web server log: " + name
     cd('/Servers/'+name+'/WebServer/'+name+'/WebServerLog/'+name)
-    if log_http_number_of_files_limited:
-      cmo.setNumberOfFilesLimited(int(log_http_number_of_files_limited))
-    if log_http_file_count:
-      cmo.setFileCount(int(log_http_file_count))
-    if log_http_Filename:
-      cmo.setFileName(log_http_Filename)
-    if log_rotationtype:
-      cmo.setRotationType(log_rotationtype)
-    if log_rotate_logon_startup:
-      cmo.setRotateLogOnStartup(format_boolean2(log_rotate_logon_startup))
-    if log_filecount:
-      cmo.setFileCount(int(log_filecount))
-    if log_number_of_files_limited:
-      cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
-    if log_file_min_size:
-      cmo.setFileMinSize(int(log_file_min_size))
-    if log_http_format_type:
-      cmo.setLogFileFormat(log_http_format_type)
-    if log_http_format:
-      cmo.setELFFields(log_http_format)
+    set_attribute_value('NumberOfFilesLimited', log_http_number_of_files_limited)
+    set_attribute_value('FileCount', log_http_file_count)
+    set_attribute_value('FileName', log_http_Filename)
+    set_attribute_value('RotationType', log_rotationtype)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup)
+    set_attribute_value('FileMinSize', log_file_min_size)
+    set_attribute_value('LogFileFormat', log_http_format_type)
+    set_attribute_value('ELFFields', log_http_format)
+
 
     print "datasource server log: " + name
     cd('/Servers/'+name+'/DataSource/'+name+'/DataSourceLogFile/'+name)
-    if log_datasource_Filename:
-      set('FileName', log_datasource_Filename)
-    if log_rotationtype:
-      cmo.setRotationType(log_rotationtype)
-    if log_rotate_logon_startup:
-      cmo.setRotateLogOnStartup(format_boolean2(log_rotate_logon_startup))
-    if log_filecount:
-      cmo.setFileCount(int(log_filecount))
-    if log_number_of_files_limited:
-      cmo.setNumberOfFilesLimited(int(log_number_of_files_limited))
-    if log_file_min_size:
-      cmo.setFileMinSize(int(log_file_min_size))
+    set_attribute_value('FileName', log_datasource_Filename)
+    set_attribute_value('RotationType', log_rotationtype)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup)
+    set_attribute_value('FileCount', log_filecount)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited)
+    set_attribute_value('FileMinSize', log_file_min_size)
 
     if default_file_store:
       cd('/Servers/'+name+'/DefaultFileStore/'+name)
-      cmo.setDirectory(default_file_store)
+      set_attribute_value('Directory', default_file_store)
 
     cd('/')
     DOMAIN_PATH = get('RootDirectory')

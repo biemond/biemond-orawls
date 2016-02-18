@@ -22,11 +22,9 @@ try:
         cmo.createSAFRemoteContext(name)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+name+'/SAFLoginContext/'+name)
-    cmo.setLoginURL(url)
-
-    if weblogic_user:
-      cmo.setUsername(weblogic_user)
-      cmo.setPassword(weblogic_password)
+    set_attribute_value('LoginURL', url)
+    set_attribute_value('Username', weblogic_user)
+    set_attribute_value('Password', weblogic_password)
 
     save()
     activate()

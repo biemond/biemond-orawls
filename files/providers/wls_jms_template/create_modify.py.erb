@@ -18,12 +18,10 @@ try:
         cmo.createTemplate(name)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryParamsOverrides/'+name)
-    if redeliverydelay:
-      cmo.setRedeliveryDelay( int(redeliverydelay) )
+    set_attribute_value('RedeliveryDelay', redeliverydelay)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryFailureParams/'+name)
-    if redeliverylimit:
-      cmo.setRedeliveryLimit( int(redeliverylimit) )
+    set_attribute_value('RedeliveryLimit', redeliverylimit)
 
     save()
     activate()

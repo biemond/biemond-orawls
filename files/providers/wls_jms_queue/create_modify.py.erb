@@ -68,10 +68,10 @@ try:
     else:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
-    set_attribute_value('ForwardDelay'       , forwarddelay)
 
     if distributed == "true":
       set_attribute_value('LoadBalancingPolicy', balancingpolicy)
+      set_attribute_value('ForwardDelay'       , forwarddelay)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
     set_attribute_value('ExpirationPolicy', expirationpolicy)

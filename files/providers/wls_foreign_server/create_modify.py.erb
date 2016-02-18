@@ -24,26 +24,20 @@ try:
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name)
 
-    if defaulttargeting  == '1':
-      cmo.setDefaultTargetingEnabled(true)
+    set_attribute_value('DefaultTargetingEnabled', defaulttargeting)
 
     if subdeployment and defaulttargeting == "0":
-      cmo.setSubDeploymentName(subdeployment)
+      set_attribute_value('SubDeploymentName', subdeployment)
     elif not subdeployment and defaulttargeting == "1":
-      cmo.setDefaultTargetingEnabled(true)
+      set_attribute_value('DefaultTargetingEnabled', true)
     elif subdeployment and defaulttargeting == "1":
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
-    if connectionurl:
-      cmo.setConnectionURL(connectionurl)
-
-    if initialcontextfactory:
-      cmo.setInitialContextFactory(initialcontextfactory)
-
-    if password:
-      cmo.setJNDIPropertiesCredential(password)
+    set_attribute_value('ConnectionURL', connectionurl)
+    set_attribute_value('InitialContextFactory', initialcontextfactory)
+    set_attribute_value('JNDIPropertiesCredential', password)
 
     if extraproperties:
       properties=String(extraproperties).split(",")

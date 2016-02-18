@@ -21,13 +21,10 @@ try:
         cmo.createQuota(name)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Quotas/'+name)
-    cmo.setBytesMaximum(long(bytesmaximum))
-    cmo.setMessagesMaximum(long(messagesmaximum))
-    cmo.setPolicy(policy)
-    if shared == '1':
-      cmo.setShared(true)
-    else:
-      cmo.setShared(false)
+    set_attribute_value('BytesMaximum', bytesmaximum)
+    set_attribute_value('MessagesMaximum', messagesmaximum)
+    set_attribute_value('Policy', policy)
+    set_attribute_value('Shared', shared)
 
     save()
     activate()

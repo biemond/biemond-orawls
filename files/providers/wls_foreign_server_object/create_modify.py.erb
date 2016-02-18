@@ -30,9 +30,8 @@ try:
 
         cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignConnectionFactories/'+name)
 
-    cmo.setLocalJNDIName(localjndiname)
-    cmo.setRemoteJNDIName(remotejndiname)
-
+    set_attribute_value('LocalJNDIName', localjndiname)
+    set_attribute_value('RemoteJNDIName', remotejndiname)
 
     save()
     activate()

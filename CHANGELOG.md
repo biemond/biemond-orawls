@@ -1,13 +1,13 @@
 # History
 
 ## 1.0.47
-- some WLST refactoring for all the wls types
+- heavy WLST refactoring for all the wls types, less and more simple code, auto detect the right type, better fault handling
 - wls_jms_security_policy new type
 - wls_virtual_target new type but only for WebLogic 12.2.1
 - option to override the default machine in the domain manifest
 - MQ resource adapter mininal template
 - OSB domain template fix
-- wls_datasource, new attribute remove_infected_connections 
+- wls_datasource, new attributes remove_infected_connections ,connectionreservetimeoutseconds and inactiveconnectiontimeoutseconds
 
 ## 1.0.46
 - added support for 12.2.1 fast rest management interface, requires 12.2.1 or higher & only works for now on wls_cluster (lib/puppet/type/wls_server.rb plus wls_setting must contain a http connect url)

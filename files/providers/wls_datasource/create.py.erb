@@ -74,13 +74,6 @@ try:
     set_attribute_value('InactiveConnectionTimeoutSeconds', inactiveconnectiontimeoutseconds)
     set_attribute_value('ConnectionReserveTimeoutSeconds', connectionreservetimeoutseconds)
 
-   if inactiveconnectiontimeoutseconds:
- +      set('InactiveConnectionTimeoutSeconds', int(inactiveconnectiontimeoutseconds))
- +
- +    if connectionreservetimeoutseconds:
- +      set('ConnectionReserveTimeoutSeconds', int(connectionreservetimeoutseconds))
- +
-
     set_attribute_value('ConnectionCreationRetryFrequencySeconds', connectioncreationretryfrequency)
     set_attribute_value('InitSql', initsql)
 

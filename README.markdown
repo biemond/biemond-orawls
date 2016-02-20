@@ -35,7 +35,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 ## Complete vagrant examples
 
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)
-- WebLogic 12.2.1 / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
+- WebLogic 12.2.1 MT multi tenancy / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
 - WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
 - WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
@@ -142,6 +142,8 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 
 12.2.1 Multitenancy
 - [wls_virtual_target](#wls_virtual_target)
+- [wls_resource_group](#wls_resource_group)
+- [wls_resource_group_template](#wls_resource_group_template)
 
 
 ## Domain creation options (Dev or Prod mode)
@@ -4522,22 +4524,31 @@ Only for 12.2.1 and higher, it needs wls_setting and when identifier is not prov
 
 or use puppet resource wls_virtual_target
 
-    wls_virtual_target { 'default/CustomerA':
+    wls_virtual_target { 'default/VT_CustomerA':
       ensure             => 'present',
-      channel            => 'aaaa',
+      channel            => 'PartitionChannel',
       port               => '8011',
       target             => ['WebCluster'],
       targettype         => ['Cluster'],
       uriprefix          => '/customer_a',
       virtual_host_names => ['10.10.10.100', '10.10.10.200'],
     }
-    wls_virtual_target { 'default/CustomerB':
+    wls_virtual_target { 'default/VT_CustomerB':
       ensure             => 'present',
       channel            => 'PartitionChannel',
-      portoffset         => '5',
+      port               => '8001',
       target             => ['WebCluster'],
       targettype         => ['Cluster'],
       uriprefix          => '/customer_b',
+      virtual_host_names => ['10.10.10.100', '10.10.10.200'],
+    }
+    wls_virtual_target { 'default/VT_Global':
+      ensure             => 'present',
+      channel            => 'PartitionChannel',
+      port               => '8021',
+      target             => ['WebCluster'],
+      targettype         => ['Cluster'],
+      uriprefix          => '/global',
       virtual_host_names => ['10.10.10.100', '10.10.10.200'],
     }
 
@@ -4545,23 +4556,85 @@ in hiera
 
     # this will use default as wls_setting identifier
     virtual_target_instances:
-      'CustomerA':
+      'VT_CustomerA':
         ensure:             'present'
-        channel:            'PartitionChannel'
         port:               '8011'
+        # portoffset:         '6'
         target:             'WebCluster'
         targettype:         'Cluster'
         uriprefix:          '/customer_a'
         virtual_host_names:
           - '10.10.10.100'
           - '10.10.10.200'
-      'CustomerB':
+      'VT_CustomerB':
         ensure:             'present'
         channel:            'PartitionChannel'
-        portoffset:         '5'
+        port:               '8001'
         target:             'WebCluster'
         targettype:         'Cluster'
         uriprefix:          '/customer_b'
         virtual_host_names:
           - '10.10.10.100'
           - '10.10.10.200'
+      'VT_Global':
+        ensure:             'present'
+        channel:            'PartitionChannel'
+        port:               '8021'
+        target:             'WebCluster'
+        targettype:         'Cluster'
+        uriprefix:          '/global'
+        virtual_host_names:
+          - '10.10.10.100'
+          - '10.10.10.200'
+
+### wls_resource_group_template
+
+Resource group templates for resource groups or used in a partition resource group.
+Only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_resource_group_template
+
+    wls_resource_group_template { 'default/AppTemplate1':
+      ensure => 'present',
+    }
+    wls_resource_group_template { 'default/AppTemplate2':
+      ensure => 'present',
+    }
+
+in hiera
+
+    # this will use default as wls_setting identifier
+    resource_group_template_instances:
+      'AppTemplate1':
+        ensure: 'present'
+      'AppTemplate2':
+        ensure: 'present'
+
+### wls_resource_group
+
+For making global resource groups or for just 1 virtual target, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_resource_group
+
+    wls_resource_group { 'default/ResourceGroup':
+      ensure => 'present',
+    }
+    wls_resource_group { 'default/ResourceGroupForVT_Global':
+      ensure                  => 'present',
+      resource_group_template => 'AppTemplate2',
+      virtual_target          => 'VT_Global',
+    }
+
+in hiera
+
+    # this will use default as wls_setting identifier
+    resource_group_instances:
+      'ResourceGroup':
+        ensure:                   'present'
+      'ResourceGroupForVT_Global':
+        ensure:                   'present'
+        resource_group_template:  'AppTemplate2'
+        virtual_target:           'VT_Global'
+
+
+

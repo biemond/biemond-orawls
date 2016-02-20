@@ -1,5 +1,9 @@
 # History
 
+## 1.0.48
+- wls_resource_group_template new type but only for WebLogic 12.2.1
+- wls_resource_group new type but only for WebLogic 12.2.1
+
 ## 1.0.47
 - heavy WLST refactoring for all the wls types, less and more simple code, auto detect the right type, better fault handling
 - wls_jms_security_policy new type

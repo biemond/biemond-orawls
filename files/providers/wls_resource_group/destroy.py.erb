@@ -1,0 +1,28 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name = '<%= resource_group_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/ResourceGroups/' + name)
+    cmo.findEffectiveTargets()
+
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/ResourceGroups/' + name))
+
+    cd('/')
+    cmo.destroyResourceGroup(getMBean('/ResourceGroups/' + name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    report_back_error()
+    raise

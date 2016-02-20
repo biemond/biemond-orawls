@@ -1,0 +1,39 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= resource_group_name %>'
+resource_group_template = '<%= resource_group_template %>'
+virtual_target          = '<%= virtual_target %>'
+
+edit()
+startEdit()
+
+try:
+    print 'action = ' + wlst_action
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createResourceGroup(name)
+
+    cd('/ResourceGroups/' + name)
+    if resource_group_template:
+        cmo.setResourceGroupTemplate(getMBean('/ResourceGroupTemplates/' + resource_group_template))
+
+    if virtual_target:
+        set_attribute_value('UseDefaultTarget', true)
+        set('Targets',jarray.array([ObjectName('com.bea:Name='+ virtual_target +',Type=VirtualTarget')], ObjectName))
+    else:
+        set_attribute_value('UseDefaultTarget', true)
+        set('Targets', None)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    report_back_error()
+    raise

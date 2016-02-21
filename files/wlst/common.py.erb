@@ -69,10 +69,26 @@ def retrieve_target_list(wlst_name):
         targetType.append(get('Type'))
     return target, targetType
 
+def retrieve_virtual_target_list(wlst_name, field):
+    print wlst_name
+    cd(wlst_name)
+    nn = ls(field, returnMap='true')
+    target = []
+    for token_target in nn:
+        target.append(token_target)
+    return target
+
 def target_list(targets, targettypes):
     targetList = []
     for i in range(len(targets)):
         bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i])
+        targetList.append(bean)
+    return jarray.array(targetList, ObjectName)
+
+def target_list_same_type(targets, targettype):
+    targetList = []
+    for i in range(len(targets)):
+        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettype)
         targetList.append(bean)
     return jarray.array(targetList, ObjectName)
 

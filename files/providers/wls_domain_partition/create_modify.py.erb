@@ -1,0 +1,43 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= domain_partition_name %>'
+root_file_system        = '<%= root_file_system %>'
+virtual_target          = '<%= virtual_target %>'
+
+edit()
+startEdit()
+
+try:
+    print 'action = ' + wlst_action
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createPartition(name)
+
+    cd('/Partitions/' + name)
+    if virtual_target:
+        targetList = target_list_same_type(String(virtual_target).split(","), 'VirtualTarget')
+        set('AvailableTargets', targetList)
+        set('DefaultTargets'  , None)
+    else:
+        set_attribute_value('DefaultTargets'  , None)
+        set_attribute_value('AvailableTargets', None)
+
+    if root_file_system:
+        cd('/Partitions/' + name + '/SystemFileSystem/' + name)
+        set_attribute_value('Root'          , root_file_system)
+        set_attribute_value('CreateOnDemand', true)
+        set_attribute_value('Preserved'     , true)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    report_back_error()
+    raise

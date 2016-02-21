@@ -1,12 +1,10 @@
 
-
 m = ls('/CoherenceClusterSystemResources',returnMap='true')
 
 f = open_file("name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain")
 for token in m:
   print '___'+token+'___'
   cd('/CoherenceClusterSystemResources/'+token)
-
   target, targetType = retrieve_target_list('/CoherenceClusterSystemResources/'+token)
 
   cd('/CoherenceClusterSystemResources/'+token+'/CoherenceClusterResource/'+token+'/CoherenceClusterParams/'+token)

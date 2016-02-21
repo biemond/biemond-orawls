@@ -144,6 +144,7 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_virtual_target](#wls_virtual_target)
 - [wls_resource_group](#wls_resource_group)
 - [wls_resource_group_template](#wls_resource_group_template)
+- [wls_domain_partition](#wls_domain_partition)
 
 
 ## Domain creation options (Dev or Prod mode)
@@ -4524,6 +4525,15 @@ Only for 12.2.1 and higher, it needs wls_setting and when identifier is not prov
 
 or use puppet resource wls_virtual_target
 
+    wls_virtual_target { 'default/VT_AdminServer':
+      ensure             => 'present',
+      channel            => 'PartitionChannel',
+      port               => '7011',
+      target             => ['AdminServer'],
+      targettype         => ['Server'],
+      uriprefix          => '/adminserver',
+      virtual_host_names => ['10.10.10.10'],
+    }
     wls_virtual_target { 'default/VT_CustomerA':
       ensure             => 'present',
       channel            => 'PartitionChannel',
@@ -4586,6 +4596,16 @@ in hiera
         virtual_host_names:
           - '10.10.10.100'
           - '10.10.10.200'
+      'VT_AdminServer':
+        ensure:             'present'
+        channel:            'PartitionChannel'
+        port:               '7011'
+        target:             'AdminServer'
+        targettype:         'Server'
+        uriprefix:          '/adminserver'
+        virtual_host_names:
+          - '10.10.10.10'
+
 
 ### wls_resource_group_template
 
@@ -4612,29 +4632,71 @@ in hiera
 
 ### wls_resource_group
 
-For making global resource groups or for just 1 virtual target, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+For making global resource groups or for just 1 or more virtual targets, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
 
 or use puppet resource wls_resource_group
 
     wls_resource_group { 'default/ResourceGroup':
       ensure => 'present',
     }
-    wls_resource_group { 'default/ResourceGroupForVT_Global':
+    wls_resource_group { 'default/ResourceGroupForAll':
       ensure                  => 'present',
       resource_group_template => 'AppTemplate2',
-      virtual_target          => 'VT_Global',
+      virtual_target          => ['VT_AdminServer', 'VT_Global'],
     }
 
 in hiera
 
-    # this will use default as wls_setting identifier
     resource_group_instances:
       'ResourceGroup':
         ensure:                   'present'
-      'ResourceGroupForVT_Global':
+      'ResourceGroupForAll':
         ensure:                   'present'
         resource_group_template:  'AppTemplate2'
-        virtual_target:           'VT_Global'
+        virtual_target:
+          - 'VT_Global'
+          - 'VT_AdminServer'
 
+### wls_domain_partition
 
+For making domain partitions or for just 1 or more virtual targets, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
 
+You need to restart the AdminServer when somethings changes on the domain partition level, see wls_adminserver type
+
+or use puppet resource wls_domain_partition
+
+    wls_domain_partition { 'default/CustomerA_Partition':
+      ensure           => 'present',
+      root_file_system => '/opt/oracle/wlsdomains/domains/Wls1221/partitions/CustomerAPartition/system',
+      virtual_target   => ['VT_CustomerA'],
+    }
+    wls_domain_partition { 'default/CustomerB_Partition':
+      ensure           => 'present',
+      root_file_system => '/opt/oracle/wlsdomains/domains/Wls1221/partitions/CustomerBPartition/system',
+      virtual_target   => ['VT_CustomerB'],
+    }
+    wls_domain_partition { 'default/Global_Partition':
+      ensure           => 'present',
+      root_file_system => '/opt/oracle/wlsdomains/domains/Wls1221/partitions/GlobalPartition/system',
+      virtual_target   => ['VT_AdminServer', 'VT_Global'],
+    }
+
+in hiera
+
+    wls_domain_partition_instances:
+      'Global_Partition':
+        ensure:           'present'
+        root_file_system: '/opt/oracle/wlsdomains/domains/Wls1221/partitions/GlobalPartition/system'
+        virtual_target:
+          - 'VT_AdminServer'
+          - 'VT_Global'
+      'CustomerA_Partition':
+        ensure:           'present'
+        root_file_system: '/opt/oracle/wlsdomains/domains/Wls1221/partitions/CustomerAPartition/system'
+        virtual_target:
+          - 'VT_CustomerA'
+      'CustomerB_Partition':
+        ensure:           'present'
+        root_file_system: '/opt/oracle/wlsdomains/domains/Wls1221/partitions/CustomerBPartition/system'
+        virtual_target:
+          - 'VT_CustomerB'

@@ -21,8 +21,9 @@ try:
         cmo.setResourceGroupTemplate(getMBean('/ResourceGroupTemplates/' + resource_group_template))
 
     if virtual_target:
-        set_attribute_value('UseDefaultTarget', true)
-        set('Targets',jarray.array([ObjectName('com.bea:Name='+ virtual_target +',Type=VirtualTarget')], ObjectName))
+        set_attribute_value('UseDefaultTarget', false)
+        targetList = target_list_same_type(String(virtual_target).split(","), 'VirtualTarget')
+        set('Targets', targetList)
     else:
         set_attribute_value('UseDefaultTarget', true)
         set('Targets', None)

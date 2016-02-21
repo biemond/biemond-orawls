@@ -18,13 +18,9 @@ for token in m:
     else:
         resource_group_template = ''
 
-    target, targetType = retrieve_target_list('/ResourceGroups/'+token)
-    if target:
-        virtual_target = target[0]
-    else:
-        virtual_target = ''
+    virtual_target, targetType = retrieve_target_list('/ResourceGroups/'+token)
 
-    add_index_entry(f, [domain+'/'+token, resource_group_template, virtual_target])
+    add_index_entry(f, [domain+'/'+token, resource_group_template,','.join(virtual_target)])
 
 f.close()
 report_back_success()

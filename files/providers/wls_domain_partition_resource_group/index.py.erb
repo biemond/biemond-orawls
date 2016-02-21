@@ -1,0 +1,30 @@
+
+f = open_file("name;domain_partition_name;virtual_target;resource_group_template")
+
+wlst_name = '/Partitions/'
+m = ls(wlst_name, returnMap='true')
+
+for token in m:
+    print '___'+token+'___'
+    cd(wlst_name + token)
+
+    n = ls('ResourceGroups', returnMap='true')
+    for token2 in n:
+
+        cd(wlst_name + token + '/ResourceGroups/' + token2)
+
+        resource_group_template_mbean = get('ResourceGroupTemplate')
+        if resource_group_template_mbean:
+            path = getPath(resource_group_template_mbean)
+            cd("/" + path)
+            resource_group_template = get('Name')
+            cd(wlst_name + token + '/ResourceGroups/' + token2)
+        else:
+            resource_group_template = ''
+
+        virtual_target = retrieve_virtual_target_list(wlst_name + token  + '/ResourceGroups/' + token2, 'Targets')
+
+        add_index_entry(f, [domain+'/'+token+":"+token2, token, ','.join(virtual_target), resource_group_template])
+
+f.close()
+report_back_success()

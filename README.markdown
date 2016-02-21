@@ -67,6 +67,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - [start or stop AdminServer, Managed or a Cluster](#control)
 - [StoreUserConfig](#storeuserconfig) for storing WebLogic Credentials and using in WLST
 - [Dynamic targetting](#Dynamictargetting) by using the notes field in WebLogic for resource targetting
+- 12.2.1 Multi Tenancy features
 
 ### Fusion Middleware Features 11g & 12c
 
@@ -145,6 +146,7 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_resource_group](#wls_resource_group)
 - [wls_resource_group_template](#wls_resource_group_template)
 - [wls_domain_partition](#wls_domain_partition)
+- [wls_domain_partition_resource_group](#wls_domain_partition_resource_group)
 
 
 ## Domain creation options (Dev or Prod mode)
@@ -4700,3 +4702,44 @@ in hiera
         root_file_system: '/opt/oracle/wlsdomains/domains/Wls1221/partitions/CustomerBPartition/system'
         virtual_target:
           - 'VT_CustomerB'
+
+### wls_domain_partition_resource_group
+
+For making resource groups inside a domain partition, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_domain_partition_resource_group
+
+
+    wls_domain_partition_resource_group { 'default/CustomerA_Partition:PartitionResourceGroupProducts':
+      ensure                  => 'present',
+      resource_group_template => 'AppTemplate1',
+      virtual_target          => ['VT_CustomerA'],
+    }
+    wls_domain_partition_resource_group { 'default/CustomerB_Partition:PartitionResourceGroupProducts':
+      ensure                  => 'present',
+      resource_group_template => 'AppTemplate1',
+      virtual_target          => ['VT_CustomerB'],
+    }
+    wls_domain_partition_resource_group { 'default/Global_Partition:PartitionResourceGroup1':
+      ensure         => 'present',
+      virtual_target => ['VT_AdminServer', 'VT_Global'],
+    }
+
+in hiera
+
+    wls_domain_partition_resource_group_instances:
+      'CustomerA_Partition:PartitionResourceGroupProducts':
+        ensure:                  'present'
+        resource_group_template: 'AppTemplate1'
+        virtual_target:
+          - 'VT_CustomerA'
+      'CustomerB_Partition:PartitionResourceGroupProducts':
+        ensure:                  'present'
+        resource_group_template: 'AppTemplate1'
+        virtual_target:
+          - 'VT_CustomerB'
+      'Global_Partition:PartitionResourceGroup1':
+        ensure:                  'present'
+        virtual_target:
+          - 'VT_AdminServer'
+          - 'VT_Global'

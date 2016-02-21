@@ -1,0 +1,43 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= resource_group_name %>'
+domain_partition_name   = '<%= domain_partition_name %>'
+virtual_target          = '<%= virtual_target %>'
+resource_group_template = '<%= resource_group_template %>'
+
+edit()
+startEdit()
+
+try:
+    print 'action = ' + wlst_action
+    cd('/Partitions/' + domain_partition_name)
+
+    if wlst_action == 'create':
+        cmo.createResourceGroup(name)
+
+    cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + name)
+
+    if virtual_target:
+        targetList = target_list_same_type(String(virtual_target).split(","), 'VirtualTarget')
+        set('Targets'         , targetList)
+        set('UseDefaultTarget', false)
+    else:
+        set_attribute_value('UseDefaultTarget', true)
+        set_attribute_value('Targets'         , None)
+
+    if resource_group_template:
+        set('ResourceGroupTemplate', getMBean('/ResourceGroupTemplates/' + resource_group_template))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    report_back_error()
+    raise

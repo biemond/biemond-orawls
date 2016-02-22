@@ -5,7 +5,13 @@
 import re
 import jarray
 import javax.management.ObjectName
-import wl
+
+
+def report_back_success():
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+def report_back_error():
+    print "~~~~COMMAND FAILED~~~~"
 
 def quote(text):
     if text or text == '':
@@ -17,12 +23,6 @@ def open_file(fields):
     f = open("/tmp/wlstScript.out", "w")
     print >>f, fields
     return f
-
-def report_back_success():
-    print "~~~~COMMAND SUCCESFULL~~~~"
-
-def report_back_error():
-    print "~~~~COMMAND FAILED~~~~"
 
 def add_index_entry(file_handle, values):
     print >>file_handle, ";".join(map(quote, values))
@@ -104,6 +104,7 @@ def password_to_string(value):
 def decrypt_value(encrypted_value):
     domain_dir = get('RootDirectory')
     domain_dir_path = os.path.abspath(domain_dir)
+    print weblogic.security.internal.SerializedSystemIni.getPath()
     encrypt_srv = weblogic.security.internal.SerializedSystemIni.getEncryptionService(domain_dir_path)
     ces = weblogic.security.internal.encryption.ClearOrEncryptedService(encrypt_srv)
     password = ces.decrypt(encrypted_value)

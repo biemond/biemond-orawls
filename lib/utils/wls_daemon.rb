@@ -33,11 +33,8 @@ class WlsDaemon < EasyType::Daemon
 
     identity = "wls-#{domain}"
     Puppet.info "Starting the wls daemon for domain #{@domain}"
-    command =  "export POST_CLASSPATH='#{@postClasspath}';. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true #{trust_parameters} weblogic.WLST -skipWLSModuleScanning"
+    command =  "export POST_CLASSPATH='#{@postClasspath}';. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true #{trust_parameters} weblogic.WLST"
     super(identity, command, user)
-    pass_domain
-    pass_credentials
-    connect_to_wls
     define_common_methods
   end
 
@@ -48,6 +45,11 @@ class WlsDaemon < EasyType::Daemon
     connect_to_wls
     execute_command "execfile('#{script}')"
     sync(timeout)
+  end
+
+  def execute_script_simple(script)
+    Puppet.info "Executing wls-script #{script}"
+    execute_command "execfile('#{script}')"
   end
 
   private
@@ -70,6 +72,11 @@ class WlsDaemon < EasyType::Daemon
 
   def define_common_methods
     Puppet.debug 'Defining common methods...'
-    execute_command template('puppet:///modules/orawls/wlst/common.py.erb', binding)
+    tmpFile = Tempfile.new('wlstCommonScript.py')
+    tmpFile.write(template('puppet:///modules/orawls/wlst/common.py.erb', binding))
+    tmpFile.close
+    FileUtils.chmod(0555, tmpFile.path)
+    execute_script_simple(tmpFile.path)
+    # execute_command template('puppet:///modules/orawls/wlst/common.py.erb', binding)
   end
 end

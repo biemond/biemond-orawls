@@ -14,7 +14,7 @@ try:
     cd('/')
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-    cmo.destroySAFImportedDestinations(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name'))
+    cmo.destroySAFImportedDestinations(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name))
     save()
     activate()
     report_back_success()

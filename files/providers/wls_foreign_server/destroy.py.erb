@@ -14,7 +14,7 @@ try:
     cd('/')
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-    cmo.destroyForeignServer(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name'))
+    cmo.destroyForeignServer(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name))
 
     save()
     activate()

@@ -17,30 +17,26 @@ try:
 
     cd('/')
     if wlst_action == 'create':
-        print 'Create Coherence Server';
+        print 'Create Coherence Server'
         cmo.createCoherenceServer(name)
 
-    cd('/CoherenceServers/'+name)
+    cd('/CoherenceServers/' + name)
 
-    set_attribute_value('UnicastListenAddress', unicastaddress)
-    set_attribute_value('UnicastListenPort'   , unicastport)
+    set_attribute_value('UnicastListenAddress', unicastaddress, use_default_value_when_empty)
+    set_attribute_value('UnicastListenPort', unicastport, use_default_value_when_empty)
 
     if machine:
-       cd('/')
-       m = cmo.lookupMachine(machine)
-       cd('/CoherenceServers/'+name)
-       set('Machine', m)
+        cd('/')
+        m = cmo.lookupMachine(machine)
+        cd('/CoherenceServers/' + name)
+        set('Machine', m)
 
-    cd('/CoherenceServers/'+name+'/CoherenceServerStart/'+name)
-    set_attribute_value('ClassPath', classpath)
+    cd('/CoherenceServers/' + name + '/CoherenceServerStart/' + name)
+    set_attribute_value('ClassPath', classpath, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

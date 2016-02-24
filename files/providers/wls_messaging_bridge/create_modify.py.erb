@@ -29,34 +29,34 @@ startEdit()
 try:
     cd('/')
     if wlst_action == 'create':
-      cmo.createMessagingBridge(name)
+        cmo.createMessagingBridge(name)
 
     cd('/MessagingBridges/' + name)
     cmo.setName(name)
 
-    set_attribute_value('BatchInterval', batchinterval)
-    set_attribute_value('BatchSize', batchsize)
-    set_attribute_value('AsyncEnabled', asyncenabled)
-    set_attribute_value('DurabilityEnabled', durabilityenabled)
-    set_attribute_value('IdleTimeMaximum', idletimemax)
+    set_attribute_value('BatchInterval', batchinterval, use_default_value_when_empty)
+    set_attribute_value('BatchSize', batchsize, use_default_value_when_empty)
+    set_attribute_value('AsyncEnabled', asyncenabled, use_default_value_when_empty)
+    set_attribute_value('DurabilityEnabled', durabilityenabled, use_default_value_when_empty)
+    set_attribute_value('IdleTimeMaximum', idletimemax, use_default_value_when_empty)
 
-    set_attribute_value('PreserveMsgProperty', preservemsgproperty)
-    set_attribute_value('QOSDegradationAllowed', qosdegradationallowed)
+    set_attribute_value('PreserveMsgProperty', preservemsgproperty, use_default_value_when_empty)
+    set_attribute_value('QOSDegradationAllowed', qosdegradationallowed, use_default_value_when_empty)
 
-    set_attribute_value('ReconnectDelayIncrease', reconnectdelayincrease)
-    set_attribute_value('ReconnectDelayMaximum', reconnectdelaymax)
-    set_attribute_value('ReconnectDelayMinimum', reconnectdelaymin)
+    set_attribute_value('ReconnectDelayIncrease', reconnectdelayincrease, use_default_value_when_empty)
+    set_attribute_value('ReconnectDelayMaximum', reconnectdelaymax, use_default_value_when_empty)
+    set_attribute_value('ReconnectDelayMinimum', reconnectdelaymin, use_default_value_when_empty)
 
-    cmo.setSourceDestination(getMBean('/JMSBridgeDestinations/'+sourcedestination))
-    cmo.setTargetDestination(getMBean('/JMSBridgeDestinations/'+targetdestination))
+    cmo.setSourceDestination(getMBean('/JMSBridgeDestinations/' + sourcedestination))
+    cmo.setTargetDestination(getMBean('/JMSBridgeDestinations/' + targetdestination))
 
-    set_attribute_value('Selector', selector)
-    set_attribute_value('QualityOfService', qos)
-    set_attribute_value('Started', started)
-    set_attribute_value('TransactionTimeout', transactiontimeout)
+    set_attribute_value('Selector', selector, use_default_value_when_empty)
+    set_attribute_value('QualityOfService', qos, use_default_value_when_empty)
+    set_attribute_value('Started', started, use_default_value_when_empty)
+    set_attribute_value('TransactionTimeout', transactiontimeout, use_default_value_when_empty)
 
     print "deployments"
-    cd('/Deployments/' + name )
+    cd('/Deployments/' + name)
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
     set('Targets', targetList)
@@ -66,10 +66,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-data

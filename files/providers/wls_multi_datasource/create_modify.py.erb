@@ -28,11 +28,11 @@ try:
       jndis = String(jndinames).split(",")
       set('JNDINames',jarray.array(jndis, String))
 
-    set_attribute_value('AlgorithmType', algorithmtype)
-    set_attribute_value('DataSourceList', datasources)
+    set_attribute_value('AlgorithmType', algorithmtype, use_default_value_when_empty)
+    set_attribute_value('DataSourceList', datasources, use_default_value_when_empty)
 
     cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)
-    set_attribute_value('TestFrequencySeconds', testfrequency)
+    set_attribute_value('TestFrequencySeconds', testfrequency, use_default_value_when_empty)
 
     cd('/JDBCSystemResources/' + name)
 
@@ -51,8 +51,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

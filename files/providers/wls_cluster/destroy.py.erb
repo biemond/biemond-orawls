@@ -1,31 +1,24 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
-name    = '<%= cluster_name %>'
+name = '<%= cluster_name %>'
 
 edit()
 startEdit()
 
 try:
 
-  cmo = cd('/')
-  cl  = cmo.lookupCluster(name)
+    cmo = cd('/')
+    cl = cmo.lookupCluster(name)
 
-  editService.getConfigurationManager().removeReferencesToBean(cl)
+    editService.getConfigurationManager().removeReferencesToBean(cl)
 
-  cmo = cd('/')
-  cmo.destroyCluster(cl)
+    cmo = cd('/')
+    cmo.destroyCluster(cl)
 
-  save()
-  activate()
-  report_back_success()
+    save()
+    activate()
+    report_back_success()
 
 except:
-  print "Unexpected error:", sys.exc_info()[0]
-  undo('true','y')
-  stopEdit('y')
-  report_back_error()
-  raise
-
+    report_back_error()

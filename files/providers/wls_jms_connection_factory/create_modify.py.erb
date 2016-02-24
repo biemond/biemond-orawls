@@ -39,46 +39,42 @@ try:
       cmo.createConnectionFactory(name)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name)
-    set_attribute_value('JNDIName'     , jndiname)
-    set_attribute_value('LocalJNDIName', localjndiname)
+    set_attribute_value('JNDIName'     , jndiname, use_default_value_when_empty)
+    set_attribute_value('LocalJNDIName', localjndiname, use_default_value_when_empty)
 
     if subdeployment and defaulttargeting == "0":
-      set_attribute_value('SubDeploymentName', subdeployment)
+      set_attribute_value('SubDeploymentName', subdeployment, use_default_value_when_empty)
     elif not subdeployment and defaulttargeting == "1":
-      set_attribute_value('DefaultTargetingEnabled', true)
+      set_attribute_value('DefaultTargetingEnabled', true, use_default_value_when_empty)
     elif subdeployment and defaulttargeting == "1":
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/TransactionParams/'+name)
-    set_attribute_value('XAConnectionFactoryEnabled', xaenabled)
-    set_attribute_value('TransactionTimeout'        , transactiontimeout)
+    set_attribute_value('XAConnectionFactoryEnabled', xaenabled, use_default_value_when_empty)
+    set_attribute_value('TransactionTimeout'        , transactiontimeout, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/ClientParams/'+name)
-    set_attribute_value('ClientIdPolicy'           , clientidpolicy)
-    set_attribute_value('SubscriptionSharingPolicy', subscriptionsharingpolicy)
-    set_attribute_value('MessagesMaximum'          , messagesmaximum)
-    set_attribute_value('ReconnectPolicy'          , reconnectpolicy)
+    set_attribute_value('ClientIdPolicy'           , clientidpolicy, use_default_value_when_empty)
+    set_attribute_value('SubscriptionSharingPolicy', subscriptionsharingpolicy, use_default_value_when_empty)
+    set_attribute_value('MessagesMaximum'          , messagesmaximum, use_default_value_when_empty)
+    set_attribute_value('ReconnectPolicy'          , reconnectpolicy, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/LoadBalancingParams/'+name)
-    set_attribute_value('LoadBalancingEnabled' , loadbalancingenabled)
-    set_attribute_value('ServerAffinityEnabled', serveraffinityenabled)
+    set_attribute_value('LoadBalancingEnabled' , loadbalancingenabled, use_default_value_when_empty)
+    set_attribute_value('ServerAffinityEnabled', serveraffinityenabled, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/SecurityParams/'+name)
-    set_attribute_value('AttachJMSXUserId', attachjmsxuserid)
+    set_attribute_value('AttachJMSXUserId', attachjmsxuserid, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/DefaultDeliveryParams/'+name)
-    set_attribute_value('DefaultDeliveryMode'   , defaultdeliverymode)
-    set_attribute_value('DefaultRedeliveryDelay', defaultredeliverydelay)
+    set_attribute_value('DefaultDeliveryMode'   , defaultdeliverymode, use_default_value_when_empty)
+    set_attribute_value('DefaultRedeliveryDelay', defaultredeliverydelay, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

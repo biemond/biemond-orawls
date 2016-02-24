@@ -1,25 +1,18 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-name    = '<%= provider_name%>'
+name = '<%= provider_name%>'
 
 edit()
 startEdit()
 
 try:
-
     cd('/ForeignJNDIProviders')
-    cmo.destroyForeignJNDIProvider(getMBean('/ForeignJNDIProviders/'+name))
+    cmo.destroyForeignJNDIProvider(getMBean('/ForeignJNDIProviders/' + name))
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-

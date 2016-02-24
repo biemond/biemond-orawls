@@ -30,20 +30,12 @@ try:
 
         cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+foreign_server_name+'/ForeignConnectionFactories/'+name)
 
-    set_attribute_value('LocalJNDIName', localjndiname)
-    set_attribute_value('RemoteJNDIName', remotejndiname)
+    set_attribute_value('LocalJNDIName', localjndiname, use_default_value_when_empty)
+    set_attribute_value('RemoteJNDIName', remotejndiname, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
     report_back_error()
-    dumpStack()
-    undo('true','y')
-    stopEdit('y')
-    raise
-
-
-

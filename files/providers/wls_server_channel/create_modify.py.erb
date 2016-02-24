@@ -33,34 +33,30 @@ try:
       cmo.createNetworkAccessPoint(name)
 
     cd('/Servers/'+server+'/NetworkAccessPoints/'+name)
-    set_attribute_value('Protocol', protocol)
-    set_attribute_value('ListenPort', listenport)
-    set_attribute_value('PublicPort', publicport)
-    set_attribute_value('Enabled', enabled)
-    set_attribute_value('HttpEnabledForThisProtocol', httpenabled)
-    set_attribute_value('TunnelingEnabled', tunnelingenabled)
-    set_attribute_value('OutboundEnabled', outboundenabled)
+    set_attribute_value('Protocol', protocol, use_default_value_when_empty)
+    set_attribute_value('ListenPort', listenport, use_default_value_when_empty)
+    set_attribute_value('PublicPort', publicport, use_default_value_when_empty)
+    set_attribute_value('Enabled', enabled, use_default_value_when_empty)
+    set_attribute_value('HttpEnabledForThisProtocol', httpenabled, use_default_value_when_empty)
+    set_attribute_value('TunnelingEnabled', tunnelingenabled, use_default_value_when_empty)
+    set_attribute_value('OutboundEnabled', outboundenabled, use_default_value_when_empty)
 
-    set_attribute_value('ListenAddress', listenaddress)
-    set_attribute_value('PublicAddress', publicaddress)
-    set_attribute_value('MaxMessageSize', max_message_size)
-    set_attribute_value('TwoWaySSLEnabled', two_way_ssl)
-    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced)
+    set_attribute_value('ListenAddress', listenaddress, use_default_value_when_empty)
+    set_attribute_value('PublicAddress', publicaddress, use_default_value_when_empty)
+    set_attribute_value('MaxMessageSize', max_message_size, use_default_value_when_empty)
+    set_attribute_value('TwoWaySSLEnabled', two_way_ssl, use_default_value_when_empty)
+    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced, use_default_value_when_empty)
 
     if channel_identity_customized == '1':
-      set_attribute_value('ChannelIdentityCustomized', channel_identity_customized)
-      set_attribute_value('CustomPrivateKeyPassPhrase', custom_identity_privatekey_passphrase)
-      set_attribute_value('CustomPrivateKeyAlias', custom_identity_alias)
+      set_attribute_value('ChannelIdentityCustomized', channel_identity_customized, use_default_value_when_empty)
+      set_attribute_value('CustomPrivateKeyPassPhrase', custom_identity_privatekey_passphrase, use_default_value_when_empty)
+      set_attribute_value('CustomPrivateKeyAlias', custom_identity_alias, use_default_value_when_empty)
     else:
-      set_attribute_value('ChannelIdentityCustomized', channel_identity_customized)
+      set_attribute_value('ChannelIdentityCustomized', channel_identity_customized, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

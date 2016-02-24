@@ -19,7 +19,7 @@ try:
         cmo.createVirtualHost(name)
 
     cd('/VirtualHosts/'+name)
-    set_attribute_value('NetworkAccessPoint', channel)
+    set_attribute_value('NetworkAccessPoint', channel, use_default_value_when_empty)
 
     if vhost_names:
         hosts     = String(vhost_names).split(",")
@@ -33,11 +33,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-
-

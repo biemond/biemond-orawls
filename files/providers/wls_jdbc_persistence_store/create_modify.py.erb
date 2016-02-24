@@ -19,7 +19,7 @@ try:
 
     cd('/JDBCStores/'+name)
     cmo.setDataSource(getMBean('/SystemResources/'+datasource))
-    set_attribute_value('PrefixName', prefix_name)
+    set_attribute_value('PrefixName', prefix_name, use_default_value_when_empty)
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
 
     save()
@@ -27,8 +27,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

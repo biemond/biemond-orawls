@@ -20,24 +20,20 @@ try:
     if virtual_target:
         targetList = target_list_same_type(String(virtual_target).split(","), 'VirtualTarget')
         set('AvailableTargets', targetList)
-        set('DefaultTargets'  , None)
+        set('DefaultTargets', None)
     else:
-        set_attribute_value('DefaultTargets'  , None)
-        set_attribute_value('AvailableTargets', None)
+        set_attribute_value('DefaultTargets', None, use_default_value_when_empty)
+        set_attribute_value('AvailableTargets', None, use_default_value_when_empty)
 
     if root_file_system:
         cd('/Partitions/' + name + '/SystemFileSystem/' + name)
-        set_attribute_value('Root'          , root_file_system)
-        set_attribute_value('CreateOnDemand', true)
-        set_attribute_value('Preserved'     , true)
+        set_attribute_value('Root', root_file_system, use_default_value_when_empty)
+        set_attribute_value('CreateOnDemand', true, use_default_value_when_empty)
+        set_attribute_value('Preserved', true, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

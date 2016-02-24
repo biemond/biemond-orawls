@@ -20,20 +20,20 @@ try:
     if wlst_action == 'create':
         cmo.createServerTemplate(name)
 
-    cd('/ServerTemplates/'+name)
+    cd('/ServerTemplates/' + name)
 
-    set_attribute_value('ListenPort', listenPort)
-    set_attribute_value('ListenAddress', listenAddress)
+    set_attribute_value('ListenPort', listenPort, use_default_value_when_empty)
+    set_attribute_value('ListenAddress', listenAddress, use_default_value_when_empty)
 
     if classpath:
-        set('ServerStart/'+name+'/ClassPath', classpath)
+        set('ServerStart/' + name + '/ClassPath', classpath)
 
     if arguments:
-        set('ServerStart/'+name+'/Arguments', arguments)
+        set('ServerStart/' + name + '/Arguments', arguments)
 
-    cd('/ServerTemplates/'+name+'/SSL/'+name)
-    set_attribute_value('Enabled', sslEnabled)
-    set_attribute_value('ListenPort', sslListenPort)
+    cd('/ServerTemplates/' + name + '/SSL/' + name)
+    set_attribute_value('Enabled', sslEnabled, use_default_value_when_empty)
+    set_attribute_value('ListenPort', sslListenPort, use_default_value_when_empty)
 
     cd('/')
 
@@ -42,8 +42,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

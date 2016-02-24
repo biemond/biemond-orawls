@@ -26,19 +26,12 @@ try:
     # else:
     #   cmo.setSAFErrorDestination(None)
 
-    set_attribute_value('LogFormat', logformat)
-    set_attribute_value('Policy', policy)
+    set_attribute_value('LogFormat', logformat, use_default_value_when_empty)
+    set_attribute_value('Policy', policy, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-
-

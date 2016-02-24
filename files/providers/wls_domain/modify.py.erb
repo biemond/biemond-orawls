@@ -34,53 +34,49 @@ try:
 
     print "change log"
     cd('/Log/'+name)
-    set_attribute_value('RotationType'        , log_rotationtype)
-    set_attribute_value('RotateLogOnStartup'  , log_rotate_logon_startup)
-    set_attribute_value('FileCount'           , log_filecount)
-    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited)
-    set_attribute_value('FileName'            , log_filename)
-    set_attribute_value('FileMinSize'         , log_file_min_size)
-    set_attribute_value('DateFormatPattern'   , log_date_pattern)
+    set_attribute_value('RotationType'        , log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup'  , log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileCount'           , log_filecount, use_default_value_when_empty)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileName'            , log_filename, use_default_value_when_empty)
+    set_attribute_value('FileMinSize'         , log_file_min_size, use_default_value_when_empty)
+    set_attribute_value('DateFormatPattern'   , log_date_pattern, use_default_value_when_empty)
 
     print "change jta"
-    cd('/JTA/'+name)
-    set_attribute_value('TimeoutSeconds' , jta_transaction_timeout)
-    set_attribute_value('MaxTransactions', jta_max_transactions)
+    cd('/JTA/' + name)
+    set_attribute_value('TimeoutSeconds' , jta_transaction_timeout, use_default_value_when_empty)
+    set_attribute_value('MaxTransactions', jta_max_transactions, use_default_value_when_empty)
 
     print "change jpa"
-    cd('/JPA/'+name)
-    set_attribute_value('DefaultJPAProvider', jpa_default_provider)
+    cd('/JPA/' + name)
+    set_attribute_value('DefaultJPAProvider', jpa_default_provider, use_default_value_when_empty)
 
     print "change security"
-    cd('/SecurityConfiguration/'+name)
-    set_attribute_value('CrossDomainSecurityEnabled', security_crossdomain)
+    cd('/SecurityConfiguration/' + name)
+    set_attribute_value('CrossDomainSecurityEnabled', security_crossdomain, use_default_value_when_empty)
     if credential:
       auto_typed_set('Credential', credential)
 
     print "change jmx"
-    cd('/JMX/'+name)
-    set_attribute_value('PlatformMBeanServerEnabled', jmx_platform_mbean_server_enabled)
-    set_attribute_value('PlatformMBeanServerUsed'   , jmx_platform_mbean_server_used)
+    cd('/JMX/' + name)
+    set_attribute_value('PlatformMBeanServerEnabled', jmx_platform_mbean_server_enabled, use_default_value_when_empty)
+    set_attribute_value('PlatformMBeanServerUsed'   , jmx_platform_mbean_server_used, use_default_value_when_empty)
 
     print "change web app container"
-    cd('/WebAppContainer/'+name)
-    set_attribute_value('ShowArchivedRealPathEnabled', web_app_container_show_archived_real_path_enabled)
+    cd('/WebAppContainer/' + name)
+    set_attribute_value('ShowArchivedRealPathEnabled', web_app_container_show_archived_real_path_enabled, use_default_value_when_empty)
 
     cd('/')
 
-    set_attribute_value('InternalAppsDeployOnDemandEnabled', setinternalappdeploymentondemandenable)
-    set_attribute_value('ArchiveConfigurationCount', setarchiveconfigurationcount)
-    set_attribute_value('ConfigBackupEnabled', setconfigbackupenabled)
-    set_attribute_value('ConfigurationAuditType', setconfigurationaudittype)
-    set_attribute_value('ExalogicOptimizationsEnabled', exalogicoptimizationsenabled)
+    set_attribute_value('InternalAppsDeployOnDemandEnabled', setinternalappdeploymentondemandenable, use_default_value_when_empty)
+    set_attribute_value('ArchiveConfigurationCount', setarchiveconfigurationcount, use_default_value_when_empty)
+    set_attribute_value('ConfigBackupEnabled', setconfigbackupenabled, use_default_value_when_empty)
+    set_attribute_value('ConfigurationAuditType', setconfigurationaudittype, use_default_value_when_empty)
+    set_attribute_value('ExalogicOptimizationsEnabled', exalogicoptimizationsenabled, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

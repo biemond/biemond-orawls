@@ -28,6 +28,8 @@ module Puppet
     property :trust_keystore_file
     property :trust_keystore_passphrase
 
+    property :use_default_value_when_empty
+
     def self.configuration
       @configuration
     end

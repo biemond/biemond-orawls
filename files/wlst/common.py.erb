@@ -11,7 +11,17 @@ def report_back_success():
 
 
 def report_back_error():
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true', 'y')
+    stopEdit('y')
     print "~~~~COMMAND FAILED~~~~"
+    raise
+
+
+def report_back_error_without_undo():
+    print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
+    raise
 
 
 def quote(text):
@@ -183,7 +193,7 @@ def auto_typed_set(key, value):
         set(key, value)
 
 
-def set_attribute_value(mbean_attribute, value=None):
+def set_attribute_value(mbean_attribute, value=None, set_default=True):
     print "set att " + mbean_attribute + " with value " + str(value)
     attribute_fields = ['interfaceclassname', 'defaultValue', 'com.bea.defaultValueNull']
     try:
@@ -204,6 +214,9 @@ def set_attribute_value(mbean_attribute, value=None):
     if value:
         attribute_value = str(value)
     else:
+        if not set_default:
+            print "found empty value, but we will skip it because of set_default param"
+            return
         print "found empty value, try to use the defaults"
         if default_value is not None:
             # assign default to value

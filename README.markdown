@@ -1863,21 +1863,27 @@ Global timeout parameter for WebLogic resource types. use timeout and value in s
 required for all the weblogic type/providers, this is a pointer to an WebLogic AdminServer.
 
     wls_setting { 'default':
-      user               => 'oracle',
-      weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
-      connect_url        => "t3://localhost:7001",
-      weblogic_user      => 'weblogic',
-      weblogic_password  => 'weblogic1',
+      user                         => 'oracle',
+      weblogic_home_dir            => '/opt/oracle/middleware11g/wlserver_10.3',
+      connect_url                  => "t3://localhost:7001",
+      weblogic_user                => 'weblogic',
+      weblogic_password            => 'weblogic1',
+      use_default_value_when_empty => true
     }
 
     wls_setting { 'domain2':
-      user               => 'oracle',
-      weblogic_home_dir  => '/opt/oracle/middleware11g/wlserver_10.3',
-      connect_url        => "t3://localhost:7011",
-      weblogic_user      => 'weblogic',
-      weblogic_password  => 'weblogic1',
-      post_classpath     => '/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar'
+      user                         => 'oracle',
+      weblogic_home_dir            => '/opt/oracle/middleware11g/wlserver_10.3',
+      connect_url                  => "t3://localhost:7011",
+      weblogic_user                => 'weblogic',
+      weblogic_password            => 'weblogic1',
+      post_classpath               => '/opt/oracle/wlsdomains/domains/Wls1036/lib/aa.jar',
+      use_default_value_when_empty => false
     }
+
+use_default_value_when_empty = true when you want to make sure the wls type properties will set its default mbean values when it is not provided by your puppet configuration.
+So when you set a wls type properties and remove it again it will set it back to its original value ( off course only when it has one)
+
 
 saving the WLST scripts of all the wls types to a temporary folder
 

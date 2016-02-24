@@ -42,7 +42,7 @@ try:
           cd('/SelfTuning/'+domain+'/FairShareRequestClasses/'+name)
 
     if type == 'FairShareRequestClasses':
-      set_attribute_value('FairShare', count)
+      set_attribute_value('FairShare', count, use_default_value_when_empty)
     else:
       cmo.setCount(int(count))
 
@@ -54,8 +54,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

@@ -22,11 +22,11 @@ try:
 
     if virtual_target:
         targetList = target_list_same_type(String(virtual_target).split(","), 'VirtualTarget')
-        set('Targets'         , targetList)
+        set('Targets', targetList)
         set('UseDefaultTarget', false)
     else:
-        set_attribute_value('UseDefaultTarget', true)
-        set_attribute_value('Targets'         , None)
+        set_attribute_value('UseDefaultTarget', true, use_default_value_when_empty)
+        set_attribute_value('Targets', None, use_default_value_when_empty)
 
     if resource_group_template:
         set('ResourceGroupTemplate', getMBean('/ResourceGroupTemplates/' + resource_group_template))
@@ -36,8 +36,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

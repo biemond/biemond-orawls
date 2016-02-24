@@ -45,11 +45,11 @@ try:
         jmsWlsType = '/Queues/'
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
-    set_attribute_value('JNDIName', jndiname)
+    set_attribute_value('JNDIName', jndiname, use_default_value_when_empty)
 
-    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused)
-    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused)
-    set_attribute_value('ProductionPausedAtStartup' , production_paused)
+    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused, use_default_value_when_empty)
+    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused, use_default_value_when_empty)
+    set_attribute_value('ProductionPausedAtStartup' , production_paused, use_default_value_when_empty)
 
     if destination_keys:
       print "jms destinationkeys: " + destination_keys
@@ -60,9 +60,9 @@ try:
       set('Template',getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+templatename))
 
     if subdeployment and defaulttargeting == "0":
-      set_attribute_value('SubDeploymentName', subdeployment)
+      set_attribute_value('SubDeploymentName', subdeployment, use_default_value_when_empty)
     elif not subdeployment and defaulttargeting == "1":
-      set_attribute_value('DefaultTargetingEnabled', true)
+      set_attribute_value('DefaultTargetingEnabled', true, use_default_value_when_empty)
     elif subdeployment and defaulttargeting == "1":
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:
@@ -70,12 +70,12 @@ try:
 
 
     if distributed == "true":
-      set_attribute_value('LoadBalancingPolicy', balancingpolicy)
-      set_attribute_value('ForwardDelay'       , forwarddelay)
+      set_attribute_value('LoadBalancingPolicy', balancingpolicy, use_default_value_when_empty)
+      set_attribute_value('ForwardDelay'       , forwarddelay, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryFailureParams/'+name)
-    set_attribute_value('ExpirationPolicy', expirationpolicy)
-    set_attribute_value('RedeliveryLimit' , redeliverylimit)
+    set_attribute_value('ExpirationPolicy', expirationpolicy, use_default_value_when_empty)
+    set_attribute_value('RedeliveryLimit' , redeliverylimit, use_default_value_when_empty)
 
     if errordestination:
       if distributed == "1":
@@ -86,10 +86,10 @@ try:
     set_attribute_value('ExpirationLoggingPolicy', expirationloggingpolicy)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/DeliveryParamsOverrides/'+name)
-    set_attribute_value('TimeToLive'     , timetolive)
-    set_attribute_value('TimeToDeliver'  , timetodeliver)
-    set_attribute_value('DeliveryMode'   , deliverymode)
-    set_attribute_value('RedeliveryDelay', redeliverydelay)
+    set_attribute_value('TimeToLive'     , timetolive, use_default_value_when_empty)
+    set_attribute_value('TimeToDeliver'  , timetodeliver, use_default_value_when_empty)
+    set_attribute_value('DeliveryMode'   , deliverymode, use_default_value_when_empty)
+    set_attribute_value('RedeliveryDelay', redeliverydelay, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name)
     if quota:
@@ -98,15 +98,11 @@ try:
       cmo.setQuota(None)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+jmsWlsType+name+'/MessageLoggingParams/'+name)
-    set_attribute_value('MessageLoggingEnabled', messagelogging)
+    set_attribute_value('MessageLoggingEnabled', messagelogging, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

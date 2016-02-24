@@ -1,9 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
-name                       = '<%= multi_datasource_name %>'
+name = '<%= multi_datasource_name %>'
 
 edit()
 startEdit()
@@ -11,17 +9,11 @@ startEdit()
 try:
 
     cd('/')
-    cmo.destroyJDBCSystemResource(getMBean('/SystemResources/'+name))
+    cmo.destroyJDBCSystemResource(getMBean('/SystemResources/' + name))
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-

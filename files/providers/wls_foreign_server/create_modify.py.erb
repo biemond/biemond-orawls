@@ -24,20 +24,20 @@ try:
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ForeignServers/'+name)
 
-    set_attribute_value('DefaultTargetingEnabled', defaulttargeting)
+    set_attribute_value('DefaultTargetingEnabled', defaulttargeting, use_default_value_when_empty)
 
     if subdeployment and defaulttargeting == "0":
-      set_attribute_value('SubDeploymentName', subdeployment)
+      set_attribute_value('SubDeploymentName', subdeployment, use_default_value_when_empty)
     elif not subdeployment and defaulttargeting == "1":
-      set_attribute_value('DefaultTargetingEnabled', true)
+      set_attribute_value('DefaultTargetingEnabled', true, use_default_value_when_empty)
     elif subdeployment and defaulttargeting == "1":
       raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
     else:
       raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
 
-    set_attribute_value('ConnectionURL', connectionurl)
-    set_attribute_value('InitialContextFactory', initialcontextfactory)
-    set_attribute_value('JNDIPropertiesCredential', password)
+    set_attribute_value('ConnectionURL', connectionurl, use_default_value_when_empty)
+    set_attribute_value('InitialContextFactory', initialcontextfactory, use_default_value_when_empty)
+    set_attribute_value('JNDIPropertiesCredential', password, use_default_value_when_empty)
 
     if extraproperties:
       properties=String(extraproperties).split(",")
@@ -57,9 +57,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
     report_back_error()
-    dumpStack()
-    undo('true','y')
-    stopEdit('y')
-    raise

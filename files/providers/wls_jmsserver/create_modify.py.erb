@@ -28,15 +28,15 @@ try:
 
     cd('/JMSServers/'+name)
 
-    set_attribute_value('BytesMaximum', bytes_maximum)
-    set_attribute_value('AllowsPersistentDowngrade', allows_persistent_downgrade)
+    set_attribute_value('BytesMaximum', bytes_maximum, use_default_value_when_empty)
+    set_attribute_value('AllowsPersistentDowngrade', allows_persistent_downgrade, use_default_value_when_empty)
 
     if "10.3" in version:
       set_attribute_value('StoreEnabled', store_enabled)
 
-    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused)
-    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused)
-    set_attribute_value('ProductionPausedAtStartup' , production_paused)
+    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused, use_default_value_when_empty)
+    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused, use_default_value_when_empty)
+    set_attribute_value('ProductionPausedAtStartup' , production_paused, use_default_value_when_empty)
 
     cd('/Deployments/'+name)
 
@@ -52,8 +52,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

@@ -24,10 +24,10 @@ try:
     cd('/ForeignJNDIProviders/' + name)
     cmo.setName(name)
 
-    set_attribute_value('InitialContextFactory', initial_context_factory)
-    set_attribute_value('ProviderURL', provider_url)
-    set_attribute_value('User', user)
-    set_attribute_value('Password', password)
+    set_attribute_value('InitialContextFactory', initial_context_factory, use_default_value_when_empty)
+    set_attribute_value('ProviderURL', provider_url, use_default_value_when_empty)
+    set_attribute_value('User', user, use_default_value_when_empty)
+    set_attribute_value('Password', password, use_default_value_when_empty)
 
     targetList = target_list(String(target).split(","), String(targettype).split(","))
     set('Targets', targetList)
@@ -46,9 +46,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-

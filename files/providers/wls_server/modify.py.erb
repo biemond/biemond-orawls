@@ -95,24 +95,24 @@ try:
 
     if manage_machine:
       if machineName == "":
-        cmo.setMachine(None)
+          cmo.setMachine(None)
       else:
-        set('Machine',getMBean('/Machines/'+machineName))
+          set('Machine', getMBean('/Machines/'+machineName))
 
     print "Change Notes"
-    set_attribute_value('Notes', server_parameters)
+    set_attribute_value('Notes', server_parameters, use_default_value_when_empty)
 
     if manage_listenaddress:
       if listenAddress and not listenAddress.isspace():
-        set_attribute_value('ListenAddress', listenAddress)
+        set_attribute_value('ListenAddress', listenAddress, use_default_value_when_empty)
 
     set_attribute_value('ListenPort', listenPort)
     if listenPortEnabled and listenPortEnabled != '-1':
-      set_attribute_value('ListenPortEnabled', listenPortEnabled)
+      set_attribute_value('ListenPortEnabled', listenPortEnabled, use_default_value_when_empty)
 
-    set_attribute_value('LoginTimeoutMillis', logintimeout)
-    set_attribute_value('MaxMessageSize', max_message_size)
-    set_attribute_value('RestartMax', restart_max)
+    set_attribute_value('LoginTimeoutMillis', logintimeout, use_default_value_when_empty)
+    set_attribute_value('MaxMessageSize', max_message_size, use_default_value_when_empty)
+    set_attribute_value('RestartMax', restart_max, use_default_value_when_empty)
 
     if manage_arguments:
       if arguments == "":
@@ -133,93 +133,89 @@ try:
         set('ServerStart/'+name+'/ClassPath', classpath)
 
 
-    set_attribute_value('TunnelingEnabled', tunnelingenabled)
-    set_attribute_value('WeblogicPluginEnabled', weblogic_plugin_enabled)
+    set_attribute_value('TunnelingEnabled', tunnelingenabled, use_default_value_when_empty)
+    set_attribute_value('WeblogicPluginEnabled', weblogic_plugin_enabled, use_default_value_when_empty)
 
     if custom_identity == '1':
-      set_attribute_value('KeyStores', 'CustomIdentityAndCustomTrust')
-      set_attribute_value('CustomIdentityKeyStoreFileName', custom_identity_keystore_filename)
-      set_attribute_value('CustomIdentityKeyStorePassPhrase', custom_identity_keystore_passphrase)
-      set_attribute_value('CustomTrustKeyStoreFileName', trust_keystore_file)
-      set_attribute_value('CustomTrustKeyStorePassPhrase', trust_keystore_passphrase)
+      set_attribute_value('KeyStores', 'CustomIdentityAndCustomTrust', use_default_value_when_empty)
+      set_attribute_value('CustomIdentityKeyStoreFileName', custom_identity_keystore_filename, use_default_value_when_empty)
+      set_attribute_value('CustomIdentityKeyStorePassPhrase', custom_identity_keystore_passphrase, use_default_value_when_empty)
+      set_attribute_value('CustomTrustKeyStoreFileName', trust_keystore_file, use_default_value_when_empty)
+      set_attribute_value('CustomTrustKeyStorePassPhrase', trust_keystore_passphrase, use_default_value_when_empty)
 
       cd('SSL/'+name)
-      set_attribute_value('ServerPrivateKeyAlias', custom_identity_alias)
-      set_attribute_value('ServerPrivateKeyPassPhrase', custom_identity_privatekey_passphrase)
+      set_attribute_value('ServerPrivateKeyAlias', custom_identity_alias, use_default_value_when_empty)
+      set_attribute_value('ServerPrivateKeyPassPhrase', custom_identity_privatekey_passphrase, use_default_value_when_empty)
 
     if custom_identity == '0':
-      set_attribute_value('KeyStores', 'DemoIdentityAndDemoTrust')
+      set_attribute_value('KeyStores', 'DemoIdentityAndDemoTrust', use_default_value_when_empty)
 
     cd('/Servers/'+name)
-    set_attribute_value('AutoRestart', auto_restart)
-    set_attribute_value('AutoKillIfFailed', autokillwfail)
+    set_attribute_value('AutoRestart', auto_restart, use_default_value_when_empty)
+    set_attribute_value('AutoKillIfFailed', autokillwfail, use_default_value_when_empty)
 
     cd('/Servers/'+name+'/WebServer/'+name)
 
-    set_attribute_value('FrontendHost', frontend_host)
-    set_attribute_value('FrontendHTTPPort', frontend_http_port)
-    set_attribute_value('FrontendHTTPSPort', frontend_https_port)
+    set_attribute_value('FrontendHost', frontend_host, use_default_value_when_empty)
+    set_attribute_value('FrontendHTTPPort', frontend_http_port, use_default_value_when_empty)
+    set_attribute_value('FrontendHTTPSPort', frontend_https_port, use_default_value_when_empty)
 
     print "Change SSL"
     cd('/Servers/'+name+'/SSL/'+name)
     if sslEnabled and sslEnabled != '-1':
-      set_attribute_value('Enabled', sslEnabled)
+      set_attribute_value('Enabled', sslEnabled, use_default_value_when_empty)
 
     if jsseenabled and jsseenabled != '-1':
-      set_attribute_value('JSSEEnabled', jsseenabled)
+      set_attribute_value('JSSEEnabled', jsseenabled, use_default_value_when_empty)
 
     if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != '-1':
-      set_attribute_value('HostnameVerificationIgnored', sslHostnameVerificationIgnored)
+      set_attribute_value('HostnameVerificationIgnored', sslHostnameVerificationIgnored, use_default_value_when_empty)
       if sslHostnameVerificationIgnored == '0' and sslhostnameverifier:
-        set_attribute_value('HostnameVerifier', sslhostnameverifier)
+        set_attribute_value('HostnameVerifier', sslhostnameverifier, use_default_value_when_empty)
 
-    set_attribute_value('TwoWaySSLEnabled', two_way_ssl)
-    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced)
-    set_attribute_value('ListenPort', sslListenPort)
-    set_attribute_value('UseServerCerts', useservercerts)
+    set_attribute_value('TwoWaySSLEnabled', two_way_ssl, use_default_value_when_empty)
+    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced, use_default_value_when_empty)
+    set_attribute_value('ListenPort', sslListenPort, use_default_value_when_empty)
+    set_attribute_value('UseServerCerts', useservercerts, use_default_value_when_empty)
 
     cd('/Servers/'+name+'/Log/'+name)
-    set_attribute_value('FileName', logFilename)
-    set_attribute_value('RotationType', log_rotationtype)
-    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup)
-    set_attribute_value('FileCount', log_filecount)
-    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited)
-    set_attribute_value('FileMinSize', log_file_min_size)
-    set_attribute_value('DateFormatPattern', log_date_pattern)
-    set_attribute_value('RedirectStderrToServerLogEnabled', log_redirect_stderr_to_server)
-    set_attribute_value('RedirectStdoutToServerLogEnabled', log_redirect_stdout_to_server)
+    set_attribute_value('FileName', logFilename, use_default_value_when_empty)
+    set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
+    set_attribute_value('DateFormatPattern', log_date_pattern, use_default_value_when_empty)
+    set_attribute_value('RedirectStderrToServerLogEnabled', log_redirect_stderr_to_server, use_default_value_when_empty)
+    set_attribute_value('RedirectStdoutToServerLogEnabled', log_redirect_stdout_to_server, use_default_value_when_empty)
 
     print "web server log: " + name
     cd('/Servers/'+name+'/WebServer/'+name+'/WebServerLog/'+name)
-    set_attribute_value('NumberOfFilesLimited', log_http_number_of_files_limited)
-    set_attribute_value('FileCount', log_http_file_count)
-    set_attribute_value('FileName', log_http_Filename)
-    set_attribute_value('RotationType', log_rotationtype)
-    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup)
-    set_attribute_value('FileMinSize', log_file_min_size)
-    set_attribute_value('LogFileFormat', log_http_format_type)
-    set_attribute_value('ELFFields', log_http_format)
+    set_attribute_value('NumberOfFilesLimited', log_http_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileCount', log_http_file_count, use_default_value_when_empty)
+    set_attribute_value('FileName', log_http_Filename, use_default_value_when_empty)
+    set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
+    set_attribute_value('LogFileFormat', log_http_format_type, use_default_value_when_empty)
+    set_attribute_value('ELFFields', log_http_format, use_default_value_when_empty)
 
     print "datasource server log: " + name
     cd('/Servers/'+name+'/DataSource/'+name+'/DataSourceLogFile/'+name)
-    set_attribute_value('FileName', log_datasource_Filename)
-    set_attribute_value('RotationType', log_rotationtype)
-    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup)
-    set_attribute_value('FileCount', log_filecount)
-    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited)
-    set_attribute_value('FileMinSize', log_file_min_size)
+    set_attribute_value('FileName', log_datasource_Filename, use_default_value_when_empty)
+    set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
 
     if default_file_store:
-      cd('/Servers/'+name+'/DefaultFileStore/'+name)
-      set_attribute_value('Directory', default_file_store)
+        cd('/Servers/' + name + '/DefaultFileStore/' + name)
+        set_attribute_value('Directory', default_file_store, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

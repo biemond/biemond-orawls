@@ -28,11 +28,11 @@ try:
 
     cd('/CoherenceClusterSystemResources/'+name+'/CoherenceClusterResource/'+name+'/CoherenceClusterParams/'+name)
 
-    set_attribute_value('ClusteringMode', clusteringmode)
+    set_attribute_value('ClusteringMode', clusteringmode, use_default_value_when_empty)
 
-    set_attribute_value('MulticastListenAddress', multicastaddress)
-    set_attribute_value('MulticastListenPort'   , multicastport)
-    set_attribute_value('UnicastListenPort'     , unicastport)
+    set_attribute_value('MulticastListenAddress', multicastaddress, use_default_value_when_empty)
+    set_attribute_value('MulticastListenPort'   , multicastport, use_default_value_when_empty)
+    set_attribute_value('UnicastListenPort'     , unicastport, use_default_value_when_empty)
 
     print "target: "     +  target
     print "targettype: " +  targettype
@@ -67,9 +67,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-

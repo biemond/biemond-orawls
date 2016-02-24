@@ -16,19 +16,13 @@ try:
     if wlst_action == 'create':
         cmo.createFileStore(name)
 
-    cd('/FileStores/'+name)
-    set_attribute_value('Directory', directory)
-    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+    cd('/FileStores/' + name)
+    set_attribute_value('Directory', directory, use_default_value_when_empty)
+    set('Targets', jarray.array([ObjectName('com.bea:Name=' + target + ',Type=' + targettype)], ObjectName))
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-

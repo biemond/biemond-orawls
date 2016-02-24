@@ -47,45 +47,45 @@ try:
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
     if jndinames:
-      jndis = String(jndinames).split(",")
-      set('JNDINames',jarray.array(jndis, String))
+        jndis = String(jndinames).split(",")
+        set('JNDINames', jarray.array(jndis, String))
 
-    set_attribute_value('RowPrefetch', rowprefetchenabled)
-    set_attribute_value('RowPrefetchSize', rowprefetchsize)
+    set_attribute_value('RowPrefetch', rowprefetchenabled, use_default_value_when_empty)
+    set_attribute_value('RowPrefetchSize', rowprefetchsize, use_default_value_when_empty)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name )
-    set_attribute_value('Url', url)
-    set_attribute_value('DriverName', drivername)
-    set_attribute_value('UseXaDataSourceInterface', usexa)
+    set_attribute_value('Url', url, use_default_value_when_empty)
+    set_attribute_value('DriverName', drivername, use_default_value_when_empty)
+    set_attribute_value('UseXaDataSourceInterface', usexa, use_default_value_when_empty)
 
-    auto_typed_set('Password',password)
+    auto_typed_set('Password', password)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
-    set_attribute_value('MaxCapacity', maxcapacity)
-    set_attribute_value('InitialCapacity', initialcapacity)
+    set_attribute_value('MaxCapacity', maxcapacity, use_default_value_when_empty)
+    set_attribute_value('InitialCapacity', initialcapacity, use_default_value_when_empty)
 
-    set_attribute_value('MinCapacity', mincapacity)
-    set_attribute_value('StatementCacheSize', statementcachesize)
-    set_attribute_value('TestConnectionsOnReserve', testconnectionsonreserve)
-    set_attribute_value('SecondsToTrustAnIdlePoolConnection', secondstotrustidlepoolconnection)
+    set_attribute_value('MinCapacity', mincapacity, use_default_value_when_empty)
+    set_attribute_value('StatementCacheSize', statementcachesize, use_default_value_when_empty)
+    set_attribute_value('TestConnectionsOnReserve', testconnectionsonreserve, use_default_value_when_empty)
+    set_attribute_value('SecondsToTrustAnIdlePoolConnection', secondstotrustidlepoolconnection, use_default_value_when_empty)
 
-    set_attribute_value('TestFrequencySeconds', testfrequency)
+    set_attribute_value('TestFrequencySeconds', testfrequency, use_default_value_when_empty)
 
-    set_attribute_value('InactiveConnectionTimeoutSeconds', inactiveconnectiontimeoutseconds)
-    set_attribute_value('ConnectionReserveTimeoutSeconds', connectionreservetimeoutseconds)
+    set_attribute_value('InactiveConnectionTimeoutSeconds', inactiveconnectiontimeoutseconds, use_default_value_when_empty)
+    set_attribute_value('ConnectionReserveTimeoutSeconds', connectionreservetimeoutseconds, use_default_value_when_empty)
 
-    set_attribute_value('ConnectionCreationRetryFrequencySeconds', connectioncreationretryfrequency)
-    set_attribute_value('InitSql', initsql)
+    set_attribute_value('ConnectionCreationRetryFrequencySeconds', connectioncreationretryfrequency, use_default_value_when_empty)
+    set_attribute_value('InitSql', initsql, use_default_value_when_empty)
 
-    set_attribute_value('ShrinkFrequencySeconds', shrinkfrequencyseconds)
-    set_attribute_value('WrapTypes', wrapdatatypes)
+    set_attribute_value('ShrinkFrequencySeconds', shrinkfrequencyseconds, use_default_value_when_empty)
+    set_attribute_value('WrapTypes', wrapdatatypes, use_default_value_when_empty)
 
 <% unless removeinfectedconnections.nil? -%>
     set('RemoveInfectedConnections', <% if removeinfectedconnections == :true -%>True<% else %>False<% end %>)
 <% end -%>
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCConnectionPoolParams/' + name )
-    set_attribute_value('TestTableName', testtablename)
+    set_attribute_value('TestTableName', testtablename, use_default_value_when_empty)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
     cmo.createProperty('user')
@@ -93,7 +93,7 @@ try:
     cmo.setValue(user)
 
     if extraproperties:
-      properties=String(extraproperties).split(",")
+      properties = String(extraproperties).split(",")
       for property in properties:
         propname, val = property.split("=")
         cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDriverParams/' + name + '/Properties/' + name )
@@ -102,7 +102,7 @@ try:
         cmo.setValue(val)
 
     if usexa == '1' and xaproperties:
-      xapropertiesarray=String(xaproperties).split(",")
+      xapropertiesarray = String(xaproperties).split(",")
       for xaproperty in xapropertiesarray:
         propname, val = xaproperty.split("=")
         # Converts to integer (for numbers and booleans too)
@@ -110,22 +110,22 @@ try:
             val = int(val)
         cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCXAParams/' + name )
         try:
-            methodToCall = getattr(cmo, 'set'+propname)
+            methodToCall = getattr(cmo, 'set' + propname)
             methodToCall(val)
         except AttributeError:
             print "%s is not a valid attribute type" % (propname)
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name)
-    set_attribute_value('GlobalTransactionsProtocol', globaltransactionsprotocol)
+    set_attribute_value('GlobalTransactionsProtocol', globaltransactionsprotocol, use_default_value_when_empty)
 
     try:
         cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCOracleParams/' + name )
-        set_attribute_value('FanEnabled', fanenabled)
-        set_attribute_value('OnsNodeList', onsnodelist)
+        set_attribute_value('FanEnabled', fanenabled, use_default_value_when_empty)
+        set_attribute_value('OnsNodeList', onsnodelist, use_default_value_when_empty)
     except:
         print "Datasource Driver %s does not support ONS parameters." % drivername
 
-    cd('/SystemResources/' + name )
+    cd('/SystemResources/' + name)
 
     print "target: "     +  target
     print "targettype: " +  targettype
@@ -141,7 +141,7 @@ try:
         i = ls('/Servers/', returnMap='true')
 
         for token4 in i:
-            notes = get('/Servers/'+token4+'/Notes')
+            notes = get('/Servers/' + token4 + '/Notes')
             if notes:
                 if name in notes:
                     for i in ls('/Clusters/', returnMap='true'):
@@ -153,24 +153,19 @@ try:
                             taggedtype.append('Server')
 
         for i in range(len(tagged)):
-            print "target "+tagged[i] + " " + taggedtype[i]
-            targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )
+            print "target " + tagged[i] + " " + taggedtype[i]
+            targetList.append(ObjectName('com.bea:Name=' + tagged[i] + ',Type=' + taggedtype[i]))
 
     else:
         for i in range(len(targets)):
-          print "target "+targets[i] + " " + targettypes[i]
-          targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+            print "target " + targets[i] + " " + targettypes[i]
+            targetList.append(ObjectName('com.bea:Name=' + targets[i] + ',Type=' + targettypes[i]))
 
-    set('Targets',jarray.array(targetList, ObjectName))
+    set('Targets', jarray.array(targetList, ObjectName))
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-

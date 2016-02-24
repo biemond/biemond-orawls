@@ -306,18 +306,19 @@ module Utils
     end
 
     def execute_wlst(script, tmpFile, parameters, domain, domainValues, options = {})
-      operatingSystemUser       = domainValues['user']              || 'oracle'
-      weblogicHomeDir           = domainValues['weblogic_home_dir']
-      weblogicUser              = domainValues['weblogic_user']     || 'weblogic'
-      weblogicConnectUrl        = domainValues['connect_url']       || 't3://localhost:7001'
-      weblogicPassword          = domainValues['weblogic_password']
-      postClasspath             = domainValues['post_classpath']
-      custom_trust              = domainValues['custom_trust']
-      trust_keystore_file       = domainValues['trust_keystore_file']
-      trust_keystore_passphrase = domainValues['trust_keystore_passphrase']
-      debug_module              = domainValues['debug_module']
-      archive_path              = domainValues['archive_path']
-      return_output              = options.fetch(:return_output) { false }
+      operatingSystemUser          = domainValues['user']              || 'oracle'
+      weblogicHomeDir              = domainValues['weblogic_home_dir']
+      weblogicUser                 = domainValues['weblogic_user']     || 'weblogic'
+      weblogicConnectUrl           = domainValues['connect_url']       || 't3://localhost:7001'
+      weblogicPassword             = domainValues['weblogic_password']
+      postClasspath                = domainValues['post_classpath']
+      custom_trust                 = domainValues['custom_trust']
+      trust_keystore_file          = domainValues['trust_keystore_file']
+      trust_keystore_passphrase    = domainValues['trust_keystore_passphrase']
+      debug_module                 = domainValues['debug_module']
+      archive_path                 = domainValues['archive_path']
+      use_default_value_when_empty = domainValues['use_default_value_when_empty']
+      return_output                = options.fetch(:return_output) { false }
 
       fail('weblogic_home_dir cannot be nil, check the wls_setting resource type') if weblogicHomeDir.nil?
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
@@ -332,7 +333,7 @@ module Utils
         puts '^^^===================================================================='
       end
 
-      wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
+      wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
 
       if debug_module.to_s == 'true'
         if !File.directory?(archive_path)

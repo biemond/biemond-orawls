@@ -25,25 +25,20 @@ try:
         cmo.createJMSBridgeDestination(name)
 
     cd('/JMSBridgeDestinations/' + name)
-    set_attribute_value('Name', name)
-    set_attribute_value('AdapterJNDIName', adapter)
-    set_attribute_value('Classpath', classpath)
-    set_attribute_value('ConnectionFactoryJNDIName', connectionfactoryjndi)
-    set_attribute_value('ConnectionURL', connectionurl)
-    set_attribute_value('DestinationJNDIName', destinationjndi)
-    set_attribute_value('DestinationType', destinationtype)
-    set_attribute_value('InitialContextFactory', initialcontextfactory)
-    set_attribute_value('UserName', user_name)
-    set_attribute_value('UserPassword', password)
+    set_attribute_value('Name', name, use_default_value_when_empty)
+    set_attribute_value('AdapterJNDIName', adapter, use_default_value_when_empty)
+    set_attribute_value('Classpath', classpath, use_default_value_when_empty)
+    set_attribute_value('ConnectionFactoryJNDIName', connectionfactoryjndi, use_default_value_when_empty)
+    set_attribute_value('ConnectionURL', connectionurl, use_default_value_when_empty)
+    set_attribute_value('DestinationJNDIName', destinationjndi, use_default_value_when_empty)
+    set_attribute_value('DestinationType', destinationtype, use_default_value_when_empty)
+    set_attribute_value('InitialContextFactory', initialcontextfactory, use_default_value_when_empty)
+    set_attribute_value('UserName', user_name, use_default_value_when_empty)
+    set_attribute_value('UserPassword', password, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-

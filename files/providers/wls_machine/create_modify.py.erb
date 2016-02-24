@@ -22,19 +22,13 @@ try:
 
     cd('/Machines/'+machineName+'/NodeManager/'+machineName)
 
-    set_attribute_value('NMType'       , nmType)
-    set_attribute_value('ListenAddress', machineDnsName)
-    set_attribute_value('ListenPort'   , portNumber)
+    set_attribute_value('NMType'       , nmType, use_default_value_when_empty)
+    set_attribute_value('ListenAddress', machineDnsName, use_default_value_when_empty)
+    set_attribute_value('ListenPort'   , portNumber, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-

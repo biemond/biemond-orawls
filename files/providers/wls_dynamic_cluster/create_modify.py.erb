@@ -18,29 +18,23 @@ try:
     cd('/')
     if wlst_action == 'create':
         server_template = cmo.lookupServerTemplate(server_template_name)
-        print 'Create Cluster';
+        print 'Create Cluster'
         cluster = cmo.createCluster(name)
-        cd('/Clusters/'+name)
-        set_attribute_value('ClusterMessagingMode' , 'unicast')
+        cd('/Clusters/' + name)
+        set_attribute_value('ClusterMessagingMode', 'unicast', use_default_value_when_empty)
         server_template.setCluster(cluster)
         cluster.getDynamicServers().setServerTemplate(server_template)
 
-    cd('/Clusters/'+name+'/DynamicServers/'+name)
-    set_attribute_value('CalculatedMachineNames'    , true)
-    set_attribute_value('MaximumDynamicServerCount' , maximum_server_count)
-    set_attribute_value('MachineNameMatchExpression', nodemanager_match)
-    set_attribute_value('ServerNamePrefix'          , server_name_prefix)
-    set_attribute_value('CalculatedListenPorts'     , calculated_listen_port)
+    cd('/Clusters/' + name + '/DynamicServers/' + name)
+    set_attribute_value('CalculatedMachineNames'    , true, use_default_value_when_empty)
+    set_attribute_value('MaximumDynamicServerCount' , maximum_server_count, use_default_value_when_empty)
+    set_attribute_value('MachineNameMatchExpression', nodemanager_match, use_default_value_when_empty)
+    set_attribute_value('ServerNamePrefix'          , server_name_prefix, use_default_value_when_empty)
+    set_attribute_value('CalculatedListenPorts'     , calculated_listen_port, use_default_value_when_empty)
 
     save()
     activate()
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise
-
-

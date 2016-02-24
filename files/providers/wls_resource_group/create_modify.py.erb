@@ -21,11 +21,11 @@ try:
         cmo.setResourceGroupTemplate(getMBean('/ResourceGroupTemplates/' + resource_group_template))
 
     if virtual_target:
-        set_attribute_value('UseDefaultTarget', false)
+        set_attribute_value('UseDefaultTarget', false, use_default_value_when_empty)
         targetList = target_list_same_type(String(virtual_target).split(","), 'VirtualTarget')
         set('Targets', targetList)
     else:
-        set_attribute_value('UseDefaultTarget', true)
+        set_attribute_value('UseDefaultTarget', true, use_default_value_when_empty)
         set('Targets', None)
 
     save()
@@ -33,8 +33,4 @@ try:
     report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
     report_back_error()
-    raise

@@ -3,16 +3,38 @@ class WlsDaemon < EasyType::Daemon
 
   DEFAULT_TIMEOUT = 120 # 2 minutes
 
-  def self.run(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
+  def self.run(user,
+               domain,
+               weblogicHomeDir,
+               weblogicUser,
+               weblogicPassword,
+               weblogicConnectUrl,
+               postClasspath,
+               custom_trust,
+               trust_keystore_file,
+               trust_keystore_passphrase,
+               use_default_value_when_empty)
     daemon = super("wls-#{domain}")
     if daemon
       return daemon
     else
-      new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
+      new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword,
+          weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file,
+          trust_keystore_passphrase, use_default_value_when_empty)
     end
   end
 
-  def initialize(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase)
+  def initialize(user,
+                 domain,
+                 weblogicHomeDir,
+                 weblogicUser,
+                 weblogicPassword,
+                 weblogicConnectUrl,
+                 postClasspath,
+                 custom_trust,
+                 trust_keystore_file,
+                 trust_keystore_passphrase,
+                 use_default_value_when_empty)
     @user = user
     @domain = domain
     @weblogicHomeDir = weblogicHomeDir
@@ -23,6 +45,7 @@ class WlsDaemon < EasyType::Daemon
     @custom_trust = custom_trust
     @trust_keystore_file = trust_keystore_file
     @trust_keystore_passphrase = trust_keystore_passphrase
+    @use_default_value_when_empty = use_default_value_when_empty
 
     if @custom_trust.to_s == 'true'
       trust_parameters = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
@@ -41,6 +64,7 @@ class WlsDaemon < EasyType::Daemon
   def execute_script(script, timeout = DEFAULT_TIMEOUT)
     Puppet.info "Executing wls-script #{script} with timeout = #{timeout}"
     pass_domain
+    pass_use_default_value_when_empty
     pass_credentials
     connect_to_wls
     execute_command "execfile('#{script}')"
@@ -68,6 +92,16 @@ class WlsDaemon < EasyType::Daemon
   def pass_domain
     Puppet.debug "Passing domain #{@domain}"
     execute_command "domain = '#{@domain}'"
+  end
+
+  def pass_use_default_value_when_empty
+    if @use_default_value_when_empty.to_s == 'true'
+      empty_value = 'True'
+    else
+      empty_value = 'False'
+    end
+    Puppet.debug "Passing use_default_value_when_empty #{empty_value}"
+    execute_command "use_default_value_when_empty = #{empty_value}"
   end
 
   def define_common_methods

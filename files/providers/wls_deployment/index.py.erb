@@ -6,35 +6,33 @@ domainConfig()
 
 cd('/')
 print 'apps'
-myapps=cmo.getAppDeployments()
+myapps = cmo.getAppDeployments()
 for appName in myapps:
-  cd('/AppDeployments/'+appName.getName() )
+    cd('/AppDeployments/' + appName.getName())
 
-  app               = get('ApplicationName')
-  deploymenttype    = get('Type')
-  versionidentifier = get('VersionIdentifier')
-  stagingmode       = get('StagingMode')
+    app               = get('ApplicationName')
+    deploymenttype    = get('Type')
+    versionidentifier = get('VersionIdentifier')
+    stagingmode       = get('StagingMode')
 
-  target, targetType = retrieve_target_list('/AppDeployments/'+appName.getName())
+    target, targetType = retrieve_target_list('/AppDeployments/' + appName.getName())
 
-  print >>f, ";".join(map(quote, [domain+'/'+app,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
+    add_index_entry(f, [domain + '/' + app, versionidentifier, deploymenttype, stagingmode, ','.join(target), ','.join(targetType), domain])
 
 print 'libs'
 cd('/')
-mylibs=cmo.getLibraries()
+mylibs = cmo.getLibraries()
 for libName in mylibs:
-  cd('/Libraries/'+libName.getName() )
+    cd('/Libraries/' + libName.getName())
 
-  lib               = get('ApplicationName')
-  deploymenttype    = get('Type')
-  versionidentifier = get('VersionIdentifier')
-  stagingmode       = get('StagingMode')
+    lib               = get('ApplicationName')
+    deploymenttype    = get('Type')
+    versionidentifier = get('VersionIdentifier')
+    stagingmode       = get('StagingMode')
 
-  target, targetType = retrieve_target_list('/Libraries/'+libName.getName())
+    target, targetType = retrieve_target_list('/Libraries/' + libName.getName())
 
-  add_index_entry(f, [domain+'/'+lib,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain])
-
+    add_index_entry(f, [domain + '/' + lib, versionidentifier, deploymenttype, stagingmode, ','.join(target), ','.join(targetType), domain])
 
 f.close()
 report_back_success()
-

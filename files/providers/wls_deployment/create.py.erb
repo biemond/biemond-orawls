@@ -19,46 +19,45 @@ startEdit()
 try:
 
     if deploymenttype == 'Library':
-      library = 'true'
+        library = 'true'
     else:
-      library = 'false'
+        library = 'false'
 
     if remote == '1':
-      remoteflag = 'true'
+        remoteflag = 'true'
     else:
-      remoteflag = 'false'
+        remoteflag = 'false'
 
     if upload == '1':
-      uploadflag = 'true'
+        uploadflag = 'true'
     else:
-      uploadflag = 'false'
+        uploadflag = 'false'
 
     print 'deploying....'
     if versionidentifier:
-      if planpath:
-        print 'deploying with version and deploymentplan....'
-        if stagingmode:
-          deploy(appName=name, path=localpath, planPath=planpath, targets=target, stageMode=stagingmode, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
+        if planpath:
+            print 'deploying with version and deploymentplan....'
+            if stagingmode:
+                deploy(appName=name, path=localpath, planPath=planpath, targets=target, stageMode=stagingmode, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+            else:
+                deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
         else:
-          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
-      else:
-        print 'deploying with version without deploymentplan....'
-        if stagingmode:
-          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
-        else:
-          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library,versionIdentifier=versionidentifier)
+            print 'deploying with version without deploymentplan....'
+            if stagingmode:
+                deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+            else:
+                deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
     else:
-      if planpath:
-        if stagingmode:
-          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library)
+        if planpath:
+            if stagingmode:
+                deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library)
+            else:
+                deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library)
         else:
-          deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library)
-      else:
-        if stagingmode:
-          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag,libraryModule=library)
-        else:
-          deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag,libraryModule=library)
-
+            if stagingmode:
+                deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library)
+            else:
+                deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library)
 
     save()
     activate()

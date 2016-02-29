@@ -141,13 +141,14 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_server_template](#wls_server_template)
 - [wls_dynamic_cluster](#wls_dynamic_cluster)
 
-12.2.1 Multitenancy
+12.2.1 Multitenancy MT
 - [wls_virtual_target](#wls_virtual_target)
 - [wls_resource_group](#wls_resource_group)
 - [wls_resource_group_template](#wls_resource_group_template)
+- [wls_resource_group_template_deployment](#wls_resource_group_template_deployment)
 - [wls_domain_partition](#wls_domain_partition)
 - [wls_domain_partition_resource_group](#wls_domain_partition_resource_group)
-
+- [wls_domain_partition_resource_group_deployment](#wls_domain_partition_resource_group_deployment)
 
 ## Domain creation options (Dev or Prod mode)
 
@@ -4749,3 +4750,87 @@ in hiera
         virtual_target:
           - 'VT_AdminServer'
           - 'VT_Global'
+
+### wls_resource_group_template_deployment
+
+For adding deployments in a resource groups template, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_resource_group_template_deployment
+
+    wls_resource_group_template_deployment { 'default/AppTemplate1:jersey-bundle':
+      ensure            => 'present',
+      deploymenttype    => 'Library',
+      versionidentifier => '1.18@1.18.0.0',
+    }
+    wls_resource_group_template_deployment { 'default/AppTemplate1:webapp':
+      ensure         => 'present',
+      deploymenttype => 'AppDeployment',
+    }
+
+in hiera
+
+    resource_group_template_deployment_instances:
+      'AppTemplate1:jersey-bundle':
+        ensure:            'present'
+        deploymenttype:    'Library'
+        versionidentifier: '1.18@1.18.0.0'
+        timeout:           120
+        remote:            "1"
+        upload:            "1"
+        localpath:         '/vagrant/jersey-bundle-1.18.war'
+      'AppTemplate1:webapp':
+        ensure:            'present'
+        deploymenttype:    'AppDeployment'
+        timeout:           120
+        remote:            "1"
+        upload:            "1"
+        localpath:         '/vagrant/webapp.war'
+        require:
+           - Wls_resource_group_template_deployment[AppTemplate1:jersey-bundle]
+
+
+### wls_domain_partition_resource_group_deployment
+
+For adding deployments in a domain partition resource groups, only for 12.2.1 and higher, it needs wls_setting and when identifier is not provided it will use the 'default'.
+
+or use puppet resource wls_domain_partition_resource_group_deployment
+
+    wls_domain_partition_resource_group_deployment { 'CustomerA_Partition:PartitionResourceGroupProducts:jersey-bundle':
+      ensure            => 'present',
+      deploymenttype    => 'Library',
+      versionidentifier => '1.18@1.18.0.0',
+    }
+    wls_domain_partition_resource_group_deployment { 'CustomerA_Partition:PartitionResourceGroupProducts:webapp':
+      ensure         => 'present',
+      deploymenttype => 'AppDeployment',
+    }
+    wls_domain_partition_resource_group_deployment { 'CustomerB_Partition:PartitionResourceGroupProducts:jersey-bundle':
+      ensure            => 'present',
+      deploymenttype    => 'Library',
+      versionidentifier => '1.18@1.18.0.0',
+    }
+    wls_domain_partition_resource_group_deployment { 'CustomerB_Partition:PartitionResourceGroupProducts:webapp':
+      ensure         => 'present',
+      deploymenttype => 'AppDeployment',
+    }
+
+in hiera
+
+    domain_partition_resource_group_deployment_instances:
+      'CustomerA_Partition:PartitionResourceGroupProducts:jersey-bundle':
+        ensure:            'present'
+        deploymenttype:    'Library'
+        versionidentifier: '1.18@1.18.0.0'
+        timeout:           120
+        remote:            "1"
+        upload:            "1"
+        localpath:         '/vagrant/jersey-bundle-1.18.war'
+      'CustomerA_Partition:PartitionResourceGroupProducts:webapp':
+        ensure:            'present'
+        deploymenttype:    'AppDeployment'
+        timeout:           120
+        remote:            "1"
+        upload:            "1"
+        localpath:         '/vagrant/webapp.war'
+        require:
+           - Wls_domain_partition_resource_group_deployment[CustomerA_Partition:PartitionResourceGroupProducts:jersey-bundle]

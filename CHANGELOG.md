@@ -1,6 +1,7 @@
 # History
 
 ## 1.0.48
+- opatch manifest also works for removing patches
 - wls types fix for 12.2.1 and which got passwords attributes
 - wls_resource_group_template new MT type but only for WebLogic 12.2.1
 - wls_resource_group new MT type but only for WebLogic 12.2.1

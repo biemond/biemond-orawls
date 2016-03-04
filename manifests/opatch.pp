@@ -53,6 +53,8 @@ define orawls::opatch(
     #   logoutput => false,
     #   before    => Opatch["${patch_id} ${title}"],
     # }
+  } else {
+    $disk1_file = undef
   }
 
   case $::kernel {
@@ -68,7 +70,7 @@ define orawls::opatch(
   }
 
   wls_opatch{"${oracle_product_home_dir}:${patch_id}":
-    ensure       => present,
+    ensure       => $ensure,
     os_user      => $os_user,
     source       => $disk1_file,
     jdk_home_dir => $jdk_home_dir,

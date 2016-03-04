@@ -147,6 +147,7 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_resource_group_template](#wls_resource_group_template)
 - [wls_resource_group_template_deployment](#wls_resource_group_template_deployment)
 - [wls_domain_partition](#wls_domain_partition)
+- [wls_domain_partition_control](#wls_domain_partition_control)
 - [wls_domain_partition_resource_group](#wls_domain_partition_resource_group)
 - [wls_domain_partition_resource_group_deployment](#wls_domain_partition_resource_group_deployment)
 
@@ -4834,3 +4835,32 @@ in hiera
         localpath:         '/vagrant/webapp.war'
         require:
            - Wls_domain_partition_resource_group_deployment[CustomerA_Partition:PartitionResourceGroupProducts:jersey-bundle]
+
+### wls_domain_partition_control
+
+start or stop a domain partition
+
+    'StartCustomerA_Partition':
+         ensure:                      'start'
+         domain_partition:            'CustomerA_Partition'
+         os_user:                     *wls_os_user
+         middleware_home_dir:         *wls_middleware_home_dir
+         weblogic_user:               *wls_weblogic_user
+         weblogic_password:           *domain_wls_password
+         adminserver_address:         *domain_adminserver_address
+         adminserver_port:            *domain_adminserver_port
+         require:
+            - Wls_domain_partition[CustomerA_Partition]
+    'StartCustomerB_Partition':
+         ensure:                      'stop'
+         domain_partition:            'CustomerB_Partition'
+         os_user:                     *wls_os_user
+         middleware_home_dir:         *wls_middleware_home_dir
+         weblogic_user:               *wls_weblogic_user
+         weblogic_password:           *domain_wls_password
+         adminserver_address:         *domain_adminserver_address
+         adminserver_port:            *domain_adminserver_port
+         require:
+            - Wls_domain_partition[CustomerB_Partition]
+
+

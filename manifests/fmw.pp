@@ -503,7 +503,7 @@ define orawls::fmw(
         $disk3_file = "${source}/${fmw_file3}"
       }
 
-      exec { "extract ${fmw_file3}":
+      exec { "extract ${fmw_file3} for ${name}":
         command   => "unzip -o ${disk3_file} -d ${download_dir}/${sanitised_title}",
         creates   => $createFile3,
         path      => $exec_path,
@@ -511,7 +511,7 @@ define orawls::fmw(
         group     => $os_group,
         cwd       => $temp_directory,
         logoutput => false,
-        require   => Exec["extract ${fmw_file2}"],
+        require   => Exec["extract ${fmw_file2} for ${name}"],
         before    => Exec["install ${sanitised_title}"],
       }
     }
@@ -529,14 +529,14 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file4}"],
           require => [File["${download_dir}/${fmw_file3}"],
-                      Exec["extract ${fmw_file3}"],],
+                      Exec["extract ${fmw_file3} for ${name}"],],
         }
         $disk4_file = "${download_dir}/${fmw_file4}"
       } else {
         $disk4_file = "${source}/${fmw_file4}"
       }
 
-      exec { "extract ${fmw_file4}":
+      exec { "extract ${fmw_file4} for ${name}":
         command   => "unzip -o ${disk4_file} -d ${download_dir}/${sanitised_title}",
         creates   => $createFile4,
         path      => $exec_path,
@@ -544,7 +544,7 @@ define orawls::fmw(
         group     => $os_group,
         cwd       => $temp_directory,
         logoutput => false,
-        require   => Exec["extract ${fmw_file3}"],
+        require   => Exec["extract ${fmw_file3} for ${name}"],
         before    => Exec["install ${sanitised_title}"],
       }
     }
@@ -555,7 +555,7 @@ define orawls::fmw(
           exec { "add -d64 oraparam.ini ${sanitised_title}":
             command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${sanitised_title}/Disk1/install/${installDir}/oraparam.ini > ${temp_directory}/soa.tmp && mv ${temp_directory}/soa.tmp ${download_dir}/${sanitised_title}/Disk1/install/${installDir}/oraparam.ini",
             unless    => "grep 'JRE_MEMORY_OPTIONS=\"-d64' ${download_dir}/${sanitised_title}/Disk1/install/${installDir}/oraparam.ini",
-            require   => Exec["extract ${fmw_file1} for ${name}","extract ${fmw_file2}"],
+            require   => Exec["extract ${fmw_file1} for ${name}","extract ${fmw_file2} for ${name}"],
             before    => Exec["install ${sanitised_title}"],
             path      => $exec_path,
             user      => $os_user,

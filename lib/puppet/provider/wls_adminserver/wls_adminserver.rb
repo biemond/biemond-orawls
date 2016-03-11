@@ -21,6 +21,7 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     custom_trust                = resource[:custom_trust]
     trust_keystore_file         = resource[:trust_keystore_file]
     trust_keystore_passphrase   = resource[:trust_keystore_passphrase]
+    ohs_standalone_server       = resource[:ohs_standalone_server]
 
     Puppet.debug "adminserver custom trust: #{custom_trust}"
 
@@ -31,9 +32,17 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     end
 
     if action == :start
-      wls_action = "nmStart(\"#{name}\")"
+      if "#{ohs_standalone_server}" == 'true'
+        wls_action = "nmStart(serverName=\"#{name}\", serverType=\"OHS\")"
+      else
+        wls_action = "nmStart(\"#{name}\")"
+      end
     else
-      wls_action = "nmKill(\"#{name}\")"
+      if "#{ohs_standalone_server}" == 'true'
+        wls_action = "nmKill(serverName=\"#{name}\", serverType=\"OHS\")"
+      else
+        wls_action = "nmKill(\"#{name}\")"
+      end
     end
 
     if "#{nodemanager_secure_listener}" == 'true'

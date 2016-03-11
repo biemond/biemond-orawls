@@ -24,10 +24,16 @@ define orawls::fmw(
   $remote_file          = true,                              # true|false
   $log_output           = false,                             # true|false
   $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
+  $oracle_inventory_dir = undef,
 )
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
-  $oraInventory = "${oracle_base_home_dir}/oraInventory"
+
+  if $oracle_inventory_dir == undef {
+    $oraInventory = "${oracle_base_home_dir}/oraInventory"
+  } else {
+    $oraInventory = $oracle_inventory_dir
+  }
 
   case $::kernel {
     'Linux': {

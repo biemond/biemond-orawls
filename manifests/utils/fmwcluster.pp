@@ -59,6 +59,8 @@ define orawls::utils::fmwcluster (
     } else {
       $convert_soa = true
     }
+  } else {
+    $convert_soa = false
   }
 
   if ( $osb_enabled ) {
@@ -70,6 +72,8 @@ define orawls::utils::fmwcluster (
     } else {
       $convert_osb = true
     }
+  } else {
+    $convert_osb = false
   }
 
   if ( $bam_enabled ) {
@@ -81,6 +85,8 @@ define orawls::utils::fmwcluster (
     } else {
       $convert_bam = true
     }
+  } else {
+    $convert_bam = false
   }
 
   if $convert_soa or $convert_osb or $convert_bam {

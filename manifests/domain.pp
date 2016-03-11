@@ -494,7 +494,7 @@ define orawls::domain (
       } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
         $rcu_domain_template = 'soa'
 
-      } else {
+      } elsif ($create_rcu == undef or $create_rcu == true) {
         fail('unkown domain_template for rcu with version 1212 or 1213')
       }
 

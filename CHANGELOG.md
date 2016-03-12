@@ -1,5 +1,10 @@
 # History
 
+## 1.0.49
+- changed wls_managedserver type code so it used WLST to test if it is active plus force it to running
+- OIM/OAM 11.1.2.3 cluster fixes
+- FMW install fixes when it has more than 3 input files
+
 ## 1.0.48
 - opatch manifest also works for removing patches
 - wls types fix for 12.2.1 and which got passwords attributes

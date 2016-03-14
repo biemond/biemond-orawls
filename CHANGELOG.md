@@ -4,7 +4,6 @@
 - changed wls_managedserver type code so it used WLST to test if it is active plus force it to running
 - OIM/OAM 11.1.2.3 cluster fixes
 - FMW install fixes when it has more than 3 input files
-- BSU, change the default memory parameters
 
 ## 1.0.48
 - opatch manifest also works for removing patches

@@ -4,8 +4,13 @@ password   = sys.argv[1]
 machine    = '<%= @adminserver_address %>'
 portNumber = '<%= @adminserver_port %>'
 
-domain_name    = '<%= @domain_name %>'
+domain_name = '<%= @domain_name %>'
+
+biEnabled = <%= @bi_enabled %>
+oimEnabled = <%= @oim_enabled %>
+
 OIMClusterName = '<%= @oim_cluster_name %>'
+BIClusterName = '<%= @bi_cluster_name %>'
 
 connect(wlsUser,password,'t3://'+machine+':'+portNumber)
 
@@ -13,32 +18,39 @@ edit()
 startEdit()
 
 try:
-    cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-10')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-11')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+    if oimEnabled == true:
+        cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-10')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-5')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-11')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-6')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-5')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/MinThreadsConstraints/MinThreadsConstraint-0')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/MaxThreadsConstraints/MaxThreadsConstraint-6')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMAuditWorkManager')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/MinThreadsConstraints/MinThreadsConstraint-0')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMMDBWorkManager')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMAuditWorkManager')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMUIWorkManager')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMMDBWorkManager')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
 
-    cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMWorkManager')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+        cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMUIWorkManager')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+
+        cd('/SelfTuning/' + domain_name + '/WorkManagers/OIMWorkManager')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + OIMClusterName + ',Type=Cluster')], ObjectName))
+
+    if biEnabled == true:
+        cd('/SelfTuning/' + domain_name + '/WorkManagers/weblogic.wsee.mdb.DispatchPolicy')
+        set('Targets',jarray.array([ObjectName('com.bea:Name=' + BIClusterName + ',Type=Cluster')], ObjectName))
+
 
     save()
     activate()

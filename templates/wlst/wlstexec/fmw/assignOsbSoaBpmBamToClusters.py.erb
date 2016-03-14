@@ -1,32 +1,46 @@
-#http://docs.oracle.com/cd/E28280_01/core.1111/e12036/target_appendix_soa.htm
-
 WLHOME='<%= @weblogic_home_dir %>'
 DOMAIN_PATH='<%= @domain_dir %>'
 
+#http://docs.oracle.com/cd/E28280_01/core.1111/e12036/target_appendix_soa.htm
+
+# SOA stuff
 bpmEnabled     = <%= @bpm_enabled %>
 bamEnabled     = <%= @bam_enabled %>
 soaEnabled     = <%= @soa_enabled %>
+
+# Service bus stuff
 osbEnabled     = <%= @osb_enabled %>
+
+# OIM/OAM stuff
 oamEnabled     = <%= @oam_enabled %>
 oimEnabled     = <%= @oim_enabled %>
+biEnabled      = <%= @bi_enabled %>
 
+# all possible targets
+# SOA/SB
 SOAClusterName = '<%= @soa_cluster_name %>'
 BAMClusterName = '<%= @bam_cluster_name %>'
 OSBClusterName = '<%= @osb_cluster_name %>'
-OAMClusterName = '<%= @oam_cluster_name %>'
-OIMClusterName = '<%= @oim_cluster_name %>'
 SoaBam         = '<%= @soa_cluster_name %>,<%= @bam_cluster_name %>'
 SoaBamAdmin    = '<%= @soa_cluster_name %>,<%= @bam_cluster_name %>,<%= @adminserver_name %>'
 SoaAdmin       = '<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 BamAdmin       = '<%= @bam_cluster_name %>,<%= @adminserver_name %>'
 OsbAdmin       = '<%= @osb_cluster_name %>,<%= @adminserver_name %>'
+
+# OIM/OAM
+OAMClusterName = '<%= @oam_cluster_name %>'
+OIMClusterName = '<%= @oim_cluster_name %>'
+BIClusterName  = '<%= @bi_cluster_name %>'
 OamAdmin       = '<%= @oam_cluster_name %>,<%= @adminserver_name %>'
 OimAdmin       = '<%= @oim_cluster_name %>,<%= @adminserver_name %>'
 OimOamAdmin    = '<%= @oim_cluster_name %>,<%= @oam_cluster_name %>,<%= @adminserver_name %>'
 SoaOimCluster  = '<%= @oim_cluster_name %>,<%= @soa_cluster_name %>'
+SoaBiCluster   = '<%= @bi_cluster_name %>,<%= @soa_cluster_name %>'
+SoaOimBiCluster = '<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @bi_cluster_name %>'
 SoaOimAdmin    = '<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 SoaBamOimAdmin = '<%= @bam_cluster_name %>,<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminserver_name %>'
 SoaOimOamAdmin = '<%= @oam_cluster_name %>,<%= @oim_cluster_name %>,<%= @soa_cluster_name %>,<%= @adminserver_name %>'
+
 Admin          = '<%= @adminserver_name %>'
 
 ofm_version    = int(<%= @ofm_version %>)
@@ -34,7 +48,9 @@ ofm_version    = int(<%= @ofm_version %>)
 AllArray = []
 AdapterArray = []
 
+# adapter for JCA adapters
 AdapterArray.append('<%= @adminserver_name %>')
+# all for ADF or FMW stuff
 AllArray.append('<%= @adminserver_name %>')
 
 if bamEnabled == true:
@@ -53,6 +69,9 @@ if oamEnabled == true:
 
 if oimEnabled == true:
     AllArray.append('<%= @oim_cluster_name %>')
+
+if biEnabled == true:
+    AllArray.append('<%= @bi_cluster_name %>')
 
 All       = ','.join(AllArray)
 Adapters  = ','.join(AdapterArray)
@@ -73,6 +92,7 @@ def getFirstClusterServer(cluster, adminserver_name):
 
 readDomain(DOMAIN_PATH)
 
+# set all port on nil so we can delete those servers
 cd('/')
 if soaEnabled == true:
     cd('/Servers/soa_server1')
@@ -94,8 +114,13 @@ if oimEnabled == true:
     cd('/Servers/oim_server1')
     set('ListenAddress','')
 
+if biEnabled == true:
+    cd('/Servers/bi_server1')
+    set('ListenAddress','')
+
 updateDomain()
 
+# singleton services
 if osbEnabled == true:
     OSBServer1Name = getFirstClusterServer(OSBClusterName, Admin)
 
@@ -131,6 +156,9 @@ if oamEnabled == true:
 
 if oimEnabled == true:
     delete('oim_server1'            , 'Server')
+
+if biEnabled == true:
+    delete('bi_server1'            , 'Server')
 
 unassign('StartupClass'           ,'*', 'Target' , All)
 unassign('ShutdownClass'          ,'*', 'Target' , All)
@@ -191,7 +219,10 @@ elif oimEnabled:
     # strange for  11.2.0.3
     # assign('AppDeployment', 'TaskDetails'                , 'Target', SOAClusterName)
     assign('AppDeployment', 'usermessagingserver'        , 'Target', SOAClusterName)
-    assign('AppDeployment', 'wsm-pm'                     , 'Target', SoaOimCluster)
+    if biEnabled:
+        assign('AppDeployment', 'wsm-pm'                     , 'Target', SoaOimBiCluster)
+    else:
+        assign('AppDeployment', 'wsm-pm'                     , 'Target', SoaOimCluster)
 elif soaEnabled == true:
     assign('AppDeployment', 'usermessagingdriver-email'  , 'Target', SOAClusterName)
     assign('AppDeployment', 'usermessagingserver'        , 'Target', SOAClusterName)
@@ -272,6 +303,10 @@ if oamEnabled == true:
     assign('AppDeployment', 'oam_server#11.1.2.0.0', 'Target', OAMClusterName)
     assign('AppDeployment', 'oam_admin#11.1.2.0.0', 'Target', Admin)
     assign('AppDeployment', 'oamsso_logout#11.1.2.0.0', 'Target', OamAdmin)
+
+if biEnabled == true:
+    assign('AppDeployment', 'ESSAPP', 'Target', BIClusterName)
+    assign('AppDeployment', 'bipublisher#11.1.1', 'Target', BIClusterName)
 
 assign('Library', 'emai'                                   , 'Target', Admin)
 
@@ -356,9 +391,16 @@ elif soaEnabled == true:
 
 if soaEnabled == true:
     assign('Library', 'oracle.sdp.messaging#11.1.1@11.1.1'             , 'Target', All)
-    assign('Library', 'oracle.applcore.config#0.1@11.1.1.0.0'          , 'Target', SOAClusterName)
-    assign('Library', 'oracle.applcore.model#0.1@11.1.1.0.0'           , 'Target', SOAClusterName)
-    assign('Library', 'oracle.applcore.view#0.1@11.1.1.0.0'            , 'Target', SOAClusterName)
+
+    if biEnabled:
+        assign('Library', 'oracle.applcore.config#0.1@11.1.1.0.0'          , 'Target', SoaBiCluster)
+        assign('Library', 'oracle.applcore.model#0.1@11.1.1.0.0'           , 'Target', SoaBiCluster)
+        assign('Library', 'oracle.applcore.view#0.1@11.1.1.0.0'            , 'Target', SoaBiCluster)
+    else:
+        assign('Library', 'oracle.applcore.config#0.1@11.1.1.0.0'          , 'Target', SOAClusterName)
+        assign('Library', 'oracle.applcore.model#0.1@11.1.1.0.0'           , 'Target', SOAClusterName)
+        assign('Library', 'oracle.applcore.view#0.1@11.1.1.0.0'            , 'Target', SOAClusterName)
+
     assign('Library', 'oracle.bpm.mgmt#11.1.1@11.1.1'                  , 'Target', SoaAdmin)
     assign('Library', 'oracle.soa.bpel#11.1.1@11.1.1'                  , 'Target', SOAClusterName)
     assign('Library', 'oracle.soa.composer.webapp#11.1.1@11.1.1'       , 'Target', SOAClusterName)
@@ -446,6 +488,12 @@ if oimEnabled == true:
     assign('Library', 'oracle.idm.ipf#11.1.2@11.1.2'           , 'Target', SoaOimOamAdmin)
     assign('Library', 'oracle.idm.msm.ui.library#11.1.2@11.1.2' , 'Target', OIMClusterName)
 
+if biEnabled == true:
+    assign('Library', 'oracle.ess.client#11@1.0.0.0.0', 'Target', BIClusterName)
+    assign('Library', 'oracle.ess#11@1.0.0.0.0'       , 'Target', BIClusterName)
+    assign('Library', 'bijdbc#11.1.1'                 , 'Target', BIClusterName)
+    assign('Library', 'bip-shared-libraries#11.1.1'   , 'Target', BIClusterName)
+
 dumpStack();
 
 
@@ -494,6 +542,9 @@ if oimEnabled == true:
     assign('JdbcSystemResource', 'ApplicationDB'       , 'Target', OIMClusterName)
     assign('JdbcSystemResource', 'soaOIMLookupDB'      , 'Target', SOAClusterName)
 
+if biEnabled == true:
+    assign('JdbcSystemResource', 'bip_datasource'      , 'Target', BIClusterName)
+
 if bamEnabled == true:
     assign('JdbcSystemResource', 'BAMDataSource'       , 'Target', BAMClusterName)
     assign('JdbcSystemResource', 'OraSDPMDataSource'   , 'Target', SoaBam)
@@ -508,6 +559,6 @@ dumpStack()
 updateDomain()
 dumpStack();
 
-print 'Successfully Updated SOA Domain.'
+print 'Successfully Updated SOA, OSB or OIM/OAM Domain.'
 
 closeDomain()

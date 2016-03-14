@@ -20,6 +20,7 @@ define orawls::utils::fmwcluster (
   $oam_cluster_name           = undef,
   $oim_cluster_name           = undef,
   $ess_cluster_name           = undef,
+  $bi_cluster_name            = undef,
   $bpm_enabled                = false, # true|false
   $bam_enabled                = false, # true|false
   $osb_enabled                = false, # true|false
@@ -28,6 +29,7 @@ define orawls::utils::fmwcluster (
   $oim_enabled                = false, # true|false
   $b2b_enabled                = false, # true|false
   $ess_enabled                = false, # true|false
+  $bi_enabled                 = false, # true|false
   $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
   $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),
@@ -346,6 +348,32 @@ define orawls::utils::fmwcluster (
                             Exec["execwlst soa-bpm-createUDD.py ${title}"],]
           }
 
+          if( $bi_enabled == true ) {
+            # the py script used by the wlst
+            file { "${download_dir}/bi-createUDD${title}.py":
+              ensure  => present,
+              content => template('orawls/wlst/wlstexec/fmw/bi-createUDD.py.erb'),
+              backup  => false,
+              replace => true,
+              mode    => '0775',
+              owner   => $os_user,
+              group   => $os_group,
+            }
+
+            # execute WLST script
+            exec { "execwlst bi-createUDD.py ${title}":
+              command     => "${javaCommand} ${download_dir}/bi-createUDD${title}.py",
+              environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                              "JAVA_HOME=${jdk_home_dir}"],
+              path        => $exec_path,
+              user        => $os_user,
+              group       => $os_group,
+              logoutput   => $log_output,
+              require     => [File["${download_dir}/bi-createUDD${title}.py"],
+                              Exec["execwlst soa-bpm-createUDD.py ${title}"],
+                              Exec["execwlst oim-createUDD.py ${title}"]]
+            }
+          }
         }
       }
 

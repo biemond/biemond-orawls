@@ -1,119 +1,68 @@
-import sys
-import getopt
-import string
 
-WLHOME='<%= @weblogic_home_dir %>'
-DOMAIN_PATH='<%= @domain_dir %>'
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1]
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
 
-bicluster = '<%= @bi_cluster_name %>'
+BIClusterName = '<%= @bi_cluster_name %>'
 
-def createFileStore(storeName, serverName):
-    create(storeName, 'FileStore')
-    cd('/FileStore/' + storeName)
-    set ('Target', serverName)
-    set ('Directory', storeName)
+connect(wlsUser, password, 't3://' + machine + ':' + portNumber)
+
+edit()
+startEdit()
+
+def create_filestore(name, target):
     cd('/')
+    cmo.createFileStore(name)
+    cd('/FileStores/' + name)
+    set('Targets',jarray.array([ObjectName('com.bea:Name=' + target + ',Type=Server')], ObjectName))
 
-def createJMSServers(cluster, track, currentServerCnt):
-    print ' '
-    print "Creating JMS Servers for the cluster :- ", cluster
-    s = ls('/Server')
-    print ' '
-    clustername = " "
-    serverCnt = currentServerCnt
-    for token in s.split("drw-"):
-        token=token.strip().lstrip().rstrip()
-        path="/Server/"+token
-        cd(path)
-        if not token == 'AdminServer' and not token == '':
-            clustername = get('Cluster')
-            print "Cluster Associated with the Server [",token,"] :- ",clustername
-            print ' '
-            searchClusterStr = cluster+":"
-            clusterNameStr = str(clustername)
-            print "searchClusterStr = ",searchClusterStr
-            print "clusterNameStr = ",clusterNameStr
-            if not clusterNameStr.find(searchClusterStr) == -1:
-                print token, " is associated with ", cluster    
-                print ' '
-                print "Creating JMS Servers for ", track
-                print ' '
-                cd('/')
+def create_jmsserver(name, target, filestore):
+    cd('/')
+    cmo.createJMSServer(name)
+    cd('/Deployments/' + name)
+    cmo.setPersistentStore(getMBean('/FileStores/' + filestore))
+    set('Targets',jarray.array([ObjectName('com.bea:Name=' + target + ',Type=Server')], ObjectName))
 
-                jmsServerName = 'BIPJMSServer_auto_'+str(serverCnt)
-                fileStoreName = 'BIPJMSServerFileStore_auto_'+str(serverCnt)
+def target_list_same_type(targets, targettype):
+    targetlist = []
+    for i in range(len(targets)):
+        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type=' + targettype)
+        targetlist.append(bean)
+    return jarray.array(targetlist, ObjectName)
 
-                createFileStore(fileStoreName, token)
-                print "Created File Store :- ", fileStoreName
+try:
 
-                create(jmsServerName, 'JMSServer')
-                print "Created JMS Server :- ", jmsServerName
-                print ' '
-                assign('JMSServer', jmsServerName, 'Target', token)
-                print jmsServerName, " assigned to server :- ", token 
-                print ' '
-                cd('/JMSServer/'+jmsServerName)
-                set ('PersistentStore', fileStoreName)
+    try:
+        cd('/SystemResources/BipJmsResource/SubDeployments/BipJmsSubDeployment')
+        set('Targets',jarray.array([], ObjectName))
+    except:
+        cd('/SystemResources/BipJmsResource')
+        cmo.createSubDeployment('BipJmsSubDeployment')
 
-                serverCnt = serverCnt + 1
+    cd('/')
+    cmo.destroyJMSServer(getMBean('/Deployments/BipJmsServer'))
+    cmo.destroyFileStore(getMBean('/FileStores/BipJmsStore'))
+    n = ls('/Clusters/' + BIClusterName + '/Servers', returnMap='true')
+    jms_servers = []
+    i = 1
+    for token2 in n:
+        create_filestore('BipJmsStore' + str(i), token2)
+        jms_servers.append('BipJmsServer' + str(i))
+        create_jmsserver('BipJmsServer' + str(i), token2, 'BipJmsStore' + str(i))
+        i = i + 1
 
+    cd('/SystemResources/BipJmsResource')
+    set('Targets',jarray.array([ObjectName('com.bea:Name=' + BIClusterName + ',Type=Cluster')], ObjectName))
 
-readDomain(DOMAIN_PATH)
+    cd('/SystemResources/BipJmsResource/SubDeployments/BipJmsSubDeployment')
+    targetList = target_list_same_type(jms_servers, 'JMSServer')
+    set('Targets', targetList)
 
-cd('/')
-delete('BipJmsResource' ,'JMSSystemResource')
-delete('BipJmsServer'   ,'JMSServer')
-delete('BipJmsStore'    ,'FileStore')
-
-createJMSServers(bicluster, 'bi', 1)
-
-cd('/')
-create('BIPJMSModuleUDDs','JMSSystemResource')
-
-cd('/')
-cd('JMSSystemResource/BIPJMSModuleUDDs')
-assign('JMSSystemResource', 'BIPJMSModuleUDDs', 'Target', bicluster)
-
-cd('/')
-cd('JMSSystemResource/BIPJMSModuleUDDs')
-create('BIPSubDeployment', 'SubDeployment')
-
-cd('/')
-cd('JMSSystemResource/BIPJMSModuleUDDs/SubDeployments/BIPSubDeployment')
-
-print ' '
-print ("*** Listing BI JMS Servers ***")
-s = ls('/JMSServers')
-biJMSServerStr=''
-for token in s.split("drw-"):
-    token=token.strip().lstrip().rstrip()
-    if not token.find("BIPJMSServer_auto") == -1:
-        biJMSServerStr = biJMSServerStr + token +","
-    print token
-
-biJMSSrvCnt=string.count(s, 'BIPJMSServer_auto')
-print ' '
-print "Number of BI JMS Servers := ", biJMSSrvCnt
-print ' '
-print "biJMSServerStr := ", biJMSServerStr
-print ' '
-
-print ("*** Setting JMS SubModule for BI JMS Server's target***")
-assign('JMSSystemResource.SubDeployment', 'BIPJMSModuleUDDs.BIPSubDeployment', 'Target', biJMSServerStr)
-
-cd('/')
-cd('JMSSystemResource/BIPJMSModuleUDDs/JmsResource/NO_NAME_0')
-
-soacf=create('BIP.JMS.CF','ConnectionFactory')
-soacf.setJNDIName('BIP.JMS.CF')
-cd('/JMSSystemResource/BIPJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/BIP.JMS.CF')
-set('DefaultTargetingEnabled', 'true')
-
-dumpStack()
-
-updateDomain()
-dumpStack()
-
-print 'Successfully Updated OIM/BI Domain.'
-
-closeDomain()
+    save()
+    activate()
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise

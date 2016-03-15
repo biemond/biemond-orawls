@@ -14,7 +14,7 @@ define orawls::utils::oimconfig(
   $oimserver_port             = 14000,
   $soaserver_name             = 'soa_server1',
   $oimserver_name             = 'oim_server1',
-  $bi_enabled                 = false,
+  $bi_enabled                 = false, # only when you got a BI cluster
   $bi_cluster_name            = undef,
   $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
   $repository_prefix          = hiera('repository_prefix'         , 'DEV'),

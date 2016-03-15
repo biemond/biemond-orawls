@@ -1145,10 +1145,7 @@ When using ssh (use_ssh = true) you need to setup ssh so you won't need to provi
       adminserver_port       => 7001,
       weblogic_user          => "weblogic",
       weblogic_password      => "weblogic1",
-      setinternalappdeploymentondemandenable => false,
-      setconfigbackupenabled                 => true,
-      setarchiveconfigurationcount           => 10,
-      setconfigurationaudittype              => 'logaudit',
+      server_start_mode      => 'dev',
     }
 
 Configuration with Hiera ( need to have puppet > 3.0 )
@@ -1734,6 +1731,21 @@ hiera configuration
         ess_enabled:          true
         repository_prefix:    "DEV"
 
+    # OIM 11.1.2.3 cluster
+    fmw_cluster_instances:
+      'oimCluster':
+        domain_name:          *domain_name
+        soa_cluster_name:     "SoaCluster"
+        oim_cluster_name:     "OimCluster"
+        oam_cluster_name:     "OamCluster"
+        bi_cluster_name:      "BiCluster"
+        log_output:           *logoutput
+        soa_enabled:          true
+        oim_enabled:          true
+        oam_enabled:          true
+        bi_enabled:           true
+        repository_prefix:    *rcu_prefix
+
 
 ### fmwclusterjrf
 __orawls::utils::fmwclusterjrf__ convert existing cluster to a ADF/JRF cluster
@@ -1802,13 +1814,17 @@ __orawls::utils::oimconfig__ Configure OIM , oim server, design or remote config
         oim_home:                   '/opt/oracle/middleware11g/Oracle_IDM1'
         server_config:              true
         oim_password:               'Welcome01'
+        bi_cluster_name:            'BiCluster'
+        bi_enabled:                 true
         remote_config:              false
         keystore_password:          'Welcome01'
         design_config:              false
         oimserver_hostname:         'oim1admin.example.com'
         oimserver_port:             '14000'
+        soaserver_name:             'SoaServer1'
+        oimserver_name:             'OimServer1'
         repository_database_url:    "oimdb.example.com:1521:oimrepos.example.com"
-        repository_prefix:          "DEV"
+        repository_prefix:          *rcu_prefix
         repository_password:        "Welcome01"
 
 ### instance

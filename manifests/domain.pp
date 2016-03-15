@@ -343,6 +343,7 @@ define orawls::domain (
 
       $oim_nodemanager_log_dir   = "${domain_dir}/servers/oim_server1/logs"
       $oam_nodemanager_log_dir   = "${domain_dir}/servers/oam_server1/logs"
+      $bi_nodemanager_log_dir    = "${domain_dir}/servers/bi_server1/logs"
 
       $wcCollaboration_nodemanager_log_dir   = "${domain_dir}/servers/WC_Collaboration/logs"
       $wcPortlet_nodemanager_log_dir         = "${domain_dir}/servers/WC_Portlet/logs"
@@ -359,9 +360,9 @@ define orawls::domain (
       $bam_nodemanager_log_dir   = $log_dir
       $ess_nodemanager_log_dir   = $log_dir
 
-
       $oim_nodemanager_log_dir   = $log_dir
       $oam_nodemanager_log_dir   = $log_dir
+      $bi_nodemanager_log_dir    = $log_dir
 
       $wcCollaboration_nodemanager_log_dir   = $log_dir
       $wcPortlet_nodemanager_log_dir         = $log_dir

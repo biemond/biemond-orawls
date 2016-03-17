@@ -3,30 +3,32 @@
 # Add a Webtier to the Enterprise manager
 ##
 define orawls::utils::webtier(
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $domain_name                = hiera('domain_name'),
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
+  $domain_name,
+  $weblogic_password,
+  $adminserver_address        = 'localhost',
+  $adminserver_port           = 7001,
   $action_name                = 'create', #create|delete
   $webgate_configure          = false,
-  $webgate_agentname          = hiera('webgate_agentname'         , undef),
-  $webgate_hostidentifier     = hiera('webgate_hostidentifier'    , undef),
-  $oamadminserverhostname     = hiera('oamadminserverhostname'    , localhost),
-  $oamadminserverport         = hiera('oamadminserverport'        , 7001),
+  $webgate_agentname          = undef,
+  $webgate_hostidentifier     = undef,
+  $oamadminserverhostname     = localhost,
+  $oamadminserverport         = 7001,
   $domain_configure           = true, # 11g register ohs instance with a domain
   $instance_name              = undef,
   $machine_name               = undef,
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
+  $weblogic_user              = 'weblogic',
 ){
+  $version              = $::orawls::weblogic::version
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir
+  $wls_domains_dir      = $::orawls::weblogic::wls_domains_dir
+  $wls_apps_dir         = $::orawls::weblogic::wls_apps_dir
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $download_dir         = $::orawls::weblogic::download_dir
+  $log_output           = $::orawls::weblogic::log_output
+
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -162,7 +164,7 @@ define orawls::utils::webtier(
       exec { "EditHttpConf to enable webgate ${title}":
         command     => "${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/setup/InstallTools/EditHttpConf -w ${instance_id} -oh ${middleware_home_dir}/Oracle_OAMWebGate1",
         environment => ["LD_LIBRARY_PATH=${middleware_home_dir}/Oracle_WT1/lib",
-                        "ORACLE_HOME=${middleware_home_dir}/Oracle_OAMWebGate1"],
+        "ORACLE_HOME=${middleware_home_dir}/Oracle_OAMWebGate1"],
         cwd         => "${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/setup/InstallTools",
         path        => $exec_path,
         unless      => "grep -c '${instance_id}/webgate.conf' ${instance_id}/httpd.conf",

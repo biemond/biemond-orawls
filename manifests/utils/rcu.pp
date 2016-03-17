@@ -2,13 +2,8 @@
 #    rcu for adf 12.1.2 & 12.1.3
 #
 define orawls::utils::rcu(
-  $version                     = hiera('wls_version', 1111),  # 1036|1111|1211|1212|1213|1221
   $fmw_product                 = 'adf', # adf|soa|mft
   $oracle_fmw_product_home_dir = undef,
-  $jdk_home_dir                = hiera('wls_jdk_home_dir'),
-  $os_user                     = hiera('wls_os_user'),      # oracle
-  $os_group                    = hiera('wls_os_group'),     # dba
-  $download_dir                = hiera('wls_download_dir'), # /data/install
   $rcu_action                  = 'create',
   $rcu_jdbc_url                = undef,   #jdbc...
   $rcu_database_url            = undef,   #192.168.50.5:1521:XE
@@ -16,8 +11,12 @@ define orawls::utils::rcu(
   $rcu_password                = undef,
   $rcu_sys_user                = 'sys',
   $rcu_sys_password            = undef,
-  $log_output                  = false, # true|false
 ){
+  $version      = $::orawls::weblogic::version
+  $os_user      = $::orawls::weblogic::os_user
+  $os_group     = $::orawls::weblogic::os_group
+  $download_dir = $::orawls::weblogic::download_dir
+  $log_output   = $::orawls::weblogic::log_output
 
   case $::kernel {
     'Linux','SunOS': {

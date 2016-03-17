@@ -4,28 +4,31 @@
 #
 ##
 define orawls::fmw(
-  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213|1221
-  $weblogic_home_dir    = hiera('wls_weblogic_home_dir'),    # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir  = hiera('wls_middleware_home_dir'),  # /opt/oracle/middleware11gR1
-  $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
-  $oracle_home_dir      = undef,                             # /opt/oracle/middleware/Oracle_SOA
-  $jdk_home_dir         = hiera('wls_jdk_home_dir'),         # /usr/java/jdk1.7.0_45
-  $fmw_product          = undef,                             # adf|soa|soaqs|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b|forms
-  $fmw_file1            = undef,
-  $fmw_file2            = undef,
-  $fmw_file3            = undef,
-  $fmw_file4            = undef,
-  $bpm                  = false,
-  $healthcare           = false,
-  $os_user              = hiera('wls_os_user'),              # oracle
-  $os_group             = hiera('wls_os_group'),             # dba
-  $download_dir         = hiera('wls_download_dir'),         # /data/install
-  $source               = hiera('wls_source', undef),        # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file          = true,                              # true|false
-  $log_output           = false,                             # true|false
-  $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
+  $oracle_home_dir = undef, # /opt/oracle/middleware/Oracle_SOA
+  $fmw_product     = undef, # adf|soa|soaqs|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b|forms
+  $fmw_file1       = undef,
+  $fmw_file2       = undef,
+  $fmw_file3       = undef,
+  $fmw_file4       = undef,
+  $bpm             = false,
+  $healthcare      = false,
+  $remote_file     = true,  # true|false
 )
 {
+  $version              = $::orawls::weblogic::version
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir
+  $wls_domains_dir      = $::orawls::weblogic::wls_domains_dir
+  $wls_apps_dir         = $::orawls::weblogic::wls_apps_dir
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $download_dir         = $::orawls::weblogic::download_dir
+  $log_output           = $::orawls::weblogic::log_output
+  $oracle_base_home_dir = $::orawls::weblogic::oracle_base_home_dir
+  $source               = $::orawls::weblogic::source
+  $temp_directory       = $::orawls::weblogic::temp_directory
+
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
   $oraInventory = "${oracle_base_home_dir}/oraInventory"
 
@@ -103,7 +106,7 @@ define orawls::fmw(
       }
 
       if ($oracle_home_dir == undef) {
-          $oracleHome = "${middleware_home_dir}/Oracle_FRM1"
+        $oracleHome = "${middleware_home_dir}/Oracle_FRM1"
       }
       else {
         $oracleHome = $oracle_home_dir
@@ -463,7 +466,7 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file2} for ${name}"],
           require => [File["${download_dir}/${fmw_file1}"],
-                      Exec["extract ${fmw_file1} for ${name}"],],
+          Exec["extract ${fmw_file1} for ${name}"],],
         }
         $disk2_file = "${download_dir}/${fmw_file2}"
       } else {
@@ -496,7 +499,7 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file3}"],
           require => [File["${download_dir}/${fmw_file2}"],
-                      Exec["extract ${fmw_file2}"],],
+          Exec["extract ${fmw_file2}"],],
         }
         $disk3_file = "${download_dir}/${fmw_file3}"
       } else {
@@ -529,7 +532,7 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file4}"],
           require => [File["${download_dir}/${fmw_file3}"],
-                      Exec["extract ${fmw_file3} for ${name}"],],
+          Exec["extract ${fmw_file3} for ${name}"],],
         }
         $disk4_file = "${download_dir}/${fmw_file4}"
       } else {
@@ -606,8 +609,8 @@ define orawls::fmw(
         group       => $os_group,
         logoutput   => $log_output,
         require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
-                        Orawls::Utils::Orainst["create oraInst for ${name}"],
-                        Exec["extract ${fmw_file1} for ${name}"],],
+        Orawls::Utils::Orainst["create oraInst for ${name}"],
+        Exec["extract ${fmw_file1} for ${name}"],],
       }
     } else {
       if !defined(File[$oracleHome]) {
@@ -630,8 +633,8 @@ define orawls::fmw(
         group       => $os_group,
         logoutput   => $log_output,
         require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
-                        Orawls::Utils::Orainst["create oraInst for ${name}"],
-                        Exec["extract ${fmw_file1} for ${name}"],],
+        Orawls::Utils::Orainst["create oraInst for ${name}"],
+        Exec["extract ${fmw_file1} for ${name}"],],
       }
 
       ## fix EditHttpConf in OHS Webgate

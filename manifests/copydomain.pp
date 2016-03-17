@@ -3,29 +3,33 @@
 #   copydomain to an other nodes
 ##
 define orawls::copydomain (
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
-  $use_ssh                    = true,
-  $domain_pack_dir            = undef,
-  $domain_name                = hiera('domain_name'),
-  $adminserver_address        = hiera('domain_adminserver_address'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $userConfigFile             = hiera('domain_user_config_file'   , undef),
-  $userKeyFile                = hiera('domain_user_key_file'      , undef),
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'       , undef),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
-  $log_output                 = false, # true|false
-  $server_start_mode          = 'dev', # dev/prod
+  $domain_name,
+  $adminserver_address,
+  $use_ssh             = true,
+  $domain_pack_dir     = undef,
+  $adminserver_port    = 7001,
+  $userConfigFile      = undef,
+  $userKeyFile         = undef,
+  $weblogic_user       = 'weblogic',
+  $weblogic_password   = undef,
+  $log_output          = false, # true|false
+  $server_start_mode   = 'dev', # dev/prod
 )
 {
+  $version              = $::orawls::weblogic::version
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir
+  $wls_domains_dir      = $::orawls::weblogic::wls_domains_dir
+  $wls_apps_dir         = $::orawls::weblogic::wls_apps_dir
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $download_dir         = $::orawls::weblogic::download_dir
+  $log_output           = $::orawls::weblogic::log_output
+  $oracle_base_home_dir = $::orawls::weblogic::oracle_base_home_dir
+  $source               = $::orawls::weblogic::source
+  $temp_directory       = $::orawls::weblogic::temp_directory
+
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -97,16 +101,16 @@ define orawls::copydomain (
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
       if !defined(File['weblogic_domain_folder']) {
-          # check oracle install folder
-          file { 'weblogic_domain_folder':
-            ensure  => directory,
-            path    => "${middleware_home_dir}/user_projects",
-            recurse => false,
-            replace => false,
-            mode    => '0775',
-            owner   => $os_user,
-            group   => $os_group,
-          }
+        # check oracle install folder
+        file { 'weblogic_domain_folder':
+          ensure  => directory,
+          path    => "${middleware_home_dir}/user_projects",
+          recurse => false,
+          replace => false,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
         File['weblogic_domain_folder'] -> File[$domains_dir]
       }
     }
@@ -178,7 +182,7 @@ define orawls::copydomain (
       logoutput   => $log_output,
       timeout     => 0,
       require     => [File[$domains_dir],
-                    Exec["copy domain jar ${domain_name}"]],
+      Exec["copy domain jar ${domain_name}"]],
     }
 
     yaml_setting { "domain ${title}":
@@ -207,7 +211,7 @@ define orawls::copydomain (
       group       => $os_group,
       logoutput   => $log_output,
       require     => [File["${download_dir}/enroll_domain_${domain_name}.py"],
-                      Exec["unpack ${domain_name}"]],
+      Exec["unpack ${domain_name}"]],
     }
 
     exec { "domain.py ${domain_name} ${title}":

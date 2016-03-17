@@ -3,58 +3,60 @@
 # setup a new weblogic domain
 ##
 define orawls::domain (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221
-  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
-  $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud
+  $domain_template                       = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = false, #only for SOA Suite 12.1.3
   $owsm_enabled                          = false, #only for OSB domain_template on 10.3.6
-  $domain_name                           = hiera('domain_name'),
+  $domain_name,
   $development_mode                      = true,
-  $adminserver_name                      = hiera('domain_adminserver'             , 'AdminServer'),
-  $adminserver_machine_name              = hiera('domain_adminserver_machine_name', 'LocalMachine'),
-  $adminserver_address                   = hiera('domain_adminserver_address'     , undef),
-  $adminserver_port                      = hiera('domain_adminserver_port'        , 7001),
+  $adminserver_name                      = 'AdminServer',
+  $adminserver_machine_name              = 'LocalMachine',
+  $adminserver_address                   = undef,
+  $adminserver_port                      = 7001,
   $adminserver_ssl_port                  = undef,
-  $adminserver_listen_on_all_interfaces  = false,  # for docker etc
-  $java_arguments                        = hiera('domain_java_arguments'         , {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
+  $adminserver_listen_on_all_interfaces  = false, # for docker etc
+  $java_arguments                        = {}, # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address                   = undef,
-  $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
+  $nodemanager_port                      = 5556,
   $nodemanager_secure_listener           = true,
-  $weblogic_user                         = hiera('wls_weblogic_user'             , 'weblogic'),
-  $weblogic_password                     = hiera('domain_wls_password'),
+  $weblogic_user                         = 'weblogic',
+  $weblogic_password,
   $nodemanager_username                  = undef, # When not specified, it'll use the weblogic_user
   $nodemanager_password                  = undef, # When not specified, it'll use the weblogic_password
   $domain_password                       = undef, # When not specified, it'll use the weblogic_password
-  $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
+  $jsse_enabled                          = false,
   $webtier_enabled                       = false,
-  $os_user                               = hiera('wls_os_user'), # oracle
-  $os_group                              = hiera('wls_os_group'), # dba
-  $download_dir                          = hiera('wls_download_dir'), # /data/install
-  $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
-  $log_output                            = false, # true|false
-  $repository_database_url               = hiera('repository_database_url'       , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
-  $rcu_database_url                      = undef,                                      #localhost:1521:XE"
-  $repository_prefix                     = hiera('repository_prefix'             , 'DEV'),
-  $repository_password                   = hiera('repository_password'           , 'Welcome01'),
+  $log_dir                               = undef, # /data/logs
+  $repository_database_url               = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $rcu_database_url                      = undef, #localhost:1521:XE"
+  $repository_prefix                     = 'DEV',
+  $repository_password                   = 'Welcome01',
   $repository_sys_user                   = 'sys',
   $repository_sys_password               = undef,
-  $custom_trust                          = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase             = hiera('wls_trust_keystore_passphrase' , undef),
+  $custom_trust                          = false,
+  $trust_keystore_file                   = undef,
+  $trust_keystore_passphrase             = undef,
   $custom_identity                       = false,
   $custom_identity_keystore_filename     = undef,
   $custom_identity_keystore_passphrase   = undef,
   $custom_identity_alias                 = undef,
   $custom_identity_privatekey_passphrase = undef,
-  $create_rcu                            = hiera('create_rcu', true),
+  $create_rcu                            = true,
 )
 {
+  $version              = $::orawls::weblogic::version
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir
+  $wls_domains_dir      = $::orawls::weblogic::wls_domains_dir
+  $wls_apps_dir         = $::orawls::weblogic::wls_apps_dir
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $download_dir         = $::orawls::weblogic::download_dir
+  $log_output           = $::orawls::weblogic::log_output
+
+
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -412,7 +414,7 @@ define orawls::domain (
         owner   => $os_user,
         group   => $os_group,
         # require => File[$download_dir],
-      }
+        }
     }
 
     if($extensionsTemplateFile) {
@@ -445,16 +447,16 @@ define orawls::domain (
 
     if ( $domains_dir == "${middleware_home_dir}/user_projects/domains"){
       if !defined(File['weblogic_domain_folder']) {
-          # check oracle install folder
-          file { 'weblogic_domain_folder':
-            ensure  => directory,
-            path    => "${middleware_home_dir}/user_projects",
-            recurse => false,
-            replace => false,
-            mode    => '0775',
-            owner   => $os_user,
-            group   => $os_group,
-          }
+        # check oracle install folder
+        file { 'weblogic_domain_folder':
+          ensure  => directory,
+          path    => "${middleware_home_dir}/user_projects",
+          recurse => false,
+          replace => false,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
         File['weblogic_domain_folder'] -> File[$domains_dir]
       }
     }
@@ -484,227 +486,227 @@ define orawls::domain (
         }
       }
       # File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
-    }
+      }
 
-    # FMW RCU only for wls 12.1.2 or higher and when template is not standard
-    if ( $version >= 1212 and $domain_template != 'standard' and $domain_template != 'adf_restricted' ) {
+      # FMW RCU only for wls 12.1.2 or higher and when template is not standard
+      if ( $version >= 1212 and $domain_template != 'standard' and $domain_template != 'adf_restricted' ) {
 
-      if ( $domain_template == 'adf' ) {
-        $rcu_domain_template = 'adf'
+        if ( $domain_template == 'adf' ) {
+          $rcu_domain_template = 'adf'
 
-      } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
-        $rcu_domain_template = 'soa'
+        } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
+          $rcu_domain_template = 'soa'
+
+        } else {
+          fail('unkown domain_template for rcu with version 1212 or 1213')
+        }
+
+        if ( $create_rcu == undef or $create_rcu == true)
+        {
+
+          # only works for a 12c middleware home
+          # creates RCU for ADF
+          if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ){
+            fail('Not all RCU parameters are provided')
+          }
+
+          orawls::utils::rcu{ "RCU_12c ${title}":
+            version                     => $version,
+            fmw_product                 => $rcu_domain_template,
+            oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
+            jdk_home_dir                => $jdk_home_dir,
+            os_user                     => $os_user,
+            os_group                    => $os_group,
+            download_dir                => $download_dir,
+            rcu_action                  => 'create',
+            rcu_jdbc_url                => $repository_database_url,
+            rcu_database_url            => $rcu_database_url,
+            rcu_sys_user                => $repository_sys_user,
+            rcu_sys_password            => $repository_sys_password,
+            rcu_prefix                  => $repository_prefix,
+            rcu_password                => $repository_password,
+            log_output                  => $log_output,
+            before                      => Exec["execwlst ${domain_name} ${title}"],
+          }
+        }
+      }
+
+      # create domain
+      exec { "execwlst ${domain_name} ${title}":
+        command     => "${wlstPath}/wlst.sh domain_${domain_name}.py",
+        environment => ["JAVA_HOME=${jdk_home_dir}"],
+        unless      => "/usr/bin/test -e ${domain_dir}",
+        creates     => $domain_dir,
+        cwd         => $download_dir,
+        require     => [File["domain.py ${domain_name} ${title}"],
+        File["${download_dir}/utils.py"],
+        File[$domains_dir],],
+        timeout     => 0,
+        path        => $exec_path,
+        user        => $os_user,
+        group       => $os_group,
+      }
+
+      if($extensionsTemplateFile) {
+        exec { "execwlst ${domain_name} extension ${title}":
+          command     => "${wlstPath}/wlst.sh domain_extension_${domain_name}.py",
+          environment => ["JAVA_HOME=${jdk_home_dir}"],
+          cwd         => $download_dir,
+          timeout     => 0,
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          require     => [Exec["execwlst ${domain_name} ${title}"],
+          File["domain_extension.py ${domain_name} ${title}"],],
+        }
+      }
+
+      yaml_setting { "domain ${title}":
+        target  =>  '/etc/wls_domains.yaml',
+        key     =>  "domains/${domain_name}",
+        value   =>  $domain_dir,
+        require =>  Exec["execwlst ${domain_name} ${title}"],
+      }
+
+      if ($domain_template == 'oim') {
+
+        file { "${download_dir}/${title}psa_opss_upgrade.rsp":
+          ensure  => present,
+          content => template('orawls/oim/psa_opss_upgrade.rsp.erb'),
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+          backup  => false,
+        }
+
+        exec { "exec PSA OPSS store upgrade ${domain_name} ${title}":
+          command => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
+          require => [Exec["execwlst ${domain_name} ${title}"],
+          Exec["execwlst ${domain_name} extension ${title}"],
+          File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
+          timeout => 0,
+          cwd     => $download_dir, # Added since psa binary saves and changes to current dir
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
+
+        exec { "execwlst create OPSS store ${domain_name} ${title}":
+          command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m create -c IAM -p ${repository_password}",
+          environment => ["JAVA_HOME=${jdk_home_dir}"],
+          require     => [Exec["execwlst ${domain_name} ${title}"],
+          Exec["execwlst ${domain_name} extension ${title}"],
+          Exec["exec PSA OPSS store upgrade ${domain_name} ${title}"],],
+          timeout     => 0,
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+        }
+
+        exec { "execwlst validate OPSS store ${domain_name} ${title}":
+          command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m validate",
+          environment => ["JAVA_HOME=${jdk_home_dir}"],
+          require     => [Exec["execwlst ${domain_name} ${title}"],
+          Exec["execwlst ${domain_name} extension ${title}"],
+          Exec["execwlst create OPSS store ${domain_name} ${title}"]],
+          timeout     => 0,
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+        }
+
+      }
+
+      if $::kernel == 'SunOS' {
+
+        if ($domain_template == 'osb' or
+        $domain_template == 'osb_soa' or
+        $domain_template == 'osb_soa_bpm'){
+
+          exec { "setDebugFlagOnFalse ${domain_name} ${title}":
+            command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => [Exec["execwlst ${domain_name} ${title}"],
+            Exec["execwlst ${domain_name} extension ${title}"],],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+
+          exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
+            command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+
+          exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
+            command => "sed -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain3.tmp && mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+
+        }
 
       } else {
-        fail('unkown domain_template for rcu with version 1212 or 1213')
-      }
 
-      if ( $create_rcu == undef or $create_rcu == true)
-      {
 
-        # only works for a 12c middleware home
-        # creates RCU for ADF
-        if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ){
-          fail('Not all RCU parameters are provided')
+        if ($domain_template == 'osb' or
+        $domain_template == 'osb_soa' or
+        $domain_template == 'osb_soa_bpm'){
+
+          exec { "setDebugFlagOnFalse ${domain_name} ${title}":
+            command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => [Exec["execwlst ${domain_name} ${title}"],
+            Exec["execwlst ${domain_name} extension ${title}"],],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+
+          exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
+            command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+
+          exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
+            command => "sed -i -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+
         }
-
-        orawls::utils::rcu{ "RCU_12c ${title}":
-          version                     => $version,
-          fmw_product                 => $rcu_domain_template,
-          oracle_fmw_product_home_dir => "${middleware_home_dir}/oracle_common",
-          jdk_home_dir                => $jdk_home_dir,
-          os_user                     => $os_user,
-          os_group                    => $os_group,
-          download_dir                => $download_dir,
-          rcu_action                  => 'create',
-          rcu_jdbc_url                => $repository_database_url,
-          rcu_database_url            => $rcu_database_url,
-          rcu_sys_user                => $repository_sys_user,
-          rcu_sys_password            => $repository_sys_password,
-          rcu_prefix                  => $repository_prefix,
-          rcu_password                => $repository_password,
-          log_output                  => $log_output,
-          before                      => Exec["execwlst ${domain_name} ${title}"],
-        }
-      }
-    }
-
-    # create domain
-    exec { "execwlst ${domain_name} ${title}":
-      command     => "${wlstPath}/wlst.sh domain_${domain_name}.py",
-      environment => ["JAVA_HOME=${jdk_home_dir}"],
-      unless      => "/usr/bin/test -e ${domain_dir}",
-      creates     => $domain_dir,
-      cwd         => $download_dir,
-      require     => [File["domain.py ${domain_name} ${title}"],
-                      File["${download_dir}/utils.py"],
-                      File[$domains_dir],],
-      timeout     => 0,
-      path        => $exec_path,
-      user        => $os_user,
-      group       => $os_group,
-    }
-
-    if($extensionsTemplateFile) {
-      exec { "execwlst ${domain_name} extension ${title}":
-        command     => "${wlstPath}/wlst.sh domain_extension_${domain_name}.py",
-        environment => ["JAVA_HOME=${jdk_home_dir}"],
-        cwd         => $download_dir,
-        timeout     => 0,
-        path        => $exec_path,
-        user        => $os_user,
-        group       => $os_group,
-        require     => [Exec["execwlst ${domain_name} ${title}"],
-                        File["domain_extension.py ${domain_name} ${title}"],],
-      }
-    }
-
-    yaml_setting { "domain ${title}":
-      target  =>  '/etc/wls_domains.yaml',
-      key     =>  "domains/${domain_name}",
-      value   =>  $domain_dir,
-      require =>  Exec["execwlst ${domain_name} ${title}"],
-    }
-
-    if ($domain_template == 'oim') {
-
-      file { "${download_dir}/${title}psa_opss_upgrade.rsp":
-        ensure  => present,
-        content => template('orawls/oim/psa_opss_upgrade.rsp.erb'),
-        mode    => '0775',
-        owner   => $os_user,
-        group   => $os_group,
-        backup  => false,
       }
 
-      exec { "exec PSA OPSS store upgrade ${domain_name} ${title}":
-        command => "${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp",
-        require => [Exec["execwlst ${domain_name} ${title}"],
-                    Exec["execwlst ${domain_name} extension ${title}"],
-                    File["${download_dir}/${title}psa_opss_upgrade.rsp"],],
-        timeout => 0,
-        cwd     => $download_dir, # Added since psa binary saves and changes to current dir
+      exec { "domain.py ${domain_name} ${title}":
+        command => "rm ${download_dir}/domain_${domain_name}.py",
+        require => Exec["execwlst ${domain_name} ${title}"],
         path    => $exec_path,
         user    => $os_user,
         group   => $os_group,
       }
 
-      exec { "execwlst create OPSS store ${domain_name} ${title}":
-        command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m create -c IAM -p ${repository_password}",
-        environment => ["JAVA_HOME=${jdk_home_dir}"],
-        require     => [Exec["execwlst ${domain_name} ${title}"],
-                        Exec["execwlst ${domain_name} extension ${title}"],
-                        Exec["exec PSA OPSS store upgrade ${domain_name} ${title}"],],
-        timeout     => 0,
-        path        => $exec_path,
-        user        => $os_user,
-        group       => $os_group,
+      if($extensionsTemplateFile) {
+        exec { "domain.py ${domain_name} extension ${title}":
+          command => "rm ${download_dir}/domain_extension_${domain_name}.py",
+          require => Exec["execwlst ${domain_name} extension ${title}"],
+          path    => $exec_path,
+          user    => $os_user,
+          group   => $os_group,
+        }
       }
-
-      exec { "execwlst validate OPSS store ${domain_name} ${title}":
-        command     => "${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m validate",
-        environment => ["JAVA_HOME=${jdk_home_dir}"],
-        require     => [Exec["execwlst ${domain_name} ${title}"],
-                        Exec["execwlst ${domain_name} extension ${title}"],
-                        Exec["execwlst create OPSS store ${domain_name} ${title}"]],
-        timeout     => 0,
-        path        => $exec_path,
-        user        => $os_user,
-        group       => $os_group,
-      }
-
-    }
-
-    if $::kernel == 'SunOS' {
-
-      if ($domain_template == 'osb' or
-          $domain_template == 'osb_soa' or
-          $domain_template == 'osb_soa_bpm'){
-
-        exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain.tmp && mv /tmp/domain.tmp ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => [Exec["execwlst ${domain_name} ${title}"],
-                      Exec["execwlst ${domain_name} extension ${title}"],],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
-
-        exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain2.tmp && mv /tmp/domain2.tmp ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
-
-        exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
-          command => "sed -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain3.tmp && mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
-
-      }
-
-    } else {
-
-
-      if ($domain_template == 'osb' or
-          $domain_template == 'osb_soa' or
-          $domain_template == 'osb_soa_bpm'){
-
-        exec { "setDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/debugFlag=\"true\"/debugFlag=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep debugFlag=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => [Exec["execwlst ${domain_name} ${title}"],
-                      Exec["execwlst ${domain_name} extension ${title}"],],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
-
-        exec { "setOSBDebugFlagOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/ALSB_DEBUG_FLAG=\"true\"/ALSB_DEBUG_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep ALSB_DEBUG_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => Exec["setDebugFlagOnFalse ${domain_name} ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
-
-        exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
-
-      }
-    }
-
-    exec { "domain.py ${domain_name} ${title}":
-      command => "rm ${download_dir}/domain_${domain_name}.py",
-      require => Exec["execwlst ${domain_name} ${title}"],
-      path    => $exec_path,
-      user    => $os_user,
-      group   => $os_group,
-    }
-
-    if($extensionsTemplateFile) {
-      exec { "domain.py ${domain_name} extension ${title}":
-        command => "rm ${download_dir}/domain_extension_${domain_name}.py",
-        require => Exec["execwlst ${domain_name} extension ${title}"],
-        path    => $exec_path,
-        user    => $os_user,
-        group   => $os_group,
-      }
-    }
   }
 }

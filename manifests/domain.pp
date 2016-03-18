@@ -3,10 +3,10 @@
 # setup a new weblogic domain
 #
 define orawls::domain (
-  $domain_name,
   $weblogic_password,
+  $domain_name                           = $name,
   $domain_template                       = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud
-  $bam_enabled                           = true,  #only for SOA Suite
+  $bam_enabled                           = false,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = false, #only for SOA Suite 12.1.3
   $owsm_enabled                          = false, #only for OSB domain_template on 10.3.6
@@ -45,6 +45,11 @@ define orawls::domain (
   $create_rcu                            = true,
 )
 {
+  # Validate parameters
+  unless $domain_name {
+    fail('Domain name is required to create a domain')
+  }
+
   $version              = $::orawls::weblogic::version
   $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
   $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir

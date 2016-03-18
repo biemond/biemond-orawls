@@ -1,8 +1,10 @@
 # == Define: orawls::packdomain
 #
 # pack a new weblogic domain
-##
-define orawls::packdomain {
+#
+define orawls::packdomain(
+  $domain_name,
+) {
   $version              = $::orawls::weblogic::version
   $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
   $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir

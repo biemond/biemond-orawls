@@ -1,7 +1,7 @@
 # == Define: orawls::bsu
 #
 # installs WebLogic BSU patch
-##
+#
 define orawls::bsu (
   $ensure              = 'present',  #present|absent
   $patch_id            = undef,

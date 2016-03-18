@@ -1,7 +1,7 @@
 # == Define: orawls::oud::instance
 #
 # create an Oracle Unified Directory LDAP instance
-##
+#
 define orawls::oud::instance (
   $oud_home                   = undef,
   $oud_instance_name          = undef,

@@ -2,7 +2,7 @@
 #
 # installs oracle patches for Oracle products
 #
-##
+#
 define orawls::opatch(
   $ensure                  = 'present',  #present|absent
   $oracle_product_home_dir = undef, # /opt/oracle/middleware11gR1
@@ -96,4 +96,3 @@ define orawls::opatch(
     # }
 
     }
-

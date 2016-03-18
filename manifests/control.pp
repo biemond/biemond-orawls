@@ -5,7 +5,7 @@
 #  action        = start|stop
 #  wlsServerType = admin|managed
 #  wlsTarget     = Server|Cluster
-#
+##
 define orawls::control (
   $domain_name,
   $weblogic_password,

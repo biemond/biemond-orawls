@@ -3,7 +3,6 @@
 #  creates oraInst.loc for oracle products
 #
 #
-##
 define orawls::utils::orainst
 (
   $ora_inventory_dir = undef,

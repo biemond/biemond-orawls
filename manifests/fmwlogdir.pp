@@ -7,8 +7,6 @@
 # pass on the weblogic username or password
 # or provide userConfigFile and userKeyFile file locations
 #
-#
-#
 define orawls::fmwlogdir (
   $adminserver_address = 'localhost',
   $adminserver_port    = 7001,
@@ -71,4 +69,3 @@ define orawls::fmwlogdir (
     logoutput => $log_output,
   }
 }
-

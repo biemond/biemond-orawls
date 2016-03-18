@@ -1,7 +1,7 @@
 # == Define: orawls::utils::fmwclusterjrf
 #
 # transform domain to a ADF cluster
-##
+#
 define orawls::utils::fmwclusterjrf (
   $domain_name,
   $weblogic_password,
@@ -93,7 +93,7 @@ define orawls::utils::fmwclusterjrf (
       group       => $os_group,
       logoutput   => $log_output,
       require     => [File["${download_dir}/${title}_assignJrfToCluster.py"],
-      Orawls::Control["ShutdownAdminServerForJRF${title}"],]
+      Orawls::Control["ShutdownAdminServerForJRF${title}"],],
     }
 
     #startup adminserver for offline WLST scripts

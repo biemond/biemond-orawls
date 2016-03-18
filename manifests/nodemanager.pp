@@ -2,6 +2,7 @@
 #
 # install and configures the nodemanager
 #
+#
 define orawls::nodemanager (
   $nodemanager_port                      = 5556,
   $nodemanager_address                   = undef,

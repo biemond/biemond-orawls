@@ -2,7 +2,7 @@
 #
 # installs FMW software like ADF, FORMS, OIM, WC, WCC, OSB, SOA Suite, B2B, MFT
 #
-##
+#
 define orawls::fmw(
   $oracle_home_dir = undef, # /opt/oracle/middleware/Oracle_SOA
   $fmw_product     = undef, # adf|soa|soaqs|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b|forms

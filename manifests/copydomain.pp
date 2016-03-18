@@ -1,7 +1,7 @@
 # == Define: orawls::copydomain
 #
 #   copydomain to an other nodes
-##
+#
 define orawls::copydomain (
   $domain_name,
   $adminserver_address,
@@ -12,7 +12,7 @@ define orawls::copydomain (
   $userKeyFile         = undef,
   $weblogic_user       = 'weblogic',
   $weblogic_password   = undef,
-  $log_output          = false, # true|false
+  $log_dir             = undef, # /data/logs
   $server_start_mode   = 'dev', # dev/prod
 )
 {

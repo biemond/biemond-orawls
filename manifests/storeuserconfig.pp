@@ -2,6 +2,7 @@
 #
 # generic storeuserconfig wlst script
 #
+#
 define orawls::storeuserconfig (
   $domain_name,
   $weblogic_password,

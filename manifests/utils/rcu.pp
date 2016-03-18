@@ -1,6 +1,7 @@
 # == Class: orawls::utils::rcu
 #    rcu for adf 12.1.2 & 12.1.3
 #
+#
 define orawls::utils::rcu(
   $fmw_product                 = 'adf', # adf|soa|mft
   $oracle_fmw_product_home_dir = undef,
@@ -17,6 +18,7 @@ define orawls::utils::rcu(
   $os_group     = $::orawls::weblogic::os_group
   $download_dir = $::orawls::weblogic::download_dir
   $log_output   = $::orawls::weblogic::log_output
+  $jdk_home_dir = $::orawls::weblogic::jdk_home_dir
 
   case $::kernel {
     'Linux','SunOS': {

@@ -1,7 +1,7 @@
 # == Define: orawls::utils::webtier
 #
 # Add a Webtier to the Enterprise manager
-##
+#
 define orawls::utils::webtier(
   $domain_name,
   $weblogic_password,
@@ -133,7 +133,7 @@ define orawls::utils::webtier(
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
-        require     => [File["${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/input/${webgate_agentname}.xml"],File["${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh"]]
+        require     => [File["${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/input/${webgate_agentname}.xml"],File["${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh"]],
       }
 
       exec { "Deploy webgate to ${instance_id}":

@@ -1,5 +1,6 @@
 #
 #
+#
 define orawls::resourceadapter(
   $domain_name,
   $adapter_name              = undef,
@@ -196,6 +197,9 @@ define orawls::resourceadapter(
       'SunOS': {
         $java_statement = 'java -d64 weblogic.Deployer'
       }
+      default: {
+        fail("Kernel ${::kernel} not supported")
+      }
     }
 
     case $::kernel {
@@ -212,7 +216,9 @@ define orawls::resourceadapter(
           require     => File["${adapter_plan_dir}/${adapter_plan}"],
           before      => Exec["exec create resource adapter entry ${title}"],
         }
-
+      }
+      default: {
+        fail("Kernel ${::kernel} not supported")
       }
     }
   }
@@ -225,6 +231,9 @@ define orawls::resourceadapter(
       }
       'SunOS': {
         $javaCommandPlan = 'java -d64 -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
+      }
+      default: {
+        fail("Kernel ${::kernel} not supported")
       }
     }
 
@@ -276,7 +285,9 @@ define orawls::resourceadapter(
           logoutput   => $log_output,
           require     => [Exec["exec create resource adapter entry ${title}"],File["${adapter_plan_dir}/${adapter_plan}"],],
         }
-
+      }
+      default: {
+        fail("Kernel ${::kernel} not supported")
       }
     }
   }

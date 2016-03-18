@@ -1,7 +1,7 @@
 # == Define: orawls::oud::control
 #
 # start or stop an Oracle Unified Directory LDAP instance
-##
+#
 define orawls::oud::control(
   $oud_instances_home_dir = undef,
   $oud_instance_name      = undef,

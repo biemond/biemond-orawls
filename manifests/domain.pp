@@ -45,11 +45,6 @@ define orawls::domain (
   $create_rcu                            = true,
 )
 {
-  # Validate parameters
-  unless $domain_name {
-    fail('Domain name is required to create a domain')
-  }
-
   $version              = $::orawls::weblogic::version
   $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
   $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir

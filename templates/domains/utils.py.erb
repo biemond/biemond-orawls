@@ -103,21 +103,34 @@ def create_opss_datasource(target, prefix, password, db_url):
     cd('JDBCConnectionPoolParams/NO_NAME_0')
     set('TestTableName', 'SQL SELECT 1 FROM DUAL')
 
-def change_log(wls_type, name, log_folder):
+def change_log(wls_type, name, log_folder, log_filecount=None, log_file_min_size=None, log_rotationtype=None, log_file_timespan=None, log_number_of_files_limited=None, log_redirect_stdout_to_server=None, log_redirect_stderr_to_server=None):
     if wls_type == 'server':
         cd('/Server/' + name)
         create(name, 'Log')
         cd('/Server/' + name + '/Log/' + name)
+        set('FileName', log_folder + '/' + name + '.log')
+        set('RedirectStderrToServerLogEnabled', log_redirect_stderr_to_server)
+        set('RedirectStdoutToServerLogEnabled', log_redirect_stdout_to_server)
+    elif wls_type == 'webserver':
+        cd('/Server/' + name)
+        create(name, 'WebServer')
+        cd('/Server/'+name+'/WebServer/'+name)
+        create(name, 'WebServerLog')
+        cd('/Server/'+name+'/WebServer/'+name + '/WebServerLog/'+name)
+        set('FileName', log_folder + '/' + name + '-acces.log')
     else:
         cd('/')
         create('base_domain', 'Log')
         cd('/Log/base_domain')
+        set('FileName', log_folder + '/' + name + '.log')
 
-    set('FileName', log_folder + '/' + name + '.log')
-    set('FileCount', 10)
-    set('FileMinSize', 5000)
-    set('RotationType', 'byTime')
-    set('FileTimeSpan', 24)
+    set('FileCount', log_filecount)
+    set('FileMinSize', log_file_min_size)
+    set('RotationType', log_rotationtype)
+    set('FileTimeSpan', log_file_timespan)
+    set('NumberOfFilesLimited', log_number_of_files_limited)
+
+
 
 def change_ssl_with_port(server, jsse_enabled, ssl_listen_port):
     cd('/Server/' + server)

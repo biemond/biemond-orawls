@@ -11,6 +11,8 @@ arguments     = '<%= arguments.join(' ') %>'
 machineName   = '<%= machine %>'
 bea_home      = '<%= bea_home %>'
 
+cluster_name = '<%= cluster %>'.strip()
+
 logFilename                 = '<%= logfilename %>'
 log_http_Filename           = '<%= log_http_filename %>'
 log_http_format             = '<%= log_http_format %>'
@@ -78,6 +80,9 @@ try:
 
     cd('/Servers/'+name)
     set('Machine',getMBean('/Machines/'+machineName))
+
+    if cluster_name :
+      cmo.setCluster(getMBean('/Clusters/'+cluster_name))
 
     print "Change Notes"
     if server_parameters and server_parameters != 'None':
@@ -194,3 +199,4 @@ try:
 
 except:
     report_back_error()
+

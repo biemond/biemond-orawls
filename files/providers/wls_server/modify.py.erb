@@ -6,6 +6,7 @@ manage_classpath      = False
 manage_bea_home       = False
 manage_listenaddress  = False
 manage_machine        = False
+manage_cluster        = False
 
 name          = '<%= server_name %>'
 
@@ -32,6 +33,11 @@ manage_listenaddress = True
 <% unless machine.nil? %>
 machineName    = '<%= machine %>'
 manage_machine = True
+<% end %>
+
+<% unless cluster.nil? %>
+cluster_name = '<%= cluster %>'.strip()
+manage_cluster = True
 <% end %>
 
 logFilename                      = '<%= logfilename %>'
@@ -98,6 +104,12 @@ try:
           cmo.setMachine(None)
       else:
           set('Machine', getMBean('/Machines/'+machineName))
+
+    if manage_cluster :
+      if cluster_name :
+        cmo.setCluster(getMBean('/Clusters/'+cluster_name))
+      else:
+        cmo.setCluster(None)
 
     print "Change Notes"
     set_attribute_value('Notes', server_parameters, use_default_value_when_empty)

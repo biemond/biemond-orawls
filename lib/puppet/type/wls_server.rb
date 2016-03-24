@@ -57,6 +57,7 @@ module Puppet
     property :listenport
     property :listenportenabled
     property :machine
+    property :cluster
     property :classpath
     property :arguments
     property :bea_home

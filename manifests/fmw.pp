@@ -24,10 +24,17 @@ define orawls::fmw(
   $remote_file          = true,                              # true|false
   $log_output           = false,                             # true|false
   $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
+  $ohs_mode             = hiera('ohs_mode', 'colocated'),
+  $oracle_inventory_dir = undef,
 )
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
-  $oraInventory = "${oracle_base_home_dir}/oraInventory"
+
+  if $oracle_inventory_dir == undef {
+    $oraInventory = "${oracle_base_home_dir}/oraInventory"
+  } else {
+    $oraInventory = $oracle_inventory_dir
+  }
 
   case $::kernel {
     'Linux': {
@@ -61,6 +68,14 @@ define orawls::fmw(
   #After converting all spaces to underscores, remove all non alphanumeric characters (allow hypens and underscores too)
   $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
   $sanitised_title = regsubst ($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')
+
+  if ($ohs_mode == 'standalone') {
+    $install_type = 'Standalone HTTP Server (Managed independently of WebLogic server)'
+  } elsif ($ohs_mode == 'colocated') {
+    $install_type = 'Colocated HTTP Server (Managed through WebLogic server)'
+  } else {
+    fail("Unrecognized parameter ohs_mode: ${ohs_mode}, please use colocated|standalone")
+  }
 
   if ( $fmw_product == 'adf' ) {
     $fmw_silent_response_file = 'orawls/fmw_silent_adf.rsp.erb'

@@ -29,7 +29,7 @@ define orawls::packdomain (
   }
 
   $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
-  $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -managed=true -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+  $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
   exec { "pack domain ${domain_name} ${title}":
     command     => $packCommand,

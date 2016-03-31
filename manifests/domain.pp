@@ -517,10 +517,7 @@ define orawls::domain (
     }
 
     # FMW RCU only for wls 12.1.2 or higher and when template is not standard
-    if (     $version >= 1212
-         and $domain_template != 'standard'
-         and $domain_template != 'adf_restricted'
-         and $domain_template != 'ohs_standalone' ) {
+    if ( $version >= 1212 and $domain_template != 'standard' and $domain_template != 'adf_restricted' and $domain_template != 'ohs_standalone' ) {
 
       if ( $domain_template == 'adf' ) {
         $rcu_domain_template = 'adf'

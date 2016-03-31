@@ -43,12 +43,7 @@ define orawls::nodemanager (
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
     $startHome   = "${weblogic_home_dir}/server/bin"
   } elsif $version == 1212 or $version == 1213 or $version == 1221 {
-    if $ohs_standalone == true and $version == 1212 {
-      $nodeMgrHome = "${domains_dir}/${domain_name}/bin"
-    } else {
-      $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
-    }
-
+    $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
     $startHome   = "${domains_dir}/${domain_name}/bin"
   } else {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"

@@ -12,7 +12,7 @@ define orawls::control (
   $jdk_home_dir                = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir             = hiera('wls_domains_dir', undef),
   $domain_name                 = hiera('domain_name'),
-  $server_type                 = 'admin',  # admin|managed
+  $server_type                 = 'admin',  # admin|managed|ohs_standalone
   $target                      = 'Server', # Server|Cluster
   $server                      = 'AdminServer',
   $adminserver_address         = hiera('domain_adminserver_address'    , 'localhost'),

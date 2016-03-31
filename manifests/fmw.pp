@@ -24,7 +24,7 @@ define orawls::fmw(
   $remote_file          = true,                              # true|false
   $log_output           = false,                             # true|false
   $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
-  $ohs_mode             = hiera('ohs_mode', 'colocated'),
+  $ohs_mode             = hiera('ohs_mode', 'collocated'),
   $oracle_inventory_dir = undef,
 )
 {
@@ -71,10 +71,14 @@ define orawls::fmw(
 
   if ($ohs_mode == 'standalone') {
     $install_type = 'Standalone HTTP Server (Managed independently of WebLogic server)'
-  } elsif ($ohs_mode == 'colocated') {
-    $install_type = 'Colocated HTTP Server (Managed through WebLogic server)'
+  } elsif ($ohs_mode in ['colocated','collocated']) {
+    if $version == 1212 {
+      $install_type = 'Colocated HTTP Server (Managed through WebLogic server)'
+    } else {
+      $install_type = 'Collocated HTTP Server (Managed through WebLogic server)'
+    }
   } else {
-    fail("Unrecognized parameter ohs_mode: ${ohs_mode}, please use colocated|standalone")
+    fail("Unrecognized parameter ohs_mode: ${ohs_mode}, please use colocated|collocated|standalone")
   }
 
   if ( $fmw_product == 'adf' ) {

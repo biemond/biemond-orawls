@@ -38,6 +38,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - WebLogic 12.2.1 MT multi tenancy / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
 - WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
 - WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
+- WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs](https://github.com/biemond/biemond-orawls-vagrant-ohs)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
 - WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
@@ -73,7 +74,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 ### Fusion Middleware Features 11g & 12c
 
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
-- [WebTier](#webtier) Oracle HTTP server
+- [WebTier](#webtier) Oracle HTTP server Standalone and Collocated
 - [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate 11g OPSS to the database )
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
 - [OIM IDM](#oimconfig) / OAM 11.1.2.3 configurations with Oracle OHS OAM WebGate, Also it has Cluster support for OIM OAM
@@ -164,6 +165,7 @@ For all WebLogic or FMW versions
 - domain 'soa'            -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'soa_bpm'        -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'bam'            -> BAM ( only with soa suite installation)
+- domain 'ohs_standalone' -> Standalone webtier (HTTP Server) 12.1.2, 12.1.3 and 12.1.4
 
 11g
 - domain 'wc_wcc_bpm'     -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
@@ -878,6 +880,16 @@ when you set the defaults hiera variables
         remote_file:             false
 
 
+    # OHS standalone
+    fmw_installations:
+      'webtier1212':
+        fmw_product:             "web"
+        ohs_mode:                "standalone"
+        fmw_file1:               "fmw_12.2.1.0.0_ohs_linux64_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+
+
 ### domain
 __orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | ADF | WebCenter | OIM or OAM or OUD
 
@@ -1092,6 +1104,37 @@ FMW 12.1.3 WebLogic OSB domain
          repository_sys_user:      "sys"
          repository_sys_password:  "Welcome01"
          rcu_database_url:         "osbdb.example.com:1521:osbrepos.example.com"
+
+Standalone Webtier
+
+    domain_instances:
+      'Wls1221':
+        domain_template:                       "ohs_standalone"
+        development_mode:                      false
+        ohs_standalone_listen_address:         *domain_adminserver_address
+        ohs_standalone_listen_port:            8180
+        ohs_standalone_ssl_listen_port:        8181
+        nodemanager_password:                  *domain_wls_password
+        nodemanager_username:                  *wls_weblogic_user
+        log_output:                            *logoutput
+
+    nodemanager_instances:
+      'nodemanager':
+        ohs_standalone:                        true
+        log_output:                            *logoutput
+        log_file:                              'nodemanager_wls1221.log'
+        nodemanager_address:                   *domain_adminserver_address
+        sleep:                                 21
+
+    # startup adminserver for extra configuration
+    control_instances:
+      'startOHS1server':
+         domain_name:                 *domain_name
+         server_type:                 'ohs_standalone'
+         target:                      'Server'
+         server:                      'ohs1'
+         action:                      'start'
+         log_output:                  *logoutput
 
 
 

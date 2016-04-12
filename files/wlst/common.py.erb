@@ -211,7 +211,7 @@ def set_attribute_value(mbean_attribute, value=None, set_default=True):
     null_value = fields[2]
     #
     # if the value is not specified set the default value if it defined
-    if value:
+    if value is not None and value != "":
         attribute_value = str(value)
     else:
         if not set_default:

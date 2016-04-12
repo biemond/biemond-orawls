@@ -21,6 +21,7 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     custom_trust                = resource[:custom_trust]
     trust_keystore_file         = resource[:trust_keystore_file]
     trust_keystore_passphrase   = resource[:trust_keystore_passphrase]
+    ohs_standalone_server       = resource[:ohs_standalone_server]
 
     Puppet.debug "adminserver custom trust: #{custom_trust}"
 
@@ -30,10 +31,24 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled}"
     end
 
-    if action == :start
-      wls_action = "nmStart(\"#{name}\")"
+    if "#{ohs_standalone_server}" == 'true'
+      base_path = "#{weblogic_home_dir}/../oracle_common"
     else
-      wls_action = "nmKill(\"#{name}\")"
+      base_path = weblogic_home_dir
+    end
+
+    if action == :start
+      if "#{ohs_standalone_server}" == 'true'
+        wls_action = "nmStart(serverName=\"#{name}\", serverType=\"OHS\")"
+      else
+        wls_action = "nmStart(\"#{name}\")"
+      end
+    else
+      if "#{ohs_standalone_server}" == 'true'
+        wls_action = "nmKill(serverName=\"#{name}\", serverType=\"OHS\")"
+      else
+        wls_action = "nmKill(\"#{name}\")"
+      end
     end
 
     if "#{nodemanager_secure_listener}" == 'true'
@@ -42,13 +57,13 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       nm_protocol = 'plain'
     end
 
-    command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+    command = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
 nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 #{wls_action}
 nmDisconnect()
 EOF"
 
-    command2 = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+    command2 = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
 nmConnect(\"#{weblogic_user}\",\"xxxxx\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 #{wls_action}
 nmDisconnect()

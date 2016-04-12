@@ -2,8 +2,10 @@
 #
 # does all the Oracle Identity Management configuration
 #
+#
 define orawls::utils::oimconfig(
-  $version                    = undef,
+  $domain_name,
+  $weblogic_password,
   $oim_home                   = undef,
   $server_config              = false,
   $oim_password               = undef,
@@ -16,25 +18,24 @@ define orawls::utils::oimconfig(
   $oimserver_name             = 'oim_server1',
   $bi_enabled                 = false, # only when you got a BI cluster
   $bi_cluster_name            = undef,
-  $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
-  $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
-  $repository_password        = hiera('repository_password'       , 'Welcome01'),
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $domain_name                = hiera('domain_name'),
-  $adminserver_name           = hiera('domain_adminserver'        , 'AdminServer'),
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
+  $repository_database_url    = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $repository_prefix          = 'DEV',
+  $repository_password        = 'Welcome01',
+  $adminserver_name           = 'AdminServer',
+  $adminserver_address        = 'localhost',
+  $adminserver_port           = 7001,
+  $nodemanager_port           = 5556,
+  $weblogic_user              = 'weblogic',
 ) {
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir
+  $wls_domains_dir      = $::orawls::weblogic::wls_domains_dir
+  $wls_apps_dir         = $::orawls::weblogic::wls_apps_dir
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $download_dir         = $::orawls::weblogic::download_dir
+  $log_output           = $::orawls::weblogic::log_output
 
   if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
@@ -147,14 +148,14 @@ define orawls::utils::oimconfig(
         exec { "execwlst bi-createUDD.py ${title}":
           command     => "${javaCommand} ${download_dir}/bi-createUDD${title}.py ${weblogic_password}",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
-                          "JAVA_HOME=${jdk_home_dir}"],
+          "JAVA_HOME=${jdk_home_dir}"],
           path        => $execPath,
           user        => $os_user,
           group       => $os_group,
           logoutput   => $log_output,
           require     => [File["${download_dir}/bi-createUDD${title}.py"],
-                          Exec["config oim server ${title}"]],
-          before      => Orawls::Control['stopOIMOimServer1AfterConfig']
+          Exec["config oim server ${title}"]],
+          before      => Orawls::Control['stopOIMOimServer1AfterConfig'],
         }
       }
 
@@ -198,7 +199,7 @@ define orawls::utils::oimconfig(
         download_dir        => $download_dir,
         log_output          => $log_output,
         require             => [Orawls::Control['stopOIMOimServer1AfterConfig'],
-                                Exec["config oim server ${title}"],],
+        Exec["config oim server ${title}"],],
       }
 
       orawls::control{'stopOIMAdminServerAfterConfig':
@@ -220,8 +221,8 @@ define orawls::utils::oimconfig(
         download_dir        => $download_dir,
         log_output          => $log_output,
         require             => [Orawls::Control['stopOIMOimServer1AfterConfig'],
-                                Orawls::Control['stopOIMSoaServer1AfterConfig'],
-                                Exec["config oim server ${title}"],],
+        Orawls::Control['stopOIMSoaServer1AfterConfig'],
+        Exec["config oim server ${title}"],],
       }
 
       orawls::control{'startOIMAdminServerAfterConfig':
@@ -243,12 +244,10 @@ define orawls::utils::oimconfig(
         download_dir        => $download_dir,
         log_output          => $log_output,
         require             => [Orawls::Control['stopOIMOimServer1AfterConfig'],
-                                Orawls::Control['stopOIMAdminServerAfterConfig'],
-                                Orawls::Control['stopOIMSoaServer1AfterConfig'],
-                                Exec["config oim server ${title}"],],
+        Orawls::Control['stopOIMAdminServerAfterConfig'],
+        Orawls::Control['stopOIMSoaServer1AfterConfig'],
+        Exec["config oim server ${title}"],],
       }
     }
   }
 }
-
-

@@ -1,15 +1,15 @@
 # == Define: orawls::oud::control
 #
 # start or stop an Oracle Unified Directory LDAP instance
-##
+#
 define orawls::oud::control(
   $oud_instances_home_dir = undef,
   $oud_instance_name      = undef,
   $action                 = 'start', # start|stop
-  $os_user                = hiera('wls_os_user'), # oracle
-  $os_group               = hiera('wls_os_group'), # dba
-  $log_output             = false, # true|false
 ){
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $log_output           = $::orawls::weblogic::log_output
 
   $exec_path   = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
 

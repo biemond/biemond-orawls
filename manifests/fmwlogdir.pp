@@ -7,24 +7,31 @@
 # pass on the weblogic username or password
 # or provide userConfigFile and userKeyFile file locations
 #
-#
-#
 define orawls::fmwlogdir (
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'       , undef),
-  $userConfigFile             = hiera('domain_user_config_file'   , undef),
-  $userKeyFile                = hiera('domain_user_key_file'      , undef),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
-  $server                     = 'AdminServer',
-  $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
+  $adminserver_address = 'localhost',
+  $adminserver_port    = 7001,
+  $weblogic_user       = 'weblogic',
+  $weblogic_password   = undef,
+  $userConfigFile      = undef,
+  $userKeyFile         = undef,
+  $server              = 'AdminServer',
+  $log_dir             = undef, # /data/logs
 )
 {
+  $version              = $::orawls::weblogic::version
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir
+  $wls_domains_dir      = $::orawls::weblogic::wls_domains_dir
+  $wls_apps_dir         = $::orawls::weblogic::wls_apps_dir
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir
+  $os_user              = $::orawls::weblogic::os_user
+  $os_group             = $::orawls::weblogic::os_group
+  $download_dir         = $::orawls::weblogic::download_dir
+  $log_output           = $::orawls::weblogic::log_output
+  $oracle_base_home_dir = $::orawls::weblogic::oracle_base_home_dir
+  $source               = $::orawls::weblogic::source
+  $temp_directory       = $::orawls::weblogic::temp_directory
+
   $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
 
   # use userConfigStore for the connect
@@ -62,4 +69,3 @@ define orawls::fmwlogdir (
     logoutput => $log_output,
   }
 }
-

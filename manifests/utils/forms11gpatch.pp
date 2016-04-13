@@ -4,20 +4,20 @@
 #
 ##
 define orawls::utils::forms11gpatch (
-  $version              = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1213
-  $weblogic_home_dir    = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir  = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
+  $version              = $::orawls::weblogic::version,  # 1036|1111|1211|1212|1213
+  $weblogic_home_dir    = $::orawls::weblogic::weblogic_home_dir, # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir  = $::orawls::weblogic::middleware_home_dir, # /opt/oracle/middleware11gR1
+  $oracle_base_home_dir = $::orawls::weblogic::oracle_base_home_dir, # /opt/oracle
   $oracle_home_dir      = undef,                                      # /opt/oracle/middleware/Oracle_FRM1
-  $jdk_home_dir         = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
+  $jdk_home_dir         = $::orawls::weblogic::jdk_home_dir, # /usr/java/jdk1.7.0_45
   $fmw_file1            = undef,
-  $os_user              = hiera('wls_os_user'), # oracle
-  $os_group             = hiera('wls_os_group'), # dba
-  $download_dir         = hiera('wls_download_dir'), # /data/install
-  $source               = hiera('wls_source'                , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file          = true,                                       # true|false
-  $log_output           = false,                                      # true|false
-  $temp_directory       = hiera('wls_temp_dir'              ,'/tmp'), # /tmp directory
+  $os_user              = $::orawls::weblogic::os_user, # oracle
+  $os_group             = $::orawls::weblogic::os_group, # dba
+  $download_dir         = $::orawls::weblogic::download_dir, # /data/install
+  $source               = $::orawls::weblogic::source, # puppet:///modules/orawls/ | /mnt | /vagrant
+  $remote_file          = $::orawls::weblogic::remote_file,                                       # true|false
+  $log_output           = $::orawls::weblogic::log_output,                                      # true|false
+  $temp_directory       = $::orawls::weblogic::temp_directory, # /tmp directory
 )
 {
   $fmw_product  = 'forms_patch'

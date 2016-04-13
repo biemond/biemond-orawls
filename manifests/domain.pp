@@ -3,61 +3,71 @@
 # setup a new weblogic domain
 ##
 define orawls::domain (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221
-  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
-  $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone
+  $domain_name                           = undef,
+  $weblogic_password                     = undef,
+  $version                               = $::orawls::weblogic::version,  # 1036|1111|1211|1212|1213|1221
+  $weblogic_home_dir                     = $::orawls::weblogic::weblogic_home_dir, # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir                   = $::orawls::weblogic::middleware_home_dir, # /opt/oracle/middleware11gR1
+  $jdk_home_dir                          = $::orawls::weblogic::jdk_home_dir, # /usr/java/jdk1.7.0_45
+  $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  $wls_apps_dir                          = $::orawls::weblogic::wls_apps_dir,
+  $domain_template                       = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = false, #only for SOA Suite 12.1.3
   $owsm_enabled                          = false, #only for OSB domain_template on 10.3.6
-  $domain_name                           = hiera('domain_name'),
   $development_mode                      = true,
-  $adminserver_name                      = hiera('domain_adminserver'             , 'AdminServer'),
-  $adminserver_machine_name              = hiera('domain_adminserver_machine_name', 'LocalMachine'),
-  $adminserver_address                   = hiera('domain_adminserver_address'     , undef),
-  $adminserver_port                      = hiera('domain_adminserver_port'        , 7001),
+  $adminserver_name                      = 'AdminServer',
+  $adminserver_machine_name              = 'LocalMachine',
+  $adminserver_address                   = undef,
+  $adminserver_port                      = 7001,
   $adminserver_ssl_port                  = undef,
   $adminserver_listen_on_all_interfaces  = false,  # for docker etc
-  $java_arguments                        = hiera('domain_java_arguments'         , {}),         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
+  $java_arguments                        = {},         # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
   $nodemanager_address                   = undef,
-  $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
+  $nodemanager_port                      = 5556,
   $nodemanager_secure_listener           = true,
-  $weblogic_user                         = hiera('wls_weblogic_user'             , 'weblogic'),
-  $weblogic_password                     = hiera('domain_wls_password'),
+  $weblogic_user                         = 'weblogic',
   $nodemanager_username                  = undef, # When not specified, it'll use the weblogic_user
   $nodemanager_password                  = undef, # When not specified, it'll use the weblogic_password
   $domain_password                       = undef, # When not specified, it'll use the weblogic_password
-  $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
+  $jsse_enabled                          = false,
   $webtier_enabled                       = false,
-  $os_user                               = hiera('wls_os_user'), # oracle
-  $os_group                              = hiera('wls_os_group'), # dba
-  $download_dir                          = hiera('wls_download_dir'), # /data/install
-  $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
-  $log_output                            = false, # true|false
-  $repository_database_url               = hiera('repository_database_url'       , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  $os_user                               = $::orawls::weblogic::os_user, # oracle
+  $os_group                              = $::orawls::weblogic::os_group, # dba
+  $download_dir                          = $::orawls::weblogic::download_dir, # /data/install
+  $log_dir                               = undef, # /data/logs
+  $log_output                            = $::orawls::weblogic::log_output, # true|false
+  $repository_database_url               = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
   $rcu_database_url                      = undef,                                      #localhost:1521:XE"
-  $repository_prefix                     = hiera('repository_prefix'             , 'DEV'),
-  $repository_password                   = hiera('repository_password'           , 'Welcome01'),
+  $repository_prefix                     = 'DEV',
+  $repository_password                   = 'Welcome01',
   $repository_sys_user                   = 'sys',
   $repository_sys_password               = undef,
-  $custom_trust                          = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase             = hiera('wls_trust_keystore_passphrase' , undef),
+  $custom_trust                          = false,
+  $trust_keystore_file                   = undef,
+  $trust_keystore_passphrase             = undef,
   $custom_identity                       = false,
   $custom_identity_keystore_filename     = undef,
   $custom_identity_keystore_passphrase   = undef,
   $custom_identity_alias                 = undef,
   $custom_identity_privatekey_passphrase = undef,
-  $create_rcu                            = hiera('create_rcu', true),
+  $create_rcu                            = true,
   $ohs_standalone_listen_address         = undef,
   $ohs_standalone_listen_port            = undef,
   $ohs_standalone_ssl_listen_port        = undef,
 )
 {
+  # Must include domain_name
+  unless $domain_name {
+    fail('The domain name must be passed in.')
+  }
+
+  # Must include weblogic password
+  unless $weblogic_password {
+    fail('A weblogic password is needed to create a domain.')
+  }
+
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {

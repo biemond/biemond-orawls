@@ -3,17 +3,18 @@
 # transform domain to a soa,osb,bam cluster
 ##
 define orawls::utils::fmwcluster (
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1213|1221
-  $ofm_version                = hiera('ofm_version'               , 1117),   # 1116|1117
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $domain_name                = hiera('domain_name'),
-  $adminserver_name           = hiera('domain_adminserver'        , 'AdminServer'),
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
+  $domain_name                = undef,
+  $weblogic_password          = undef,
+  $version                    = $::orawls::weblogic::version,  # 1036|1111|1211|1212|1213|1221
+  $ofm_version                = 1117,   # 1116|1117
+  $weblogic_home_dir          = $::orawls::weblogic::weblogic_home_dir, # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir        = $::orawls::weblogic::middleware_home_dir, # /opt/oracle/middleware11gR1
+  $jdk_home_dir               = $::orawls::weblogic::jdk_home_dir, # /usr/java/jdk1.7.0_45
+  $wls_domains_dir            = $::orawls::weblogic::wls_domains_dir,
+  $adminserver_name           = 'AdminServer',
+  $adminserver_address        = 'localhost',
+  $adminserver_port           = 7001,
+  $nodemanager_port           = 5556,
   $soa_cluster_name           = undef,
   $bam_cluster_name           = undef,
   $osb_cluster_name           = undef,
@@ -30,20 +31,29 @@ define orawls::utils::fmwcluster (
   $b2b_enabled                = false, # true|false
   $ess_enabled                = false, # true|false
   $bi_enabled                 = false, # true|false
-  $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
-  $retain_file_store          = hiera('retain_security_file_store', false), # true|false
-  $jsse_enabled               = hiera('wls_jsse_enabled'              , false),
-  $custom_trust               = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file        = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase  = hiera('wls_trust_keystore_passphrase' , undef),
+  $repository_prefix          = 'DEV',
+  $weblogic_user              = 'weblogic',
+  $os_user                    = $::orawls::weblogic::os_user, # oracle
+  $os_group                   = $::orawls::weblogic::os_group, # dba
+  $download_dir               = $::orawls::weblogic::download_dir, # /data/install
+  $log_output                 = $::orawls::weblogic::log_output, # true|false
+  $retain_file_store          = false, # true|false
+  $jsse_enabled               = false,
+  $custom_trust               = false,
+  $trust_keystore_file        = undef,
+  $trust_keystore_passphrase  = undef,
 )
 {
+  # Must include domain_name
+  unless $domain_name {
+    fail('The domain to install the fmw on must be passed in.')
+  }
+
+  # Must include weblogic password
+  unless $weblogic_password {
+    fail('A weblogic password is needed to install fmw.')
+  }
+
   if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {

@@ -3,18 +3,22 @@
 # pack a new weblogic domain
 ##
 define orawls::packdomain (
-  $version                    = hiera('wls_version', 1111),  # 1036|1111|1211|1212|1213|1221
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir            = hiera('wls_domains_dir', undef),
-  $domain_name                = hiera('domain_name'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
+  $domain_name                = undef,
+  $version                    = $::orawls::weblogic::version,  # 1036|1111|1211|1212|1213|1221
+  $weblogic_home_dir          = $::orawls::weblogic::weblogic_home_dir, # /opt/oracle/middleware11gR1/wlserver_103
+  $middleware_home_dir        = $::orawls::weblogic::middleware_home_dir, # /opt/oracle/middleware11gR1
+  $jdk_home_dir               = $::orawls::weblogic::jdk_home_dir, # /usr/java/jdk1.7.0_45
+  $wls_domains_dir            = $::orawls::weblogic::wls_domains_dir,
+  $os_user                    = $::orawls::weblogic::os_user, # oracle
+  $os_group                   = $::orawls::weblogic::os_group, # dba
+  $download_dir               = $::orawls::weblogic::download_dir, # /data/install
+  $log_output                 = $::orawls::weblogic::log_output, # true|false
 )
 {
+  # Must include domain_name
+  unless $domain_name {
+    fail('A domain is needed to pack it.')
+  }
 
   if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"

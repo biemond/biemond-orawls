@@ -184,7 +184,7 @@ class orawls::weblogic (
     }
     # OPatch native lib fix for 64 solaris
     case $::kernel {
-      SunOS: {
+      'SunOS': {
         exec { 'add -d64 oraparam.ini oracle_common':
           command => "sed -e's/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\"-d64\"/g' ${middleware_home_dir}/oui/oraparam.ini > ${temp_directory}/wls.tmp && mv ${temp_directory}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini",
           unless  => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${middleware_home_dir}/oui/oraparam.ini",

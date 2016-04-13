@@ -272,7 +272,7 @@ define orawls::utils::fmwcluster (
         group       => $os_group,
         logoutput   => $log_output,
         require     => [File["${download_dir}/assignOsbSoaBpmBamToClusters${title}.py"],
-                        Orawls::Control["ShutdownAdminServerForSoa${title}"],]
+                        Orawls::Control["ShutdownAdminServerForSoa${title}"],],
       }
 
       if ( $soa_enabled == true ){
@@ -330,7 +330,7 @@ define orawls::utils::fmwcluster (
                           File["${download_dir}/soa-bpm-createUDD${title}.py"],
                           Orawls::Control["ShutdownAdminServerForSoa${title}"],
                           Exec["execwlst assignOsbSoaBpmBamToClusters.py ${title}"],
-                          Exec["execwlst soa-createUDD.py ${title}"],]
+                          Exec["execwlst soa-createUDD.py ${title}"],],
         }
 
         if( $oim_enabled == true ) {
@@ -355,7 +355,7 @@ define orawls::utils::fmwcluster (
             group       => $os_group,
             logoutput   => $log_output,
             require     => [File["${download_dir}/oim-createUDD${title}.py"],
-                            Exec["execwlst soa-bpm-createUDD.py ${title}"],]
+                            Exec["execwlst soa-bpm-createUDD.py ${title}"],],
           }
         }
       }

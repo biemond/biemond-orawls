@@ -163,7 +163,7 @@ define orawls::utils::oimconfig(
           logoutput   => $log_output,
           require     => [File["${download_dir}/bi-createUDD${title}.py"],
                           Exec["config oim server ${title}"]],
-          before      => Orawls::Control['stopOIMOimServer1AfterConfig']
+          before      => Orawls::Control['stopOIMOimServer1AfterConfig'],
         }
       }
 

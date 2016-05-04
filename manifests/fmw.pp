@@ -653,6 +653,7 @@ define orawls::fmw(
         user        => $os_user,
         group       => $os_group,
         logoutput   => $log_output,
+        umask       => '022',
         require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
                         Orawls::Utils::Orainst["create oraInst for ${name}"],
                         Exec["extract ${fmw_file1} for ${name}"],],

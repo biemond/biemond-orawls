@@ -434,8 +434,8 @@ define orawls::fmw(
       ensure  => present,
       content => template($fmw_silent_response_file),
       mode    => '0775',
-      owner   => $os_user,
-      group   => $os_group,
+      #owner   => $os_user,
+      #group   => $os_group,
       backup  => false,
       require => Orawls::Utils::Orainst["create oraInst for ${name}"],
     }

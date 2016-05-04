@@ -30,6 +30,11 @@ define orawls::fmw(
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
+  # Set basic umask for execs
+  Exec {
+    umask => '022',
+  }
+
   if $oracle_inventory_dir == undef {
     $oraInventory = "${oracle_base_home_dir}/oraInventory"
   } else {

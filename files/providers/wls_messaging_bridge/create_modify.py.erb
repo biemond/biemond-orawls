@@ -1,0 +1,69 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= bridge_name %>'
+target                  = '<%= target %>'
+targettype              = '<%= targettype %>'
+asyncenabled            = '<%= asyncenabled %>'
+batchinterval           = '<%= batchinterval %>'
+batchsize               = '<%= batchsize %>'
+durabilityenabled       = '<%= durabilityenabled %>'
+idletimemax             = '<%= idletimemax %>'
+preservemsgproperty     = '<%= preservemsgproperty %>'
+qosdegradationallowed   = '<%= qosdegradationallowed %>'
+qos                     = '<%= qos %>'
+reconnectdelayincrease  = '<%= reconnectdelayincrease %>'
+reconnectdelaymax       = '<%= reconnectdelaymax %>'
+reconnectdelaymin       = '<%= reconnectdelaymin %>'
+selector                = '<%= selector %>'
+started                 = '<%= started %>'
+transactiontimeout      = '<%= transactiontimeout %>'
+sourcedestination       = '<%= sourcedestination %>'
+targetdestination       = '<%= targetdestination %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createMessagingBridge(name)
+
+    cd('/MessagingBridges/' + name)
+    cmo.setName(name)
+
+    set_attribute_value('BatchInterval', batchinterval, use_default_value_when_empty)
+    set_attribute_value('BatchSize', batchsize, use_default_value_when_empty)
+    set_attribute_value('AsyncEnabled', asyncenabled, use_default_value_when_empty)
+    set_attribute_value('DurabilityEnabled', durabilityenabled, use_default_value_when_empty)
+    set_attribute_value('IdleTimeMaximum', idletimemax, use_default_value_when_empty)
+
+    set_attribute_value('PreserveMsgProperty', preservemsgproperty, use_default_value_when_empty)
+    set_attribute_value('QOSDegradationAllowed', qosdegradationallowed, use_default_value_when_empty)
+
+    set_attribute_value('ReconnectDelayIncrease', reconnectdelayincrease, use_default_value_when_empty)
+    set_attribute_value('ReconnectDelayMaximum', reconnectdelaymax, use_default_value_when_empty)
+    set_attribute_value('ReconnectDelayMinimum', reconnectdelaymin, use_default_value_when_empty)
+
+    cmo.setSourceDestination(getMBean('/JMSBridgeDestinations/' + sourcedestination))
+    cmo.setTargetDestination(getMBean('/JMSBridgeDestinations/' + targetdestination))
+
+    set_attribute_value('Selector', selector, use_default_value_when_empty)
+    set_attribute_value('QualityOfService', qos, use_default_value_when_empty)
+    set_attribute_value('Started', started, use_default_value_when_empty)
+    set_attribute_value('TransactionTimeout', transactiontimeout, use_default_value_when_empty)
+
+    print "deployments"
+    cd('/Deployments/' + name)
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

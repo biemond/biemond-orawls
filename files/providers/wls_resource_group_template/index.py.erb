@@ -1,0 +1,16 @@
+
+wlst_name = '/ResourceGroupTemplates/'
+
+m = ls(wlst_name, returnMap='true')
+
+f = open_file("name;xxx")
+for token in m:
+    print '___'+token+'___'
+    cd(wlst_name + token)
+
+
+    add_index_entry(f, [domain+'/'+token, 'xxx'])
+
+f.close()
+report_back_success()
+

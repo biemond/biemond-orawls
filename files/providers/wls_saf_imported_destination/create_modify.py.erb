@@ -1,0 +1,56 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                   = '<%= imported_destination_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+errorhandling          = '<%= errorhandling %>'
+remotecontext          = '<%= remotecontext %>'
+jndiprefix             = '<%= jndiprefix %>'
+timetolivedefault      = '<%= timetolivedefault %>'
+usetimetolivedefault   = '<%= usetimetolivedefault %>'
+defaulttargeting       = '<%= defaulttargeting %>'
+subdeployment          = '<%= subdeployment %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if wlst_action == 'create':
+      cmo.createSAFImportedDestinations(name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name)
+    cmo.setSAFRemoteContext(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+remotecontext))
+
+    set_attribute_value('JNDIPrefix', jndiprefix, use_default_value_when_empty)
+
+    if errorhandling:
+      cmo.setSAFErrorHandling(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFErrorHandlings/'+errorhandling))
+    else:
+      cmo.setSAFErrorHandling(None)
+
+    if timetolivedefault:
+      set_attribute_value('TimeToLiveDefault', long(timetolivedefault), use_default_value_when_empty)
+    set_attribute_value('UseSAFTimeToLiveDefault', usetimetolivedefault, use_default_value_when_empty)
+    set_attribute_value('DefaultTargetingEnabled', defaulttargeting, use_default_value_when_empty)
+
+    if subdeployment and defaulttargeting == "0":
+      set_attribute_value('SubDeploymentName', subdeployment, use_default_value_when_empty)
+    elif not subdeployment and defaulttargeting == "1":
+      set_attribute_value('DefaultTargetingEnabled', true, use_default_value_when_empty)
+    elif subdeployment and defaulttargeting == "1":
+      raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

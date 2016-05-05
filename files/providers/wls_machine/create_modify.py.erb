@@ -1,0 +1,34 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+machineName    = '<%= machine_name %>'
+machineDnsName = '<%= listenaddress %>'
+portNumber     =  <%= listenport %>
+machineType    = '<%= machinetype %>'
+nmType         = '<%= nmtype %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if wlst_action == 'create':
+        if machineType == 'UnixMachine':
+          cmo.createUnixMachine(machineName)
+        else:
+          cmo.createMachine(machineName)
+
+    cd('/Machines/'+machineName+'/NodeManager/'+machineName)
+
+    set_attribute_value('NMType'       , nmType, use_default_value_when_empty)
+    set_attribute_value('ListenAddress', machineDnsName, use_default_value_when_empty)
+    set_attribute_value('ListenPort'   , portNumber, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

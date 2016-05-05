@@ -1,0 +1,47 @@
+
+
+f = open_file("name;domain_partition_name;resource_group_name;versionidentifier;deploymenttype;stagingmode;domain")
+
+domainConfig()
+
+wlst_name = '/Partitions/'
+m = ls(wlst_name, returnMap='true')
+
+for domain_partition_name in m:
+    print '___' + domain_partition_name + '___'
+    cd(wlst_name + domain_partition_name)
+
+    n = ls('ResourceGroups', returnMap='true')
+    for resource_group_name in n:
+
+        cd(wlst_name + domain_partition_name + '/ResourceGroups/' + resource_group_name)
+
+        print 'apps'
+        myapps = cmo.getAppDeployments()
+        for appName in myapps:
+            cd(wlst_name + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/AppDeployments/' + appName.getName())
+
+            app = get('ApplicationName')
+            print get('Type')
+            deploymenttype = get('Type')
+            versionidentifier = get('VersionIdentifier')
+            stagingmode = get('StagingMode')
+
+            add_index_entry(f, [domain + '/' + domain_partition_name + ':' + resource_group_name + ':' + app, domain_partition_name, resource_group_name, versionidentifier, deploymenttype, stagingmode, domain])
+
+        print 'libs'
+        cd(wlst_name + domain_partition_name + '/ResourceGroups/' + resource_group_name)
+        mylibs = cmo.getLibraries()
+        for libName in mylibs:
+            cd(wlst_name + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/Libraries/' + libName.getName())
+
+            lib = get('ApplicationName')
+            print get('Type')
+            deploymenttype = get('Type')
+            versionidentifier = get('VersionIdentifier')
+            stagingmode = get('StagingMode')
+
+            add_index_entry(f, [domain + '/' + domain_partition_name + ':' + resource_group_name + ':' + lib, domain_partition_name, resource_group_name, versionidentifier, deploymenttype, stagingmode, domain])
+
+f.close()
+report_back_success()

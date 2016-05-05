@@ -1,0 +1,45 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name          = '<%= server_template %>'
+classpath     = '<%= classpath %>'
+arguments     = '''<%= arguments %>'''
+
+listenAddress = '<%= listenaddress %>'
+listenPort    = <%= listenport %>
+sslEnabled    = <%= sslenabled %>
+sslListenPort = <%= ssllistenport %>
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createServerTemplate(name)
+
+    cd('/ServerTemplates/' + name)
+
+    set_attribute_value('ListenPort', listenPort, use_default_value_when_empty)
+    set_attribute_value('ListenAddress', listenAddress, use_default_value_when_empty)
+
+    if classpath:
+        set('ServerStart/' + name + '/ClassPath', classpath)
+
+    if arguments:
+        set('ServerStart/' + name + '/Arguments', arguments)
+
+    cd('/ServerTemplates/' + name + '/SSL/' + name)
+    set_attribute_value('Enabled', sslEnabled, use_default_value_when_empty)
+    set_attribute_value('ListenPort', sslListenPort, use_default_value_when_empty)
+
+    cd('/')
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,15 +1,7 @@
 
-
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;target;targettype;domain"
+f = open_file("name;jmsmodule;target;targettype;domain")
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token)
@@ -17,17 +9,9 @@ for token in m:
     n = ls('SubDeployments',returnMap='true')
     for token2 in n:
 
-            m = ls('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets',returnMap='true')
-            target     = []
-            targetType = []
-            for token3 in m:
-                   target.append(token3)
-                   cd('/JMSSystemResources/'+token+'/SubDeployments/'+token2+'/Targets/'+token3)
-                   targetType.append(get('Type'))
+        target, targetType = retrieve_target_list('/JMSSystemResources/'+token+'/SubDeployments/'+token2)
 
-            print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain]))
-        
+        add_index_entry(f, [domain+'/'+token+":"+token2,token,','.join(target),','.join(targetType),domain])
+
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
-
-
+report_back_success()

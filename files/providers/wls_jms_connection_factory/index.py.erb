@@ -1,15 +1,9 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay"
+f = open_file("name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay")
+
 for token in m:
   n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories',returnMap='true')
   for token2 in n:
@@ -44,8 +38,8 @@ for token in m:
          defaultDeliveryMode = get('DefaultDeliveryMode')
          defaultRedeliveryDelay = get('DefaultRedeliveryDelay')
 
-         print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay]))
+         add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay])
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 

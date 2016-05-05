@@ -1,29 +1,23 @@
 
-
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
 m = ls('/CoherenceClusterSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain"
+f = open_file("name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain")
 for token in m:
   print '___'+token+'___'
   cd('/CoherenceClusterSystemResources/'+token)
-
-  n = ls('/CoherenceClusterSystemResources/'+token+'/Targets',returnMap='true')
-  target     = []
-  targetType = []
-  for token2 in n:
-         target.append(token2)
-         cd('/SystemResources/'+token+'/Targets/'+token2)
-         targetType.append(get('Type'))
-
+  target, targetType = retrieve_target_list('/CoherenceClusterSystemResources/'+token)
 
   cd('/CoherenceClusterSystemResources/'+token+'/CoherenceClusterResource/'+token+'/CoherenceClusterParams/'+token)
-  print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),get('ClusteringMode'),get('UnicastListenAddress'),get('UnicastListenPort'),get('MulticastListenAddress'),get('MulticastListenPort'),domain]))
+
+  unicastListenAddress = ''
+  unicastListenPort = ''
+
+  try:
+    unicastListenAddress = get('UnicastListenAddress')
+    unicastListenPort = get('UnicastListenPort')
+  except:
+    print "unicast parameters does not exists, continue"
+
+  add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),get('ClusteringMode'),unicastListenAddress,unicastListenPort,get('MulticastListenAddress'),get('MulticastListenPort'),domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

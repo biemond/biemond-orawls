@@ -61,3 +61,6 @@ bundle exec rake lint
 bundle exec rake ci:setup:rspec spec
 
 
+python
+
+pylint utils.py.erb --max-args=8 --additional-builtins='cd','create','cmo','File' --disable=C0111

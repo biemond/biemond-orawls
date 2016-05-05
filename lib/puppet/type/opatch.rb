@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:opatch) do
+  Type.newtype(:opatch) do
     desc 'This is the Oracle Patch process called OPatch'
 
     newproperty(:ensure) do
@@ -39,7 +39,13 @@ module Puppet
       EOT
       isnamevar
     end
-
+    
+    newparam(:patch_id) do
+      desc <<-EOT
+        The patchId of the OPatch.
+      EOT
+    end
+    
     newparam(:os_user) do
       desc <<-EOT
         The weblogic operating system user.

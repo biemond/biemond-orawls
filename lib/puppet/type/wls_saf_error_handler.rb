@@ -1,11 +1,8 @@
-require 'easy_type'
-require 'utils/wls_access'
-require 'utils/settings'
-require 'utils/title_parser'
-require 'facter'
+require File.dirname(__FILE__) + '/../../orawls_core'
+
 
 module Puppet
-  newtype(:wls_saf_error_handler) do
+  Type.newtype(:wls_saf_error_handler) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -23,13 +20,15 @@ module Puppet
     end
 
     on_create do | command_builder |
+      wlst_action = 'create'
       Puppet.info "create #{name} "
-      template('puppet:///modules/orawls/providers/wls_saf_error_handler/create.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_saf_error_handler/create_modify.py.erb', binding)
     end
 
     on_modify do | command_builder |
+      wlst_action = 'modify'
       Puppet.info "modify #{name} "
-      template('puppet:///modules/orawls/providers/wls_saf_error_handler/modify.py.erb', binding)
+      template('puppet:///modules/orawls/providers/wls_saf_error_handler/create_modify.py.erb', binding)
     end
 
     on_destroy do | command_builder |

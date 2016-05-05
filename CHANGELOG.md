@@ -1,5 +1,107 @@
 # History
 
+## 1.0.48
+- wls types fix for 12.2.1 and which got passwords attributes
+- wls_resource_group_template new MT type but only for WebLogic 12.2.1
+- wls_resource_group new MT type but only for WebLogic 12.2.1
+- wls_domain_partition new MT type but only for WebLogic 12.2.1
+- wls_domain_partition_resource_group new MT type but only for WebLogic 12.2.1
+- wls_resource_group_template_deployment new MT type but only for WebLogic 12.2.1
+- wls_domain_partition_resource_group_deployment new MT type but only for WebLogic 12.2.1
+- wls_setting new attribute use_default_value_when_empty, when you want to make sure the wls type properties will set its default mbean values when it is not provided by your puppet configuration.
+
+## 1.0.47
+- heavy WLST refactoring for all the wls types, less and more simple code, auto detect the right type, better fault handling
+- wls_jms_security_policy new type
+- wls_virtual_target new type but only for WebLogic 12.2.1
+- option to override the default machine in the domain manifest
+- MQ resource adapter mininal template
+- OSB domain template fix
+- wls_datasource, new attributes remove_infected_connections ,connectionreservetimeoutseconds and inactiveconnectiontimeoutseconds
+
+## 1.0.46
+- added support for 12.2.1 fast rest management interface, requires 12.2.1 or higher & only works for now on wls_cluster (lib/puppet/type/wls_server.rb plus wls_setting must contain a http connect url)
+- added MQ adapter for resourceadapter
+- soaqs (SOA Quickstart) 12.1.3 & 12.2.1 install on FMW
+- urandom/rng support for RedHat 5 family
+- add support for provider_specific attributes on wls_authentication_provider
+- be able to change the password on wls_datasource
+- fix for wls_clusters without servers
+- new log_date_pattern attribute for wls_server, wls_domain
+- fmwcluster manifest with trust parameters
+
+## 1.0.45
+- wls_migratable_target fixes with constrained_candidate_servers
+- resource adapters option to escape values
+- wls_server fix when no arguments is provided
+- Nodemanager fails to start first time if param log_dir is used and directory doesn't exist
+- security/permissions fixes with files which can contain passwords
+- Fix easy_type load issues in specific situation (puppet master)
+- added JAVA_HOME to (un)pack
+- wls_group allow additions & removal of users in group
+- wls_datasource new attribute wrapdatatypes
+- wls_role new type
+- wls_rcu show now the error output when it fails
+- wls_jms_queue, wls_jms_topic new attributes insertionpaused, consumptionpaused, productionpaused
+- wls_domain, new attribute exalogicoptimizationsenabled
+
+## 1.0.44
+- WebLogic 12.2.1 standard and infrastructure edition installation
+- FMW 12.2.1 SOA Suite, OSB, Webtier (OHS), Forms, B2B, WC, WCC ( Webcenter portal, Webcenter content) installation
+- 12.2.1 domains for standard, soa, osb, bam, adf, adf_restricted which is new in 12.2.1 and requires no RCU/DB
+- 12.2.1 fmwcluster support for Service Bus (OSB), SOA Suite (BPM, ESS, BAM)
+- wls_jms_topic distributed fix plus new attribute ForwardingPolicy
+- wls_server modify fix for arguments, classpath etc. plus multiple arguments as an array are converted to a space as separator instead of newline
+- new type wls_jms_sort_destination_key  and added this parameter to wls_queue + wls_topic
+- new type wls_foreign_jndi_provider  + links
+- domain.pp allows you to set a separate domain password, nodemanager_username + password on a domain
+
+## 1.0.43
+- Allow multiple fmw installations of the same product on a middleware home
+- optimized wls_opatch type/provider which will replace the opatch type
+- opatch type/provider fix for if the patch is already installed
+- be able to set all the possible Nodemanager properties
+- save all the WLST scripts of all the wls types to a temporary directory with wls_setting
+
+## 1.0.42
+- Allow opatch to apply the same patch multiple times on the same node
+- new wls_server_tlog resource for adding transaction logs to a database
+- file resource adapter fix
+- fix permissions on wls_settings file
+- sanitised title in the fmw manifest
+- wls types empty attributes fix
+
+## 1.0.41
+- fixed wls_group absent without user attribute bug
+- empty target fix on the wls types
+- statementcachesize bug with wls_datasource
+- wls_queue, wls_topic new attribute deliverymode
+- subdeployment and defaulttargeting checks for the jms wls types
+- new type wls_migratable_target
+
+## 1.0.40
+- BAM only domain option
+- Wls_server new attributes sslHostnameVerifier, useServerCerts
+- Added FileAdapter to resource adapter
+- Cleanup Puppet type interfaces
+
+## 1.0.39
+- Works & Tested on puppet 4.2.1
+- Oracle Forms & Reports 11.1.1.7 or 11.1.2 support
+- Wls_server new attributes frontendhost, frontendhttpport and frontendhttpsport
+
+## 1.0.38
+- wls_server new attributes auto_restart & autokillwfail for automatic restart when the server crashes, or automatically kill when the server hangs
+- wls_jms_queue, wls_jms_topic new attribute messagelogging
+- wls_domain new attributes setinternalappdeploymentondemandenable, setconfigbackupenabled, setarchiveconfigurationcount, setconfigurationaudittype
+- Dynamictargetting for wls_cluster, wls_datasource, wls_mail_session
+- wls_datasource new attribute shrinkfrequencyseconds
+
+## 1.0.37
+- xa properties fix for wls_datasource
+- custom weblogic home directory for WebLogic 10.3 and BSU patch
+- target attribute used in wls types are now idempotent
+
 ## 1.0.36
 - support for FMW installation which has 3 install files like oim/oam 11.1.2.3
 - Webtier configuration for OAM

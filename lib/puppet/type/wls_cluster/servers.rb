@@ -16,4 +16,4 @@ def servers
   self[:servers] ? self[:servers].join(',') : ''
 end
 
-autorequire(:wls_server) { self[:servers].collect { |s| "#{domain}/#{s}" } }
+autorequire(:wls_server) { self[:servers].nil? ? '' : self[:servers].collect { |s| "#{domain}/#{s}" } }

@@ -1,0 +1,54 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                       = '<%= multi_datasource_name %>'
+target                     = '<%= target %>'
+targettype                 = '<%= targettype %>'
+jndinames                  = '<%= jndinames %>'
+datasources                = '<%= datasources %>'
+algorithmtype              = '<%= algorithmtype %>'
+testfrequency              = '<%= testfrequency %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createJDBCSystemResource(name)
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name)
+    cmo.setName(name)
+
+    cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
+    if jndinames:
+      jndis = String(jndinames).split(",")
+      set('JNDINames',jarray.array(jndis, String))
+
+    set_attribute_value('AlgorithmType', algorithmtype, use_default_value_when_empty)
+    set_attribute_value('DataSourceList', datasources, use_default_value_when_empty)
+
+    cd('/JDBCSystemResources/'+name+'/JDBCResource/'+name+'/JDBCConnectionPoolParams/'+name)
+    set_attribute_value('TestFrequencySeconds', testfrequency, use_default_value_when_empty)
+
+    cd('/JDBCSystemResources/' + name)
+
+    # Removing current targets
+    currentTargets = cmo.getTargets()
+    for currentTarget in currentTargets:
+        cmo.removeTarget(currentTarget)
+
+    cd('/SystemResources/' + name )
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

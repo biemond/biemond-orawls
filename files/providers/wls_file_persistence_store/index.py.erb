@@ -1,30 +1,17 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
 m = ls('/FileStores',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;directory;target;targettype;domain"
+f = open_file("name;directory;target;targettype;domain")
 for token in m:
     print '___'+token+'___'
     cd('/FileStores/'+token)
 
     directory = get('Directory')
 
-    n = ls('/FileStores/'+token+'/Targets',returnMap='true')
-    target     = []
-    targetType = []
-    for token2 in n:
-           target.append(token2)
-           cd('/FileStores/'+token+'/Targets/'+token2)
-           targetType.append(get('Type'))
+    target, targetType = retrieve_target_list('/FileStores/'+token)
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,directory,','.join(target),','.join(targetType),domain]))
+    add_index_entry(f, [domain+'/'+token,directory,','.join(target),','.join(targetType),domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 

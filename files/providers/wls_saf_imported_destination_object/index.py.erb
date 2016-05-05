@@ -1,10 +1,5 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
 
 
 def object(token,token2,token3,location,type):
@@ -15,19 +10,18 @@ def object(token,token2,token3,location,type):
     localjndiname     = cmo.getLocalJNDIName()
     unitoforder       = cmo.getUnitOfOrderRouting()
 
-    timeToLiveDefault = cmo.getTimeToLiveDefault()   
+    timeToLiveDefault = str(cmo.getTimeToLiveDefault())
     if not (timeToLiveDefault):
       useSAFTimeToLiveDefault = '0'
     else:
-      useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')  
+      useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,timeToLiveDefault,useSAFTimeToLiveDefault,unitoforder,nonpersistentqos,remotejndiname,localjndiname,domain]))
+    add_index_entry(f, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,timeToLiveDefault,useSAFTimeToLiveDefault,unitoforder,nonpersistentqos,remotejndiname,localjndiname,domain])
 
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain"
+f = open_file("name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain")
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
@@ -37,13 +31,13 @@ for token in m:
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
         l = ls('SAFQueues',returnMap='true')
         for token3 in l:
-               object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFQueues/'+token3,"queue") 
+               object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFQueues/'+token3,"queue")
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
         l = ls('SAFTopics',returnMap='true')
         for token3 in l:
-               object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFTopics/'+token3,"topic") 
+               object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFTopics/'+token3,"topic")
 
- 
+
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 

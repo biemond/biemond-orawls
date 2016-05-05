@@ -4,6 +4,7 @@ newproperty(:machine) do
   desc 'The machine of the server'
 
   to_translate_to_resource do | raw_resource|
+    return '' if raw_resource['machine'].nil?
     raw_resource['machine']
   end
 

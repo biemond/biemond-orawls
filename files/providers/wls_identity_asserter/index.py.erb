@@ -1,10 +1,4 @@
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 cd('/')
 realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
 path = getPath(realmName)
@@ -17,8 +11,7 @@ for ap in m:
   if 'identityasserter' in ap.lower():
     m2.append(ap)
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;authentication_provider_name;domain;activetypes;defaultmappertype;order"
+f = open_file("name;authentication_provider_name;domain;activetypes;defaultmappertype;order")
 for token in m2:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)
@@ -49,6 +42,6 @@ for token in m2:
 
     cd('../')
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,token,domain,activetypes,defaultmappertype,order]))
+    add_index_entry(f, [domain+'/'+token,token,domain,activetypes,defaultmappertype,order])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

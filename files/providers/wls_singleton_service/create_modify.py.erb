@@ -1,0 +1,46 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+singleton_service_name           = '<%= singleton_service_name %>'
+cluster                          = '<%= cluster %>'
+class_name                       = '<%= class_name %>'
+additional_migration_attempts    = <%= additional_migration_attempts %>
+millis_to_sleep_between_attempts = <%= millis_to_sleep_between_attempts %>
+notes                            = '<%= notes %>'
+constrained_candidate_servers    = [<%= constrained_candidate_servers.map{ |server| "'#{server}'" }.join(',') %>]
+user_preferred_server            = '<%= user_preferred_server %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if wlst_action == 'create':
+        singletonService = cmo.createSingletonService(singleton_service_name)
+    else:
+        singletonService = cmo.lookupSingletonService(singleton_service_name)
+
+    targetCluster = cmo.lookupCluster(cluster)
+
+    singletonService.setCluster(targetCluster)
+    singletonService.setClassName(class_name)
+    singletonService.setAdditionalMigrationAttempts(additional_migration_attempts)
+    singletonService.setMillisToSleepBetweenAttempts(millis_to_sleep_between_attempts)
+    singletonService.setNotes(notes)
+
+    preferredServer = cmo.lookupServer(user_preferred_server)
+    preferredServerCluster = preferredServer.getCluster()
+    if preferredServerCluster is None or preferredServerCluster.getName() != cluster:
+        raise RuntimeError, 'Preferred server is not part of the cluster the singleton service will run in.'
+    singletonService.setUserPreferredServer(preferredServer)
+
+    singletonService.setConstrainedCandidateServers(map(lambda serverName: cmo.lookupServer(serverName), constrained_candidate_servers))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

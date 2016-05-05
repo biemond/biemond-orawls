@@ -1,6 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
+wlst_action = '<%= wlst_action %>'
 
 name                      = '<%= authentication_provider_name %>'
 control_flag              = '<%= control_flag %>'
@@ -23,6 +24,14 @@ try:
     cmo.createAuthenticationProvider(name, providerclassname)
 
     cd('AuthenticationProviders/'+name)
+    #
+    # Set resource specific values
+    #
+<% provider_specific.each do | name, value | -%>
+    auto_typed_set('<%= name -%>', '<%= value -%>')
+<% end -%>
+
+
     if control_flag:
       cmo.setControlFlag(control_flag)
 
@@ -80,7 +89,7 @@ try:
     # Authentication Provider Ordering
     if order:
         print "setting order"
-        
+
         cd('/'+path)
         order_val = int(order)
         ap = get('AuthenticationProviders')
@@ -107,15 +116,10 @@ try:
             set('AuthenticationProviders', ap)
 
 
-
     print "done"
     save()
     activate()
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
+    report_back_error()

@@ -13,18 +13,11 @@ try:
 
     cd('/')
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-    cmo.destroySAFRemoteContext(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+name))  
+    cmo.destroySAFRemoteContext(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+name))
 
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    activate()
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
-
-
-
+    report_back_error()

@@ -1,25 +1,17 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
-name           = '<%= file_persistence_name %>'
+name = '<%= file_persistence_name %>'
 
 edit()
 startEdit()
 
 try:
     cd('/FileStores')
-    cmo.destroyFileStore(getMBean('/FileStores/'+name))
+    cmo.destroyFileStore(getMBean('/FileStores/' + name))
     save()
     activate()
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
-
-
+    report_back_error()

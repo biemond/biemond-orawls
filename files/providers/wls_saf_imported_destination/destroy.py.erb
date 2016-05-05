@@ -14,17 +14,10 @@ try:
     cd('/')
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
-    cmo.destroySAFImportedDestinations(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name'))
+    cmo.destroySAFImportedDestinations(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name))
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    activate()
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
-
-
-
+    report_back_error()

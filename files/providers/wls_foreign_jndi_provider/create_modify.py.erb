@@ -1,0 +1,49 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= provider_name %>'
+target                  = '<%= target %>'
+targettype              = '<%= targettype %>'
+initial_context_factory = '<%= initial_context_factory %>'
+provider_properties     = '<%= provider_properties %>'
+provider_url            = '<%= provider_url %>'
+user                    = '<%= user %>'
+password                = '<%= password %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createForeignJNDIProvider(name)
+
+    cd('/ForeignJNDIProviders/' + name)
+    cmo.setName(name)
+
+    set_attribute_value('InitialContextFactory', initial_context_factory, use_default_value_when_empty)
+    set_attribute_value('ProviderURL', provider_url, use_default_value_when_empty)
+    set_attribute_value('User', user, use_default_value_when_empty)
+    set_attribute_value('Password', password, use_default_value_when_empty)
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    if provider_properties:
+        cd('/ForeignJNDIProviders/' + name)
+        properties=provider_properties.split(",")
+        new_properties = Properties()
+        for property in properties:
+            propname, val = property.split("=")
+            new_properties.setProperty(propname, val)
+        cmo.setProperties(new_properties)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

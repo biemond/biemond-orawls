@@ -1,9 +1,7 @@
 # check the domain else we need to skip this (done in wls_access.rb)
 real_domain='<%= domain %>'
 
-
-
-name   = '<%= authentication_provider_name %>'
+name = '<%= authentication_provider_name %>'
 
 edit()
 startEdit()
@@ -11,18 +9,14 @@ startEdit()
 try:
 
     cd('/')
-    realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
+    realmName = cmo.getSecurityConfiguration().getDefaultRealm()
     path = getPath(realmName)
     cd(path)
 
-    cmo.destroyAuthenticationProvider(getMBean(path+'/AuthenticationProviders/'+name))
+    cmo.destroyAuthenticationProvider(getMBean(path + '/AuthenticationProviders/' + name))
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    activate()
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
+    report_back_error()

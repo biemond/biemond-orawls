@@ -1,11 +1,5 @@
 
 
-def quote(text):
-  if text:
-    return "\"" + str(text).replace("\"", "\"\"") + "\""
-  else:
-    return ""
-
 def constraint(token2,location,type,value='Count'):
     cd(location)
 
@@ -16,22 +10,14 @@ def constraint(token2,location,type,value='Count'):
     except:
         print "no count value"
 
-    t = ls('Targets',returnMap='true')
-    target     = []
-    targetType = []
-    for token3 in t:
-        print token3
-        target.append(token3)
-        cd(location+'/Targets/'+token3)
-        targetType.append(get('Type'))
+    target, targetType = retrieve_target_list(location)
 
-    print >>f, ";".join(map(quote, [domain+'/'+token2,type,','.join(target),','.join(targetType),domain,count]))
+    add_index_entry(f, [domain+'/'+token2,type,','.join(target),','.join(targetType),domain,count])
 
 
 m = ls('/SelfTuning',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;constrainttype;target;targettype;domain;constraintvalue"
+f = open_file("name;constrainttype;target;targettype;domain;constraintvalue")
 for token in m:
     print '___'+token+'___'
     cd('/SelfTuning/'+token)
@@ -56,4 +42,4 @@ for token in m:
         constraint(token2,'/SelfTuning/'+token+'/FairShareRequestClasses/'+token2,'FairShareRequestClasses','FairShare')
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

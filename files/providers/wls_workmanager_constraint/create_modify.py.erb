@@ -1,0 +1,57 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name             = '<%= workmanager_constraint_name %>'
+type             = '<%= constrainttype %>'
+target           = '<%= target %>'
+targettype       = '<%= targettype %>'
+count            = '<%= constraintvalue %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    domain = get('Name')
+
+    cd('/SelfTuning/'+domain)
+    if wlst_action == 'create':
+        if type == 'MaxThreadsConstraint':
+          cmo.createMaxThreadsConstraint(name)
+          cd('/SelfTuning/'+domain+'/MaxThreadsConstraints/'+name)
+        elif type == 'MinThreadsConstraint':
+          cmo.createMinThreadsConstraint(name)
+          cd('/SelfTuning/'+domain+'/MinThreadsConstraints/'+name)
+        elif type == 'Capacity':
+          cmo.createCapacity(name)
+          cd('/SelfTuning/'+domain+'/Capacities/'+name)
+        elif type == 'FairShareRequestClasses':
+          create(name, 'FairShareRequestClasses')
+          cd('/SelfTuning/'+domain+'/FairShareRequestClasses/'+name)
+    else:
+        if type == 'MaxThreadsConstraint':
+          cd('/SelfTuning/'+domain+'/MaxThreadsConstraints/'+name)
+        elif type == 'MinThreadsConstraint':
+          cd('/SelfTuning/'+domain+'/MinThreadsConstraints/'+name)
+        elif type == 'Capacity':
+          cd('/SelfTuning/'+domain+'/Capacities/'+name)
+        elif type == 'FairShareRequestClasses':
+          cd('/SelfTuning/'+domain+'/FairShareRequestClasses/'+name)
+
+    if type == 'FairShareRequestClasses':
+      set_attribute_value('FairShare', count, use_default_value_when_empty)
+    else:
+      cmo.setCount(int(count))
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

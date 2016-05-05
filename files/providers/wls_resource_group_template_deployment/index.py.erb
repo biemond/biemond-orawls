@@ -1,0 +1,40 @@
+
+
+f = open_file("name;resource_group_template_name;versionidentifier;deploymenttype;stagingmode;domain")
+
+domainConfig()
+
+wlst_name = '/ResourceGroupTemplates/'
+m = ls(wlst_name, returnMap='true')
+
+for resource_group_template_name in m:
+    print '___' + resource_group_template_name + '___'
+    cd(wlst_name + resource_group_template_name)
+
+    print 'apps'
+    myapps = cmo.getAppDeployments()
+    for appName in myapps:
+        cd(wlst_name + resource_group_template_name + '/AppDeployments/' + appName.getName())
+
+        app               = get('ApplicationName')
+        deploymenttype    = get('Type')
+        versionidentifier = get('VersionIdentifier')
+        stagingmode       = get('StagingMode')
+
+        add_index_entry(f, [domain + '/' + resource_group_template_name + ':' + app, resource_group_template_name, versionidentifier, deploymenttype, stagingmode, domain])
+
+    print 'libs'
+    cd(wlst_name + resource_group_template_name)
+    mylibs = cmo.getLibraries()
+    for libName in mylibs:
+        cd(wlst_name + resource_group_template_name + '/Libraries/' + libName.getName())
+
+        lib               = get('ApplicationName')
+        deploymenttype    = get('Type')
+        versionidentifier = get('VersionIdentifier')
+        stagingmode       = get('StagingMode')
+
+        add_index_entry(f, [domain + '/' + resource_group_template_name + ':' + lib, resource_group_template_name, versionidentifier, deploymenttype, stagingmode, domain])
+
+f.close()
+report_back_success()

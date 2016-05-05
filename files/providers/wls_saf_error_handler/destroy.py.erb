@@ -16,15 +16,8 @@ try:
     cmo.destroySAFErrorHandling(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFErrorHandlings/'+name))
 
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    activate()
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
-
-
-
+    report_back_error()

@@ -19,18 +19,10 @@ try:
         cmo.destroySAFQueue(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFQueues/'+name))
     else:
         cmo.destroySAFTopic(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFTopics/'+name))
-    
+
     save()
-    activate()          
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    activate()
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    print "~~~~COMMAND FAILED~~~~"
-    dumpStack()
-    undo('true','y')
-    stopEdit('y')
-    raise
-
-
-
+    report_back_error()

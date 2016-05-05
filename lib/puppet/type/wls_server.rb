@@ -1,12 +1,8 @@
-require 'pathname'
-require 'easy_type'
-require 'utils/wls_access'
-require 'utils/settings'
-require 'utils/title_parser'
-require 'facter'
+require File.dirname(__FILE__) + '/../../orawls_core'
+
 
 module Puppet
-  newtype(:wls_server) do
+  Type.newtype(:wls_server) do
     include EasyType
     include Utils::WlsAccess
     extend Utils::TitleParser
@@ -24,11 +20,13 @@ module Puppet
     end
 
     on_create do | command_builder |
+      wlst_action = 'create'
       Puppet.info "create #{name} "
       template('puppet:///modules/orawls/providers/wls_server/create.py.erb', binding)
     end
 
     on_modify do | command_builder |
+      wlst_action = 'modify'
       Puppet.info "modify #{name} "
       template('puppet:///modules/orawls/providers/wls_server/modify.py.erb', binding)
     end
@@ -64,6 +62,10 @@ module Puppet
     property :bea_home
     property :logintimeout
 
+    property :frontendhost
+    property :frontendhttpport
+    property :frontendhttpsport
+
     property :logfilename
     property :log_file_min_size
     property :log_number_of_files_limited
@@ -73,6 +75,7 @@ module Puppet
     property :log_datasource_filename
     property :log_redirect_stdout_to_server
     property :log_redirect_stderr_to_server
+    property :log_date_pattern
 
     property :log_http_filename
     property :log_http_format_type
@@ -90,6 +93,13 @@ module Puppet
     property :weblogic_plugin_enabled
 
     property :custom_identity
+    property :useservercerts
+    property :sslhostnameverifier
+
+    property :auto_restart
+    property :autokillwfail
+
+    property :server_parameters
 
     add_title_attributes(:server_name) do
       /^((.*\/)?(.*)?)$/

@@ -1,15 +1,7 @@
 
-
-def quote(text):
-	if text:
-		return "\"" + str(text).replace("\"", "\"\"") + "\""
-	else: 
-		return ""
-
 m = ls('/VirtualHosts',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;channelname;target;targettype;domain;virtualhostnames"
+f = open_file("name;channelname;target;targettype;domain;virtualhostnames")
 for token in m:
         print '___'+token+'___'
         cd('/VirtualHosts/'+token)
@@ -17,16 +9,10 @@ for token in m:
 
         hosts = get('VirtualHostNames')
 
-        n = ls('Targets',returnMap='true')
-        target     = []
-        targetType = []
-        for token2 in n:
-                target.append(token2)
-                cd('/VirtualHosts/'+token+'/Targets/'+token2)
-                targetType.append(get('Type'))
+        target, targetType = retrieve_target_list('/VirtualHosts/'+token)
 
-        print >>f, ";".join(map(quote, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts)]))
+        add_index_entry(f, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts)])
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 

@@ -4,28 +4,28 @@ module Puppet
     module Functions
       newfunction(:artifact_exists, :type => :rvalue) do |args|
 
-        art_exists = false
+
         if args[0].nil?
-          return art_exists
+          return false
         else
           fullDomainPath = args[0].strip.downcase
         end
 
         if args[1].nil?
-          return art_exists
+          return false
         else
           type = args[1].strip.downcase
         end
 
         if args[2].nil?
-          return art_exists
+          return false
         else
           wlsObject = args[2].strip
         end
 
         if type == 'resource' || type == 'resource_entry'
           if args[3].nil?
-            return art_exists
+            return false
           else
             subType = args[3].strip
           end
@@ -36,7 +36,7 @@ module Puppet
         # check the middleware home
         domain_count = lookup_wls_var(prefix + '_cnt')
         if domain_count == 'empty'
-          return art_exists
+          return false
         else
           n = 0
           while n < domain_count.to_i
@@ -48,44 +48,44 @@ module Puppet
               # do we found the right domain
               if domain == fullDomainPath
 
-                # check jdbc datasources
-                if type == 'jdbc'
+                case type
+                when 'jdbc'
                   jdbc =  lookup_wls_var(prefix + '_' + n.to_s + '_jdbc')
                   unless jdbc == 'empty'
                     return true if jdbc.include? wlsObject
                   end
 
-                elsif type == 'cluster'
+                when 'cluster'
                   clusters =  lookup_wls_var(prefix + '_' + n.to_s + '_clusters')
                   unless clusters == 'empty'
                     return true if clusters.include? wlsObject
                   end
 
-                elsif type == 'server'
+                when 'server'
                   servers =  lookup_wls_var(prefix + '_' + n.to_s + '_servers')
                   unless servers == 'empty'
                     return true if servers.include? wlsObject
                   end
 
-                elsif type == 'machine'
+                when 'machine'
                   machines =  lookup_wls_var(prefix + '_' + n.to_s + '_machines')
                   unless machines == 'empty'
                     return true if machines.include? wlsObject
                   end
 
-                elsif type == 'server_templates'
+                when type == 'server_templates'
                   server_templates =  lookup_wls_var(prefix + '_' + n.to_s + '_server_templates')
                   unless server_templates == 'empty'
                     return true if server_templates.include? wlsObject
                   end
 
-                elsif type == 'coherence'
+                when type == 'coherence'
                   coherence_cluster =  lookup_wls_var(prefix + '_' + n.to_s + '_coherence_clusters')
                   unless coherence_cluster == 'empty'
                     return true if coherence_cluster.include? wlsObject
                   end
-                elsif type == 'resource'
 
+                when 'resource'
                   adapter = wlsObject.downcase
                   plan = subType.downcase
 
@@ -93,7 +93,8 @@ module Puppet
                   unless planValue == 'empty'
                     return true if planValue.strip.downcase == plan
                   end
-                elsif type == 'resource_entry'
+
+                when 'resource_entry'
                   # ora_mdw_0_domain_0_eis_dbadapter_entries  eis/DB/initial;eis/DB/hr;
                   # ora_mdw_0_domain_0_eis_dbadapter_plan     /opt/oracle/wls/Middleware11gR1/Oracle_SOA1/soa/connectors/Plan_DB.xml
                   # artifact_exists($domain ,"resource_entry",'DbAdapter','eis/DB/hr' )
@@ -110,38 +111,39 @@ module Puppet
                   unless planEntries == 'empty'
                     return true if planEntries.include? entry
                   end
-                elsif type == 'deployments'
+
+                when 'deployments'
                   deployments =  lookup_wls_var(prefix + '_' + n.to_s + '_deployments')
                   unless deployments == 'empty'
                     return true if deployments.include? wlsObject
                   end
-                elsif type == 'filestore'
+                when 'filestore'
                   filestores =  lookup_wls_var(prefix + '_' + n.to_s + '_filestores')
                   unless filestores == 'empty'
                     return true if filestores.include? wlsObject
                   end
-                elsif type == 'jdbcstore'
+                when 'jdbcstore'
                   jdbcstores =  lookup_wls_var(prefix + '_' + n.to_s + '_jdbcstores')
                   unless jdbcstores  == 'empty'
                     return true if jdbcstores.include? wlsObject
                   end
-                elsif type == 'safagent'
+                when 'safagent'
                   safagents =  lookup_wls_var(prefix + '_' + n.to_s + '_safagents')
                   unless safagents  == 'empty'
                     return true if safagents.include? wlsObject
                   end
-                elsif type == 'jmsserver'
+                when 'jmsserver'
                   jmsservers =  lookup_wls_var(prefix + '_' + n.to_s + '_jmsservers')
                   unless jmsservers  == 'empty'
                     return true if jmsservers.include? wlsObject
                   end
-                elsif type == 'jmsmodule'
+                when 'jmsmodule'
                   jmsmodules =  lookup_wls_var(prefix + '_' + n.to_s + '_jmsmodules')
                   unless jmsmodules  == 'empty'
                     return true if jmsmodules.include? wlsObject + ';'
                   end
 
-                elsif type == 'jmsobject'
+                when 'jmsobject'
                   # puts 'jmsobject'
                   if wlsVarExists(prefix + '_' + n.to_s + '_jmsmodule_cnt')
                     jms_count = lookup_wls_var(prefix + '_' + n.to_s + '_jmsmodule_cnt')
@@ -165,7 +167,7 @@ module Puppet
                     end
                   end
 
-                elsif type == 'jmssubdeployment'
+                when 'jmssubdeployment'
                   # puts 'jmssubdeployment'
                   # this is more complex, this object can exist with this name in multiple jmsmodules
                   if wlsVarExists(prefix + '_' + n.to_s + '_jmsmodule_cnt')
@@ -198,7 +200,7 @@ module Puppet
                     end
                   end
 
-                elsif type == 'jmsquota'
+                when 'jmsquota'
                   # puts 'jmsquota'
                   # this is more complex, this object can exist with this name in multiple jmsmodules
                   if wlsVarExists(prefix + '_' + n.to_s + '_jmsmodule_cnt')
@@ -229,7 +231,7 @@ module Puppet
                     end
                   end
 
-                elsif type == 'foreignserver'
+                when 'foreignserver'
                   # puts 'foreignserver'
                   # this is more complex, this object can exist with this name in multiple jmsmodules
                   if wlsVarExists(prefix + '_' + n.to_s + '_jmsmodule_cnt')
@@ -260,7 +262,7 @@ module Puppet
                     end
                   end
 
-                elsif type == 'foreignserver_object'
+                when 'foreignserver_object'
                   # puts 'foreignserver_object'
                   # this is more complex, this object can exist with this name in multiple jmsmodules
                   if wlsVarExists(prefix + '_' + n.to_s + '_jmsmodule_cnt')
@@ -302,7 +304,7 @@ module Puppet
           end
         end
 
-        return art_exists
+        return false
       end
     end
   end

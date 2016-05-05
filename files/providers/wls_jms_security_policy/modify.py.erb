@@ -1,0 +1,31 @@
+from weblogic.security.service import JMSResource
+
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+authorizationprovider = '<%= authorizationprovider %>'
+jmsmodule             = '<%= jmsmodule %>'
+destinationtype       = '<%= destinationtype %>'
+resourcename          = '<%= resourcename %>'
+action                = '<%= action %>'
+policyexpression      = '<%= policyexpression %>'
+
+if action == 'all':
+  actionname = None
+else:
+  actionname = action
+
+try:
+    cd('/')
+    securityRealm = cmo.getSecurityConfiguration().getDefaultRealm()
+    authorizer = securityRealm.lookupAuthorizer(authorizationprovider)
+    resource = weblogic.security.service.JMSResource(jmsmodule, None, destinationtype, resourcename, actionname)
+    resourceId = resource.toString()
+    authorizer.setPolicyExpression(resourceId, policyexpression)
+
+    report_back_success()
+
+except:
+    report_back_error_without_undo

@@ -17,10 +17,21 @@ newproperty(:users, :array_matching => :all) do
     end
   end
 
+  def change_to_s(current, should)
+    message = ''
+    unless ((current - should).inspect) == '[]'
+      message << "removing #{(current-should).inspect} "
+    end
+    unless ((should - current).inspect) == '[]'
+      message << "adding #{(should - current).inspect} "
+    end
+    message
+  end
+
 end
 
 def users
   self[:users] ? self[:users].join(',') : ''
 end
 
-autorequire(:wls_user) { self[:users].collect { |u| "#{domain}/#{u}" } }
+autorequire(:wls_user) { self[:users].nil? ? '' : self[:users].collect { |u| "#{domain}/#{u}" } }

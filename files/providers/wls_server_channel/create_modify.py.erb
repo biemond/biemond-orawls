@@ -1,0 +1,62 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                                  = '<%= channel_name %>'
+server                                = '<%= server %>'
+protocol                              = '<%= protocol %>'
+enabled                               = '<%= enabled %>'
+listenaddress                         = '<%= listenaddress %>'
+publicaddress                         = '<%= publicaddress %>'
+listenport                            = '<%= listenport %>'
+publicport                            = '<%= publicport %>'
+httpenabled                           = '<%= httpenabled %>'
+outboundenabled                       = '<%= outboundenabled %>'
+tunnelingenabled                      = '<%= tunnelingenabled %>'
+max_message_size                      = '<%= max_message_size %>'
+two_way_ssl                           = '<%= two_way_ssl %>'
+client_certificate_enforced           = '<%= client_certificate_enforced %>'
+channel_identity_customized           = '<%= channel_identity_customized %>'
+custom_identity_alias                 = '<%= custom_identity_alias %>'
+custom_identity_privatekey_passphrase = '<%= custom_identity_privatekey_passphrase %>'
+
+
+edit()
+startEdit()
+
+
+try:
+
+    cd('/Servers/'+server)
+    if wlst_action == 'create':
+      cmo.createNetworkAccessPoint(name)
+
+    cd('/Servers/'+server+'/NetworkAccessPoints/'+name)
+    set_attribute_value('Protocol', protocol, use_default_value_when_empty)
+    set_attribute_value('ListenPort', listenport, use_default_value_when_empty)
+    set_attribute_value('PublicPort', publicport, use_default_value_when_empty)
+    set_attribute_value('Enabled', enabled, use_default_value_when_empty)
+    set_attribute_value('HttpEnabledForThisProtocol', httpenabled, use_default_value_when_empty)
+    set_attribute_value('TunnelingEnabled', tunnelingenabled, use_default_value_when_empty)
+    set_attribute_value('OutboundEnabled', outboundenabled, use_default_value_when_empty)
+
+    set_attribute_value('ListenAddress', listenaddress, use_default_value_when_empty)
+    set_attribute_value('PublicAddress', publicaddress, use_default_value_when_empty)
+    set_attribute_value('MaxMessageSize', max_message_size, use_default_value_when_empty)
+    set_attribute_value('TwoWaySSLEnabled', two_way_ssl, use_default_value_when_empty)
+    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced, use_default_value_when_empty)
+
+    if channel_identity_customized == '1':
+      set_attribute_value('ChannelIdentityCustomized', channel_identity_customized, use_default_value_when_empty)
+      set_attribute_value('CustomPrivateKeyPassPhrase', custom_identity_privatekey_passphrase, use_default_value_when_empty)
+      set_attribute_value('CustomPrivateKeyAlias', custom_identity_alias, use_default_value_when_empty)
+    else:
+      set_attribute_value('ChannelIdentityCustomized', channel_identity_customized, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

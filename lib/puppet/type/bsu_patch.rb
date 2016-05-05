@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:bsu_patch) do
+  Type.newtype(:bsu_patch) do
     desc 'This is the WebLogic Patch process called BSU'
 
     newproperty(:ensure) do

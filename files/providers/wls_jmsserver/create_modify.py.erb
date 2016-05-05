@@ -1,0 +1,55 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                        = '<%= jmsserver_name %>'
+target                      = '<%= target %>'
+targettype                  = '<%= targettype %>'
+persistentstore             = '<%= persistentstore %>'
+persistentstoretype         = '<%= persistentstoretype %>'
+bytes_maximum               = '<%= bytes_maximum %>'
+allows_persistent_downgrade = '<%= allows_persistent_downgrade %>'
+store_enabled               = '<%= store_enabled %>'
+consumption_paused          = '<%= consumptionpaused %>'
+insertion_paused            = '<%= insertionpaused %>'
+production_paused           = '<%= productionpaused %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    version = get('DomainVersion')
+
+    if wlst_action == 'create':
+      cmo.createJMSServer(name)
+
+    cd('/JMSServers/'+name)
+
+    set_attribute_value('BytesMaximum', bytes_maximum, use_default_value_when_empty)
+    set_attribute_value('AllowsPersistentDowngrade', allows_persistent_downgrade, use_default_value_when_empty)
+
+    if "10.3" in version:
+      set_attribute_value('StoreEnabled', store_enabled)
+
+    set_attribute_value('ConsumptionPausedAtStartup', consumption_paused, use_default_value_when_empty)
+    set_attribute_value('InsertionPausedAtStartup'  , insertion_paused, use_default_value_when_empty)
+    set_attribute_value('ProductionPausedAtStartup' , production_paused, use_default_value_when_empty)
+
+    cd('/Deployments/'+name)
+
+    if persistentstoretype == "FileStore":
+      cmo.setPersistentStore(getMBean('/FileStores/'+persistentstore))
+    elif persistentstoretype == "JDBCStore":
+      cmo.setPersistentStore(getMBean('/JDBCStores/'+persistentstore))
+
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

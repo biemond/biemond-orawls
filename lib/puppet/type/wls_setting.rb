@@ -1,9 +1,9 @@
-require 'easy_type'
+require File.dirname(__FILE__) + '/../../orawls_core'
+
 require 'yaml'
-# require 'ruby-debug'
 
 module Puppet
-  newtype(:wls_setting) do
+  Type.newtype(:wls_setting) do
     include EasyType
 
     DEFAULT_FILE = '/etc/wls_setting.yaml'
@@ -21,10 +21,14 @@ module Puppet
     property :connect_url
     property :weblogic_password
     property :post_classpath
+    property :debug_module
+    property :archive_path
 
     property :custom_trust
     property :trust_keystore_file
     property :trust_keystore_passphrase
+
+    property :use_default_value_when_empty
 
     def self.configuration
       @configuration

@@ -3,9 +3,9 @@ real_domain='<%= domain %>'
 
 
 
-name                      = '<%= authentication_provider_name %>'
-control_flag              = '<%= control_flag %>'
-order                     = '<%= order %>'
+name            = '<%= authentication_provider_name %>'
+control_flag    = '<%= control_flag %>'
+order           = '<%= order %>'
 
 edit()
 startEdit()
@@ -18,6 +18,13 @@ try:
     cd(path)
 
     cd('AuthenticationProviders/'+name)
+    #
+    # Set resource specific values
+    #
+<% provider_specific.each do | name, value | -%>
+    auto_typed_set('<%= name -%>', '<%= value -%>')
+<% end -%>
+
     if control_flag:
         cmo.setControlFlag(control_flag)
 
@@ -46,13 +53,7 @@ try:
 
     save()
     activate()
-    print "~~~~COMMAND SUCCESFULL~~~~"
+    report_back_success()
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
-    undo('true','y')
-    stopEdit('y')
-    print "~~~~COMMAND FAILED~~~~"
-    raise
-
-
+    report_back_error()

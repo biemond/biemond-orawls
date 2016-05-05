@@ -1,15 +1,8 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 m = ls('/Clusters',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;domain;nodemanager_match;maximum_server_count;server_name_prefix;server_template_name;calculated_listen_port"
+f = open_file("name;domain;nodemanager_match;maximum_server_count;server_name_prefix;server_template_name;calculated_listen_port")
 for token in m:
   print '___'+token+'___'
   d = ls('/Clusters/'+token+'/DynamicServers/'+token+'/ServerTemplate',returnMap='true')
@@ -18,6 +11,6 @@ for token in m:
 
     cd('/Clusters/'+token+'/DynamicServers/'+token)
 
-    print >>f, ";".join(map(quote, [domain+'/'+token,domain,get('MachineNameMatchExpression'),str(get('MaximumDynamicServerCount')),get('ServerNamePrefix'),token2,str(get('CalculatedListenPorts'))]))
+    add_index_entry(f, [domain+'/'+token,domain,get('MachineNameMatchExpression'),str(get('MaximumDynamicServerCount')),get('ServerNamePrefix'),token2,str(get('CalculatedListenPorts'))])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

@@ -1,15 +1,8 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;jmsmodule;bytesmaximum;messagesmaximum;policy;shared;domain"
+f = open_file("name;jmsmodule;bytesmaximum;messagesmaximum;policy;shared;domain")
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
@@ -18,8 +11,8 @@ for token in m:
     for token2 in n:
         print 'cd(\''+'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2+'\')'
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2)
-        print >>f, ";".join(map(quote, [domain+'/'+token+":"+token2,token,get('BytesMaximum'),get('MessagesMaximum'),get('Policy'),str(get('Shared')),domain]))
-        
+        add_index_entry(f, [domain+'/'+token+":"+token2,token,get('BytesMaximum'),get('MessagesMaximum'),get('Policy'),str(get('Shared')),domain])
+
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 

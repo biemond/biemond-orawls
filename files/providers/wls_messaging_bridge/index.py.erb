@@ -1,15 +1,7 @@
 
-
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
 m = ls('/MessagingBridges',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination"
+f = open_file("name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination")
 for token in m:
     print '___'+token+'___'
     cd('/MessagingBridges/'+token)
@@ -32,7 +24,7 @@ for token in m:
     sourcedestinationMbean = cmo.getSourceDestination()
     if sourcedestinationMbean:
        path = getPath(sourcedestinationMbean)
-       cd("/"+path) 
+       cd("/"+path)
        sourcedestination  = get('Name')
        cd('/MessagingBridges/'+token)
     else:
@@ -41,21 +33,14 @@ for token in m:
     targetdestinationMbean = cmo.getTargetDestination()
     if targetdestinationMbean:
        path = getPath(targetdestinationMbean)
-       cd("/"+path) 
+       cd("/"+path)
        targetdestination  = get('Name')
        cd('/MessagingBridges/'+token)
     else:
        targetdestination = ''
 
-    n = ls('/Deployments/'+token+'/Targets',returnMap='true')
-    target     = []
-    targetType = []
-    for token2 in n:
-           target.append(token2)
-           cd('/Deployments/'+token+'/Targets/'+token2)
-           targetType.append(get('Type'))
+    target, targetType = retrieve_target_list('/Deployments/'+token)
 
-#]
-    print >>f, ";".join(map(quote, [domain+'/'+token,','.join(target),','.join(targetType),asyncenabled,batchinterval,batchsize,durabilityenabled,idletimemax,preservemsgproperty,qosdegradationallowed,qos,reconnectdelayincrease,reconnectdelaymax,reconnectdelaymin,selector,started,transactiontimeout,sourcedestination,targetdestination]))
+    add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),asyncenabled,batchinterval,batchsize,durabilityenabled,idletimemax,preservemsgproperty,qosdegradationallowed,qos,reconnectdelayincrease,reconnectdelaymax,reconnectdelaymin,selector,started,transactiontimeout,sourcedestination,targetdestination])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

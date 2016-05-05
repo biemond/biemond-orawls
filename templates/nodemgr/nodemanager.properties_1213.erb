@@ -1,28 +1,28 @@
 #Node manager properties
 DomainsFile=<%= @domains_dir %>/<%= @domain_name %>/nodemanager/nodemanager.domains
-LogLimit=0
+LogLimit=<%= @properties_merged['log_limit'] %>
 PropertiesVersion=12.1.3
-AuthenticationEnabled=true
+AuthenticationEnabled=<%= @properties_merged['authentication_enabled'] %>
 NodeManagerHome=<%= @domains_dir %>/<%= @domain_name %>/nodemanager
 JavaHome=<%= @jdk_home_dir %>
-LogLevel=INFO
-DomainsFileEnabled=true
-StartScriptName=startWebLogic.sh
+LogLevel=<%= @properties_merged['log_level'] %>
+DomainsFileEnabled=<%= @properties_merged['domains_file_enabled'] %>
+StartScriptName=<%= @properties_merged['start_script_name'] %>
 ListenAddress=<%= @nodemanager_address %>
-NativeVersionEnabled=true
+NativeVersionEnabled=<%= @properties_merged['native_version_enabled'] %>
 ListenPort=<%= @nodemanager_port %>
-LogToStderr=true
+LogToStderr=<%= @properties_merged['log_to_stderr'] %>
 SecureListener=<%= @nodemanager_secure_listener %>
-LogCount=1
-StopScriptEnabled=true
-QuitEnabled=false
-LogAppend=true
-StateCheckInterval=500
-CrashRecoveryEnabled=true
-StartScriptEnabled=true
+LogCount=<%= @properties_merged['log_count'] %>
+StopScriptEnabled=<%= @properties_merged['stop_script_enabled'] %>
+QuitEnabled=<%= @properties_merged['quit_enabled'] %>
+LogAppend=<%= @properties_merged['log_append'] %>
+StateCheckInterval=<%= @properties_merged['state_check_interval'] %>
+CrashRecoveryEnabled=<%= @properties_merged['crash_recovery_enabled'] %>
+StartScriptEnabled=<%= @properties_merged['start_script_enabled'] %>
 LogFile=<%= @nodeMgrLogDir %>
-LogFormatter=weblogic.nodemanager.server.LogFormatter
-ListenBacklog=50
+LogFormatter=<%= @properties_merged['log_formatter'] %>
+ListenBacklog=<%= @properties_merged['listen_backlog'] %>
 <% if @custom_identity == true %>
 KeyStores=CustomIdentityAndCustomTrust
 CustomIdentityKeyStoreFileName=<%= @custom_identity_keystore_filename %>

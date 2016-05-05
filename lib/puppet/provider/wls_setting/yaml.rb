@@ -1,4 +1,5 @@
 require 'easy_type'
+require 'fileutils'
 
 Puppet::Type.type(:wls_setting).provide(:yaml) do
   include EasyType::Provider
@@ -11,6 +12,7 @@ Puppet::Type.type(:wls_setting).provide(:yaml) do
   def flush
     merge_configuration
     write_yaml
+    secure_yaml
   end
 
 private
@@ -29,6 +31,11 @@ private
   def write_yaml
     open(resource.class.config_file, 'w+') { |f| YAML.dump(resource.class.configuration, f) }
   end
+
+  def secure_yaml
+    FileUtils.chmod(0600, [resource.class.config_file])
+  end
+
 
   def stringify_keys(hash)
     result = {}

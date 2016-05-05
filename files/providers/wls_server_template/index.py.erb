@@ -1,24 +1,16 @@
 
-
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
 cd('/')
 serverTemplates = ls('/ServerTemplates',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;listenaddress;listenport;ssllistenport;sslenabled;classpath;arguments;domain"
+f = open_file("name;listenaddress;listenport;ssllistenport;sslenabled;classpath;arguments;domain")
 for serverTemplate in serverTemplates:
     print serverTemplate
     cd('/ServerTemplates/'+serverTemplate)
     if get('ListenAddress') == None:
       listenAddress = ''
     else:
-      listenAddress = get('ListenAddress') 
-          
+      listenAddress = get('ListenAddress')
+
     listenPort    = str(get('ListenPort'))
 
     cd('/ServerTemplates/'+serverTemplate+'/SSL/'+serverTemplate)
@@ -35,6 +27,6 @@ for serverTemplate in serverTemplates:
     if arguments == None:
        arguments = ''
 
-    print >>f, ";".join(map(quote, [domain+'/'+serverTemplate, listenAddress, listenPort, sslListenPort, sslEnabled, classpath, arguments,domain]))
+    add_index_entry(f, [domain+'/'+serverTemplate, listenAddress, listenPort, sslListenPort, sslEnabled, classpath, arguments,domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()

@@ -2,6 +2,7 @@
 #    rcu for adf 12.1.2 & 12.1.3
 #
 define orawls::utils::rcu(
+  $version                     = hiera('wls_version', 1111),  # 1036|1111|1211|1212|1213|1221
   $fmw_product                 = 'adf', # adf|soa|mft
   $oracle_fmw_product_home_dir = undef,
   $jdk_home_dir                = hiera('wls_jdk_home_dir'),
@@ -28,16 +29,28 @@ define orawls::utils::rcu(
   }
 
   if $fmw_product == 'adf' {
-    $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC  '
-    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password]
+    if $version == 1221 {
+      $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB '
+      $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+    }
+    else {
+      $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC '
+      $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+    }
   }
   elsif $fmw_product == 'soa' {
-    $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component UCSUMS -component UMS -component ESS -component SOAINFRA -component MFT '
-    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password]
+    if $version == 1221 {
+      $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB -component UCSUMS -component ESS -component SOAINFRA '
+      $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+    }
+    else {
+      $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component UCSUMS -component UMS -component ESS -component SOAINFRA -component MFT '
+      $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+    }
   }
   elsif $fmw_product == 'mft' {
     $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component MFT -component UCSUMS -component ESS'
-    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password,$rcu_password]
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
   } else {
     fail('Unrecognized FMW fmw_product')
   }
@@ -45,7 +58,7 @@ define orawls::utils::rcu(
   file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt":
     ensure  => present,
     content => template('orawls/utils/rcu_passwords.txt.erb'),
-    mode    => '0775',
+    mode    => '0600',
     owner   => $os_user,
     group   => $os_group,
     backup  => false,

@@ -1,15 +1,7 @@
 
-
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
 m = ls('/SAFAgents',returnMap='true')
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;target;targettype;persistentstore;persistentstoretype;servicetype;domain"
+f = open_file("name;target;targettype;persistentstore;persistentstoretype;servicetype;domain")
 for token in m:
         print '___'+token+'___'
         cd('/SAFAgents/'+token)
@@ -34,7 +26,6 @@ for token in m:
                cd('/SAFAgents/'+token+'/Store/'+token3)
                persistentStoreType = get('Type')
 
-        print >>f, ";".join(map(quote, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,serviceType,domain]))
+        add_index_entry(f, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,serviceType,domain])
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
-
+report_back_success()

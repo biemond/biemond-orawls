@@ -48,7 +48,7 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
     rcu_output = `su #{su_shell} - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix} #{sysuser}'`
-    fail ArgumentError, "Error executing puppet code, #{output}" if $CHILD_STATUS != 0
+    fail ArgumentError, "Error executing puppet code, #{rcu_output}" if $CHILD_STATUS != 0
     Puppet.info "RCU check result: #{rcu_output}"
     rcu_output.each_line do |li|
       unless li.nil?

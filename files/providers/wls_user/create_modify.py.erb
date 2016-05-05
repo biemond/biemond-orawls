@@ -1,0 +1,26 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                   = '<%= user_name %>'
+password               = '<%= password %>'
+realm                  = '<%= realm %>'
+authenticationprovider = '<%= authenticationprovider %>'
+description            = '<%= description %>'
+
+try:
+    cd('/')
+    atnr=cmo.getSecurityConfiguration().getDefaultRealm().lookupAuthenticationProvider(authenticationprovider)
+
+    if wlst_action == 'create':
+        print 'create user: ',name
+        atnr.createUser(name,password,description)
+    else:
+        print 'modify user: ',name
+        atnr.setUserDescription(name,description)
+
+    report_back_success()
+
+except:
+    report_back_error_without_undo()

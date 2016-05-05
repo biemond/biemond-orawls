@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:wls_directory_structure) do
+  Type.newtype(:wls_directory_structure) do
     desc 'add all the directories needed by the oracle weblogic installation'
 
     newparam(:name) do

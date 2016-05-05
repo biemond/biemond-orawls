@@ -1,0 +1,34 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name               = '<%= remote_context_name %>'
+jmsmodule          = '<%= jmsmodule %>'
+
+url                = '<%= connect_url %>'
+weblogic_user      = '<%= weblogic_user %>'
+weblogic_password  = '<%= weblogic_password %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if wlst_action == 'create':
+        cmo.createSAFRemoteContext(name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFRemoteContexts/'+name+'/SAFLoginContext/'+name)
+    set_attribute_value('LoginURL', url, use_default_value_when_empty)
+    set_attribute_value('Username', weblogic_user, use_default_value_when_empty)
+    set_attribute_value('Password', weblogic_password, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

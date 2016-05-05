@@ -1,0 +1,22 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+server_name                    = '<%= server_name %>'
+tlog_enabled                   = '<%= tlog_enabled %>'
+tlog_datasource                = '<%= tlog_datasource %>'
+tlog_datasource_prefix         = '<%= tlog_datasource_prefix %>'
+
+edit()
+startEdit()
+
+try:
+    mServerMBTLogStore = getMBean('/Servers/'+server_name+'/TransactionLogJDBCStore/'+server_name)
+    mServerMBTLogStore.setEnabled(false)
+    mServerMBTLogStore.setPrefixName('TLOG_'+server_name+'_')
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

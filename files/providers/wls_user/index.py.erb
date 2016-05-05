@@ -2,18 +2,11 @@
 
 from weblogic.management.security.authentication import UserReaderMBean
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
 
 realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
 authProvider = realmName.getAuthenticationProviders()
 
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;realm;authenticationprovider;description;domain"
-
+f = open_file("name;realm;authenticationprovider;description;domain")
 for i in authProvider:
   if isinstance(i,UserReaderMBean) and "ldap" not in i.getProviderClassName().lower():
     userName = i
@@ -23,12 +16,14 @@ for i in authProvider:
     while userName.haveCurrent(cursor):
       user = userName.getCurrentName(cursor)
       description = i.getUserDescription(user)
-      print >>f, ";".join(map(quote, [domain+'/'+user, realmName.getName(), authName,description,domain]))
+
+      add_index_entry(f, [domain+'/'+user, realmName.getName(), authName,description,domain])
+
       userName.advance(cursor)
-    
+
     userName.close(cursor)
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 
 

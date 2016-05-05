@@ -1,16 +1,16 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else:
-        return ""
-
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;domain;jta_transaction_timeout;jta_max_transactions;jpa_default_provider;security_crossdomain;log_file_min_size;log_filecount;log_rotate_logon_startup;log_filename;log_rotationtype;log_number_of_files_limited;jmx_platform_mbean_server_enabled;jmx_platform_mbean_server_used;web_app_container_show_archived_real_path_enabled"
+f = open_file("name;domain;jta_transaction_timeout;jta_max_transactions;jpa_default_provider;security_crossdomain;log_file_min_size;log_filecount;log_rotate_logon_startup;log_filename;log_rotationtype;log_number_of_files_limited;jmx_platform_mbean_server_enabled;jmx_platform_mbean_server_used;web_app_container_show_archived_real_path_enabled;setinternalappdeploymentondemandenable;setarchiveconfigurationcount;setconfigbackupenabled;setconfigurationaudittype;exalogicoptimizationsenabled;log_date_pattern")
 
 cd('/')
 domain_name = get('Name')
+
+
+setinternalappdeploymentondemandenable = str(get('InternalAppsDeployOnDemandEnabled'))
+setarchiveconfigurationcount = cmo.getArchiveConfigurationCount()
+setconfigbackupenabled = get('ConfigBackupEnabled')
+setconfigurationaudittype = cmo.getConfigurationAuditType()
+exalogicoptimizationsenabled = str(get('ExalogicOptimizationsEnabled'))
 
 cd('/Log/'+domain_name)
 log_rotationtype            = get('RotationType')
@@ -19,6 +19,7 @@ log_number_of_files_limited = str(get('NumberOfFilesLimited'))
 log_filename                = str(get('FileName'))
 log_filecount               = str(get('FileCount'))
 log_file_min_size           = str(get('FileMinSize'))
+log_date_pattern            = get('DateFormatPattern')
 
 cd('/JTA/'+domain_name)
 jta_max_transactions    = str(cmo.getMaxTransactions())
@@ -41,8 +42,8 @@ jmx_platform_mbean_server_used = str(get('PlatformMBeanServerUsed'))
 cd('/WebAppContainer/'+domain_name)
 web_app_container_show_archived_real_path_enabled = str(get('ShowArchivedRealPathEnabled'))
 
-print >>f, ";".join(map(quote, [domain+'/'+domain_name,domain,jta_transaction_timeout,jta_max_transactions,jpa_default_provider,security_crossdomain,log_file_min_size,log_filecount,log_rotate_logon_startup,log_filename,log_rotationtype,log_number_of_files_limited,jmx_platform_mbean_server_enabled,jmx_platform_mbean_server_used,web_app_container_show_archived_real_path_enabled]))
+add_index_entry(f, [domain+'/'+domain_name,domain,jta_transaction_timeout,jta_max_transactions,jpa_default_provider,security_crossdomain,log_file_min_size,log_filecount,log_rotate_logon_startup,log_filename,log_rotationtype,log_number_of_files_limited,jmx_platform_mbean_server_enabled,jmx_platform_mbean_server_used,web_app_container_show_archived_real_path_enabled,setinternalappdeploymentondemandenable,setarchiveconfigurationcount,setconfigbackupenabled,setconfigurationaudittype,exalogicoptimizationsenabled,log_date_pattern])
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
+report_back_success()
 

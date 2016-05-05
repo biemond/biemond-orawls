@@ -1,0 +1,20 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name = '<%= resource_group_template_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/ResourceGroupTemplates/' + name))
+    cmo.destroyResourceGroupTemplate(getMBean('/ResourceGroupTemplates/' + name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

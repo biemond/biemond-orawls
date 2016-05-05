@@ -1,0 +1,16 @@
+real_domain='<%= resource.domain %>'
+
+try:
+    puppet = open("/tmp/wlstScript.out", "w")
+    print >>puppet, 'value'
+
+<%= function_content %>
+
+    print >>puppet, value
+    puppet.close()
+    print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    print "~~~~COMMAND FAILED~~~~"
+    raise

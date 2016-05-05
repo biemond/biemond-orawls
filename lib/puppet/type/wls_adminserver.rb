@@ -1,5 +1,5 @@
 module Puppet
-  newtype(:wls_adminserver) do
+  Type.newtype(:wls_adminserver) do
     desc 'control the adminserver state like running,stop,restart'
 
     newproperty(:ensure) do

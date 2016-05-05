@@ -1,61 +1,38 @@
 
 
-def quote(text):
-    if text:
-        return "\"" + str(text).replace("\"", "\"\"") + "\""
-    else: 
-        return ""
-
-f = open("/tmp/wlstScript.out", "w")
-print >>f, "name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain"
+f = open_file("name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain")
 
 domainConfig()
 
 cd('/')
 print 'apps'
-myapps=cmo.getAppDeployments()
+myapps = cmo.getAppDeployments()
 for appName in myapps:
-  cd('/AppDeployments/'+appName.getName() ) 
+    cd('/AppDeployments/' + appName.getName())
 
-  app               = get('ApplicationName')
-  deploymenttype    = get('Type')
-  versionidentifier = get('VersionIdentifier')
-  stagingmode       = get('StagingMode')
+    app               = get('ApplicationName')
+    deploymenttype    = get('Type')
+    versionidentifier = get('VersionIdentifier')
+    stagingmode       = get('StagingMode')
 
-  n = ls('/AppDeployments/'+appName.getName()+'/Targets',returnMap='true')
+    target, targetType = retrieve_target_list('/AppDeployments/' + appName.getName())
 
-  target     = []
-  targetType = []
-  for token2 in n:
-         target.append(token2)
-         cd('/AppDeployments/'+appName.getName()+'/Targets/'+token2)
-         targetType.append(get('Type'))
-
-  print >>f, ";".join(map(quote, [domain+'/'+app,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
+    add_index_entry(f, [domain + '/' + app, versionidentifier, deploymenttype, stagingmode, ','.join(target), ','.join(targetType), domain])
 
 print 'libs'
 cd('/')
-mylibs=cmo.getLibraries()
+mylibs = cmo.getLibraries()
 for libName in mylibs:
-  cd('/Libraries/'+libName.getName() ) 
+    cd('/Libraries/' + libName.getName())
 
-  lib               = get('ApplicationName')
-  deploymenttype    = get('Type')
-  versionidentifier = get('VersionIdentifier')
-  stagingmode       = get('StagingMode')
+    lib               = get('ApplicationName')
+    deploymenttype    = get('Type')
+    versionidentifier = get('VersionIdentifier')
+    stagingmode       = get('StagingMode')
 
-  n = ls('/Libraries/'+libName.getName()+'/Targets',returnMap='true')
+    target, targetType = retrieve_target_list('/Libraries/' + libName.getName())
 
-  target     = []
-  targetType = []
-  for token2 in n:
-         target.append(token2)
-         cd('/Libraries/'+libName.getName()+'/Targets/'+token2)
-         targetType.append(get('Type'))
-
-  print >>f, ";".join(map(quote, [domain+'/'+lib,versionidentifier,deploymenttype,stagingmode,','.join(target),','.join(targetType),domain]))
-
+    add_index_entry(f, [domain + '/' + lib, versionidentifier, deploymenttype, stagingmode, ','.join(target), ','.join(targetType), domain])
 
 f.close()
-print "~~~~COMMAND SUCCESFULL~~~~"
-
+report_back_success()

@@ -9,7 +9,7 @@ define orawls::domain (
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $wls_apps_dir                          = hiera('wls_apps_dir'                  , undef),
-  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud
+  $domain_template                       = hiera('domain_template'               , 'standard'), # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone
   $bam_enabled                           = true,  #only for SOA Suite
   $b2b_enabled                           = false, #only for SOA Suite 12.1.3 with b2b
   $ess_enabled                           = false, #only for SOA Suite 12.1.3
@@ -53,6 +53,9 @@ define orawls::domain (
   $custom_identity_alias                 = undef,
   $custom_identity_privatekey_passphrase = undef,
   $create_rcu                            = hiera('create_rcu', true),
+  $ohs_standalone_listen_address         = undef,
+  $ohs_standalone_listen_port            = undef,
+  $ohs_standalone_ssl_listen_port        = undef,
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -133,7 +136,12 @@ define orawls::domain (
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.12.1.3_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.2.jar"
 
-      $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.2.jar"
+      if $domain_template == 'ohs_standalone' {
+        $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template_12.1.2.jar"
+      }
+      else {
+        $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.2.jar"
+      }
       $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.2.jar"
 
     } elsif $version == 1213 {
@@ -148,7 +156,12 @@ define orawls::domain (
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub.1.0.0_template.jar"
       $templateWSMPM     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.3.jar"
 
-      $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar"
+      if $domain_template == 'ohs_standalone' {
+        $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template_12.1.3.jar"
+      }
+      else {
+        $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar"
+      }
       $templateEMWebTier = "${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.3.jar"
       $templateESS_EM    = "${middleware_home_dir}/em/common/templates/wls/oracle.em_ess_template_12.1.3.jar"
       $templateESS       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.ess.basic_template_12.1.3.jar"
@@ -175,7 +188,12 @@ define orawls::domain (
       } else {
         $templateEM        = "${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template.jar"
         $templateJRF       = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template.jar"
-        $templateOHS       = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template.jar"
+        if $domain_template == 'ohs_standalone' {
+          $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template.jar"
+        }
+        else {
+          $templateOHS     = "${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template.jar"
+        }
       }
 
       $templateApplCore  = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub_template.jar"
@@ -218,9 +236,21 @@ define orawls::domain (
 
     $templateUCM          = "${middleware_home_dir}/Oracle_WCC1/common/templates/applications/oracle.ucm.cs_template_11.1.1.jar"
 
-    $templateFile   = 'orawls/domains/domain.py.erb'
+    if $domain_template != 'ohs_standalone' {
+      $templateFile = 'orawls/domains/domain.py.erb'
+    }
 
-    if $domain_template == 'standard' {
+    if $domain_template == 'ohs_standalone' {
+      if ( $version == 1212 or $version == 1213 or $version == 1221) {
+        $extensionsTemplateFile = undef
+        $wlstPath       = "${middleware_home_dir}/ohs/common/bin"
+        $templateFile = 'orawls/ohs/domain.py.erb'
+      }
+      else {
+        fail("OHS Standalone domain configuration currently works only with version 12.1.2, 12.1.3 or 12.1.2. Version ${version} not supported.")
+      }
+    }
+    elsif $domain_template == 'standard' {
       $extensionsTemplateFile = undef
       $wlstPath       = "${weblogic_home_dir}/common/bin"
 
@@ -343,6 +373,7 @@ define orawls::domain (
 
       $oim_nodemanager_log_dir   = "${domain_dir}/servers/oim_server1/logs"
       $oam_nodemanager_log_dir   = "${domain_dir}/servers/oam_server1/logs"
+      $bi_nodemanager_log_dir    = "${domain_dir}/servers/bi_server1/logs"
 
       $wcCollaboration_nodemanager_log_dir   = "${domain_dir}/servers/WC_Collaboration/logs"
       $wcPortlet_nodemanager_log_dir         = "${domain_dir}/servers/WC_Portlet/logs"
@@ -359,9 +390,9 @@ define orawls::domain (
       $bam_nodemanager_log_dir   = $log_dir
       $ess_nodemanager_log_dir   = $log_dir
 
-
       $oim_nodemanager_log_dir   = $log_dir
       $oam_nodemanager_log_dir   = $log_dir
+      $bi_nodemanager_log_dir    = $log_dir
 
       $wcCollaboration_nodemanager_log_dir   = $log_dir
       $wcPortlet_nodemanager_log_dir         = $log_dir
@@ -486,7 +517,7 @@ define orawls::domain (
     }
 
     # FMW RCU only for wls 12.1.2 or higher and when template is not standard
-    if ( $version >= 1212 and $domain_template != 'standard' and $domain_template != 'adf_restricted' ) {
+    if ( $version >= 1212 and $domain_template != 'standard' and $domain_template != 'adf_restricted' and $domain_template != 'ohs_standalone' ) {
 
       if ( $domain_template == 'adf' ) {
         $rcu_domain_template = 'adf'
@@ -494,7 +525,7 @@ define orawls::domain (
       } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
         $rcu_domain_template = 'soa'
 
-      } else {
+      } elsif ($create_rcu == undef or $create_rcu == true) {
         fail('unkown domain_template for rcu with version 1212 or 1213')
       }
 

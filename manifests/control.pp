@@ -12,7 +12,7 @@ define orawls::control (
   $jdk_home_dir                = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
   $wls_domains_dir             = hiera('wls_domains_dir', undef),
   $domain_name                 = hiera('domain_name'),
-  $server_type                 = 'admin',  # admin|managed
+  $server_type                 = 'admin',  # admin|managed|ohs_standalone
   $target                      = 'Server', # Server|Cluster
   $server                      = 'AdminServer',
   $adminserver_address         = hiera('domain_adminserver_address'    , 'localhost'),
@@ -40,7 +40,9 @@ define orawls::control (
 
   $domain_dir = "${domains_dir}/${domain_name}"
 
-  if $server_type == 'admin' {
+  if $server_type == 'admin' or $server_type == 'ohs_standalone' {
+    $ohs_standalone_server = ($server_type == 'ohs_standalone')
+
     wls_adminserver{"${title}:AdminServer":
       ensure                      => $action,   #running|start|abort|stop
       server_name                 => $server,
@@ -58,6 +60,7 @@ define orawls::control (
       custom_trust                => $custom_trust,
       trust_keystore_file         => $trust_keystore_file,
       trust_keystore_passphrase   => $trust_keystore_passphrase,
+      ohs_standalone_server       => $ohs_standalone_server,
     }
   }
   else {

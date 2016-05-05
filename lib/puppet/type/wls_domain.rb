@@ -50,6 +50,7 @@ module Puppet
     property :log_rotationtype
     property :log_date_pattern
     property :log_rotate_logon_startup
+    property :log_domain_log_broadcast_severity
     property :jmx_platform_mbean_server_enabled
     property :jmx_platform_mbean_server_used
     property :web_app_container_show_archived_real_path_enabled

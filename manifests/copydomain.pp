@@ -23,6 +23,7 @@ define orawls::copydomain (
   $download_dir               = hiera('wls_download_dir'), # /data/install
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
+  $server_start_mode          = 'dev', # dev/prod
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -160,7 +161,7 @@ define orawls::copydomain (
       default    => "-app_dir=${apps_dir}/${domain_name}"
     }
 
-    $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+    $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -server_start_mode=${server_start_mode} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
     if ( $version == 1221 ) {
       $bin_dir = "${middleware_home_dir}/oracle_common/common/bin/unpack.sh"

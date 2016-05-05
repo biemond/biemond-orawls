@@ -24,7 +24,17 @@ Puppet::Type.type(:wls_managedserver).provide(:wls_managedserver) do
 
     command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
 connect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"t3://#{adminserver_address}:#{adminserver_port}\")
-#{wls_action}
+try:
+    #{wls_action}
+except:
+    domainRuntime()
+    cd(\"/ServerLifeCycleRuntimes/#{name}\")
+    serverState = cmo.getState()
+    if serverState == \"ADMIN\":
+        resume(\"#{name}\")
+    else:
+        raise
+
 exit()
 EOF"
 
@@ -47,45 +57,40 @@ EOF"
     adminserver_address = resource[:adminserver_address]
     adminserver_port    = resource[:adminserver_port]
 
-    if target == 'Server'
-      kernel = Facter.value(:kernel)
+    kernel = Facter.value(:kernel)
 
-      ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
-      ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
+    # ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
+    # ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
 
-      command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
+    # command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
 
-      Puppet.debug "managedserver_status #{command}"
-      output = `#{command}`
+    # Puppet.debug "managedserver_status #{command}"
+    # output = `#{command}`
+    # Puppet.info output
+    # output.each_line do |li|
+    #   unless li.nil?
+    #     if li.include? name
+    #       Puppet.debug 'found server'
+    #       return 'Found'
+    #     end
+    #   end
+    # end
 
-      output.each_line do |li|
-        unless li.nil?
-          Puppet.debug "line #{li}"
-          if li.include? name
-            Puppet.debug 'found server'
-            return 'Found'
-          end
-        end
-      end
-    elsif target == 'Cluster'
-
-      command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+    command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
 connect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"t3://#{adminserver_address}:#{adminserver_port}\")
 state(\"#{name}\",\"#{target}\")
 exit()
 EOF"
+    # kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-      kernel = Facter.value(:kernel)
-      su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
-
-      output = `su #{su_shell} - #{user} -c '#{command}'`
-      output.each_line do |li|
-        unless li.nil?
-          Puppet.debug "aline #{li}"
-          if li.include? 'RUNNING'
-            Puppet.debug 'found server'
-            return 'Found'
-          end
+    output = `su #{su_shell} - #{user} -c '#{command}'`
+    Puppet.debug output
+    output.each_line do |li|
+      unless li.nil?
+        if li.include? 'RUNNING'
+          Puppet.debug 'found target'
+          return 'Found'
         end
       end
     end
@@ -106,8 +111,10 @@ EOF"
   end
 
   def status
+    name    = resource[:server_name]
+    target  = resource[:target]
     output  = managedserver_status
-    Puppet.debug "managedserver_status output #{output}"
+    Puppet.info "managedserver_status #{name} type #{target} output #{output}"
     if output == 'Found'
       return :start
     else

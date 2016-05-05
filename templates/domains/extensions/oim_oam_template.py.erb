@@ -44,6 +44,12 @@ OIM_JAVA_ARGUMENTS = '<%= @java_arguments['OIM'] %>'
 OIM_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oim_nodemanager_log_dir %>/oim_server1.out -Dweblogic.Stderr=<%= @oim_nodemanager_log_dir %>/oim_server1_err.out'
 <% end %>
 
+<% if @java_arguments['BI'] %>
+BI_JAVA_ARGUMENTS = '<%= @java_arguments['BI'] %>'
+<% else %>
+BI_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @bi_nodemanager_log_dir %>/bi_server1.out -Dweblogic.Stderr=<%= @bi_nodemanager_log_dir %>/bi_server1_err.out'
+<% end %>
+
 REPOS_DBURL = '<%= @repository_database_url %>'
 REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
 REPOS_DBPASSWORD = '<%= @repository_password %>'
@@ -99,6 +105,10 @@ print 'Change oim_server1'
 cd('/')
 change_managed_server('oim_server1', 'LocalMachine', '<%= @adminserver_address %>', None, OIM_JAVA_ARGUMENTS, '<%= @oim_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
+print 'Change bi_server1'
+cd('/')
+change_managed_server('bi_server1', 'LocalMachine', '<%= @adminserver_address %>', None, BI_JAVA_ARGUMENTS, '<%= @bi_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
 print 'Change datasources'
 
 change_datasource('EDNDataSource'       , REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
@@ -115,6 +125,7 @@ change_datasource('soaOIMLookupDB'      , REPOS_DBUSER_PREFIX + '_OIM'     , REP
 change_datasource('oimJMSStoreDS'       , REPOS_DBUSER_PREFIX + '_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
 change_datasource('ApplicationDB'       , REPOS_DBUSER_PREFIX + '_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
 change_datasource('oimOperationsDB'     , REPOS_DBUSER_PREFIX + '_OIM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('bip_datasource'      , REPOS_DBUSER_PREFIX + '_BIPLATFORM', REPOS_DBPASSWORD, REPOS_DBURL)
 
 print 'Finished datasources'
 
@@ -127,6 +138,7 @@ closeDomain();
 create_boot_properties_file(DOMAIN_PATH + '/servers/soa_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 create_boot_properties_file(DOMAIN_PATH + '/servers/oim_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 create_boot_properties_file(DOMAIN_PATH + '/servers/oam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+create_boot_properties_file(DOMAIN_PATH + '/servers/bi_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
 print('Exiting...')
 exit()

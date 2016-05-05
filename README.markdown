@@ -38,6 +38,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - WebLogic 12.2.1 MT multi tenancy / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
 - WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
 - WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
+- WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs](https://github.com/biemond/biemond-orawls-vagrant-ohs)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
 - WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
@@ -45,7 +46,8 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - WebLogic 12.1.2 Reference implementation, the vagrant test case for full working WebLogic 12.1.2 cluster example [biemond-orawls-vagrant-12.1.2](https://github.com/biemond/biemond-orawls-vagrant-12.1.2)
 - WebLogic 12.1.2 infra (JRF) with WebTier, the vagrant test case for full working WebLogic 12.1.2 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.2-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.2-infra)
 - Reference Solaris implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-solaris](https://github.com/biemond/biemond-orawls-vagrant-solaris)
-- Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.2 example [biemond-orawls-vagrant-oim_oam](https://github.com/biemond/biemond-orawls-vagrant-oim_oam)
+- Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.3 example [biemond-orawls-vagrant-oim_oam](https://github.com/biemond/biemond-orawls-vagrant-oim_oam)
+- Reference OIM / OAM Cluster, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.3 cluster example [biemond-orawls-vagrant-oim_oam_cluster](https://github.com/biemond/biemond-orawls-vagrant-oim_oam_cluster)
 - WebLogic 11g Reference implementation, the vagrant test case for full working WebLogic 10.3.6 cluster example [biemond-orawls-vagrant](https://github.com/biemond/biemond-orawls-vagrant)
 - Reference Oracle SOA Suite, the vagrant test case for full working WebLogic 10.3.6 SOA Suite + OSB cluster example [biemond-orawls-vagrant-solaris-soa](https://github.com/biemond/biemond-orawls-vagrant-solaris-soa)
 - Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box [vagrant-puppetmaster](https://github.com/biemond/vagrant-puppetmaster)
@@ -72,14 +74,13 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 ### Fusion Middleware Features 11g & 12c
 
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
-- [WebTier](#webtier) Oracle HTTP server
+- [WebTier](#webtier) Oracle HTTP server Standalone and Collocated
 - [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate 11g OPSS to the database )
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
-- [OIM IDM](#oimconfig) / OAM configurations with Oracle OHS OAM WebGate, Also Cluster support for OIM OAM
+- [OIM IDM](#oimconfig) / OAM 11.1.2.3 configurations with Oracle OHS OAM WebGate, Also it has Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
 - [Forms/Reports](#forms) Oracle Forms & Reports 11.1.1.7, 11.1.2 or 12.2.1
 - [WC, WCC](#Webcenter) Webcenter portal, content 11g or 12.2.1
-
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB, MQ, FTP, File and JMS
 
@@ -147,6 +148,7 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_resource_group_template](#wls_resource_group_template)
 - [wls_resource_group_template_deployment](#wls_resource_group_template_deployment)
 - [wls_domain_partition](#wls_domain_partition)
+- [wls_domain_partition_control](#wls_domain_partition_control)
 - [wls_domain_partition_resource_group](#wls_domain_partition_resource_group)
 - [wls_domain_partition_resource_group_deployment](#wls_domain_partition_resource_group_deployment)
 
@@ -163,13 +165,14 @@ For all WebLogic or FMW versions
 - domain 'soa'            -> SOA Suite + BAM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'soa_bpm'        -> SOA Suite + BAM + BPM + JRF + EM + OWSM + ESS ( optional with 12.1.3 )
 - domain 'bam'            -> BAM ( only with soa suite installation)
+- domain 'ohs_standalone' -> Standalone webtier (HTTP Server) 12.1.2, 12.1.3 and 12.1.4
 
 11g
 - domain 'wc_wcc_bpm'     -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
 - domain 'wc'             -> WC (webcenter) + JRF + EM + OWSM
 
 11gR2
-- domain 'oim'            -> OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
+- domain 'oim'            -> IDM, OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
 - domain 'oud'            -> OUD (Oracle Unified Directory)
 
 12.2.1
@@ -877,6 +880,16 @@ when you set the defaults hiera variables
         remote_file:             false
 
 
+    # OHS standalone
+    fmw_installations:
+      'webtier1212':
+        fmw_product:             "web"
+        ohs_mode:                "standalone"
+        fmw_file1:               "fmw_12.2.1.0.0_ohs_linux64_Disk1_1of1.zip"
+        log_output:              true
+        remote_file:             false
+
+
 ### domain
 __orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | ADF | WebCenter | OIM or OAM or OUD
 
@@ -1092,6 +1105,37 @@ FMW 12.1.3 WebLogic OSB domain
          repository_sys_password:  "Welcome01"
          rcu_database_url:         "osbdb.example.com:1521:osbrepos.example.com"
 
+Standalone Webtier
+
+    domain_instances:
+      'Wls1221':
+        domain_template:                       "ohs_standalone"
+        development_mode:                      false
+        ohs_standalone_listen_address:         *domain_adminserver_address
+        ohs_standalone_listen_port:            8180
+        ohs_standalone_ssl_listen_port:        8181
+        nodemanager_password:                  *domain_wls_password
+        nodemanager_username:                  *wls_weblogic_user
+        log_output:                            *logoutput
+
+    nodemanager_instances:
+      'nodemanager':
+        ohs_standalone:                        true
+        log_output:                            *logoutput
+        log_file:                              'nodemanager_wls1221.log'
+        nodemanager_address:                   *domain_adminserver_address
+        sleep:                                 21
+
+    # startup adminserver for extra configuration
+    control_instances:
+      'startOHS1server':
+         domain_name:                 *domain_name
+         server_type:                 'ohs_standalone'
+         target:                      'Server'
+         server:                      'ohs1'
+         action:                      'start'
+         log_output:                  *logoutput
+
 
 
 ### packdomain
@@ -1144,10 +1188,7 @@ When using ssh (use_ssh = true) you need to setup ssh so you won't need to provi
       adminserver_port       => 7001,
       weblogic_user          => "weblogic",
       weblogic_password      => "weblogic1",
-      setinternalappdeploymentondemandenable => false,
-      setconfigbackupenabled                 => true,
-      setarchiveconfigurationcount           => 10,
-      setconfigurationaudittype              => 'logaudit',
+      server_start_mode      => 'dev',
     }
 
 Configuration with Hiera ( need to have puppet > 3.0 )
@@ -1733,6 +1774,21 @@ hiera configuration
         ess_enabled:          true
         repository_prefix:    "DEV"
 
+    # OIM 11.1.2.3 cluster
+    fmw_cluster_instances:
+      'oimCluster':
+        domain_name:          *domain_name
+        soa_cluster_name:     "SoaCluster"
+        oim_cluster_name:     "OimCluster"
+        oam_cluster_name:     "OamCluster"
+        bi_cluster_name:      "BiCluster"
+        log_output:           *logoutput
+        soa_enabled:          true
+        oim_enabled:          true
+        oam_enabled:          true
+        bi_enabled:           true
+        repository_prefix:    *rcu_prefix
+
 
 ### fmwclusterjrf
 __orawls::utils::fmwclusterjrf__ convert existing cluster to a ADF/JRF cluster
@@ -1801,13 +1857,17 @@ __orawls::utils::oimconfig__ Configure OIM , oim server, design or remote config
         oim_home:                   '/opt/oracle/middleware11g/Oracle_IDM1'
         server_config:              true
         oim_password:               'Welcome01'
+        bi_cluster_name:            'BiCluster'
+        bi_enabled:                 true
         remote_config:              false
         keystore_password:          'Welcome01'
         design_config:              false
         oimserver_hostname:         'oim1admin.example.com'
         oimserver_port:             '14000'
+        soaserver_name:             'SoaServer1'
+        oimserver_name:             'OimServer1'
         repository_database_url:    "oimdb.example.com:1521:oimrepos.example.com"
-        repository_prefix:          "DEV"
+        repository_prefix:          *rcu_prefix
         repository_password:        "Welcome01"
 
 ### instance
@@ -4834,3 +4894,32 @@ in hiera
         localpath:         '/vagrant/webapp.war'
         require:
            - Wls_domain_partition_resource_group_deployment[CustomerA_Partition:PartitionResourceGroupProducts:jersey-bundle]
+
+### wls_domain_partition_control
+
+start or stop a domain partition
+
+    'StartCustomerA_Partition':
+         ensure:                      'start'
+         domain_partition:            'CustomerA_Partition'
+         os_user:                     *wls_os_user
+         middleware_home_dir:         *wls_middleware_home_dir
+         weblogic_user:               *wls_weblogic_user
+         weblogic_password:           *domain_wls_password
+         adminserver_address:         *domain_adminserver_address
+         adminserver_port:            *domain_adminserver_port
+         require:
+            - Wls_domain_partition[CustomerA_Partition]
+    'StartCustomerB_Partition':
+         ensure:                      'stop'
+         domain_partition:            'CustomerB_Partition'
+         os_user:                     *wls_os_user
+         middleware_home_dir:         *wls_middleware_home_dir
+         weblogic_user:               *wls_weblogic_user
+         weblogic_password:           *domain_wls_password
+         adminserver_address:         *domain_adminserver_address
+         adminserver_port:            *domain_adminserver_port
+         require:
+            - Wls_domain_partition[CustomerB_Partition]
+
+

@@ -14,6 +14,8 @@ define orawls::utils::oimconfig(
   $oimserver_port             = 14000,
   $soaserver_name             = 'soa_server1',
   $oimserver_name             = 'oim_server1',
+  $bi_enabled                 = false, # only when you got a BI cluster
+  $bi_cluster_name            = undef,
   $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
   $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
   $repository_password        = hiera('repository_password'       , 'Welcome01'),
@@ -41,7 +43,6 @@ define orawls::utils::oimconfig(
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
-
 
   $execPath = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
@@ -108,13 +109,53 @@ define orawls::utils::oimconfig(
         backup  => false,
       }
       exec { "config oim server ${title}":
-        command   => "/bin/sh -c 'unset DISPLAY;${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_server.rsp -waitforcompletion'",
+        command   => "/bin/sh -c 'unset DISPLAY;${oim_home}/bin/config.sh -silent -response ${download_dir}/${title}config_oim_server.rsp -waitforcompletion -debug -logLevel fine'",
         timeout   => 0,
         require   => File["${download_dir}/${title}config_oim_server.rsp"],
         path      => $execPath,
         user      => $os_user,
         group     => $os_group,
         logoutput => true,
+      }
+
+      if( $bi_enabled == true ) {
+        # the py script used by the wlst
+        file { "${download_dir}/bi-createUDD${title}.py":
+          ensure  => present,
+          content => template('orawls/wlst/wlstexec/fmw/bi-createUDD.py.erb'),
+          backup  => false,
+          replace => true,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
+
+        case $::kernel {
+          'Linux': {
+            $java_statement = 'java'
+          }
+          'SunOS': {
+            $java_statement = 'java -d64'
+          }
+          default: {
+            fail("Unrecognized operating system ${::kernel}")
+          }
+        }
+
+        $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+        # execute WLST script
+        exec { "execwlst bi-createUDD.py ${title}":
+          command     => "${javaCommand} ${download_dir}/bi-createUDD${title}.py ${weblogic_password}",
+          environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                          "JAVA_HOME=${jdk_home_dir}"],
+          path        => $execPath,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => [File["${download_dir}/bi-createUDD${title}.py"],
+                          Exec["config oim server ${title}"]],
+          before      => Orawls::Control['stopOIMOimServer1AfterConfig']
+        }
       }
 
       orawls::control{'stopOIMOimServer1AfterConfig':

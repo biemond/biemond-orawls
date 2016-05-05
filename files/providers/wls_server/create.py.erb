@@ -26,6 +26,8 @@ log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
 log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
 log_date_pattern              = '<%= log_date_pattern %>'
+log_stdout_severity           = '<%= log_stdout_severity %>'
+log_log_file_severity         = '<%= log_log_file_severity %>'
 
 restart_max       = '<%= restart_max %>'
 listenAddress     = '<%= listenaddress %>'
@@ -158,6 +160,8 @@ try:
     set_attribute_value('DateFormatPattern', log_date_pattern, use_default_value_when_empty)
     set_attribute_value('RedirectStderrToServerLogEnabled', log_redirect_stderr_to_server, use_default_value_when_empty)
     set_attribute_value('RedirectStdoutToServerLogEnabled', log_redirect_stdout_to_server, use_default_value_when_empty)
+    set_attribute_value('StdoutSeverity', log_stdout_severity, use_default_value_when_empty)
+    set_attribute_value('LogFileSeverity', log_log_file_severity, use_default_value_when_empty)
 
     print "web server log: " + name
     cd('/Servers/'+name+'/WebServer/'+name+'/WebServerLog/'+name)

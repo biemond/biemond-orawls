@@ -20,6 +20,7 @@ define orawls::utils::fmwcluster (
   $oam_cluster_name           = undef,
   $oim_cluster_name           = undef,
   $ess_cluster_name           = undef,
+  $bi_cluster_name            = undef,
   $bpm_enabled                = false, # true|false
   $bam_enabled                = false, # true|false
   $osb_enabled                = false, # true|false
@@ -28,6 +29,7 @@ define orawls::utils::fmwcluster (
   $oim_enabled                = false, # true|false
   $b2b_enabled                = false, # true|false
   $ess_enabled                = false, # true|false
+  $bi_enabled                 = false, # true|false
   $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
   $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'),
@@ -59,6 +61,8 @@ define orawls::utils::fmwcluster (
     } else {
       $convert_soa = true
     }
+  } else {
+    $convert_soa = false
   }
 
   if ( $osb_enabled ) {
@@ -70,6 +74,8 @@ define orawls::utils::fmwcluster (
     } else {
       $convert_osb = true
     }
+  } else {
+    $convert_osb = false
   }
 
   if ( $bam_enabled ) {
@@ -81,6 +87,8 @@ define orawls::utils::fmwcluster (
     } else {
       $convert_bam = true
     }
+  } else {
+    $convert_bam = false
   }
 
   if $convert_soa or $convert_osb or $convert_bam {
@@ -339,7 +347,6 @@ define orawls::utils::fmwcluster (
             require     => [File["${download_dir}/oim-createUDD${title}.py"],
                             Exec["execwlst soa-bpm-createUDD.py ${title}"],]
           }
-
         }
       }
 
@@ -426,6 +433,33 @@ define orawls::utils::fmwcluster (
         logoutput   => $log_output,
         require     => [File["${download_dir}/changeWorkmanagers${title}.py"],
                         Orawls::Control["StartupAdminServerForSoa${title}"]],
+      }
+
+      if( $oim_enabled == true ) {
+        # the py script used by the wlst
+        file { "${download_dir}/changeWorkmanagersOim${title}.py":
+          ensure  => present,
+          content => template('orawls/wlst/wlstexec/fmw/changeWorkmanagersOim.py.erb'),
+          backup  => false,
+          replace => true,
+          mode    => '0775',
+          owner   => $os_user,
+          group   => $os_group,
+        }
+
+        # execute WLST script
+        exec { "execwlst changeWorkmanagersOim.py ${title}":
+          command     => "${javaCommand} ${download_dir}/changeWorkmanagersOim${title}.py ${weblogic_password}",
+          environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
+                          "JAVA_HOME=${jdk_home_dir}"],
+          path        => $exec_path,
+          user        => $os_user,
+          group       => $os_group,
+          logoutput   => $log_output,
+          require     => [File["${download_dir}/changeWorkmanagersOim${title}.py"],
+                          Orawls::Control["StartupAdminServerForSoa${title}"],
+                          Exec["execwlst changeWorkmanagers.py ${title}"]],
+        }
       }
     }
     else {

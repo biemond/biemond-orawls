@@ -1,0 +1,68 @@
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1]
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+BIClusterName = '<%= @bi_cluster_name %>'
+
+connect(wlsUser, password, 't3://' + machine + ':' + portNumber)
+
+edit()
+startEdit()
+
+def create_filestore(name, target):
+    cd('/')
+    cmo.createFileStore(name)
+    cd('/FileStores/' + name)
+    set('Targets',jarray.array([ObjectName('com.bea:Name=' + target + ',Type=Server')], ObjectName))
+
+def create_jmsserver(name, target, filestore):
+    cd('/')
+    cmo.createJMSServer(name)
+    cd('/Deployments/' + name)
+    cmo.setPersistentStore(getMBean('/FileStores/' + filestore))
+    set('Targets',jarray.array([ObjectName('com.bea:Name=' + target + ',Type=Server')], ObjectName))
+
+def target_list_same_type(targets, targettype):
+    targetlist = []
+    for i in range(len(targets)):
+        bean = ObjectName('com.bea:Name=' + targets[i] + ',Type=' + targettype)
+        targetlist.append(bean)
+    return jarray.array(targetlist, ObjectName)
+
+try:
+
+    try:
+        cd('/SystemResources/BipJmsResource/SubDeployments/BipJmsSubDeployment')
+        set('Targets',jarray.array([], ObjectName))
+    except:
+        cd('/SystemResources/BipJmsResource')
+        cmo.createSubDeployment('BipJmsSubDeployment')
+
+    cd('/')
+    cmo.destroyJMSServer(getMBean('/Deployments/BipJmsServer'))
+    cmo.destroyFileStore(getMBean('/FileStores/BipJmsStore'))
+    n = ls('/Clusters/' + BIClusterName + '/Servers', returnMap='true')
+    jms_servers = []
+    i = 1
+    for token2 in n:
+        create_filestore('BipJmsStore' + str(i), token2)
+        jms_servers.append('BipJmsServer' + str(i))
+        create_jmsserver('BipJmsServer' + str(i), token2, 'BipJmsStore' + str(i))
+        i = i + 1
+
+    cd('/SystemResources/BipJmsResource')
+    set('Targets',jarray.array([ObjectName('com.bea:Name=' + BIClusterName + ',Type=Cluster')], ObjectName))
+
+    cd('/SystemResources/BipJmsResource/SubDeployments/BipJmsSubDeployment')
+    targetList = target_list_same_type(jms_servers, 'JMSServer')
+    set('Targets', targetList)
+
+    save()
+    activate()
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    undo('true','y')
+    stopEdit('y')
+    raise

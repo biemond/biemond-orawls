@@ -1,6 +1,16 @@
 # History
 
+## 1.0.49
+- Support for standalone webtier 12.1.2, 12.1.3 & 12.2.1
+- changed wls_managedserver type code so it used WLST to test if it is active plus force it to running
+- OIM/OAM 11.1.2.3 cluster fixes
+- FMW install fixes when it has more than 3 input files
+- Unpack, new parameter $server_start_mode on copydomain with value test or prod
+- wls_domain, new attribute log_domain_log_broadcast_severity
+- wls_server, new attributes log_stdout_severity, log_log_file_severity
+
 ## 1.0.48
+- opatch manifest also works for removing patches
 - wls types fix for 12.2.1 and which got passwords attributes
 - wls_resource_group_template new MT type but only for WebLogic 12.2.1
 - wls_resource_group new MT type but only for WebLogic 12.2.1
@@ -8,6 +18,7 @@
 - wls_domain_partition_resource_group new MT type but only for WebLogic 12.2.1
 - wls_resource_group_template_deployment new MT type but only for WebLogic 12.2.1
 - wls_domain_partition_resource_group_deployment new MT type but only for WebLogic 12.2.1
+- wls_domain_partition_control new MT type but only for WebLogic 12.2.1
 - wls_setting new attribute use_default_value_when_empty, when you want to make sure the wls type properties will set its default mbean values when it is not provided by your puppet configuration.
 
 ## 1.0.47

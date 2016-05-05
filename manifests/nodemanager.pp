@@ -29,6 +29,7 @@ define orawls::nodemanager (
   $log_output                            = false, # true|false
   $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
   $properties                            = {},
+  $ohs_standalone                        = false,
 )
 {
 
@@ -37,7 +38,6 @@ define orawls::nodemanager (
   } else {
     $domains_dir =  $wls_domains_dir
   }
-
 
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"

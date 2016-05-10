@@ -72,7 +72,7 @@ define orawls::fmw(
   #Sanitise the resource title so that it can safely be used in filenames and execs etc.
   #After converting all spaces to underscores, remove all non alphanumeric characters (allow hypens and underscores too)
   $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
-  $sanitised_title = regsubst ($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')
+  $sanitised_title = regsubst ($convert_spaces_to_underscores,'[^a-zA-Z0-9_-.]','','G')
 
   if ($ohs_mode == 'standalone') {
     $install_type = 'Standalone HTTP Server (Managed independently of WebLogic server)'

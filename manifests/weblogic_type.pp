@@ -15,7 +15,7 @@ define orawls::weblogic_type (
   $download_dir         = undef, # /data/install
   $source               = undef, # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file          = true,  # true|false
-  $javaParameters       = '',    # '-Dspace.detection=false'
+  $java_parameters      = '',    # '-Dspace.detection=false'
   $log_output           = false, # true|false
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
@@ -68,11 +68,11 @@ define orawls::weblogic_type (
   case $::kernel {
     'Linux': {
       $oraInstPath        = '/etc'
-      $java_statement     = "java ${javaParameters}"
+      $java_statement     = "java ${java_parameters}"
     }
     'SunOS': {
       $oraInstPath       = '/var/opt/oracle'
-      $java_statement    = "java -d64 ${javaParameters}"
+      $java_statement    = "java -d64 ${java_parameters}"
     }
     default: {
       fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
@@ -107,12 +107,12 @@ define orawls::weblogic_type (
 
   $oraInventory  = "${oracle_base_home_dir}/oraInventory"
 
-  orawls::utils::orainst { "weblogic orainst ${version}":
+  orawls::utils::orainst { "weblogic orainst ${title}":
     ora_inventory_dir => $oraInventory,
     os_group          => $os_group,
   }
 
-  wls_directory_structure{"weblogic structure ${version}":
+  wls_directory_structure{"weblogic structure ${title}":
     ensure            => present,
     oracle_base_dir   => $oracle_base_home_dir,
     ora_inventory_dir => $ora_inventory_dir,
@@ -127,7 +127,7 @@ define orawls::weblogic_type (
   #   file { $download_dir:
   #     ensure => directory,
   #     mode   => '0777',
-  #     require => Wls_directory_structure["weblogic structure ${version}"],
+  #     require => Wls_directory_structure["weblogic structure ${title}"],
   #   }
   # }
 
@@ -142,13 +142,13 @@ define orawls::weblogic_type (
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
-      before  => Exec["install weblogic ${version}"],
-      require => Wls_directory_structure["weblogic structure ${version}"],
+      before  => Exec["install weblogic ${title}"],
+      require => Wls_directory_structure["weblogic structure ${title}"],
     }
   }
 
   # de xml used by the wls installer
-  file { "${download_dir}/weblogic_silent_install_${version}.xml":
+  file { "${download_dir}/weblogic_silent_install_${title}.xml":
     ensure  => present,
     content => template($silent_template),
     replace => true,
@@ -156,7 +156,7 @@ define orawls::weblogic_type (
     owner   => $os_user,
     group   => $os_group,
     backup  => false,
-    require => Wls_directory_structure["weblogic structure ${version}"],
+    require => Wls_directory_structure["weblogic structure ${title}"],
   }
 
   # if weblogic home dir is specified then check that for creates
@@ -168,10 +168,10 @@ define orawls::weblogic_type (
 
   if ($version == 1212 or $version == 1213 or $version == 1221) {
 
-    $command = "-silent -responseFile ${download_dir}/weblogic_silent_install_${version}.xml "
+    $command = "-silent -responseFile ${download_dir}/weblogic_silent_install_${title}.xml "
 
-    notify { "install weblogic $version path: $exec_path": }
-    exec { "install weblogic ${version}":
+    # notify { "install weblogic ${version}: ${exec_path}": }
+    exec { "install weblogic ${title}":
       command     => "${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs",
       environment => ['JAVA_VENDOR=Sun', "JAVA_HOME=${jdk_home_dir}"],
       timeout     => 0,
@@ -179,17 +179,17 @@ define orawls::weblogic_type (
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
-      require     => [Wls_directory_structure["weblogic structure ${version}"],
-                      Orawls::Utils::Orainst["weblogic orainst ${version}"],
-                      File["${download_dir}/weblogic_silent_install_${version}.xml"]],
+      require     => [Wls_directory_structure["weblogic structure ${title}"],
+                      Orawls::Utils::Orainst["weblogic orainst ${title}"],
+                      File["${download_dir}/weblogic_silent_install_${title}.xml"]],
     }
     # OPatch native lib fix for 64 solaris
     case $::kernel {
       SunOS: {
-        exec { 'add -d64 oraparam.ini oracle_common':
+        exec { "add -d64 oraparam.ini oracle_common ${title}":
           command => "sed -e's/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\"-d64\"/g' ${middleware_home_dir}/oui/oraparam.ini > ${temp_directory}/wls.tmp && mv ${temp_directory}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini",
           unless  => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${middleware_home_dir}/oui/oraparam.ini",
-          require => Exec["install weblogic ${version}"],
+          require => Exec["install weblogic ${title}"],
           path    => $exec_path,
           user    => $os_user,
           group   => $os_group,
@@ -198,16 +198,16 @@ define orawls::weblogic_type (
     }
 
   } else {
-    exec {"install weblogic ${version}":
-      command     => "${cmd_prefix}${weblogic_jar_location} -Djava.io.tmpdir=${temp_directory} -Duser.country=US -Duser.language=en -mode=silent -log=${temp_directory}/wls.out -log_priority=info -silent_xml=${download_dir}/weblogic_silent_install_${version}.xml",
+    exec {"install weblogic ${title}":
+      command     => "${cmd_prefix}${weblogic_jar_location} -Djava.io.tmpdir=${temp_directory} -Duser.country=US -Duser.language=en -mode=silent -log=${temp_directory}/wls_${title}.out -log_priority=info -silent_xml=${download_dir}/weblogic_silent_install_${title}.xml",
       environment => ['JAVA_VENDOR=Sun',"JAVA_HOME=${jdk_home_dir}"],
       creates     => $created_dir,
       timeout     => 0,
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
-      require     => [Wls_directory_structure["weblogic structure ${version}"],
-                      File["${download_dir}/weblogic_silent_install_${version}.xml"]],
+      require     => [Wls_directory_structure["weblogic structure ${title}"],
+                      File["${download_dir}/weblogic_silent_install_${title}.xml"]],
     }
   }
 }

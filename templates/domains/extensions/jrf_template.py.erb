@@ -71,7 +71,7 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION == 1
         addTemplate('<%= @templateWSMPM %>')
 
         print 'Change datasource LocalScvTblDataSource'
-        changeDatasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+        change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 
         print 'Call getDatabaseDefaults which reads the service table'
         getDatabaseDefaults()

@@ -782,9 +782,22 @@ def get_domains(domain_folder, count_domains)
   count_domains
 end
 
+# get wls_domains.yaml file location if overridden
+def get_wls_domains_file
+  wls_domains_file = Facter.value('override_wls_domains_file')
+  if wls_domains_file.nil?
+	Puppet.debug 'wls_domains_file is default to /etc/wls_domains.yaml'
+  else
+    Puppet.debug "wls_domains_file is overridden to #{wls_domains_file}"
+    return wls_domains_file
+  end
+  '/etc/wls_domains.yaml'
+end
+
 # read the domains yaml and analyze domain
 begin
-  entries = YAML.load(File.open('/etc/wls_domains.yaml'))
+  wls_domains_file = get_wls_domains_file
+  entries = YAML.load(File.open(wls_domains_file))
   unless entries.nil?
     domains = entries['domains']
     unless domains.nil?
@@ -795,7 +808,7 @@ begin
     end
   end
 rescue
-  Puppet.debug '/etc/wls_domains.yaml not found'
+  Puppet.debug "#{wls_domains_file} not found"
 end
 
 Facter.add('ora_mdw_domain_cnt') do

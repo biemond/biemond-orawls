@@ -56,8 +56,15 @@ define orawls::domain (
   $ohs_standalone_listen_address         = undef,
   $ohs_standalone_listen_port            = undef,
   $ohs_standalone_ssl_listen_port        = undef,
+  $wls_domains_file						 = $override_wls_domains_file,
 )
 {
+  if ( $wls_domains_file == undef or $wls_domains_file == '' ){
+	$wls_domains_file_location = '/etc/wls_domains.yaml'
+  } else {
+	$wls_domains_file_location = $wls_domains_file
+  }
+  
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -405,7 +412,7 @@ define orawls::domain (
         exec { "create ${log_dir} directory":
           command => "mkdir -p ${log_dir}",
           unless  => "test -d ${log_dir}",
-          user    => 'root',
+          user    => $os_user,
           path    => $exec_path,
         }
       }
@@ -590,7 +597,7 @@ define orawls::domain (
     }
 
     yaml_setting { "domain ${title}":
-      target  =>  '/etc/wls_domains.yaml',
+      target  =>  $wls_domains_file_location,
       key     =>  "domains/${domain_name}",
       value   =>  $domain_dir,
       require =>  Exec["execwlst ${domain_name} ${title}"],

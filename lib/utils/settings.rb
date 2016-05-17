@@ -24,4 +24,15 @@ module Settings
       Hash['default', {}]
     end
   end
+  
+  def get_wls_setting_file
+    wls_setting_file = Facter.value('override_wls_setting_file')
+    if wls_setting_file.nil?
+	  Puppet.debug 'wls_setting_file is default to /etc/wls_setting.yaml'
+    else
+      Puppet.debug "wls_setting_file is overridden to #{wls_setting_file}"
+      return wls_setting_file
+    end
+    '/etc/wls_setting.yaml'
+  end
 end

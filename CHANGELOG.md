@@ -1,5 +1,8 @@
 # History
 
+## 1.0.50
+- weblogic_type define which support multiple middleware homes on same vm
+
 ## 1.0.49
 - Support for standalone webtier 12.1.2, 12.1.3 & 12.2.1
 - changed wls_managedserver type code so it used WLST to test if it is active plus force it to running

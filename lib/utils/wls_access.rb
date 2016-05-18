@@ -324,16 +324,16 @@ module Utils
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
 
       debugmode = Puppet::Util::Log.level
-	  	  
-	  if Puppet.features.root?
-	    eval_operatingSystemUser = operatingSystemUser
-	  end
-	  
+          
+      if Puppet.features.root?
+        eval_operatingSystemUser = operatingSystemUser
+      end
+      
       if debugmode.to_s == 'debug'
-		if eval_operatingSystemUser
-		  puts 'Prepare to run: ' + tmpFile.path + ',' +  eval_operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrL      
-		else
-		  puts 'Prepare to run: ' + tmpFile.path + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl
+        if eval_operatingSystemUser
+          puts 'Prepare to run: ' + tmpFile.path + ',' +  eval_operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrL      
+        else
+          puts 'Prepare to run: ' + tmpFile.path + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl
         end
         puts 'vvv==================================================================='
         File.open(tmpFile.path).readlines.each do |line|

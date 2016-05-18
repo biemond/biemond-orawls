@@ -56,13 +56,13 @@ define orawls::domain (
   $ohs_standalone_listen_address         = undef,
   $ohs_standalone_listen_port            = undef,
   $ohs_standalone_ssl_listen_port        = undef,
-  $wls_domains_file						 = $override_wls_domains_file,
+  $wls_domains_file                      = $override_wls_domains_file,
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){
-	$wls_domains_file_location = '/etc/wls_domains.yaml'
+    $wls_domains_file_location = '/etc/wls_domains.yaml'
   } else {
-	$wls_domains_file_location = $wls_domains_file
+    $wls_domains_file_location = $wls_domains_file
   }
   
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {

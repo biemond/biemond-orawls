@@ -24,13 +24,13 @@ define orawls::copydomain (
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
   $server_start_mode          = 'dev', # dev/prod
-  $wls_domains_file			  = $override_wls_domains_file,
+  $wls_domains_file           = $override_wls_domains_file,
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){
-	$wls_domains_file_location = '/etc/wls_domains.yaml'
+    $wls_domains_file_location = '/etc/wls_domains.yaml'
   } else {
-	$wls_domains_file_location = $wls_domains_file
+    $wls_domains_file_location = $wls_domains_file
   }
   
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {

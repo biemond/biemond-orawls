@@ -786,7 +786,7 @@ end
 def get_wls_domains_file
   wls_domains_file = Facter.value('override_wls_domains_file')
   if wls_domains_file.nil?
-	Puppet.debug 'wls_domains_file is default to /etc/wls_domains.yaml'
+    Puppet.debug 'wls_domains_file is default to /etc/wls_domains.yaml'
   else
     Puppet.debug "wls_domains_file is overridden to #{wls_domains_file}"
     return wls_domains_file

@@ -561,6 +561,22 @@ vagrantcentos64.example.com.yaml
      ---
      orawls::weblogic::log_output:   true
 
+### weblogic_type
+__orawls::weblogic_type__ same as weblogic manifest/class but now as define which supports multiple middleware home on same VM
+
+    orawls::weblogic{'1221':
+      version              => 1221,                       # 1036|1211|1212|1213|1221
+      filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
+      jdk_home_dir         => '/usr/java/jdk1.8.0_45',
+      oracle_base_home_dir => "/opt/oracle",
+      middleware_home_dir  => "/opt/oracle/middleware12c",
+      weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
+      os_user              => "oracle",
+      os_group             => "dba",
+      download_dir         => "/data/install",
+      source               => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
+      log_output           => true,
+    }
 
 
 ### opatch

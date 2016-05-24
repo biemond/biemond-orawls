@@ -69,18 +69,6 @@ define orawls::fmw(
   $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
   $sanitised_title = regsubst ($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')
 
-  if ($ohs_mode == 'standalone') {
-    $install_type = 'Standalone HTTP Server (Managed independently of WebLogic server)'
-  } elsif ($ohs_mode in ['colocated','collocated']) {
-    if $version == 1212 {
-      $install_type = 'Colocated HTTP Server (Managed through WebLogic server)'
-    } else {
-      $install_type = 'Collocated HTTP Server (Managed through WebLogic server)'
-    }
-  } else {
-    fail("Unrecognized parameter ohs_mode: ${ohs_mode}, please use colocated|collocated|standalone")
-  }
-
   if ( $fmw_product == 'adf' ) {
     $fmw_silent_response_file = 'orawls/fmw_silent_adf.rsp.erb'
     if ($oracle_home_dir == undef) {
@@ -333,6 +321,18 @@ define orawls::fmw(
     }
 
   } elsif ( $fmw_product == 'web') {
+
+    if ($ohs_mode == 'standalone') {
+      $install_type = 'Standalone HTTP Server (Managed independently of WebLogic server)'
+    } elsif ($ohs_mode in ['colocated','collocated']) {
+      if $version == 1212 {
+        $install_type = 'Colocated HTTP Server (Managed through WebLogic server)'
+      } else {
+        $install_type = 'Collocated HTTP Server (Managed through WebLogic server)'
+      }
+    } else {
+      fail("Unrecognized parameter ohs_mode: ${ohs_mode}, please use colocated|collocated|standalone")
+    }
 
     if $version == 1212 {
       $fmw_silent_response_file = 'orawls/web_http_server_1212.rsp.erb'

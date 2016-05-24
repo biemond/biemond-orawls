@@ -41,6 +41,7 @@ module Puppet
     parameter :name
     parameter :group_name
     parameter :timeout
+    parameter :manage_group
     property :realm
     property :authenticationprovider
     property :users

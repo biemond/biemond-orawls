@@ -8,6 +8,7 @@ realm                  = '<%= realm %>'
 authenticationprovider = '<%= authenticationprovider %>'
 description            = '<%= description %>'
 users                  = '<%= users %>'.split(",")
+manage_group           = '<%= manage_group %>'
 
 try:
     cd('/')
@@ -28,9 +29,14 @@ try:
     for user in users_to_add:
       print 'Adding user: ' + user
       atnr.addMemberToGroup(name,user)
-    for user in users_to_remove:
-      print 'Removing user: ' + user
-      atnr.removeMemberFromGroup(name,user)
+
+    if manage_group == 'true':
+      for user in users_to_remove:
+        print 'Removing user: ' + user
+        atnr.removeMemberFromGroup(name,user)
+    else:
+      print 'Skipping Removing Users'
+	
     report_back_success()
 
 except:

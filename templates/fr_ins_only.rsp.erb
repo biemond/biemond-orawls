@@ -12,10 +12,10 @@ INSTALL AND CONFIGURE TYPE=false
 INSTALL AND CONFIGURE LATER TYPE=true
 
 #Give the complete path for an Oracle Home to be created. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
-ORACLE_HOME=
+ORACLE_HOME=<%= @oracleHome %>
 
 #Write the complete path to a valid Middleware Home.
-MW_HOME=
+MW_HOME=<%= @middleware_home_dir %>
 
 #Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.
 MYORACLESUPPORT_USERNAME=

@@ -67,13 +67,13 @@ PROXY_USER=
 PROXY_PWD=
 
 #Give the complete path to a valid Middleware Home with WebLogic Server installed.
-MW_HOME=
+MW_HOME=<%= @middleware_home_dir %>
 
 #Give the complete path to a valid WebLogic Server Home for the corresponding Middleware Home entered.
 WL_HOME=
 
 #Give the name of the Oracle Home directory. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
-ORACLE_HOME=
+ORACLE_HOME=<%= @oracleHome %>
 
 #Give the complete path for an Oracle Instance directory to be created. This is the location where the software configuration files and runtime processes will reside.
 INSTANCE_HOME=

@@ -105,7 +105,7 @@ define orawls::fmw(
       # Add staticports.ini file to tmp directory
       file { '/tmp/staticports.ini':
         ensure => file,
-        source => $static_ports_file,
+        source => 'puppet://modules/orawls/staticports.ini',
         mode   => '0775',
       }
 

@@ -687,10 +687,10 @@ define orawls::fmw(
 
       if($fmw_silent_configure_file) {
         exec { "config ${sanitised_title}":
-          command     => "/bin/sh -c 'unset DISPLAY; ${oracleHome}/bin/config.sh -silent -waitforcompletion -response ${download_dir}/${sanitised_title}_configure_silent.rsp -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}'",
+          command     => "${oracleHome}/bin/config.sh -silent -waitforcompletion -response ${download_dir}/${sanitised_title}_configure_silent.rsp -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
           environment => "TEMP=${temp_directory}",
           timeout     => 0,
-          creates     => "${oracleHome}/OPatch2",
+          creates     => "${middleware_home_dir}/instances/frinst_1",
           cwd         => $temp_directory,
           path        => $exec_path,
           user        => $os_user,

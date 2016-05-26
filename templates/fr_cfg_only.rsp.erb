@@ -22,10 +22,10 @@ EXTEND_DOMAIN=false
 EXPAND_CLUSTER=false
 
 #Write the name of the domain you want to create. Domain name may only contain alphanumeric characters, or the underscore (_) or hyphen (-) characters.
-DOMAIN_NAME=
+DOMAIN_NAME=frdomain
 
 #Write the location of the new domain
-DOMAIN_LOCATION=
+DOMAIN_LOCATION=/opt/oracle/fmw/product/11.1.2/user_projects/domains
 
 #Host on which the Domain is configured/to be configured.  The following values should be completed whether creating a domain, expanding a cluster or extending a domain.
 DOMAIN_HOSTNAME=<%= @hostname %>
@@ -37,10 +37,10 @@ DOMAIN_PORT=1810
 ADMIN_USER_NAME=fsweblogic
 
 #Give an administrator password for the domain if you are creating a new one otherwise give the administrator password for the domain configured at the host.
-ADMIN_PASSWORD=
+ADMIN_PASSWORD=weblogic1
 
 #Write the administrator password again to confirm.
-ADMIN_CONFIRM_PASSWORD=
+ADMIN_CONFIRM_PASSWORD=weblogic1
 
 #Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.
 MYORACLESUPPORT_USERNAME=
@@ -76,10 +76,10 @@ WL_HOME=
 ORACLE_HOME=<%= @oracleHome %>
 
 #Give the complete path for an Oracle Instance directory to be created. This is the location where the software configuration files and runtime processes will reside.
-INSTANCE_HOME=
+INSTANCE_HOME=/opt/oracle/fmw/product/11.1.2/instances/frinst_1
 
 #Give a name for Oracle Instance corresponding to the Instance Home. The Oracle Instance name may only contain alphanumeric and underscore (_) characters, it must begin with an alphabetic (a-z or A-Z) character, and must be from 4 to 30 characters in length.
-INSTANCE_NAME=
+INSTANCE_NAME=frinst_1
 
 #Set this to true if you want the configuration wizard to assign the ports automatically.
 AUTOMATIC_PORT_DETECT=false

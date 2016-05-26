@@ -97,9 +97,20 @@ define orawls::fmw(
       $oracleHome               = "${middleware_home_dir}/forms"
     }
     else {
-      $fmw_silent_response_file = 'orawls/fmw_silent_forms.rsp.erb'
+      $fmw_silent_response_file  = 'orawls/fr_ins_only.rsp.erb'
+      $fmw_silent_configure_file = 'orawls/fr_cfg_only.rsp.erb'
+
+      $static_ports_file         = 'orawls/staticports.ini'
+
+      # Add staticports.ini file to tmp directory
+      file { '/tmp/staticports.ini':
+        ensure => file,
+        source => $static_ports_file,
+        mode   => '0775',
+      }
 
       $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
+
       if $version == 11112 {
         $total_files = 4
         $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
@@ -115,7 +126,7 @@ define orawls::fmw(
       }
 
       if ($oracle_home_dir == undef) {
-          $oracleHome = "${middleware_home_dir}/Oracle_FRM1"
+        $oracleHome = "${middleware_home_dir}/Oracle_FRM1"
       }
       else {
         $oracleHome = $oracle_home_dir
@@ -445,6 +456,19 @@ define orawls::fmw(
       require => Orawls::Utils::Orainst["create oraInst for ${name}"],
     }
 
+    # Add configure file if it exists
+    if($fmw_silent_configure_file) {
+      file { "${download_dir}/${sanitised_title}_configure_silent.rsp":
+        ensure  => present,
+        content => template($fmw_silent_configure_file),
+        mode    => '0775',
+        #owner   => $os_user,
+        #group   => $os_group,
+        backup  => false,
+        require => Orawls::Utils::Orainst["create oraInst for ${name}"],
+      }
+    }
+
     # for performance reasons, download and extract or just extract it
     if $remote_file == true {
       file { "${download_dir}/${fmw_file1}":
@@ -487,7 +511,7 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file2} for ${name}"],
           require => [File["${download_dir}/${fmw_file1}"],
-                      Exec["extract ${fmw_file1} for ${name}"],],
+          Exec["extract ${fmw_file1} for ${name}"],],
         }
         $disk2_file = "${download_dir}/${fmw_file2}"
       } else {
@@ -520,7 +544,7 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file3}"],
           require => [File["${download_dir}/${fmw_file2}"],
-                      Exec["extract ${fmw_file2}"],],
+          Exec["extract ${fmw_file2}"],],
         }
         $disk3_file = "${download_dir}/${fmw_file3}"
       } else {
@@ -553,7 +577,7 @@ define orawls::fmw(
           backup  => false,
           before  => Exec["extract ${fmw_file4}"],
           require => [File["${download_dir}/${fmw_file3}"],
-                      Exec["extract ${fmw_file3} for ${name}"],],
+          Exec["extract ${fmw_file3} for ${name}"],],
         }
         $disk4_file = "${download_dir}/${fmw_file4}"
       } else {
@@ -630,8 +654,8 @@ define orawls::fmw(
         group       => $os_group,
         logoutput   => $log_output,
         require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
-                        Orawls::Utils::Orainst["create oraInst for ${name}"],
-                        Exec["extract ${fmw_file1} for ${name}"],],
+        Orawls::Utils::Orainst["create oraInst for ${name}"],
+        Exec["extract ${fmw_file1} for ${name}"],],
       }
     } else {
       if !defined(File[$oracleHome]) {
@@ -654,9 +678,11 @@ define orawls::fmw(
         group       => $os_group,
         logoutput   => $log_output,
         umask       => '022',
-        require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
-                        Orawls::Utils::Orainst["create oraInst for ${name}"],
-                        Exec["extract ${fmw_file1} for ${name}"],],
+        require     => [
+          File["${download_dir}/${sanitised_title}_silent.rsp"],
+          Orawls::Utils::Orainst["create oraInst for ${name}"],
+          Exec["extract ${fmw_file1} for ${name}"],
+        ],
       }
 
       ## fix EditHttpConf in OHS Webgate

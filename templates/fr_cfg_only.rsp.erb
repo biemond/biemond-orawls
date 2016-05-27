@@ -1,0 +1,147 @@
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#Set this parameter to true if you do not want the installer to check for software updates 
+SKIP_SOFTWARE_UPDATES=true
+
+#Configuration Type
+CONFIGURE_FOR_DEVELOPMENT=false
+CONFIGURE_FOR_DEPLOYMENT=true
+ 
+#Set this to true if you want to create a new domain, all other required variables need to be provided. If this is set to true then variables "EXTEND_DOMAIN" and "EXPAND_CLUSTER" must be set to false, since the variables are mutually exclusive.
+CREATE_DOMAIN=true
+
+#Set this to true if you want to extend an already existing domain, all other required variables need to be provided. If this is set to true then variables "CREATE_DOMAIN" and "EXPAND_CLUSTER" must be set to false, since the variables are mutually exclusive.
+EXTEND_DOMAIN=false
+
+#Set this to true if you want to expand a cluster in an already existing domain, all other required variables need to be provided. If this is set to true then variables "CREATE_DOMAIN" and "EXTEND_DOMAIN" must be set to false, since the variables are mutually exclusive.
+EXPAND_CLUSTER=false
+
+#Write the name of the domain you want to create. Domain name may only contain alphanumeric characters, or the underscore (_) or hyphen (-) characters.
+DOMAIN_NAME=frdomain
+
+#Write the location of the new domain
+DOMAIN_LOCATION=/opt/oracle/fmw/product/11.1.2/user_projects/domains
+
+#Host on which the Domain is configured/to be configured.  The following values should be completed whether creating a domain, expanding a cluster or extending a domain.
+DOMAIN_HOSTNAME=<%= @hostname %>
+
+#Port on which the Domain is/will be listening.
+DOMAIN_PORT=1810
+
+#Give an administrator user name for the domain if you are creating a new one otherwise give the administrator user name for the domain configured at the host.
+ADMIN_USER_NAME=fsweblogic
+
+#Give an administrator password for the domain if you are creating a new one otherwise give the administrator password for the domain configured at the host.
+ADMIN_PASSWORD=weblogic1
+
+#Write the administrator password again to confirm.
+ADMIN_CONFIRM_PASSWORD=weblogic1
+
+#Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.
+MYORACLESUPPORT_USERNAME=
+
+#Provide the My Oracle Support Password
+MYORACLESUPPORT_PASSWORD=
+
+#Set this to true if you wish to decline the security updates. Setting this to true and providing empty string for My Oracle Support username will ignore the Oracle Configuration Manager configuration
+DECLINE_SECURITY_UPDATES=true
+
+#Set this to true if My Oracle Support Password is specified
+SECURITY_UPDATES_VIA_MYORACLESUPPORT=false
+
+#Provide the Proxy Host
+PROXY_HOST=
+
+#Provide the Proxy Port
+PROXY_PORT=
+
+#Provide the Proxy Username
+PROXY_USER=
+
+#Provide the Proxy Password
+PROXY_PWD=
+
+#Give the complete path to a valid Middleware Home with WebLogic Server installed.
+MW_HOME=<%= @middleware_home_dir %>
+
+#Give the complete path to a valid WebLogic Server Home for the corresponding Middleware Home entered.
+WL_HOME=<%= @weblogic_home_dir %>
+
+#Give the name of the Oracle Home directory. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
+ORACLE_HOME=<%= @oracleHome %>
+
+#Give the complete path for an Oracle Instance directory to be created. This is the location where the software configuration files and runtime processes will reside.
+INSTANCE_HOME=/opt/oracle/fmw/product/11.1.2/instances/frinst_1
+
+#Give a name for Oracle Instance corresponding to the Instance Home. The Oracle Instance name may only contain alphanumeric and underscore (_) characters, it must begin with an alphabetic (a-z or A-Z) character, and must be from 4 to 30 characters in length.
+INSTANCE_NAME=frinst_1
+
+#Set this to true if you want the configuration wizard to assign the ports automatically.
+AUTOMATIC_PORT_DETECT=false
+
+#Give the location for the file containing the list of static ports if you manually want to assign ports.
+STATICPORT INI FILE LOCATION=/tmp/staticports.ini
+
+#Set this to true if you do not want to use proxy.
+DO NOT USE PROXY SETTINGS=true
+
+#Set this to true if you do want to use proxy.
+ENABLE PROXY=false
+
+#Give the host name for proxy settings.
+PROXY HOST NAME=
+
+#Give the port for proxy settings.
+PROXY PORT NO=
+
+#Give the bypass addresses for proxy settings.
+PROXY BY PASS ADDRESS=
+
+#Set this to true if you want to use Application OID. It has to be true you are configuring Oracle Portal.
+USE_OID=false
+
+#Give the Application OID hostname.
+OID_HOST=
+
+#Give the Application OID port.
+OID_PORT=
+
+#Give the Application OID user name.
+OID_USERNAME=
+
+#Give the Application OID password.
+OID_PASSWORD=
+
+#Set this to true if you want to use Application OID in SSL mode.
+OID_USE_SSL=
+
+
+[SYSTEM]
+
+
+[APPLICATIONS]
+
+
+[RELATIONSHIPS]
+
+#Set this to true if you want to configure Oracle Forms
+CONFIGURE_FORMS=true
+CONFIGURE_FORMS_BUILDER=
+
+#Set this to true if you want to configure Oracle Reports
+CONFIGURE_REPORTS=true
+CONFIGURE_REPORTS_BUILDER=
+
+#Set this to true if you want to configure Oracle HTTP Server.
+CONFIGURE_OHS=true
+
+#Set this to true if you want to configure Oracle Enterprise Manager.
+ENTERPRISE_MANAGEMENT=true
+
+#Set this to true if you want to create a cluster for the selected applications
+CREATE_CLUSTERED=false

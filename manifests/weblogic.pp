@@ -37,7 +37,7 @@ class orawls::weblogic (
     remote_file          => $remote_file,
     java_parameters      => $java_parameters,
     log_output           => $log_output,
-    temp_directory       => $temp_directory
+    temp_directory       => $temp_directory,
   }
 
 }

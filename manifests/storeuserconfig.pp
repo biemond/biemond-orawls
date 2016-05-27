@@ -3,20 +3,30 @@
 # generic storeuserconfig wlst script
 #
 define orawls::storeuserconfig (
-  $domain_name                = hiera('domain_name'),
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'),      # /usr/java/jdk1.7.0_45
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
+  $domain_name                = undef,
+  $weblogic_password          = undef,
+  $weblogic_home_dir          = $::orawls::weblogic::weblogic_home_dir, # /opt/oracle/middleware11gR1/wlserver_103
+  $jdk_home_dir               = $::orawls::weblogic::jdk_home_dir,      # /usr/java/jdk1.7.0_45
+  $adminserver_address        = 'localhost',
+  $adminserver_port           = 7001,
   $user_config_dir            = undef,                                           #'/home/oracle',
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false,                                           # true|false
+  $weblogic_user              = 'weblogic',
+  $os_user                    = $::orawls::weblogic::os_user, # oracle
+  $os_group                   = $::orawls::weblogic::os_group, # dba
+  $download_dir               = $::orawls::weblogic::download_dir, # /data/install
+  $log_output                 = $::orawls::weblogic::log_output,                                           # true|false
 )
 {
+  # Must include domain_name
+  unless $domain_name {
+    fail('A user config store must be associated with a domain.')
+  }
+
+  # Must include weblogic password
+  unless $weblogic_password {
+    fail('A weblogic password is needed to modify a user config store.')
+  }
+
   # the py script used by the wlst*-
   file { "${download_dir}/${title}storeUserConfig.py":
     ensure  => present,
@@ -44,4 +54,3 @@ define orawls::storeuserconfig (
   }
 
 }
-

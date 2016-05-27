@@ -6,15 +6,15 @@
 define orawls::opatch(
   $ensure                  = 'present',  #present|absent
   $oracle_product_home_dir = undef, # /opt/oracle/middleware11gR1
-  $jdk_home_dir            = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
+  $jdk_home_dir            = $::orawls::weblogic::jdk_home_dir, # /usr/java/jdk1.7.0_45
   $patch_id                = undef,
   $patch_file              = undef,
-  $os_user                 = hiera('wls_os_user'), # oracle
-  $os_group                = hiera('wls_os_group'), # dba
-  $download_dir            = hiera('wls_download_dir'), # /data/install
-  $source                  = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file             = true,  # true|false
-  $log_output              = false, # true|false
+  $os_user                 = $::orawls::weblogic::os_user, # oracle
+  $os_group                = $::orawls::weblogic::os_group, # dba
+  $download_dir            = $::orawls::weblogic::download_dir, # /data/install
+  $source                  = $::orawls::weblogic::source, # puppet:///modules/orawls/ | /mnt | /vagrant
+  $remote_file             = $::orawls::weblogic::remote_file,  # true|false
+  $log_output              = $::orawls::weblogic::log_output, # true|false
 )
 {
   # $exec_path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
@@ -89,4 +89,3 @@ define orawls::opatch(
   # }
 
 }
-

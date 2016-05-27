@@ -7,7 +7,7 @@
 define orawls::utils::orainst
 (
   $ora_inventory_dir = undef,
-  $os_group          = undef,
+  $os_group          = $::orawls::weblogic::os_group,
 )
 {
   case $::kernel {

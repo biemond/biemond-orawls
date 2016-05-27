@@ -3,9 +3,9 @@
 # create an Oracle Unified Directory LDAP instance
 ##
 define orawls::oud::instance (
-  $version                    = undef,
-  $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir') , # /opt/oracle
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
+  $version                    = $::orawls::weblogic::version,
+  $oracle_base_home_dir       = $::orawls::weblogic::oracle_base_home_dir , # /opt/oracle
+  $middleware_home_dir        = $::orawls::weblogic::middleware_home_dir, # /opt/oracle/middleware11gR1
   $oud_home                   = undef,
   $oud_instance_name          = undef,
   $oud_root_user_password     = undef,
@@ -13,10 +13,10 @@ define orawls::oud::instance (
   $oud_ldapPort               = 1389,
   $oud_adminConnectorPort     = 4444,
   $oud_ldapsPort              = 1636,
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
+  $os_user                    = $::orawls::weblogic::os_user, # oracle
+  $os_group                   = $::orawls::weblogic::os_group, # dba
+  $download_dir               = $::orawls::weblogic::download_dir, # /data/install
+  $log_output                 = $::orawls::weblogic::log_output, # true|false
 ){
 
   $instances_home = "${oracle_base_home_dir}/oud_instances"

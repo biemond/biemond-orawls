@@ -3,35 +3,39 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213
-  $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'),
-  $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
+  $domain_name                           = undef,
+  $version                               = $::orawls::weblogic::version,  # 1036|1111|1211|1212|1213
+  $middleware_home_dir                   = $::orawls::weblogic::middleware_home_dir, # /opt/oracle/middleware11gR1
+  $weblogic_home_dir                     = $::orawls::weblogic::weblogic_home_dir,
+  $nodemanager_port                      = 5556,
   $nodemanager_address                   = undef,
   $nodemanager_secure_listener           = true,
-  $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
-  $custom_trust                          = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase             = hiera('wls_trust_keystore_passphrase' , undef),
+  $jsse_enabled                          = false,
+  $custom_trust                          = false,
+  $trust_keystore_file                   = undef,
+  $trust_keystore_passphrase             = undef,
   $custom_identity                       = false,
   $custom_identity_keystore_filename     = undef,
   $custom_identity_keystore_passphrase   = undef,
   $custom_identity_alias                 = undef,
   $custom_identity_privatekey_passphrase = undef,
-  $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
-  $domain_name                           = hiera('domain_name'                   , undef),
-  $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $os_user                               = hiera('wls_os_user'), # oracle
-  $os_group                              = hiera('wls_os_group'), # dba
-  $download_dir                          = hiera('wls_download_dir'), # /data/install
-  $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
+  $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  $jdk_home_dir                          = $::orawls::weblogic::jdk_home_dir, # /usr/java/jdk1.7.0_45
+  $os_user                               = $::orawls::weblogic::os_user, # oracle
+  $os_group                              = $::orawls::weblogic::os_group, # dba
+  $download_dir                          = $::orawls::weblogic::download_dir, # /data/install
+  $log_dir                               = undef, # /data/logs
   $log_file                              = 'nodemanager.log',
-  $log_output                            = false, # true|false
-  $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
+  $log_output                            = $::orawls::weblogic::log_output, # true|false
+  $sleep                                 = 20, # default sleep time
   $properties                            = {},
   $ohs_standalone                        = false,
 )
 {
+  # Must include domain_name
+  unless $domain_name {
+    fail('A nodemanager must be associated with a domain.')
+  }
 
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"

@@ -690,7 +690,7 @@ define orawls::fmw(
           command     => "${oracleHome}/bin/config.sh -silent -waitforcompletion -response ${download_dir}/${sanitised_title}_configure_silent.rsp -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}",
           environment => "TEMP=${temp_directory}",
           timeout     => 0,
-          creates     => "${middleware_home_dir}/instances/frinst_1",
+          creates     => "${middleware_home_dir}/instances/frinst_1/tomato",
           cwd         => $temp_directory,
           path        => $exec_path,
           user        => $os_user,

@@ -107,6 +107,8 @@ define orawls::fmw(
         ensure => file,
         source => 'puppet:///modules/orawls/staticports.ini',
         mode   => '0775',
+        owner  => 'oracle',
+        group  => 'oinstall',
       }
 
       $createFile1 = "${download_dir}/${sanitised_title}/Disk1"

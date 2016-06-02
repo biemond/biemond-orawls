@@ -466,7 +466,19 @@ define orawls::fmw(
     if($fmw_silent_configure_file) {
       file { "${download_dir}/${sanitised_title}_configure_silent.rsp":
         ensure  => present,
-        content => epp($fmw_silent_configure_file),
+        content => epp(
+          $fmw_silent_configure_file,
+          {
+            oracle_domain_name     => $oracle_domain_name,
+            oracle_domain_location => $oracle_domain_location,
+            hostname               => $::facts['hostname'],
+            middleware_home_dir    => $middleware_home_dir,
+            weblogic_home_dir      => $weblogic_home_dir,
+            oracle_home            => $oracle_home_dir,
+            oracle_instance_dir    => $oracle_instance_dir,
+            oracle_instance_name   => $oracle_instance_name
+          }
+        ),
         mode    => '0775',
         #owner   => $os_user,
         #group   => $os_group,

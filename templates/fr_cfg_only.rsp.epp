@@ -1,3 +1,12 @@
+<%- | String $oracle_domain_name,
+      String $oracle_domain_location,
+      String $hostname,
+      String $middleware_home_dir,
+      String $weblogic_home_dir,
+      String $oracle_home,
+      String $oracle_instance_dir,
+      String $oracle_instance_name
+| -%>
 [ENGINE]
 
 #DO NOT CHANGE THIS.
@@ -22,13 +31,13 @@ EXTEND_DOMAIN=false
 EXPAND_CLUSTER=false
 
 #Write the name of the domain you want to create. Domain name may only contain alphanumeric characters, or the underscore (_) or hyphen (-) characters.
-DOMAIN_NAME=<%= @oracle_domain_name %>
+DOMAIN_NAME=<%= $oracle_domain_name %>
 
 #Write the location of the new domain
-DOMAIN_LOCATION=<%= @oracle_domain_location %>
+DOMAIN_LOCATION=<%= $oracle_domain_location %>
 
 #Host on which the Domain is configured/to be configured.  The following values should be completed whether creating a domain, expanding a cluster or extending a domain.
-DOMAIN_HOSTNAME=<%= @hostname %>
+DOMAIN_HOSTNAME=<%= $hostname %>
 
 #Port on which the Domain is/will be listening.
 DOMAIN_PORT=1810
@@ -67,19 +76,19 @@ PROXY_USER=
 PROXY_PWD=
 
 #Give the complete path to a valid Middleware Home with WebLogic Server installed.
-MW_HOME=<%= @middleware_home_dir %>
+MW_HOME=<%= $middleware_home_dir %>
 
 #Give the complete path to a valid WebLogic Server Home for the corresponding Middleware Home entered.
-WL_HOME=<%= @weblogic_home_dir %>
+WL_HOME=<%= $weblogic_home_dir %>
 
 #Give the name of the Oracle Home directory. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
-ORACLE_HOME=<%= @oracleHome %>
+ORACLE_HOME=<%= $oracle_home %>
 
 #Give the complete path for an Oracle Instance directory to be created. This is the location where the software configuration files and runtime processes will reside.
-INSTANCE_HOME=<%= @oracle_instance_dir %>
+INSTANCE_HOME=<%= $oracle_instance_dir %>
 
 #Give a name for Oracle Instance corresponding to the Instance Home. The Oracle Instance name may only contain alphanumeric and underscore (_) characters, it must begin with an alphabetic (a-z or A-Z) character, and must be from 4 to 30 characters in length.
-INSTANCE_NAME=<%= @oracle_instance_name %>
+INSTANCE_NAME=<%= $oracle_instance_name %>
 
 #Set this to true if you want the configuration wizard to assign the ports automatically.
 AUTOMATIC_PORT_DETECT=false

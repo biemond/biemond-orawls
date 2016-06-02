@@ -26,6 +26,10 @@ define orawls::fmw(
   $temp_directory       = $::orawls::weblogic::temp_directory,      # /tmp directory
   $ohs_mode             = 'collocated',
   $oracle_inventory_dir = undef,
+  $oracle_instance_dir    = undef,
+  $oracle_instance_name   = undef,
+  $oracle_domain_location = undef,
+  $oracle_domain_name     = undef,
 )
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
@@ -98,7 +102,7 @@ define orawls::fmw(
     }
     else {
       $fmw_silent_response_file  = 'orawls/fr_ins_only.rsp.erb'
-      $fmw_silent_configure_file = 'orawls/fr_cfg_only.rsp.erb'
+      $fmw_silent_configure_file = 'orawls/fr_cfg_only.rsp.epp'
 
       $static_ports_file         = 'orawls/staticports.ini'
 
@@ -462,7 +466,7 @@ define orawls::fmw(
     if($fmw_silent_configure_file) {
       file { "${download_dir}/${sanitised_title}_configure_silent.rsp":
         ensure  => present,
-        content => template($fmw_silent_configure_file),
+        content => epp($fmw_silent_configure_file),
         mode    => '0775',
         #owner   => $os_user,
         #group   => $os_group,

@@ -12,20 +12,20 @@ define orawls::ohs::config (
 
   if (!defined(File[$mod_wl_ohs_dir])) {
     file { $mod_wl_ohs_dir:
-      ensure  => directory,
-      owner   => $owner,
-      group   => $group,
-      mode    => '0640',
+      ensure => directory,
+      owner  => $owner,
+      group  => $group,
+      mode   => '0640',
     }
   }
 
   if (!defined(File[$mod_wl_ohs_config_file])) {
     file { $mod_wl_ohs_config_file:
-      ensure  => present,
+      ensure => present,
       source => 'puppet:///modules/orawls/mod_wl_ohs.conf',
-      owner   => $owner,
-      group   => $group,
-      mode    => '0640',
+      owner  => $owner,
+      group  => $group,
+      mode   => '0640',
     }
   }
 

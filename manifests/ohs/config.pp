@@ -1,3 +1,7 @@
+# == Define: orawls::ohs::config
+#
+#   configures ohs locations and rewrites
+##
 define orawls::ohs::config (
   $server_name,
   $domain_path,

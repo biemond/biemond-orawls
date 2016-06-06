@@ -75,6 +75,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 
 - installs [FMW](#fmw) software(add-on) to a middleware home, like OSB,SOA Suite, Oracle Identity & Access Management, Oracle Unified Directory, WebCenter Portal + Content
 - [WebTier](#webtier) Oracle HTTP server Standalone and Collocated
+- [Configure Oracle HTTP Server](#configure-oracle-http-server)
 - [OSB, SOA Suite](#fmwcluster) with BPM and BAM Cluster configuration support ( convert single osb/soa/bam servers to clusters and migrate 11g OPSS to the database )
 - [ADF/JRF support](#fmwclusterjrf), Assign JRF libraries to a Server or Cluster target
 - [OIM IDM](#oimconfig) / OAM 11.1.2.3 configurations with Oracle OHS OAM WebGate, Also it has Cluster support for OIM OAM
@@ -1611,6 +1612,30 @@ Example:
 
 In the case of the wls_datasource type, the jdbc connection will be targetted on
 the cluster if the managed server is in a cluster.
+
+
+### Configure Oracle HTTP Server
+
+You can configure OHS rewrites and locations using __orawls::ohs::config__ resource:
+
+    orawls::ohs::config { 'default':
+      server_name => 'ohs1',
+      domain_path => '/opt/oracle/middleware12c/user_projects/domains/domain_name',
+      owner       => 'oracle',
+      group       => 'dba',
+      rewrites    => {
+        '^/mail$' => {
+          'to'      => 'http://mail.domain.com',
+          'options' => 'R',
+        },
+      },
+      locations   => {
+        '/application' => ['192.168.1.1:7001'],
+      },
+    }
+
+OHS will include all __.conf__ files at ${domain_path}/config/fmwconfig/components/OHS/instances/${server_name}/mod_wl_ohs.d folder.
+
 
 ### fmwlogdir
 __orawls::fmwlogdir__ Change a log folder location of a FMW server

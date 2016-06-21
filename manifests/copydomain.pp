@@ -24,7 +24,8 @@ define orawls::copydomain (
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
   $server_start_mode          = 'dev', # dev/prod
-  $wls_domains_file           = $override_wls_domains_file,
+  $wls_domains_file           = undef,
+  $puppet_os_user             = 'root',
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){
@@ -32,7 +33,7 @@ define orawls::copydomain (
   } else {
     $wls_domains_file_location = $wls_domains_file
   }
-  
+
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -85,7 +86,7 @@ define orawls::copydomain (
         exec { "create ${log_dir} directory":
           command => "mkdir -p ${log_dir}",
           unless  => "test -d ${log_dir}",
-          user    => 'root',
+          user    => $puppet_os_user,
           path    => $exec_path,
         }
       }

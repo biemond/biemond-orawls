@@ -57,6 +57,7 @@ define orawls::domain (
   $ohs_standalone_listen_port            = undef,
   $ohs_standalone_ssl_listen_port        = undef,
   $wls_domains_file                      = undef,
+  $puppet_os_user                        = 'root',
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){
@@ -412,7 +413,7 @@ define orawls::domain (
         exec { "create ${log_dir} directory":
           command => "mkdir -p ${log_dir}",
           unless  => "test -d ${log_dir}",
-          user    => $os_user,
+          user    => $puppet_os_user,
           path    => $exec_path,
         }
       }

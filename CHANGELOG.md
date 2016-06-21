@@ -1,5 +1,9 @@
 # History
 
+## 1.0.51
+- add JSSE to wls_daemon when trust is used, this way t3s also works on wls 10.3
+- functionality to run orawls with a non-root user, see [this PR](https://github.com/biemond/biemond-orawls/pull/343)
+
 ## 1.0.50
 - weblogic_type define which support multiple middleware homes on same vm
 - fmwcluster supports now not secure nodemanagers for wls server control

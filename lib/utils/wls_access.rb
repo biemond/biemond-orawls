@@ -11,7 +11,7 @@ module Utils
   module WlsAccess
     include Settings
 
-    DEFAULT_FILE = '/etc/wls_setting.yaml'
+    DEFAULT_FILE = get_wls_setting_file
 
     def self.included(parent)
       parent.extend(WlsAccess)
@@ -324,8 +324,17 @@ module Utils
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
 
       debugmode = Puppet::Util::Log.level
+          
+      if Puppet.features.root?
+        eval_operatingSystemUser = operatingSystemUser
+      end
+      
       if debugmode.to_s == 'debug'
-        puts 'Prepare to run: ' + tmpFile.path + ',' +  operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl
+        if eval_operatingSystemUser
+          puts 'Prepare to run: ' + tmpFile.path + ',' +  eval_operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrL      
+        else
+          puts 'Prepare to run: ' + tmpFile.path + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl
+        end
         puts 'vvv==================================================================='
         File.open(tmpFile.path).readlines.each do |line|
           puts line
@@ -333,7 +342,7 @@ module Utils
         puts '^^^===================================================================='
       end
 
-      wls_daemon = WlsDaemon.run(operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
+      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
 
       if debug_module.to_s == 'true'
         if !File.directory?(archive_path)

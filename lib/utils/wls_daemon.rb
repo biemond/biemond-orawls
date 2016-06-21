@@ -48,7 +48,7 @@ class WlsDaemon < EasyType::Daemon
     @use_default_value_when_empty = use_default_value_when_empty
 
     if @custom_trust.to_s == 'true'
-      trust_parameters = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
+      trust_parameters = "-Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
       Puppet.debug "trust parameters #{trust_parameters}"
     else
       Puppet.debug 'no custom trust'

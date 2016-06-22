@@ -4,7 +4,7 @@
 #
 ##
 define orawls::fmw(
-  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213|1221
+  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213|1221|12211
   $weblogic_home_dir    = hiera('wls_weblogic_home_dir'),    # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir  = hiera('wls_middleware_home_dir'),  # /opt/oracle/middleware11gR1
   $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
@@ -82,7 +82,7 @@ define orawls::fmw(
 
   } elsif ( $fmw_product == 'forms' ) {
 
-    if $version == 1221 {
+    if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_forms_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_fr_linux64.bin'
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
@@ -119,7 +119,7 @@ define orawls::fmw(
 
   } elsif ( $fmw_product == 'soa' ) {
 
-    if $version == 1221 {
+    if $version >= 1221 {
       $total_files = 1
       $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
@@ -160,7 +160,7 @@ define orawls::fmw(
 
   } elsif ( $fmw_product == 'soaqs' ) {
 
-    if $version == 1221 {
+    if $version >= 1221 {
       $total_files = 2
       $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_soa_quickstart.jar'
@@ -195,7 +195,7 @@ define orawls::fmw(
   } elsif ( $fmw_product == 'osb' ) {
 
     $total_files = 1
-    if $version == 1221 {
+    if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_osb_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_osb.jar'
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
@@ -235,7 +235,7 @@ define orawls::fmw(
       $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
       $type                     = 'java'
     }
-    elsif $version == 1221 {
+    elsif $version >= 1221 {
       $total_files = 1
       $fmw_silent_response_file = 'orawls/fmw_silent_b2b_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_b2bhealthcare.jar'
@@ -276,7 +276,7 @@ define orawls::fmw(
 
   } elsif ( $fmw_product == 'wc' ) {
 
-    if $version == 1221 {
+    if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_wc_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_wcportal_generic.jar'
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
@@ -299,7 +299,7 @@ define orawls::fmw(
 
   } elsif ( $fmw_product == 'wcc' ) {
 
-    if $version == 1221 {
+    if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_wcc_1221.rsp.erb'
       $binFile1                 = 'fmw_12.2.1.0.0_wccontent_generic.jar'
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
@@ -346,9 +346,13 @@ define orawls::fmw(
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'
     }
-    elsif $version == 1221 {
+    elsif $version >= 1221 {
       $fmw_silent_response_file = 'orawls/web_http_server_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_ohs_linux64.bin'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_ohs_linux64.bin'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_ohs_linux64.bin'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'
     }
@@ -358,7 +362,7 @@ define orawls::fmw(
     }
 
     if ($oracle_home_dir == undef) {
-      if ( $version == 1212 or $version == 1213 or $version == 1221 ) {
+      if ( $version == 1212 or $version == 1213 or $version >= 1221 ) {
         $oracleHome = "${middleware_home_dir}/ohs"
       } else {
         $oracleHome = "${middleware_home_dir}/Oracle_WT1"
@@ -400,7 +404,7 @@ define orawls::fmw(
   }
 
   # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons
-  if $version == 1212 or $version == 1213 or $version == 1221 {
+  if $version == 1212 or $version == 1213 or $version >= 1221 {
     $continue = true
   } else {
     $found = orawls_oracle_exists($oracleHome)
@@ -599,14 +603,14 @@ define orawls::fmw(
       }
     }
 
-    if $version == 1221 {
+    if $version >= 1221 {
       $command = "-silent -responseFile ${download_dir}/${sanitised_title}_silent.rsp"
     }
     else {
       $command = "-silent -response ${download_dir}/${sanitised_title}_silent.rsp -waitforcompletion"
     }
 
-    if $version == 1212 or $version == 1213 or $version == 1221 {
+    if $version == 1212 or $version == 1213 or $version >= 1221 {
       if $type == 'java' {
         $install = "java -Djava.io.tmpdir=${temp_directory} -jar "
       }

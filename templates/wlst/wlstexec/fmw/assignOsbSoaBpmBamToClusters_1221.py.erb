@@ -1,19 +1,19 @@
 
-WLHOME         ='<%= @weblogic_home_dir %>'
-DOMAIN_PATH    ='<%= @domain_dir %>'
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
 
-bpmEnabled     = <%= @bpm_enabled %>
-bamEnabled     = <%= @bam_enabled %>
-soaEnabled     = <%= @soa_enabled %>
-osbEnabled     = <%= @osb_enabled %>
-b2bEnabled     = <%= @b2b_enabled %>
-essEnabled     = <%= @ess_enabled %>
+bpmEnabled = <%= @bpm_enabled %>
+bamEnabled = <%= @bam_enabled %>
+soaEnabled = <%= @soa_enabled %>
+osbEnabled = <%= @osb_enabled %>
+b2bEnabled = <%= @b2b_enabled %>
+essEnabled = <%= @ess_enabled %>
 
 SOAClusterName = '<%= @soa_cluster_name %>'
 BAMClusterName = '<%= @bam_cluster_name %>'
 OSBClusterName = '<%= @osb_cluster_name %>'
 ESSClusterName = '<%= @ess_cluster_name %>'
-Admin          = '<%= @adminserver_name %>'
+Admin = '<%= @adminserver_name %>'
 
 AllClustersArray = []
 if bamEnabled == true:
@@ -25,38 +25,41 @@ if osbEnabled == true:
 if essEnabled == true and ESSClusterName:
     AllClustersArray.append(ESSClusterName)
 
-AllClusters  = ','.join(AllClustersArray)
+AllClusters = ','.join(AllClustersArray)
+
 
 def getFirstClusterServer(cluster, adminserver_name):
     s = ls('/Server')
     clustername = " "
     for token in s.split("drw-"):
-        token=token.strip().lstrip().rstrip()
-        path="/Server/"+token
+        token = token.strip().lstrip().rstrip()
+        path = "/Server/" + token
         cd(path)
         if not token == adminserver_name and not token == '':
             clustername = get('Cluster')
-            searchClusterStr = cluster+":"
+            searchClusterStr = cluster + ":"
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
                 return token
+
 
 def getClusterServers(cluster, adminserver_name):
     servers = []
     s = ls('/Server')
     clustername = " "
     for token in s.split("drw-"):
-        token=token.strip().lstrip().rstrip()
-        path="/Server/"+token
+        token = token.strip().lstrip().rstrip()
+        path = "/Server/" + token
         cd(path)
         if not token == adminserver_name and not token == '':
             clustername = get('Cluster')
-            searchClusterStr = cluster+":"
+            searchClusterStr = cluster + ":"
             clusterNameStr = str(clustername)
             if not clusterNameStr.find(searchClusterStr) == -1:
                 servers.append(token)
 
     return servers
+
 
 def createSAFAgents(cluster, currentServerCnt, adminserver_name):
     print ' '
@@ -66,39 +69,44 @@ def createSAFAgents(cluster, currentServerCnt, adminserver_name):
     clustername = " "
     serverCnt = currentServerCnt
     for token in s.split("drw-"):
-        token=token.strip().lstrip().rstrip()
-        path="/Server/"+token
+        token = token.strip().lstrip().rstrip()
+        path = "/Server/" + token
         cd(path)
         if not token == adminserver_name and not token == '':
             clustername = get('Cluster')
-            print "Cluster Associated with the Server [",token,"] :- ",clustername
+            print "Cluster Associated with the Server [", token, "] :- ", clustername
             print ' '
-            searchClusterStr = cluster+":"
+            searchClusterStr = cluster + ":"
             clusterNameStr = str(clustername)
-            print "searchClusterStr = ",searchClusterStr
-            print "clusterNameStr = ",clusterNameStr
+            print "searchClusterStr = ", searchClusterStr
+            print "clusterNameStr = ", clusterNameStr
             if not clusterNameStr.find(searchClusterStr) == -1:
                 print token, " is associated with ", cluster
                 cd('/')
 
-                fileStoreName = 'WseeFileStore_auto_'+str(serverCnt)
-                safAgent      = 'ReliableWseeSAFAgent_auto_'+str(serverCnt)
+                fileStoreName = 'WseeFileStore_auto_' + str(serverCnt)
+                safAgent = 'ReliableWseeSAFAgent_auto_' + str(serverCnt)
 
                 cd('/')
                 create(safAgent, 'SAFAgent')
-                cd('/SAFAgent/'+safAgent)
-                set ('Target'     , token)
-                set ('Store'      , fileStoreName)
-                set ('ServiceType','Both')
+                cd('/SAFAgent/' + safAgent)
+                set('Target', token)
+                set('Store', fileStoreName)
+                set('ServiceType', 'Both')
 
                 serverCnt = serverCnt + 1
 
 
 def createFileStore(storeName, serverName):
-    create(storeName, 'FileStore')
-    cd('/FileStore/'+storeName)
-    set ('Target', serverName)
-    set ('Directory', storeName)
+    try:
+        create(storeName, 'FileStore')
+    except Exception, e:
+        print "probably filestore " + storeName + " already exists"
+        pass
+
+    cd('/FileStore/' + storeName)
+    set('Target', serverName)
+    set('Directory', storeName)
     cd('/')
 
 
@@ -110,17 +118,17 @@ def createJMSServers(cluster, track, currentServerCnt, adminserver_name):
     clustername = " "
     serverCnt = currentServerCnt
     for token in s.split("drw-"):
-        token=token.strip().lstrip().rstrip()
-        path="/Server/"+token
+        token = token.strip().lstrip().rstrip()
+        path = "/Server/" + token
         cd(path)
         if not token == adminserver_name and not token == '':
             clustername = get('Cluster')
-            print "Cluster Associated with the Server [",token,"] :- ",clustername
+            print "Cluster Associated with the Server [", token, "] :- ", clustername
             print ' '
-            searchClusterStr = cluster+":"
+            searchClusterStr = cluster + ":"
             clusterNameStr = str(clustername)
-            print "searchClusterStr = ",searchClusterStr
-            print "clusterNameStr = ",clusterNameStr
+            print "searchClusterStr = ", searchClusterStr
+            print "clusterNameStr = ", clusterNameStr
             if not clusterNameStr.find(searchClusterStr) == -1:
                 print token, " is associated with ", cluster
                 print ' '
@@ -129,14 +137,14 @@ def createJMSServers(cluster, track, currentServerCnt, adminserver_name):
                 cd('/')
 
                 if track == 'BamCQ':
-                    jmsServerName = 'BamCQServiceJmsServer_auto_'+str(serverCnt)
-                    fileStoreName = 'BamCQServiceJmsFileStore_auto_'+str(serverCnt)
+                    jmsServerName = 'BamCQServiceJmsServer_auto_' + str(serverCnt)
+                    fileStoreName = 'BamCQServiceJmsFileStore_auto_' + str(serverCnt)
                 elif track == 'Bam':
-                    jmsServerName = 'BamServerJmsServer_auto_'+str(serverCnt)
-                    fileStoreName = 'BamServerJmsFileStore_auto_'+str(serverCnt)
+                    jmsServerName = 'BamServerJmsServer_auto_' + str(serverCnt)
+                    fileStoreName = 'BamServerJmsFileStore_auto_' + str(serverCnt)
                 elif track == 'ums':
-                    jmsServerName = 'UMSJMSServer_auto_'+str(serverCnt)
-                    fileStoreName = 'UMSJMSFileStore_auto_'+str(serverCnt)
+                    jmsServerName = 'UMSJMSServer_auto_' + str(serverCnt)
+                    fileStoreName = 'UMSJMSFileStore_auto_' + str(serverCnt)
 
                 createFileStore(fileStoreName, token)
                 print "Created File Store :- ", fileStoreName
@@ -147,8 +155,8 @@ def createJMSServers(cluster, track, currentServerCnt, adminserver_name):
                 assign('JMSServer', jmsServerName, 'Target', token)
                 print jmsServerName, " assigned to server :- ", token
                 print ' '
-                cd('/JMSServer/'+jmsServerName)
-                set ('PersistentStore', fileStoreName)
+                cd('/JMSServer/' + jmsServerName)
+                set('PersistentStore', fileStoreName)
 
                 serverCnt = serverCnt + 1
 
@@ -158,19 +166,21 @@ def getCurrentUMSServerCnt():
     count = s.count("UMSJMSServer_auto")
     return count + 1
 
+
 def getClusterName(targetServer, adminserver_name):
         targetServerStr = str(targetServer)
         s = ls('/Server')
         print ' '
         clustername = " "
         for token in s.split("drw-"):
-                token=token.strip().lstrip().rstrip()
-                path="/Server/"+token
+                token = token.strip().lstrip().rstrip()
+                path = "/Server/" + token
                 cd(path)
                 if not token == adminserver_name and not token == '':
-                        if not targetServerStr.find(token+":") == -1:
+                        if not targetServerStr.find(token + ":") == -1:
                                 clustername = get('Cluster')
         return clustername
+
 
 def getUMSJMSServers(cluster, adminserver_name):
         s = ls('/JMSServers')
@@ -178,58 +188,57 @@ def getUMSJMSServers(cluster, adminserver_name):
         print ' '
         clustername = " "
         for token in s.split("drw-"):
-                token=token.strip().lstrip().rstrip()
+                token = token.strip().lstrip().rstrip()
                 if not token == '' and not token.find("UMSJMSServer_auto") == -1:
-                        cd('/JMSServers/'+token)
+                        cd('/JMSServers/' + token)
                         targetServer = get('Target')
                         clustername = getClusterName(targetServer, adminserver_name)
-                        searchClusterStr = cluster+":"
+                        searchClusterStr = cluster + ":"
                         clusterNameStr = str(clustername)
-                        print "searchClusterStr = ",searchClusterStr
-                        print "clusterNameStr = ",clusterNameStr
+                        print "searchClusterStr = ", searchClusterStr
+                        print "clusterNameStr = ", clusterNameStr
                         if not clusterNameStr.find(searchClusterStr) == -1:
                                 jmsServersStr = jmsServersStr + token + ","
-        print "UMS JMS Servers for Cluster :- ", cluster , " is :- ", jmsServersStr
+        print "UMS JMS Servers for Cluster :- ", cluster, " is :- ", jmsServersStr
         return jmsServersStr
 
+
 def cleanJMS(jms_module_pattern, jms_server_pattern, filestore_pattern):
-  if jms_module_pattern:
-    s = ls('/JMSSystemResources')
-    for token in s.split("drw-"):
-      token=token.strip().lstrip().rstrip()
-      if not token == '' and not token.find(jms_module_pattern) == -1:
-        print "token "+token
-        try:
-          delete(token, 'JMSSystemResource')
-        except:
-          print "delete of " + token + " jmsmodule failed", sys.exc_info()[0]
-          pass
+    if jms_module_pattern:
+        s = ls('/JMSSystemResources')
+        for token in s.split("drw-"):
+            token = token.strip().lstrip().rstrip()
+            if not token == '' and not token.find(jms_module_pattern) == -1:
+                print "token " + token
+                try:
+                    delete(token, 'JMSSystemResource')
+                except:
+                    print "delete of " + token + " jmsmodule failed", sys.exc_info()[0]
+                    pass
 
-  if jms_server_pattern:
-    s = ls('/JMSServers')
-    for token in s.split("drw-"):
-      token=token.strip().lstrip().rstrip()
-      if not token == '' and not token.find(jms_server_pattern) == -1:
-        print "token "+token
-        try:
-          delete(token, 'JMSServer')
-        except:
-          print "delete of " + token + " jmsserver failed", sys.exc_info()[0]
-          pass
+    if jms_server_pattern:
+        s = ls('/JMSServers')
+        for token in s.split("drw-"):
+            token = token.strip().lstrip().rstrip()
+            if not token == '' and not token.find(jms_server_pattern) == -1:
+                print "token " + token
+                try:
+                    delete(token, 'JMSServer')
+                except:
+                    print "delete of " + token + " jmsserver failed", sys.exc_info()[0]
+                    pass
 
-  if filestore_pattern:
-    s = ls('/FileStore')
-    for token in s.split("drw-"):
-      token=token.strip().lstrip().rstrip()
-      if not token == '' and not token.find(filestore_pattern) == -1:
-        print "token "+token
-        try:
-          delete(token, 'FileStore')
-        except:
-          print "delete of " + token + " filestore failed", sys.exc_info()[0]
-          pass
-
-
+    if filestore_pattern:
+        s = ls('/FileStore')
+        for token in s.split("drw-"):
+            token = token.strip().lstrip().rstrip()
+            if not token == '' and not token.find(filestore_pattern) == -1:
+                print "token " + token
+                try:
+                    delete(token, 'FileStore')
+                except:
+                    print "delete of " + token + " filestore failed", sys.exc_info()[0]
+                    pass
 
 readDomain(DOMAIN_PATH)
 
@@ -237,22 +246,22 @@ cd('/')
 
 if soaEnabled == true:
     cd('/Servers/soa_server1')
-    set('ListenAddress','')
+    set('ListenAddress', '')
 
 if bamEnabled == true:
     cd('/Servers/bam_server1')
-    set('ListenAddress','')
+    set('ListenAddress', '')
 
 if osbEnabled == true:
     cd('/Servers/osb_server1')
-    set('ListenAddress','')
+    set('ListenAddress', '')
 
-if essEnabled == true:
-    try:
-        cd('/Servers/ess_server1')
-        set('ListenAddress','')
-    except:
-        print "set ListenAddress None on ess_server1 failed"
+# if essEnabled == true:
+#     try:
+#         cd('/Servers/ess_server1')
+#         set('ListenAddress','')
+#     except:
+#         print "set ListenAddress None on ess_server1 failed"
 
 updateDomain()
 
@@ -268,8 +277,8 @@ if bamEnabled == true:
     bamServers = getClusterServers(BAMClusterName, Admin)
     cd('/')
     for i in range(len(bamServers)):
-      print "change servergroups for " + bamServers[i]
-      setServerGroups(bamServers[i] , bamServerGroup)
+        print "change servergroups for " + bamServers[i]
+        setServerGroups(bamServers[i], bamServerGroup)
 
     print "delete old bam"
     delete('bam_server1', 'Server')
@@ -279,7 +288,7 @@ if soaEnabled == true:
 
     # add ESS to existing soa servers
     if essEnabled == true and ESSClusterName == '':
-        soaServerGroup = ["SOA-MGD-SVRS","ESS-MGD-SVRS"]
+        soaServerGroup = ["SOA-MGD-SVRS", "ESS-MGD-SVRS"]
     else:
         soaServerGroup = ["SOA-MGD-SVRS"]
 
@@ -289,8 +298,8 @@ if soaEnabled == true:
     soaServers = getClusterServers(SOAClusterName, Admin)
     cd('/')
     for i in range(len(soaServers)):
-      print "change servergroups for " + soaServers[i]
-      setServerGroups(soaServers[i] , soaServerGroup)
+        print "change servergroups for " + soaServers[i]
+        setServerGroups(soaServers[i], soaServerGroup)
 
     print "delete old soa"
     delete('soa_server1', 'Server')
@@ -302,27 +311,27 @@ if essEnabled == true and ESSClusterName:
     essServerGroup = ["ESS-MGD-SVRS"]
 
     cd('/')
-    try:
-        setServerGroups('ess_server1', serverGroupNone)
-    except:
-        print "set setServerGroups None on ess_server1 failed"
+    # try:
+    #     setServerGroups('ess_server1', serverGroupNone)
+    # except:
+    #     print "set setServerGroups None on ess_server1 failed"
 
     essServers = getClusterServers(ESSClusterName, Admin)
     cd('/')
     for i in range(len(essServers)):
-      print "change servergroups for " + essServers[i]
-      setServerGroups(essServers[i], essServerGroup)
+        print "change servergroups for " + essServers[i]
+        setServerGroups(essServers[i], essServerGroup)
 
-    print "delete old ess"
-    try:
-        delete('ess_server1', 'Server')
-    except:
-        print "delete ess_server1 failed"
+    # print "delete old ess"
+    # try:
+    #     delete('ess_server1', 'Server')
+    # except:
+    #     print "delete ess_server1 failed"
 
 
 if osbEnabled == true:
     print "change osb"
-    osbServerGroup  = ["OSB-MGD-SVRS-COMBINED"]
+    osbServerGroup = ["OSB-MGD-SVRS-COMBINED"]
 
     cd('/')
     setServerGroups('osb_server1', serverGroupNone)
@@ -330,8 +339,8 @@ if osbEnabled == true:
     osbServers = getClusterServers(OSBClusterName, Admin)
     cd('/')
     for i in range(len(osbServers)):
-      print "change servergroups for " + osbServers[i]
-      setServerGroups(osbServers[i] , osbServerGroup)
+        print "change servergroups for " + osbServers[i]
+        setServerGroups(osbServers[i], osbServerGroup)
 
     print "delete old osb"
     delete('osb_server1', 'Server')
@@ -350,23 +359,23 @@ readDomain(DOMAIN_PATH)
 print "change Coherence"
 if soaEnabled == true:
     cd('/')
-    assign('Cluster',SOAClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+    assign('Cluster', SOAClusterName, 'CoherenceClusterSystemResource', 'defaultCoherenceCluster')
 if osbEnabled == true:
     cd('/')
-    assign('Cluster',OSBClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+    assign('Cluster', OSBClusterName, 'CoherenceClusterSystemResource', 'defaultCoherenceCluster')
 if bamEnabled == true:
     cd('/')
-    assign('Cluster',BAMClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+    assign('Cluster', BAMClusterName, 'CoherenceClusterSystemResource', 'defaultCoherenceCluster')
 if essEnabled == true and ESSClusterName:
     cd('/')
-    assign('Cluster',ESSClusterName,'CoherenceClusterSystemResource','defaultCoherenceCluster')
+    assign('Cluster', ESSClusterName, 'CoherenceClusterSystemResource', 'defaultCoherenceCluster')
 
 
 cd('/')
 cd('/CoherenceClusterSystemResource/defaultCoherenceCluster')
-set('Target',AllClusters)
+set('Target', AllClusters)
 cd('CoherenceResource/defaultCoherenceCluster/CoherenceClusterParams/NO_NAME_0')
-set('UnicastListenPort',9991)
+set('UnicastListenPort', 9991)
 
 updateDomain()
 dumpStack()
@@ -377,8 +386,8 @@ readDomain(DOMAIN_PATH)
 if soaEnabled == true:
     print "fix SOA"
     cd('/')
-    assign('AppDeployment'                ,'soa-infra'                    , 'Target', SOAClusterName)
-    assign('AppDeployment.SubDeployment'  ,'soa-infra.*'                  , 'Target', SOAClusterName)
+    assign('AppDeployment', 'soa-infra', 'Target', SOAClusterName)
+    assign('AppDeployment.SubDeployment', 'soa-infra.*', 'Target', SOAClusterName)
 
     updateDomain()
     dumpStack()
@@ -390,12 +399,10 @@ if soaEnabled == true:
 if osbEnabled == true:
     print "fix OSB jms"
     cd('/')
-    delete('ReliableWseeSAFAgent'  ,'SAFAgent')
-    delete('OSBAQJMSServer'        ,'JMSSystemResource')
-    delete('UMSAQJMSSystemResource','JMSSystemResource')
+    delete('ReliableWseeSAFAgent', 'SAFAgent')
+    delete('OSBAQJMSServer', 'JMSSystemResource')
+    delete('UMSAQJMSSystemResource', 'JMSSystemResource')
     createSAFAgents(OSBClusterName, 1, Admin)
-
-
 
     updateDomain()
     dumpStack()
@@ -409,49 +416,68 @@ if bamEnabled == true:
         print "to do fix BAM foreign jndi"
         cd('/')
         cd('/ForeignJNDIProvider/BAMForeignJndiProvider')
-        set('Target',SOAClusterName)
+        set('Target', SOAClusterName)
     if bpmEnabled == true:
         cd('/')
         cd('/ForeignJNDIProvider/BPMForeignJndiProvider')
-        set('Target',BAMClusterName)
+        set('Target', BAMClusterName)
 
     print "Define the BAM scheduler datasource to the BAM cluster "
     cd('/')
-    cd('/Cluster/'+BAMClusterName)
-    set('DataSourceForJobScheduler','BamJobSchedDataSource')
+    cd('/Cluster/' + BAMClusterName)
+    set('DataSourceForJobScheduler', 'BamJobSchedDataSource')
 
     print "re-create BAM JMS"
     cd('/')
     try:
-        delete('BamCQServiceJmsSystemResource_bam_server1','JMSSystemResource')
+        delete('BamCQServiceJmsSystemResource_bam_server1', 'JMSSystemResource')
     except:
         print "delete BamCQServiceJmsSystemResource_bam_server1 failed"
 
     try:
-        delete('BamServerJmsSystemResource','JMSSystemResource')
+        delete('BamServerJmsSystemResource', 'JMSSystemResource')
     except:
         print "delete BamServerJmsSystemResource failed"
 
     try:
-        delete('BamCQServiceJmsServer_bam_server1'   ,'JMSServer')
+        delete('BamCQServiceJmsServer_bam_server1', 'JMSServer')
     except:
         print "Delete BamCQServiceJmsServer_bam_server1 failed"
 
     try:
-        delete('BamServerJmsServer_bam_server1'      ,'JMSServer')
+        delete('BamCQServiceJmsServer_auto_1', 'JMSServer')
+    except:
+        print "Delete BamCQServiceJmsServer_auto_1 failed"
+
+    try:
+        delete('BamCQServiceJmsServer_auto_2', 'JMSServer')
+    except:
+        print "Delete BamCQServiceJmsServer_auto_2 failed"
+
+    try:
+        delete('BamServerJmsServer_bam_server1', 'JMSServer')
     except:
         print "Delete BamServerJmsServer_bam_server1 failed"
 
     try:
-        delete('BamCQServiceJmsFileStore_bam_server1','FileStore')
+        delete('BamCQServiceJmsFileStore_bam_server1', 'FileStore')
     except:
         print "Delete BamCQServiceJmsFileStore_bam_server1 failed"
 
     try:
-        delete('BamServerJmsFileStore_bam_server1'   ,'FileStore')
+        delete('BamCQServiceJmsFileStore_auto_1', 'FileStore')
+    except:
+        print "Delete BamCQServiceJmsFileStore_auto_1 failed"
+
+    try:
+        delete('BamCQServiceJmsFileStore_auto_2', 'FileStore')
+    except:
+        print "Delete BamCQServiceJmsFileStore_auto_2 failed"
+
+    try:
+        delete('BamServerJmsFileStore_bam_server1', 'FileStore')
     except:
         print "Delete BamServerJmsFileStore_bam_server1 failed"
-
 
     print "create BAM JMS"
     createJMSServers(BAMClusterName, 'Bam', 1, Admin)
@@ -509,14 +535,13 @@ if bamEnabled == true:
     # udd.setJNDIName('topic/oracle.beam.server.event.reportcache.changelist')
     # udd.setSubDeploymentName('BamServerSubdeployment')
 
-
     print "create BAM CQ JMS"
     cd('/')
     createJMSServers(BAMClusterName, 'BamCQ', 1, Admin)
 
     print "create BAM CQ JMSSystemResource"
     cd('/')
-    create('BamCQServiceJmsSystemResource','JMSSystemResource')
+    create('BamCQServiceJmsSystemResource', 'JMSSystemResource')
 
     print "target BAM CQ JMSSystemResource"
     cd('/')
@@ -532,30 +557,30 @@ if bamEnabled == true:
     cd('JMSSystemResource/BamCQServiceJmsSystemResource/SubDeployments/BamCQServiceAlertEngineSubdeployment')
 
     print ' '
-    print ("*** Listing Bam CQ JMS Servers ***")
+    print("*** Listing Bam CQ JMS Servers ***")
     s = ls('/JMSServers')
-    bamJMSServerStr=''
+    bamJMSServerStr = ''
     for token in s.split("drw-"):
-        token=token.strip().lstrip().rstrip()
+        token = token.strip().lstrip().rstrip()
         if not token.find("BamCQServiceJmsServer_auto") == -1:
-            bamJMSServerStr = bamJMSServerStr + token +","
+            bamJMSServerStr = bamJMSServerStr + token + ","
         print token
 
-    print ("*** Setting JMS SubModule for BamCQ JMS Server's target***")
+    print("*** Setting JMS SubModule for BamCQ JMS Server's target***")
     assign('JMSSystemResource.SubDeployment', 'BamCQServiceJmsSystemResource.BamCQServiceAlertEngineSubdeployment', 'Target', bamJMSServerStr)
 
     cd('/')
     cd('JMSSystemResource/BamCQServiceJmsSystemResource/JmsResource/NO_NAME_0')
 
-    udd=create('BamCQServiceAlertEngineQueue','UniformDistributedQueue')
+    udd = create('BamCQServiceAlertEngineQueue', 'UniformDistributedQueue')
     udd.setJNDIName('queue/oracle.beam.cqservice.mdbs.alertengine')
     udd.setSubDeploymentName('BamCQServiceAlertEngineSubdeployment')
 
-    udd=create('BamCQServiceReportCacheQueue','UniformDistributedQueue')
+    udd = create('BamCQServiceReportCacheQueue', 'UniformDistributedQueue')
     udd.setJNDIName('queue/oracle.beam.cqservice.mdbs.reportcache')
     udd.setSubDeploymentName('BamCQServiceAlertEngineSubdeployment')
 
-    soacf=create('BamCQServiceAlertEngineConnectionFactory','ConnectionFactory')
+    soacf = create('BamCQServiceAlertEngineConnectionFactory', 'ConnectionFactory')
     soacf.setJNDIName('queuecf/oracle.beam.cqservice.mdbs.alertengine')
     cd('/JMSSystemResource/BamCQServiceJmsSystemResource/JmsResource/NO_NAME_0/ConnectionFactory/BamCQServiceAlertEngineConnectionFactory')
     set('DefaultTargetingEnabled', 'true')
@@ -566,7 +591,7 @@ if bamEnabled == true:
     cd('/')
     cd('JMSSystemResource/BamCQServiceJmsSystemResource/JmsResource/NO_NAME_0')
 
-    soacf=create('BamCQServiceReportCacheConnectionFactory','ConnectionFactory')
+    soacf = create('BamCQServiceReportCacheConnectionFactory', 'ConnectionFactory')
     soacf.setJNDIName('queuecf/oracle.beam.cqservice.mdbs.reportcache')
     cd('/JMSSystemResource/BamCQServiceJmsSystemResource/JmsResource/NO_NAME_0/ConnectionFactory/BamCQServiceReportCacheConnectionFactory')
     set('DefaultTargetingEnabled', 'true')
@@ -606,21 +631,21 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
 
     print "create UMSJMSSystemResource"
     cd('/')
-    create('UMSJMSSystemResource','JMSSystemResource')
+    create('UMSJMSSystemResource', 'JMSSystemResource')
 
     print "target UMSJMSSystemResource"
     cd('/')
     cd('JMSSystemResource/UMSJMSSystemResource')
     assign('JMSSystemResource', 'UMSJMSSystemResource', 'Target', AllClusters)
 
-    print("*** Creating Connection Factories for UMS ***");
+    print("*** Creating Connection Factories for UMS ***")
     cd('/')
     cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
 
-    cf1=create('OraSDPMQueueConnectionFactory','ConnectionFactory')
+    cf1 = create('OraSDPMQueueConnectionFactory', 'ConnectionFactory')
     cf1.setJNDIName('OraSDPM/QueueConnectionFactory')
 
-    print ("*** Enabling XA ***")
+    print("*** Enabling XA ***")
     cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0/ConnectionFactory/OraSDPMQueueConnectionFactory')
     set('DefaultTargetingEnabled', 'true')
     create('TransactionParams', 'TransactionParams')
@@ -634,7 +659,7 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
 
     cd('/')
     cd('JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-    dk1=create('Priority','DestinationKey')
+    dk1 = create('Priority', 'DestinationKey')
     dk1.setProperty('JMSPriority')
     dk1.setKeyType('Int')
     dk1.setSortOrder('Descending')
@@ -649,68 +674,68 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMSOA', 'Target', umsJMSServerStr)
 
-        print ("*** Creating Queues for UMS ***")
+        print("*** Creating Queues for UMS ***")
         cd('/')
         print ' '
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd= create('OraSDPMEngineSndQ1_soa','UniformDistributedQueue')
+        udd = create('OraSDPMEngineSndQ1_soa', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_soa')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMEngineSndQ1_soa')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEngineRcvQ1_soa','UniformDistributedQueue')
+        udd = create('OraSDPMEngineRcvQ1_soa', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
-        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_soa')
+        cd('UniformDistributedQueue/OraSDPMEngineRcvQ1_soa')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMDriverDefSndQ1_soa','UniformDistributedQueue')
+        udd = create('OraSDPMDriverDefSndQ1_soa', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_soa')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMDriverDefSndQ1_soa')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        uddError=create('OraSDPMAppDefRcvErrorQ1_soa','UniformDistributedQueue')
+        uddError = create('OraSDPMAppDefRcvErrorQ1_soa', 'UniformDistributedQueue')
         uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
         uddError.setSubDeploymentName('UMSJMSSubDMSOA')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMAppDefRcvQ1_soa','UniformDistributedQueue')
+        udd = create('OraSDPMAppDefRcvQ1_soa', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
-        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_soa')
+        cd('UniformDistributedQueue/OraSDPMAppDefRcvQ1_soa')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
         dfp.setErrorDestination(uddError)
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMWSRcvQ1_soa','UniformDistributedQueue')
+        udd = create('OraSDPMWSRcvQ1_soa', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
-        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_soa')
+        cd('UniformDistributedQueue/OraSDPMWSRcvQ1_soa')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEnginePendingRcvQ_soa','UniformDistributedQueue')
+        udd = create('OraSDPMEnginePendingRcvQ_soa', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMSOA')
-        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_soa')
+        cd('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_soa')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
@@ -726,68 +751,68 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMBAM', 'Target', umsJMSServerStr)
 
-        print ("*** Creating Queues for UMS ***")
+        print("*** Creating Queues for UMS ***")
         cd('/')
         print ' '
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd= create('OraSDPMEngineSndQ1_bam','UniformDistributedQueue')
+        udd = create('OraSDPMEngineSndQ1_bam', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_bam')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMEngineSndQ1_bam')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEngineRcvQ1_bam','UniformDistributedQueue')
+        udd = create('OraSDPMEngineRcvQ1_bam', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
-        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_bam')
+        cd('UniformDistributedQueue/OraSDPMEngineRcvQ1_bam')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMDriverDefSndQ1_bam','UniformDistributedQueue')
+        udd=create('OraSDPMDriverDefSndQ1_bam', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_bam')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMDriverDefSndQ1_bam')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        uddError=create('OraSDPMAppDefRcvErrorQ1_bam','UniformDistributedQueue')
+        uddError = create('OraSDPMAppDefRcvErrorQ1_bam', 'UniformDistributedQueue')
         uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
         uddError.setSubDeploymentName('UMSJMSSubDMBAM')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMAppDefRcvQ1_bam','UniformDistributedQueue')
+        udd = create('OraSDPMAppDefRcvQ1_bam', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
-        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_bam')
+        cd('UniformDistributedQueue/OraSDPMAppDefRcvQ1_bam')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
         dfp.setErrorDestination(uddError)
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMWSRcvQ1_bam','UniformDistributedQueue')
+        udd = create('OraSDPMWSRcvQ1_bam', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
-        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_bam')
+        cd('UniformDistributedQueue/OraSDPMWSRcvQ1_bam')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEnginePendingRcvQ_bam','UniformDistributedQueue')
+        udd = create('OraSDPMEnginePendingRcvQ_bam', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMBAM')
-        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_bam')
+        cd('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_bam')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
@@ -802,68 +827,68 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMOSB', 'Target', umsJMSServerStr)
 
-        print ("*** Creating Queues for UMS ***")
+        print("*** Creating Queues for UMS ***")
         cd('/')
         print ' '
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd= create('OraSDPMEngineSndQ1_osb','UniformDistributedQueue')
+        udd = create('OraSDPMEngineSndQ1_osb', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_osb')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMEngineSndQ1_osb')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEngineRcvQ1_osb','UniformDistributedQueue')
+        udd = create('OraSDPMEngineRcvQ1_osb', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
-        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_osb')
+        cd('UniformDistributedQueue/OraSDPMEngineRcvQ1_osb')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMDriverDefSndQ1_osb','UniformDistributedQueue')
+        udd = create('OraSDPMDriverDefSndQ1_osb', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_osb')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMDriverDefSndQ1_osb')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        uddError=create('OraSDPMAppDefRcvErrorQ1_osb','UniformDistributedQueue')
+        uddError = create('OraSDPMAppDefRcvErrorQ1_osb', 'UniformDistributedQueue')
         uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
         uddError.setSubDeploymentName('UMSJMSSubDMOSB')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMAppDefRcvQ1_osb','UniformDistributedQueue')
+        udd = create('OraSDPMAppDefRcvQ1_osb', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
-        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_osb')
+        cd('UniformDistributedQueue/OraSDPMAppDefRcvQ1_osb')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
         dfp.setErrorDestination(uddError)
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMWSRcvQ1_osb','UniformDistributedQueue')
+        udd = create('OraSDPMWSRcvQ1_osb', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
-        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_osb')
+        cd('UniformDistributedQueue/OraSDPMWSRcvQ1_osb')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEnginePendingRcvQ_osb','UniformDistributedQueue')
+        udd = create('OraSDPMEnginePendingRcvQ_osb', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMOSB')
-        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_osb')
+        cd('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_osb')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
@@ -879,68 +904,68 @@ if soaEnabled == true or bamEnabled == true or essEnabled == true:
         umsJMSServerStr = umsJMSServerStr.strip().lstrip().rstrip()
         assign('JMSSystemResource.SubDeployment', 'UMSJMSSystemResource.UMSJMSSubDMESS', 'Target', umsJMSServerStr)
 
-        print ("*** Creating Queues for UMS ***")
+        print("*** Creating Queues for UMS ***")
         cd('/')
         print ' '
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd= create('OraSDPMEngineSndQ1_ess','UniformDistributedQueue')
+        udd = create('OraSDPMEngineSndQ1_ess', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMEngineSndQ1_ess')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMEngineSndQ1_ess')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEngineRcvQ1_ess','UniformDistributedQueue')
+        udd = create('OraSDPMEngineRcvQ1_ess', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEngineRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
-        cd ('UniformDistributedQueue/OraSDPMEngineRcvQ1_ess')
+        cd('UniformDistributedQueue/OraSDPMEngineRcvQ1_ess')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMDriverDefSndQ1_ess','UniformDistributedQueue')
+        udd = create('OraSDPMDriverDefSndQ1_ess', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMDriverDefSndQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
-        udd.setDestinationKeys(jarray.array([String('Priority')],String))
-        cd ('UniformDistributedQueue/OraSDPMDriverDefSndQ1_ess')
+        udd.setDestinationKeys(jarray.array([String('Priority')], String))
+        cd('UniformDistributedQueue/OraSDPMDriverDefSndQ1_ess')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        uddError=create('OraSDPMAppDefRcvErrorQ1_ess','UniformDistributedQueue')
+        uddError = create('OraSDPMAppDefRcvErrorQ1_ess', 'UniformDistributedQueue')
         uddError.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvErrorQ1')
         uddError.setSubDeploymentName('UMSJMSSubDMESS')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMAppDefRcvQ1_ess','UniformDistributedQueue')
+        udd = create('OraSDPMAppDefRcvQ1_ess', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMAppDefRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
-        cd ('UniformDistributedQueue/OraSDPMAppDefRcvQ1_ess')
+        cd('UniformDistributedQueue/OraSDPMAppDefRcvQ1_ess')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
         dfp.setErrorDestination(uddError)
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMWSRcvQ1_ess','UniformDistributedQueue')
+        udd = create('OraSDPMWSRcvQ1_ess', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMWSRcvQ1')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
-        cd ('UniformDistributedQueue/OraSDPMWSRcvQ1_ess')
+        cd('UniformDistributedQueue/OraSDPMWSRcvQ1_ess')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')
 
         cd('/JMSSystemResource/UMSJMSSystemResource/JmsResource/NO_NAME_0')
-        udd=create('OraSDPMEnginePendingRcvQ_ess','UniformDistributedQueue')
+        udd = create('OraSDPMEnginePendingRcvQ_ess', 'UniformDistributedQueue')
         udd.setJNDIName('OraSDPM/Queues/OraSDPMEnginePendingRcvQ')
         udd.setSubDeploymentName('UMSJMSSubDMESS')
-        cd ('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_ess')
+        cd('UniformDistributedQueue/OraSDPMEnginePendingRcvQ_ess')
         dfp = create('dfpName', 'DeliveryFailureParams')
         dfp.setRedeliveryLimit(2)
         dfp.setExpirationPolicy('Log')

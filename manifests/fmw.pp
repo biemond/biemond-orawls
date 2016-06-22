@@ -84,7 +84,11 @@ define orawls::fmw(
 
     if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_forms_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_fr_linux64.bin'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_fr_linux64.bin'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_fr_linux64.bin'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'
       $total_files              = 1
@@ -122,7 +126,11 @@ define orawls::fmw(
     if $version >= 1221 {
       $total_files = 1
       $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_soa.jar'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/bin"
       $type                     = 'java'
@@ -163,9 +171,14 @@ define orawls::fmw(
     if $version >= 1221 {
       $total_files = 2
       $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_soa_quickstart.jar'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_soa_quickstart.jar'
+        $binFile2                 = 'fmw_12.2.1.0.0_soa_quickstart2.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_soa_quickstart.jar'
+        $binFile2                 = 'fmw_12.2.1.1.0_soa_quickstart2.jar'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
-      $binFile2                 = 'fmw_12.2.1.0.0_soa_quickstart2.jar'
       $createFile2              = "${download_dir}/${sanitised_title}/${binFile2}"
       $oracleHome               = "${middleware_home_dir}/soa/bin"
       $type                     = 'java'
@@ -197,7 +210,11 @@ define orawls::fmw(
     $total_files = 1
     if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_osb_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_osb.jar'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_osb.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_osb.jar'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/osb/bin"
       $type                     = 'java'
@@ -238,7 +255,11 @@ define orawls::fmw(
     elsif $version >= 1221 {
       $total_files = 1
       $fmw_silent_response_file = 'orawls/fmw_silent_b2b_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_b2bhealthcare.jar'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_b2bhealthcare.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_b2bhealthcare.jar'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
       $type                     = 'java'
@@ -278,7 +299,11 @@ define orawls::fmw(
 
     if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_wc_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_wcportal_generic.jar'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_wcportal_generic.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_wcportal_generic.jar'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
       $total_files              = 1
@@ -301,7 +326,11 @@ define orawls::fmw(
 
     if $version >= 1221 {
       $fmw_silent_response_file = 'orawls/fmw_silent_wcc_1221.rsp.erb'
-      $binFile1                 = 'fmw_12.2.1.0.0_wccontent_generic.jar'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_wccontent_generic.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.1.0_wccontent_generic.jar'
+      }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
       $total_files              = 1

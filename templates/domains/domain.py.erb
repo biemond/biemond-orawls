@@ -80,7 +80,7 @@ print('write domain...')
 writeDomain(DOMAIN_PATH)
 closeTemplate()
 
-if WEBLOGIC_VERSION in [1212,1213,1221]:
+if WEBLOGIC_VERSION in [1212, 1213, 1221, 12211]:
   readDomain(DOMAIN_PATH)
 
   print 'Adding WLS Coherence Template'

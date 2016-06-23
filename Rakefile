@@ -13,7 +13,7 @@ RSpec::Core::RakeTask.new(:test) do |t|
   t.pattern = 'spec/*/*_spec.rb'
 end
 
-
+PuppetLint.configuration.send("disable_140chars")
 PuppetLint.configuration.send("disable_80chars")
 # PuppetLint.configuration.send("disable_right_to_left_relationship")
 # PuppetLint.configuration.send("disable_autoloader_layout")

@@ -1,7 +1,7 @@
 # Oracle WebLogic / Fusion Middleware puppet module V2
 [![Build Status](https://travis-ci.org/biemond/biemond-orawls.svg?branch=master)](https://travis-ci.org/biemond/biemond-orawls) [![Coverage Status](https://coveralls.io/repos/biemond/biemond-orawls/badge.png?branch=master)](https://coveralls.io/r/biemond/biemond-orawls?branch=master)
 
-Install, configures and manages WebLogic version 10.3 - 12.2.1
+Install, configures and manages WebLogic version 10.3 - 12.2.1.1
 
 This module should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86
 
@@ -35,9 +35,9 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 ## Complete vagrant examples
 
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)
-- WebLogic 12.2.1 MT multi tenancy / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
-- WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
-- WebLogic 12.2.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
+- WebLogic 12.2.1.1 MT multi tenancy / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
+- WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
+- WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
 - WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs](https://github.com/biemond/biemond-orawls-vagrant-ohs)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
@@ -56,7 +56,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 
 ## Orawls WebLogic Features
 
-- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1, 12.1.2, 12.1.3, 12.2.1 + its FMW infrastructure editions )
+- [Installs WebLogic](#weblogic), version 10g,11g,12c( 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.1 + its FMW infrastructure editions )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
 - [Create a WebLogic domain](#domain)
@@ -143,7 +143,7 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_server_template](#wls_server_template)
 - [wls_dynamic_cluster](#wls_dynamic_cluster)
 
-12.2.1 Multitenancy MT
+12.2.1.1 Multitenancy MT
 - [wls_virtual_target](#wls_virtual_target)
 - [wls_resource_group](#wls_resource_group)
 - [wls_resource_group_template](#wls_resource_group_template)
@@ -176,7 +176,7 @@ For all WebLogic or FMW versions
 - domain 'oim'            -> IDM, OIM (Oracle Identity Manager) + OAM ( Oracle Access Manager)
 - domain 'oud'            -> OUD (Oracle Unified Directory)
 
-12.2.1
+12.2.1.1
 - domain 'adf_restricted' -> only for 12.2.1 (no RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS
 
 
@@ -210,7 +210,7 @@ you can override this by setting the following fact 'override_weblogic_user', li
 
 default this orawls module saves the domain & connection related setting in /etc in yaml format
 you can override this by setting the following 2 facts:
-for domain information: override_wls_domains_file=[custom_path]/wls_domains.yaml 
+for domain information: override_wls_domains_file=[custom_path]/wls_domains.yaml
 or set FACTER_override_wls_domains_file=[custom_path]/wls_domains.yaml
 
 for settings infortmation: override_wls_setting_file=[custom_path]/wls_setting.yaml
@@ -491,7 +491,7 @@ common.yaml
 __orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2, 12.1.3, 12.2.1
 
     class{'orawls::weblogic':
-      version              => 1221,                       # 1036|1211|1212|1213|1221
+      version              => 12211,                       # 1036|1211|1212|1213|1221
       filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
       jdk_home_dir         => '/usr/java/jdk1.8.0_45',
       oracle_base_home_dir => "/opt/oracle",
@@ -578,7 +578,7 @@ vagrantcentos64.example.com.yaml
 __orawls::weblogic_type__ same as weblogic manifest/class but now as define which supports multiple middleware home on same VM
 
     orawls::weblogic{'1221':
-      version              => 1221,                       # 1036|1211|1212|1213|1221
+      version              => 12211,                       # 1036|1211|1212|1213|1221
       filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
       jdk_home_dir         => '/usr/java/jdk1.8.0_45',
       oracle_base_home_dir => "/opt/oracle",

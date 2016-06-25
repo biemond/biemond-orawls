@@ -1,7 +1,7 @@
 # History
 
 ## 1.0.51
-- Tested against WebLogic 12.2.1.1 + INFRA, SOA, OSB, OHS
+- Tested against WebLogic 12.2.1.1 + INFRA, SOA, OSB, OHS, use 12.2.1.1 as version
 - add JSSE to wls_daemon when trust is used, this way t3s also works on wls 10.3
 - functionality to run orawls with a non-root user, see [this PR](https://github.com/biemond/biemond-orawls/pull/343)
 

@@ -1,5 +1,8 @@
 # History
 
+## 1.0.52
+- fix wls type weblogicConnectUrL bug when running in debug mode
+
 ## 1.0.51
 - Tested against WebLogic 12.2.1.1 + INFRA, SOA, OSB, OHS, use 12.2.1.1 as version
 - add JSSE to wls_daemon when trust is used, this way t3s also works on wls 10.3

@@ -471,7 +471,8 @@ define orawls::fmw(
           {
             oracle_domain_name     => $oracle_domain_name,
             oracle_domain_location => $oracle_domain_location,
-            hostname               => $::facts['hostname'],
+            #hostname               => $::facts['hostname'],
+            hostname               => $::facts['fqdn'],
             middleware_home_dir    => $middleware_home_dir,
             weblogic_home_dir      => $weblogic_home_dir,
             oracle_home            => $oracle_home_dir,

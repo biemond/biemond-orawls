@@ -36,7 +36,6 @@ private
     FileUtils.chmod(0600, [resource.class.config_file])
   end
 
-
   def stringify_keys(hash)
     result = {}
     hash.each do |key, value|

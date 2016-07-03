@@ -1248,6 +1248,18 @@ when you just have one WebLogic domain on a server
       'wlsDomain2':
          log_output:              *logoutput
 
+for t3s you can use this
+
+    copy_instances:
+      'wlsDomain':
+         log_output:               true
+         use_t3s:                  true
+         jsse_enabled              true
+         custom_trust              true
+         trust_keystore_file       '/vagrant/truststore.jks'
+         trust_keystore_passphrase 'welcome'
+
+
 
 ### nodemanager
 __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware Home
@@ -2037,6 +2049,7 @@ or in hiera
         weblogic_user:      'weblogic'
         weblogic_password:  'weblogic1'
         post_classpath:     '/opt/oracle/middleware12c/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wlst.jar'
+        extra_arguments:    '-Daa=1 -Dbb=2'
 
 
     # and for with weblogic infra 12.1.3, use this post_classpath
@@ -2048,6 +2061,7 @@ or in hiera
         weblogic_user:      'weblogic'
         weblogic_password:  'weblogic1'
         post_classpath:     '/opt/oracle/middleware12c/oracle_common/modules/internal/features/jrf_wlsFmw_oracle.jrf.wlst_12.1.3.jar'
+        extra_arguments:    '-Daa=1 -Dbb=2'
 
     wls_setting_instances:
       'default':

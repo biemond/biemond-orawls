@@ -1,5 +1,9 @@
 # History
 
+## 1.0.53
+- copydomain now support t3s with custom trust
+- wls_setting new attribute extra_arguments which allows you to pass on some arguments to the wls_daemon
+
 ## 1.0.52
 - fix wls type weblogicConnectUrL bug when running in debug mode
 

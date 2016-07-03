@@ -5,7 +5,7 @@ require 'yaml'
 module Puppet
   Type.newtype(:wls_setting) do
     include EasyType
-    
+
     def self.get_wls_setting_file
       wls_setting_file = Facter.value('override_wls_setting_file')
       if wls_setting_file.nil?
@@ -32,6 +32,7 @@ module Puppet
     property :connect_url
     property :weblogic_password
     property :post_classpath
+    property :extra_arguments
     property :debug_module
     property :archive_path
 
@@ -64,7 +65,7 @@ module Puppet
         {}
       end
     end
-    
+
     private
 
     def self.normalize(content)

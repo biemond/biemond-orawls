@@ -312,6 +312,7 @@ module Utils
       weblogicConnectUrl           = domainValues['connect_url']       || 't3://localhost:7001'
       weblogicPassword             = domainValues['weblogic_password']
       postClasspath                = domainValues['post_classpath']
+      extraArguments               = domainValues['extra_arguments']
       custom_trust                 = domainValues['custom_trust']
       trust_keystore_file          = domainValues['trust_keystore_file']
       trust_keystore_passphrase    = domainValues['trust_keystore_passphrase']
@@ -342,7 +343,7 @@ module Utils
         puts '^^^===================================================================='
       end
 
-      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
+      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, extraArguments, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
 
       if debug_module.to_s == 'true'
         if !File.directory?(archive_path)

@@ -14,8 +14,9 @@ define orawls::copydomain (
   $domain_name                = hiera('domain_name'),
   $adminserver_address        = hiera('domain_adminserver_address'),
   $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $userConfigFile             = hiera('domain_user_config_file'   , undef),
-  $userKeyFile                = hiera('domain_user_key_file'      , undef),
+  $use_t3s                    = false,
+  $user_config_file           = hiera('domain_user_config_file'   , undef),
+  $user_key_file              = hiera('domain_user_key_file'      , undef),
   $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
   $weblogic_password          = hiera('domain_wls_password'       , undef),
   $os_user                    = hiera('wls_os_user'), # oracle
@@ -26,6 +27,10 @@ define orawls::copydomain (
   $server_start_mode          = 'dev', # dev/prod
   $wls_domains_file           = undef,
   $puppet_os_user             = 'root',
+  $jsse_enabled               = hiera('wls_jsse_enabled'              , false),
+  $custom_trust               = hiera('wls_custom_trust'              , false),
+  $trust_keystore_file        = hiera('wls_trust_keystore_file'       , undef),
+  $trust_keystore_passphrase  = hiera('wls_trust_keystore_passphrase' , undef),
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){
@@ -171,10 +176,12 @@ define orawls::copydomain (
 
     $unPackCommand = "-domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar ${$app_dir_arg} -server_start_mode=${server_start_mode} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
-    if ( $version == 1221 or $version == 12211 ) {
+    if ( $version >= 1221 ) {
       $bin_dir = "${middleware_home_dir}/oracle_common/common/bin/unpack.sh"
+      $wlst_dir = "${middleware_home_dir}/oracle_common/common/bin/wlst.sh"
     } else {
       $bin_dir = "${weblogic_home_dir}/common/bin/unpack.sh"
+      $wlst_dir = "${weblogic_home_dir}/common/bin/wlst.sh"
     }
 
     exec { "unpack ${domain_name}":
@@ -207,9 +214,16 @@ define orawls::copydomain (
       backup  => false,
     }
 
+    if $custom_trust == true {
+      $config = "-Dweblogic.ssl.JSSEEnabled=${jsse_enabled} -Dweblogic.security.SSL.enableJSSE=${jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}"
+    }
+    else {
+      $config = "-Dweblogic.ssl.JSSEEnabled=${jsse_enabled} -Dweblogic.security.SSL.enableJSSE=${jsse_enabled}"
+    }
+
     exec { "execwlst ${domain_name} ${title}":
-      command     => "${weblogic_home_dir}/common/bin/wlst.sh ${download_dir}/enroll_domain_${domain_name}.py ${weblogic_password}",
-      environment => ["JAVA_HOME=${jdk_home_dir}"],
+      command     => "${wlst_dir} ${download_dir}/enroll_domain_${domain_name}.py ${weblogic_password}",
+      environment => ["JAVA_HOME=${jdk_home_dir}", "CONFIG_JVM_ARGS=${config}"],
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,

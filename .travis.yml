@@ -4,8 +4,9 @@ cache:
   directories:
   - vendor/bundle
 rvm:
-  - 1.9.3
-  - 2.0.0
+  - 2.1.9
+  - 2.2.5
+  - 2.3.1
 bundler_args: --without development
 before_install:
   -  gem update --system 2.1.11
@@ -17,8 +18,7 @@ notifications:
   email:
     - biemond@gmail.com
 env:
-  - PUPPET_VERSION=3.4.3
-  - PUPPET_VERSION=3.6.2
   - PUPPET_VERSION=3.7.4
   - PUPPET_VERSION=3.8.2
   - PUPPET_VERSION=4.2.2
+  - PUPPET_VERSION=4.4.1

@@ -308,6 +308,19 @@ if soaEnabled == true:
 
 
 if osbEnabled == true:
+    print "fix OSB deployments"
+    cd('/')
+    unassign('AppDeployment'                ,'Service Bus Email Transport Provider'      , 'Target', Admin)
+    unassign('AppDeployment'                ,'Service Bus File Transport Provider'       , 'Target', Admin)
+    unassign('AppDeployment'                ,'Service Bus FTP Transport Provider'        , 'Target', Admin)
+    unassign('AppDeployment'                ,'Service Bus SFTP Transport Provider'       , 'Target', Admin)
+    
+    updateDomain()
+    dumpStack()
+
+    closeDomain()
+    readDomain(DOMAIN_PATH)    
+
     print "fix OSB jms"
     cd('/')
     delete('ReliableWseeSAFAgent'  ,'SAFAgent')

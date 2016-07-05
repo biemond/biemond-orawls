@@ -1,5 +1,17 @@
 # History
 
+## 1.0.53
+- copydomain now support t3s with custom trust
+- wls_setting new attribute extra_arguments which allows you to pass on some arguments to the wls_daemon
+
+## 1.0.52
+- fix wls type weblogicConnectUrL bug when running in debug mode
+
+## 1.0.51
+- Tested against WebLogic 12.2.1.1 + INFRA, SOA, OSB, OHS, use 12.2.1.1 as version
+- add JSSE to wls_daemon when trust is used, this way t3s also works on wls 10.3
+- functionality to run orawls with a non-root user, see [this PR](https://github.com/biemond/biemond-orawls/pull/343)
+
 ## 1.0.50
 - weblogic_type define which support multiple middleware homes on same vm
 - fmwcluster supports now not secure nodemanagers for wls server control

@@ -3,7 +3,7 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213
+  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211
   $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'),
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
@@ -42,7 +42,7 @@ define orawls::nodemanager (
   if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
     $nodeMgrHome = "${weblogic_home_dir}/common/nodemanager"
     $startHome   = "${weblogic_home_dir}/server/bin"
-  } elsif $version == 1212 or $version == 1213 or $version == 1221 {
+  } elsif $version == 1212 or $version == 1213 or $version >= 1221 {
     $nodeMgrHome = "${domains_dir}/${domain_name}/nodemanager"
     $startHome   = "${domains_dir}/${domain_name}/bin"
   } else {
@@ -82,7 +82,7 @@ define orawls::nodemanager (
 
   case $::kernel {
     'Linux': {
-      if ( $version == 1212 or $version == 1213 or $version == 1221 ){
+      if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
         $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
       } else {
         $checkCommand = '/bin/ps -ef | grep -v grep | /bin/grep \'weblogic.NodeManager\''
@@ -95,14 +95,14 @@ define orawls::nodemanager (
     'SunOS': {
       case $::kernelrelease {
         '5.11': {
-          if ( $version == 1212 or $version == 1213 or $version == 1221 ){
+          if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
             $checkCommand = "/bin/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
           } else {
             $checkCommand = '/bin/ps wwxa | /bin/grep -v grep | /bin/grep \'weblogic.NodeManager\''
           }
         }
         default: {
-          if ( $version == 1212 or $version == 1213 or $version == 1221 ){
+          if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
             $checkCommand = "/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
           } else {
             $checkCommand = '/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep \'weblogic.NodeManager\''
@@ -165,11 +165,17 @@ define orawls::nodemanager (
       before  => Exec["startNodemanager ${title}"],
     }
   } else {
+    if $version >= 1221 {
+      $new_version = 1221
+    } else {
+      $new_version = $version
+    }
+
     file { "nodemanager.properties ux ${version} ${title}":
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
       replace => true,
-      content => template("orawls/nodemgr/nodemanager.properties_${version}.erb"),
+      content => template("orawls/nodemgr/nodemanager.properties_${new_version}.erb"),
       owner   => $os_user,
       group   => $os_group,
       mode    => '0775',

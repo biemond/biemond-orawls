@@ -1,7 +1,7 @@
 # rewrite of Class: orawls::weblogic as defined type so multiple installation of product will be possible on single host
 #
 define orawls::weblogic_type (
-  $version              = 1111,  # 1036|1111|1211|1212|1213|1221
+  $version              = 1111,  # 1036|1111|1211|1212|1213|1221|12211
   $filename             = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
   $oracle_base_home_dir = undef, # /opt/oracle
   $middleware_home_dir  = undef, # /opt/oracle/middleware11gR1
@@ -44,7 +44,7 @@ define orawls::weblogic_type (
 
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = 'orawls/weblogic_silent_install.xml.erb'
-  } elsif ( $version == 1212 or $version == 1213 or $version == 1221 ) {
+  } elsif ( $version == 1212 or $version == 1213 or $version >= 1221 ) {
 
     #The oracle home location. This can be an existing Oracle Home or a new Oracle Home
     if ( $fmw_infra == true ) {
@@ -52,7 +52,12 @@ define orawls::weblogic_type (
     } else {
       $install_type='WebLogic Server'
     }
-    $silent_template = "orawls/weblogic_silent_install_${version}.rsp.erb"
+    if $version >= 1221 {
+      $new_version = 1221
+    } else {
+      $new_version = $version
+    }
+    $silent_template = "orawls/weblogic_silent_install_${new_version}.rsp.erb"
 
   } else  {
     fail('unknown weblogic version parameter')
@@ -166,7 +171,7 @@ define orawls::weblogic_type (
     $created_dir = $middleware_home_dir
   }
 
-  if ($version == 1212 or $version == 1213 or $version == 1221) {
+  if ($version == 1212 or $version == 1213 or $version >= 1221 ) {
 
     $command = "-silent -responseFile ${download_dir}/weblogic_silent_install_${title}.xml "
 

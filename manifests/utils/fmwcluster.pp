@@ -96,7 +96,7 @@ define orawls::utils::fmwcluster (
 
     $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
 
-    if ( $version == 1213 or $version == 1221 ) {
+    if ( $version == 1213 or $version >= 1221 ) {
       #shutdown adminserver for offline WLST scripts
       orawls::control{"ShutdownAdminServerForSoa${title}":
         middleware_home_dir         => $middleware_home_dir,
@@ -123,10 +123,15 @@ define orawls::utils::fmwcluster (
         download_dir                => $download_dir,
         log_output                  => $log_output,
       }
+      if $version >= 1221 {
+        $new_version = 1221
+      } else {
+        $new_version = $version
+      }
 
       file { "${download_dir}/assignOsbSoaBpmBamToClusters${title}.py":
         ensure  => present,
-        content => template("orawls/wlst/wlstexec/fmw/assignOsbSoaBpmBamToClusters_${version}.py.erb"),
+        content => template("orawls/wlst/wlstexec/fmw/assignOsbSoaBpmBamToClusters_${new_version}.py.erb"),
         backup  => false,
         replace => true,
         mode    => '0775',

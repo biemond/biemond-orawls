@@ -29,7 +29,7 @@ define orawls::utils::rcu(
   }
 
   if $fmw_product == 'adf' {
-    if $version == 1221 {
+    if $version >= 1221 {
       $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB '
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
@@ -39,7 +39,7 @@ define orawls::utils::rcu(
     }
   }
   elsif $fmw_product == 'soa' {
-    if $version == 1221 {
+    if $version >= 1221 {
       $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB -component UCSUMS -component ESS -component SOAINFRA '
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }

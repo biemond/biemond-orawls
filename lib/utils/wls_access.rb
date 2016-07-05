@@ -312,6 +312,7 @@ module Utils
       weblogicConnectUrl           = domainValues['connect_url']       || 't3://localhost:7001'
       weblogicPassword             = domainValues['weblogic_password']
       postClasspath                = domainValues['post_classpath']
+      extraArguments               = domainValues['extra_arguments']
       custom_trust                 = domainValues['custom_trust']
       trust_keystore_file          = domainValues['trust_keystore_file']
       trust_keystore_passphrase    = domainValues['trust_keystore_passphrase']
@@ -324,16 +325,16 @@ module Utils
       fail('weblogic_password cannot be nil, check the wls_setting resource type') if weblogicPassword.nil?
 
       debugmode = Puppet::Util::Log.level
-          
+
       if Puppet.features.root?
         eval_operatingSystemUser = operatingSystemUser
       end
-      
+
       if debugmode.to_s == 'debug'
         if eval_operatingSystemUser
-          puts 'Prepare to run: ' + tmpFile.path + ',' +  eval_operatingSystemUser + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrL      
+          puts 'Prepare to run: ' + tmpFile.path + ',' + eval_operatingSystemUser + ',' + domain + ',' + weblogicHomeDir + ',' + weblogicUser + ',' + weblogicPassword + ',' + weblogicConnectUrl
         else
-          puts 'Prepare to run: ' + tmpFile.path + ',' +  domain + ',' +  weblogicHomeDir + ',' +  weblogicUser + ',' +  weblogicPassword + ',' +  weblogicConnectUrl
+          puts 'Prepare to run: ' + tmpFile.path + ',' + domain + ',' + weblogicHomeDir + ',' + weblogicUser + ',' + weblogicPassword + ',' + weblogicConnectUrl
         end
         puts 'vvv==================================================================='
         File.open(tmpFile.path).readlines.each do |line|
@@ -342,7 +343,7 @@ module Utils
         puts '^^^===================================================================='
       end
 
-      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
+      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, extraArguments, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
 
       if debug_module.to_s == 'true'
         if !File.directory?(archive_path)

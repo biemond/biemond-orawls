@@ -3,7 +3,7 @@
 # setup a new weblogic domain
 ##
 define orawls::domain (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221
+  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211
   $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
@@ -56,7 +56,8 @@ define orawls::domain (
   $ohs_standalone_listen_address         = undef,
   $ohs_standalone_listen_port            = undef,
   $ohs_standalone_ssl_listen_port        = undef,
-  $wls_domains_file                      = $override_wls_domains_file,
+  $wls_domains_file                      = undef,
+  $puppet_os_user                        = 'root',
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){
@@ -64,7 +65,7 @@ define orawls::domain (
   } else {
     $wls_domains_file_location = $wls_domains_file
   }
-  
+
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -180,7 +181,7 @@ define orawls::domain (
       $templateB2B          = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.b2b_template_12.1.3.jar"
       $templateHEALTH       = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.healthcare_template_12.1.3.jar"
 
-    } elsif $version == 1221 {
+    } elsif $version >= 1221 {
       $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
       $templateWS        = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template.jar"
       $templateJaxWS     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template.jar"
@@ -248,7 +249,7 @@ define orawls::domain (
     }
 
     if $domain_template == 'ohs_standalone' {
-      if ( $version == 1212 or $version == 1213 or $version == 1221) {
+      if ( $version == 1212 or $version == 1213 or $version >= 1221) {
         $extensionsTemplateFile = undef
         $wlstPath       = "${middleware_home_dir}/ohs/common/bin"
         $templateFile = 'orawls/ohs/domain.py.erb'
@@ -264,7 +265,7 @@ define orawls::domain (
     } elsif $domain_template == 'osb' {
       $extensionsTemplateFile = 'orawls/domains/extensions/osb_template.py.erb'
 
-      if ( $version == 1221 ) {
+      if ( $version >= 1221 ) {
         $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
       }
       elsif ( $version == 1213 ) {
@@ -277,7 +278,7 @@ define orawls::domain (
     } elsif $domain_template == 'osb_soa' or $domain_template == 'osb_soa_bpm' {
       $extensionsTemplateFile = 'orawls/domains/extensions/soa_osb_template.py.erb'
 
-      if ( $version == 1221 ) {
+      if ( $version >= 1221 ) {
         $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
       }
       elsif ( $version == 1213 ) {
@@ -295,7 +296,7 @@ define orawls::domain (
     } elsif $domain_template == 'soa' or $domain_template == 'soa_bpm' {
       $extensionsTemplateFile = 'orawls/domains/extensions/soa_template.py.erb'
 
-      if ( $version == 1221 ) {
+      if ( $version >= 1221) {
         $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
       }
       elsif ( $version == 1213 ) {
@@ -313,7 +314,7 @@ define orawls::domain (
     } elsif $domain_template == 'bam' {
       $extensionsTemplateFile = 'orawls/domains/extensions/bam_template.py.erb'
 
-      if ( $version == 1221 ) {
+      if ( $version >= 1221) {
         $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
       }
       elsif ( $version == 1213 ) {
@@ -341,7 +342,7 @@ define orawls::domain (
     } elsif $domain_template == 'wc' {
       $extensionsTemplateFile = 'orawls/domains/extensions/wc_template.py.erb'
 
-      if ( $version == 1221 ) {
+      if ( $version >= 1221) {
         $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
       }
       else {
@@ -350,7 +351,7 @@ define orawls::domain (
     } elsif $domain_template == 'wc_wcc_bpm' {
       $extensionsTemplateFile = 'orawls/domains/extensions/wc_wcc_template.py.erb'
 
-      if ( $version == 1221 ) {
+      if ( $version >= 1221 ) {
         $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
       }
       else {
@@ -412,7 +413,7 @@ define orawls::domain (
         exec { "create ${log_dir} directory":
           command => "mkdir -p ${log_dir}",
           unless  => "test -d ${log_dir}",
-          user    => $os_user,
+          user    => $puppet_os_user,
           path    => $exec_path,
         }
       }

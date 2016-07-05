@@ -55,7 +55,7 @@ dumpStack();
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION == 1221:
+if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1221:
 
     if WEBTIER_ENABLED == true:
         print 'Adding OHS Template'

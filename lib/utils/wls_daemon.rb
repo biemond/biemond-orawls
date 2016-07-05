@@ -10,6 +10,7 @@ class WlsDaemon < EasyType::Daemon
                weblogicPassword,
                weblogicConnectUrl,
                postClasspath,
+               extraArguments,
                custom_trust,
                trust_keystore_file,
                trust_keystore_passphrase,
@@ -19,7 +20,7 @@ class WlsDaemon < EasyType::Daemon
       return daemon
     else
       new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword,
-          weblogicConnectUrl, postClasspath, custom_trust, trust_keystore_file,
+          weblogicConnectUrl, postClasspath, extraArguments, custom_trust, trust_keystore_file,
           trust_keystore_passphrase, use_default_value_when_empty)
     end
   end
@@ -31,6 +32,7 @@ class WlsDaemon < EasyType::Daemon
                  weblogicPassword,
                  weblogicConnectUrl,
                  postClasspath,
+                 extraArguments,
                  custom_trust,
                  trust_keystore_file,
                  trust_keystore_passphrase,
@@ -42,13 +44,14 @@ class WlsDaemon < EasyType::Daemon
     @weblogicPassword = weblogicPassword
     @weblogicConnectUrl = weblogicConnectUrl
     @postClasspath = postClasspath
+    @extraArguments = extraArguments
     @custom_trust = custom_trust
     @trust_keystore_file = trust_keystore_file
     @trust_keystore_passphrase = trust_keystore_passphrase
     @use_default_value_when_empty = use_default_value_when_empty
 
     if @custom_trust.to_s == 'true'
-      trust_parameters = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
+      trust_parameters = "-Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
       Puppet.debug "trust parameters #{trust_parameters}"
     else
       Puppet.debug 'no custom trust'
@@ -56,7 +59,7 @@ class WlsDaemon < EasyType::Daemon
 
     identity = "wls-#{domain}"
     Puppet.info "Starting the wls daemon for domain #{@domain}"
-    command =  "export POST_CLASSPATH='#{@postClasspath}';. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true #{trust_parameters} weblogic.WLST"
+    command =  "export POST_CLASSPATH='#{@postClasspath}';. #{weblogicHomeDir}/server/bin/setWLSEnv.sh;java -Dweblogic.security.SSL.ignoreHostnameVerification=true #{trust_parameters} #{extraArguments} weblogic.WLST"
     super(identity, command, user)
     define_common_methods
   end

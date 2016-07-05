@@ -22,7 +22,7 @@ define orawls::packdomain (
     $domains_dir =  $wls_domains_dir
   }
 
-  if ( $version == 1221 ) {
+  if ( $version >= 1221 ) {
     $bin_dir = "${middleware_home_dir}/oracle_common/common/bin/pack.sh"
   } else {
     $bin_dir = "${weblogic_home_dir}/common/bin/pack.sh"

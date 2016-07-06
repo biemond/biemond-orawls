@@ -30,6 +30,7 @@ define orawls::nodemanager (
   $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
   $properties                            = {},
   $ohs_standalone                        = false,
+  $puppet_os_user                        = 'root',
 )
 {
 
@@ -60,7 +61,7 @@ define orawls::nodemanager (
         exec { "create ${log_dir} directory":
           command => "mkdir -p ${log_dir}",
           unless  => "test -d ${log_dir}",
-          user    => 'root',
+          user    => $puppet_os_user,
           path    => $exec_path,
           group   => $os_group,
           cwd     => $nodeMgrHome,

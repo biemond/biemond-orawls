@@ -72,8 +72,13 @@ EOF"
     Puppet.info "adminserver action: #{action} with command #{command2} and CONFIG_JVM_ARGS=#{config}"
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
-
-    output = `su #{su_shell} - #{user} -c 'export CONFIG_JVM_ARGS="#{config}";#{command}'`
+        
+    if Puppet.features.root?
+      output = `su #{su_shell} - #{user} -c 'export CONFIG_JVM_ARGS="#{config}";#{command}'`
+    else
+      output = `export CONFIG_JVM_ARGS="#{config}";#{command}`
+    end
+    
     Puppet.info "adminserver result: #{output}"
   end
 

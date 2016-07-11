@@ -27,7 +27,7 @@ Puppet::Type.type(:wls_opatch).provide(:prefetching) do
     os_user                 = resource[:os_user]
     full_command            = "#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}"
     output = Puppet::Util::Execution.execute(full_command, :failonfail => true, :uid => os_user)
-    Puppet.info output
+    Puppet.debug output
     output
   end
 
@@ -40,7 +40,7 @@ Puppet::Type.type(:wls_opatch).provide(:prefetching) do
   def self.patches_in_home(oracle_product_home_dir, os_user, orainst_dir)
     full_command  = "#{oracle_product_home_dir}/OPatch/opatch lsinventory -oh #{oracle_product_home_dir} -invPtrLoc #{orainst_dir}/oraInst.loc"
     raw_list = Puppet::Util::Execution.execute(full_command, :failonfail => true, :uid => os_user)
-    Puppet.info raw_list
+    Puppet.debug raw_list
     patch_ids = raw_list.scan(/Patch\s.(\d+)\s.*:\sapplied on/).flatten
     patch_ids.collect{|p| "#{oracle_product_home_dir}:#{p}"}
   end

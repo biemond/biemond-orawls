@@ -31,7 +31,7 @@ module Utils
 
       wls_type = 'wlst'
       domains.each do |key, domainValues|
-        Puppet.info "domain found #{key}"
+        Puppet.debug "domain found #{key}"
         wls_type = 'rest' if domainValues['connect_url'].include? "http"
       end
 
@@ -42,7 +42,7 @@ module Utils
           i = 1
           csv_string = ''
           domains.each do |key, domainValues|
-            Puppet.info "domain found #{key}"
+            Puppet.debug "domain found #{key}"
             result = wlst2 content, action, key, domains[key], parameters
             if i > 1
               # with multi domain, remove first line if it is a header
@@ -62,7 +62,7 @@ module Utils
           # if index do all domains
           all_items = []
           domains.each do |key, domainValues|
-            Puppet.info "domain found #{key}"
+            Puppet.debug "domain found #{key}"
             result = rest action, key, domains[key], parameters
             all_items.concat result
           end
@@ -84,7 +84,7 @@ module Utils
         weblogicPassword   = domain_values['weblogic_password']
 
         uri_string = "#{weblogicConnectUrl}#{parameters['rest_url']}"
-        Puppet.info uri_string
+        Puppet.debug uri_string
 
         uri = URI.parse(uri_string)
 
@@ -152,7 +152,7 @@ module Utils
       action = ''
       unless parameters.nil?
         action = parameters['action']
-        Puppet.info "Executing: #{script} with action #{action}"
+        Puppet.debug "Executing: #{script} with action #{action}"
       else
         Puppet.info "Executing: #{script} for a create,modify or destroy"
       end
@@ -170,7 +170,7 @@ module Utils
         # if index do all domains
         i = 1
         domains.each do |key, values|
-          Puppet.info "domain found #{key}"
+          Puppet.debug "domain found #{key}"
           csv_domain_string = execute_wlst(script, tmpFile, parameters, key, values, :return_output => true)
           if i > 1
             # with multi domain, remove first line if it is a header

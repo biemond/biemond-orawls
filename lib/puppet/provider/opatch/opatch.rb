@@ -43,7 +43,7 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     orainst_dir             = resource[:orainst_dir]
 
     command  = oracle_product_home_dir + '/OPatch/opatch lsinventory -patch_id -oh ' + oracle_product_home_dir + ' -invPtrLoc ' + orainst_dir + '/oraInst.loc'
-    Puppet.info "opatch_status for patch #{patchName} command: #{command}"
+    Puppet.debug "opatch_status for patch #{patchName} command: #{command}"
 
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''

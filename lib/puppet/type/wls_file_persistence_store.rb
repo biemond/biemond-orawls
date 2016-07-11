@@ -15,7 +15,7 @@ module Puppet
     set_command(:wlst)
 
     to_get_raw_resources do
-      Puppet.info "index #{name}"
+      Puppet.debug "index #{name}"
       environment = { 'action' => 'index', 'type' => 'wls_file_persistence_store' }
       wlst template('puppet:///modules/orawls/providers/wls_file_persistence_store/index.py.erb', binding), environment
     end

@@ -24,7 +24,7 @@ module Puppet
 
       **ATTENTION:**
 
-      After the creation or modification of a wls_authentication_provider you'll need a restart from the 
+      After the creation or modification of a wls_authentication_provider you'll need a restart from the
       Admin server. If you don't restart the server, the changes will not be applied. In some cases this means
       that Puppet will try to re-create the wls_authentication_provider and will produce an WLST error.
 
@@ -35,7 +35,7 @@ module Puppet
     set_command(:wlst)
 
     to_get_raw_resources do
-      Puppet.info "index #{name} "
+      Puppet.debug "index #{name} "
       environment = { 'action' => 'index', 'type' => 'wls_authentication_provider' }
       wlst template('puppet:///modules/orawls/providers/wls_authentication_provider/index.py.erb', binding), environment
     end

@@ -23,7 +23,7 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
     output = `su #{su_shell} - #{user} -c '#{command}'`
-    Puppet.info "opatch result: #{output}"
+    Puppet.debug "opatch result: #{output}"
 
     result = false
     output.each_line do |li|

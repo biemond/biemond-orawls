@@ -13,7 +13,7 @@ module Puppet
     set_command(:wlst)
 
     to_get_raw_resources do
-      Puppet.info "index #{name} "
+      Puppet.debug "index #{name} "
       environment = { 'action' => 'index', 'type' => 'wls_virtual_target' }
       wlst template('puppet:///modules/orawls/providers/wls_virtual_target/index.py.erb', binding), environment
     end

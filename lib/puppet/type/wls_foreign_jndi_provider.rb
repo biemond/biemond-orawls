@@ -15,7 +15,7 @@ module Puppet
     set_command(:wlst)
 
     to_get_raw_resources do
-      Puppet.info "index #{name}"
+      Puppet.debug "index #{name}"
       environment = { 'action' => 'index', 'type' => 'wls_foreign_jndi_provider' }
       wlst template('puppet:///modules/orawls/providers/wls_foreign_jndi_provider/index.py.erb', binding), environment
     end

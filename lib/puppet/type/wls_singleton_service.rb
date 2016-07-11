@@ -14,7 +14,7 @@ module Puppet
     set_command(:wlst)
 
     to_get_raw_resources do
-      Puppet.info "index #{name}"
+      Puppet.debug "index #{name}"
       environment = { 'action' => 'index', 'type' => 'wls_singleton_service' }
       wlst template('puppet:///modules/orawls/providers/wls_singleton_service/index.py.erb', binding), environment
     end

@@ -15,7 +15,7 @@ module Puppet
     # set_command(:controller)
 
     to_get_raw_resources do
-      Puppet.info "index #{name}"
+      Puppet.debug "index #{name}"
       environment = { 'action' => 'index', 'type' => 'wls_cluster', 'rest_url' => '/management/weblogic/latest/domainConfig/clusters?links=none' }
 
       wlst template('puppet:///modules/orawls/providers/wls_cluster/index.py.erb', binding), environment

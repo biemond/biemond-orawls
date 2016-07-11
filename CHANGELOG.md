@@ -3,6 +3,8 @@
 ## 1.0.53
 - copydomain now support t3s with custom trust
 - wls_setting new attribute extra_arguments which allows you to pass on some arguments to the wls_daemon
+- reduce info log output -> moved to debug
+- more functionality to run orawls with a non-root user
 
 ## 1.0.52
 - fix wls type weblogicConnectUrL bug when running in debug mode

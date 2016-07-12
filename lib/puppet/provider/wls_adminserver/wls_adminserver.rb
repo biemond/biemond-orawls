@@ -21,14 +21,15 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     custom_trust                = resource[:custom_trust]
     trust_keystore_file         = resource[:trust_keystore_file]
     trust_keystore_passphrase   = resource[:trust_keystore_passphrase]
+    extra_arguments             = resource[:extra_arguments]
     ohs_standalone_server       = resource[:ohs_standalone_server]
 
     Puppet.debug "adminserver custom trust: #{custom_trust}"
 
     if "#{custom_trust}" == 'true'
-      config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{trust_keystore_passphrase}"
+      config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{trust_keystore_passphrase} #{extra_arguments}"
     else
-      config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled}"
+      config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} #{extra_arguments}"
     end
 
     if "#{ohs_standalone_server}" == 'true'

@@ -154,6 +154,13 @@ module Puppet
 
     end
 
+    newparam(:extra_arguments) do
+      desc <<-EOT
+        The extra java argument like -Dweblogic.security.SSL.minimumProtocolVersion=TLSv1.
+      EOT
+
+    end
+
     newparam(:refreshonly) do
       desc <<-EOT
         The command should only be run as a

@@ -18,6 +18,7 @@ define orawls::nodemanager (
   $custom_identity_keystore_passphrase   = undef,
   $custom_identity_alias                 = undef,
   $custom_identity_privatekey_passphrase = undef,
+  $extra_arguments                       = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
   $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
   $domain_name                           = hiera('domain_name'                   , undef),
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
@@ -191,9 +192,9 @@ define orawls::nodemanager (
   }
 
   if $jsse_enabled == true {
-    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true ${trust_env}"
+    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true ${trust_env} ${extra_arguments}"
   } else {
-    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env}"
+    $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env} ${extra_arguments}"
   }
 
   exec { "startNodemanager ${title}":

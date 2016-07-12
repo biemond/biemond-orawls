@@ -21,13 +21,19 @@ Puppet::Type.type(:wls_opatch).provide(:prefetching) do
   end
 
   def opatch(command)
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
     oracle_product_home_dir = resource[:oracle_product_home_dir]
     jre_specfied            = resource[:jdk_home_dir] ? " -jre #{resource[:jdk_home_dir]} " : ''
     orainst                 = "-invPtrLoc #{resource[:orainst_dir]}/oraInst.loc "
     os_user                 = resource[:os_user]
-    full_command            = "#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}"
-    output = Puppet::Util::Execution.execute(full_command, :failonfail => true, :uid => os_user)
-    Puppet.debug output
+    full_command            = "export ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}"
+    if Puppet.features.root?
+      output = `su #{su_shell} - #{os_user} -c 'ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}'`
+    else
+      output = `export ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}`
+    end
+    Puppet.info output
     output
   end
 
@@ -38,9 +44,15 @@ Puppet::Type.type(:wls_opatch).provide(:prefetching) do
   end
 
   def self.patches_in_home(oracle_product_home_dir, os_user, orainst_dir)
+    kernel = Facter.value(:kernel)
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
     full_command  = "#{oracle_product_home_dir}/OPatch/opatch lsinventory -oh #{oracle_product_home_dir} -invPtrLoc #{orainst_dir}/oraInst.loc"
-    raw_list = Puppet::Util::Execution.execute(full_command, :failonfail => true, :uid => os_user)
-    Puppet.debug raw_list
+    if Puppet.features.root?
+      raw_list = `su #{su_shell} - #{os_user} -c '#{oracle_product_home_dir}/OPatch/opatch lsinventory -oh #{oracle_product_home_dir} -invPtrLoc #{orainst_dir}/oraInst.loc'`
+    else
+      raw_list = `#{oracle_product_home_dir}/OPatch/opatch lsinventory -oh #{oracle_product_home_dir} -invPtrLoc #{orainst_dir}/oraInst.loc`
+    end
+    Puppet.info raw_list
     patch_ids = raw_list.scan(/Patch\s.(\d+)\s.*:\sapplied on/).flatten
     patch_ids.collect{|p| "#{oracle_product_home_dir}:#{p}"}
   end

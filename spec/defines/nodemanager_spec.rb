@@ -37,7 +37,7 @@ describe 'orawls::nodemanager', :type => :define do
              'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
              'user'        => 'oracle',
              'group'       => 'dba',
-             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
+             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
            })
          }
     end
@@ -100,7 +100,7 @@ describe 'orawls::nodemanager', :type => :define do
              'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
              'user'        => 'oracle',
              'group'       => 'dba',
-             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
+             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
            })
          }
     end
@@ -134,7 +134,7 @@ describe 'orawls::nodemanager', :type => :define do
              'cwd'         => '/opt/oracle/wlsdomains/domains/wls1212/nodemanager',
              'user'        => 'oracle',
              'group'       => 'dba',
-             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
+             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
            })
          }
     end

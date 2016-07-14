@@ -85,9 +85,9 @@ define orawls::nodemanager (
   case $::kernel {
     'Linux': {
       if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
-        $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
+        $checkCommand = "/bin/ps -eo pid,cmd | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
       } else {
-        $checkCommand = '/bin/ps -ef | grep -v grep | /bin/grep \'weblogic.NodeManager\''
+        $checkCommand = '/bin/ps -eo pid,cmd | grep -v grep | /bin/grep \'weblogic.NodeManager\''
       }
       $nativeLib         = 'linux/x86_64'
       $suCommand         = "su -l ${os_user}"
@@ -156,7 +156,8 @@ define orawls::nodemanager (
 
   # nodemanager is part of the domain creation
   if ( $version == 1111 or $version == 1036 or $version == 1211 ){
-    file { "nodemanager.properties ux ${title}":
+    $propertiesFileTitle = "nodemanager.properties ux ${title}"
+    file { $propertiesFileTitle:
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
       replace => $replaceNodemanagerProperties,
@@ -173,7 +174,8 @@ define orawls::nodemanager (
       $new_version = $version
     }
 
-    file { "nodemanager.properties ux ${version} ${title}":
+    $propertiesFileTitle = "nodemanager.properties ux ${version} ${title}"
+    file { $propertiesFileTitle:
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
       replace => true,
@@ -197,8 +199,11 @@ define orawls::nodemanager (
     $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env} ${extra_arguments}"
   }
 
+  $startCommand      = "nohup ${startHome}/startNodeManager.sh &"
+  $restartCommand    = "kill $(${checkCommand} | awk '{print \$1}'); sleep 1; ${startCommand}"
+
   exec { "startNodemanager ${title}":
-    command     => "nohup ${startHome}/startNodeManager.sh &",
+    command     => $startCommand,
     environment => [ $env, "JAVA_HOME=${jdk_home_dir}", 'JAVA_VENDOR=Oracle' ],
     unless      => $checkCommand,
     path        => $exec_path,
@@ -207,13 +212,25 @@ define orawls::nodemanager (
     cwd         => $nodeMgrHome,
   }
 
+  exec {"restart NodeManager ${title}":
+    command     => $restartCommand,
+    environment => [ $env, "JAVA_HOME=${jdk_home_dir}", 'JAVA_VENDOR=Oracle' ],
+    onlyif      => $checkCommand,
+    path        => $exec_path,
+    user        => $os_user,
+    group       => $os_group,
+    cwd         => $nodeMgrHome,
+    refreshonly => true,
+    subscribe   => File[$propertiesFileTitle],
+  }
+
   # using fiddyspence/sleep module
   sleep { "wake up ${title}":
     bedtime       => $sleep,
     wakeupfor     => $netstat_statement,
     dozetime      => 2,
     failontimeout => true,
-    subscribe     => Exec["startNodemanager ${title}"],
+    subscribe     => [Exec["startNodemanager ${title}"], Exec["restart NodeManager ${title}"]],
     refreshonly   => true,
   }
 }

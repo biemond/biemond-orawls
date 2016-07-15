@@ -18,7 +18,7 @@ define orawls::weblogic_type (
   $java_parameters      = '',    # '-Dspace.detection=false'
   $log_output           = false, # true|false
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
-  $oraInstPath_location = hiera('oraInstPath_location', undef),
+  $orainstpath_dir      = hiera('orainstpath_dir', undef),
 ) {
 
   # check required parameters
@@ -73,10 +73,10 @@ define orawls::weblogic_type (
 
   case $::kernel {
     'Linux': {
-      if ( $oraInstPath_location == undef or $oraInstPath_location == '' ){
+      if ( $orainstpath_dir == undef or $orainstpath_dir == '' ){
         $oraInstPath = '/etc'
       } else {
-        $oraInstPath = $oraInstPath_location
+        $oraInstPath = $orainstpath_dir
       }
       $java_statement     = "java ${java_parameters}"
     }
@@ -221,4 +221,3 @@ define orawls::weblogic_type (
     }
   }
 }
-

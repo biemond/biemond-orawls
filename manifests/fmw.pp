@@ -26,7 +26,7 @@ define orawls::fmw(
   $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
   $ohs_mode             = hiera('ohs_mode', 'collocated'),
   $oracle_inventory_dir = undef,
-  $oraInstPath_location = hiera('oraInstPath_location', undef),
+  $orainstpath_dir      = hiera('orainstpath_dir', undef),
 )
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
@@ -39,10 +39,10 @@ define orawls::fmw(
 
   case $::kernel {
     'Linux': {
-      if ( $oraInstPath_location == undef or $oraInstPath_location == '' ){
+      if ( $orainstpath_dir == undef or $orainstpath_dir == '' ){
         $oraInstPath = '/etc'
       } else {
-        $oraInstPath = $oraInstPath_location
+        $oraInstPath = $orainstpath_dir
       }
       
       case $::architecture {

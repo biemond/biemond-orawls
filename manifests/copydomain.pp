@@ -26,7 +26,7 @@ define orawls::copydomain (
   $log_output                 = false, # true|false
   $server_start_mode          = 'dev', # dev/prod
   $wls_domains_file           = hiera('wls_domains_file'          , undef),
-  $puppet_os_user             = hiera('wls_os_user','root'),
+  $puppet_os_user             = hiera('puppet_os_user','root'),
   $jsse_enabled               = hiera('wls_jsse_enabled'              , false),
   $custom_trust               = hiera('wls_custom_trust'              , false),
   $trust_keystore_file        = hiera('wls_trust_keystore_file'       , undef),
@@ -187,7 +187,7 @@ define orawls::copydomain (
 
     exec { "unpack ${domain_name}":
       command     => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
-      environment => ["JAVA_HOME=${jdk_home_dir}","CLASSPATH=$managedserver_classpath"],
+      environment => ["JAVA_HOME=${jdk_home_dir}"],
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,

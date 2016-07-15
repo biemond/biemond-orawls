@@ -31,7 +31,7 @@ define orawls::nodemanager (
   $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
   $properties                            = {},
   $ohs_standalone                        = false,
-  $puppet_os_user                        = hiera('wls_os_user','root'),
+  $puppet_os_user                        = hiera('puppet_os_user','root'),
 )
 {
 

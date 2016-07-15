@@ -17,7 +17,7 @@ end
 def get_ora_inventory_path
   os = Facter.value(:kernel)
   if 'Linux' == os
-    ora_inventory_path = Facter.value('override_oraInstPath')
+    ora_inventory_path = Facter.value('override_orainst_dir')
     if ora_inventory_path.nil?
       Puppet.debug 'ora_inventory_path is default to /etc'
       return '/etc'

@@ -8,15 +8,15 @@ define orawls::utils::orainst
 (
   $ora_inventory_dir = undef,
   $os_group          = undef,
-  $oraInstPath_location = hiera('oraInstPath_location', undef),
+  $orainstpath_dir   = hiera('orainstpath_dir', undef),
 )
 {
   case $::kernel {
     'Linux': {
-      if ( $oraInstPath_location == undef or $oraInstPath_location == '' ){
+      if ( $orainstpath_dir == undef or $orainstpath_dir == '' ){
         $oraInstPath = '/etc'
       } else {
-        $oraInstPath = $oraInstPath_location
+        $oraInstPath = $orainstpath_dir
       }
     }
     'SunOS': {

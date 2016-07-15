@@ -63,6 +63,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - [Pack a WebLogic domain](#packdomain)
 - [Copy a WebLogic domain](#copydomain) to a other node with SSH, unpack and enroll to a nodemanager
 - [JSSE](#jsse) Java Secure Socket Extension support
+- [Override the default file location, applicable for running as non-root user](#default_override)
 - [Custom Identity and Trust Store support](#identity)
 - [Linux low on entropy or urandom fix](#urandom)
 - [Startup a nodemanager](#nodemanager)
@@ -206,15 +207,22 @@ Contains WebLogic Facter which displays the following
 default this orawls module uses oracle as weblogic install user
 you can override this by setting the following fact 'override_weblogic_user', like override_weblogic_user=wls or set FACTER_override_weblogic_user=wls
 
-## Override the default file location where orawls saves domain & other settings (Applicable for running as non-root user)
+## <a name="default_override">Override the default file location where orawls saves domain & other settings (Applicable for running as non-root user)
 
 default this orawls module saves the domain & connection related setting in /etc in yaml format
 you can override this by setting the following 2 facts:
+
 for domain information: override_wls_domains_file=[custom_path]/wls_domains.yaml
 or set FACTER_override_wls_domains_file=[custom_path]/wls_domains.yaml
 
 for settings infortmation: override_wls_setting_file=[custom_path]/wls_setting.yaml
 or set FACTER_override_wls_setting_file=[custom_path]/wls_setting.yaml
+
+for ora inst location: override_orainst_dir=[custom_path]
+or set FACTER_override_orainst_dir=[custom_path]
+
+Set $puppet_os_user on some of the manifests or set this hiera variable puppet_os_user
+
 
 ## Override the default WebLogic domain folder
 

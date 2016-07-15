@@ -125,6 +125,7 @@ define orawls::nodemanager (
     logoutput => $log_output,
   }
 
+  # do it once but don't replace it because of encrypted trust passwords
   if $custom_identity == true {
     $replaceNodemanagerProperties = false
   } else {
@@ -174,11 +175,12 @@ define orawls::nodemanager (
       $new_version = $version
     }
 
+    # do not replace when it contains encrypted custom trust field like CustomIdentityKeyStorePassPhrase
     $propertiesFileTitle = "nodemanager.properties ux ${version} ${title}"
     file { $propertiesFileTitle:
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
-      replace => true,
+      replace => $replaceNodemanagerProperties,
       content => template("orawls/nodemgr/nodemanager.properties_${new_version}.erb"),
       owner   => $os_user,
       group   => $os_group,

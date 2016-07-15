@@ -592,7 +592,6 @@ define orawls::domain (
         path        => $exec_path,
         user        => $os_user,
         group       => $os_group,
-        before      => Exec["rm ${domain_name} nodemanager.properties"],
         require     => [Exec["execwlst ${domain_name} ${title}"],
                         File["domain_extension.py ${domain_name} ${title}"],],
       }

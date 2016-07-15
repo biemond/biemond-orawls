@@ -44,7 +44,6 @@ define orawls::fmw(
       } else {
         $oraInstPath = $orainstpath_dir
       }
-      
       case $::architecture {
         'i386': {
           $installDir = 'linux'

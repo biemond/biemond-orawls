@@ -25,8 +25,8 @@ define orawls::copydomain (
   $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
   $log_output                 = false, # true|false
   $server_start_mode          = 'dev', # dev/prod
-  $wls_domains_file           = undef,
-  $puppet_os_user             = 'root',
+  $wls_domains_file           = hiera('wls_domains_file'          , undef),
+  $puppet_os_user             = hiera('puppet_os_user','root'),
   $jsse_enabled               = hiera('wls_jsse_enabled'              , false),
   $custom_trust               = hiera('wls_custom_trust'              , false),
   $trust_keystore_file        = hiera('wls_trust_keystore_file'       , undef),

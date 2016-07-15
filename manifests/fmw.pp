@@ -26,6 +26,7 @@ define orawls::fmw(
   $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
   $ohs_mode             = hiera('ohs_mode', 'collocated'),
   $oracle_inventory_dir = undef,
+  $orainstpath_dir      = hiera('orainstpath_dir', undef),
 )
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
@@ -38,7 +39,11 @@ define orawls::fmw(
 
   case $::kernel {
     'Linux': {
-      $oraInstPath = '/etc'
+      if ( $orainstpath_dir == undef or $orainstpath_dir == '' ){
+        $oraInstPath = '/etc'
+      } else {
+        $oraInstPath = $orainstpath_dir
+      }
       case $::architecture {
         'i386': {
           $installDir = 'linux'
@@ -495,6 +500,7 @@ define orawls::fmw(
       path      => $exec_path,
       user      => $os_user,
       group     => $os_group,
+      timeout   => 0,
       cwd       => $temp_directory,
       logoutput => false,
       require   => Orawls::Utils::Orainst["create oraInst for ${name}"],
@@ -528,6 +534,7 @@ define orawls::fmw(
         path      => $exec_path,
         user      => $os_user,
         group     => $os_group,
+        timeout   => 0,
         cwd       => $temp_directory,
         logoutput => false,
         require   => Exec["extract ${fmw_file1} for ${name}"],
@@ -561,6 +568,7 @@ define orawls::fmw(
         path      => $exec_path,
         user      => $os_user,
         group     => $os_group,
+        timeout   => 0,
         cwd       => $temp_directory,
         logoutput => false,
         require   => Exec["extract ${fmw_file2} for ${name}"],
@@ -594,6 +602,7 @@ define orawls::fmw(
         path      => $exec_path,
         user      => $os_user,
         group     => $os_group,
+        timeout   => 0,
         cwd       => $temp_directory,
         logoutput => false,
         require   => Exec["extract ${fmw_file3} for ${name}"],

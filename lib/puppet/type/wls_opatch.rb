@@ -69,8 +69,14 @@ module Puppet
       Puppet.info "Unzipping source #{source} to #{output}"
       environment = {}
       environment[:PATH] = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
-      Puppet::Util::Execution.execute("unzip -o #{file} -d #{output}", :failonfail => true, :uid => os_user, :custom_environment => environment )
-      Puppet.info "Done Unzipping source #{source} to #{output}"
+      kernel = Facter.value(:kernel)
+      su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+      Puppet.info "Done Unzipping source #{source} to #{output}"  
+      if Puppet.features.root?
+        Puppet::Util::Execution.execute("unzip -o #{file} -d #{output}", :failonfail => true, :uid => os_user, :custom_environment => environment )
+      else
+        `unzip -o #{file} -d #{output}`
+      end
       "#{output}/#{patch_id}"
     end
 

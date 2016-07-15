@@ -15,6 +15,7 @@ define orawls::opatch(
   $source                  = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
   $remote_file             = true,  # true|false
   $log_output              = false, # true|false
+  $oraInstPath_location    = hiera('oraInstPath_location', undef),
 )
 {
   # $exec_path = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
@@ -59,7 +60,11 @@ define orawls::opatch(
 
   case $::kernel {
     'Linux': {
-      $oraInstPath = '/etc'
+      if ( $oraInstPath_location == undef or $oraInstPath_location == '' ){
+        $oraInstPath = '/etc'
+      } else {
+        $oraInstPath = $oraInstPath_location
+      }
     }
     'SunOS': {
       $oraInstPath = '/var/opt/oracle'
@@ -89,4 +94,3 @@ define orawls::opatch(
   # }
 
 }
-

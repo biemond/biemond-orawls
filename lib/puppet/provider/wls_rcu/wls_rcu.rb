@@ -15,7 +15,11 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su #{su_shell} - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
+    if Puppet.features.root?
+      output = `su #{su_shell} - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
+    else
+      output = `export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}`
+    end
     Puppet.info "RCU result: #{output}"
 
     # Check for 'Repository Creation Utility - Create : Operation Completed' else raise
@@ -47,7 +51,13 @@ Puppet::Type.type(:wls_rcu).provide(:wls_rcu) do
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    rcu_output = `su #{su_shell} - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix} #{sysuser}'`
+    if Puppet.features.root?
+      #output = `su #{su_shell} - #{user} -c 'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
+      rcu_output = `su #{su_shell} - #{user} -c 'export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix} #{sysuser}'`
+    else
+      rcu_output = `export TZ=GMT;#{oraclehome}/common/bin/wlst.sh #{checkscript} #{jdbcurl} #{syspassword} #{prefix} #{sysuser}`
+      #output = `'export JAVA_HOME=#{jdk_home_dir};export TZ=GMT;export LANG=en_US.UTF8;export LC_ALL=en_US.UTF8;export NLS_LANG=american_america;#{statement}'`
+    end
     fail ArgumentError, "Error executing puppet code, #{rcu_output}" if $CHILD_STATUS != 0
     Puppet.info "RCU check result: #{rcu_output}"
     rcu_output.each_line do |li|

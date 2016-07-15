@@ -56,8 +56,8 @@ define orawls::domain (
   $ohs_standalone_listen_address         = undef,
   $ohs_standalone_listen_port            = undef,
   $ohs_standalone_ssl_listen_port        = undef,
-  $wls_domains_file                      = undef,
-  $puppet_os_user                        = 'root',
+  $wls_domains_file                      = hiera('wls_domains_file'          , undef),
+  $puppet_os_user                        = hiera('wls_os_user','root'),
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){

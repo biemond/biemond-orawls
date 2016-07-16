@@ -132,7 +132,20 @@ define orawls::nodemanager (
     $replaceNodemanagerProperties = true
   }
 
+  if ( $version == 1111 or $version == 1036 or $version == 1211 ){
+    $nodemanager_property_version = '10.3'
+  } elsif $version == 1212 {
+    $nodemanager_property_version = '12.1.2'
+  } elsif $version == 1213 {
+    $nodemanager_property_version = '12.1.3'
+  } elsif $version == 1221 {
+    $nodemanager_property_version = '12.2.1'
+  } elsif $version == 12211 {
+    $nodemanager_property_version = '12.2.1.1.0'
+  }
+
   $property_defaults = {
+    'properties_version'                 => $nodemanager_property_version,
     'log_limit'                          => 0,
     'domains_dir_remote_sharing_enabled' => false,
     'authentication_enabled'             => true,

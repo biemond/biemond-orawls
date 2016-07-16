@@ -4,7 +4,7 @@ JavaHome=<%= @jdk_home_dir %>
 ListenPort=<%= @nodemanager_port %>
 LogFile=<%= @nodeMgrLogDir %>
 LogLimit=<%= @properties_merged['log_limit'] %>
-PropertiesVersion=10.3
+PropertiesVersion=<%= @properties_merged['properties_version'] %>
 DomainsDirRemoteSharingEnabled=<%= @properties_merged['domains_dir_remote_sharing_enabled'] %>
 AuthenticationEnabled=<%= @properties_merged['authentication_enabled'] %>
 LogLevel=<%= @properties_merged['log_level'] %>

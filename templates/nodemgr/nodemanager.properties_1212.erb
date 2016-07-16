@@ -1,7 +1,7 @@
 #Node manager properties
 DomainsFile=<%= @domains_dir %>/<%= @domain_name %>/nodemanager/nodemanager.domains
 LogLimit=<%= @properties_merged['log_limit'] %>
-PropertiesVersion=12.1.2
+PropertiesVersion=<%= @properties_merged['properties_version'] %>
 AuthenticationEnabled=<%= @properties_merged['authentication_enabled'] %>
 NodeManagerHome=<%= @domains_dir %>/<%= @domain_name %>/nodemanager
 JavaHome=<%= @jdk_home_dir %>

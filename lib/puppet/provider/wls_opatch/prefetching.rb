@@ -29,7 +29,7 @@ Puppet::Type.type(:wls_opatch).provide(:prefetching) do
     os_user                 = resource[:os_user]
     full_command            = "export ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}"
     if Puppet.features.root?
-      output = `su #{su_shell} - #{os_user} -c 'ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}'`
+      output = `su #{su_shell} - #{os_user} -c 'export ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}'`
     else
       output = `export ORACLE_HOME=#{oracle_product_home_dir};#{oracle_product_home_dir}/OPatch/opatch #{command} -oh #{oracle_product_home_dir} #{jre_specfied} #{orainst}`
     end

@@ -429,6 +429,17 @@ if bamEnabled == true:
 
     print "re-create BAM JMS"
     cd('/')
+
+    try:
+        delete('BamCQServiceJmsSystemModule', 'JMSSystemResource')
+    except:
+        print "delete BamCQServiceJmsSystemModule failed"
+
+    try:
+        delete('BamCQServiceJmsSystemResource', 'JMSSystemResource')
+    except:
+        print "delete BamCQServiceJmsSystemResource failed"
+
     try:
         delete('BamCQServiceJmsSystemResource_bam_server1', 'JMSSystemResource')
     except:
@@ -438,6 +449,11 @@ if bamEnabled == true:
         delete('BamServerJmsSystemResource', 'JMSSystemResource')
     except:
         print "delete BamServerJmsSystemResource failed"
+
+    try:
+        delete('BamCQServiceJmsServer', 'JMSServer')
+    except:
+        print "Delete BamCQServiceJmsServer failed"
 
     try:
         delete('BamCQServiceJmsServer_bam_server1', 'JMSServer')
@@ -458,6 +474,11 @@ if bamEnabled == true:
         delete('BamServerJmsServer_bam_server1', 'JMSServer')
     except:
         print "Delete BamServerJmsServer_bam_server1 failed"
+
+    try:
+        delete('BamCQServiceJmsFileStore', 'FileStore')
+    except:
+        print "Delete BamCQServiceJmsFileStore failed"
 
     try:
         delete('BamCQServiceJmsFileStore_bam_server1', 'FileStore')

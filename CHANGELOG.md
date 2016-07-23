@@ -1,5 +1,8 @@
 # History
 
+## 1.0.54
+- SOA 12.2.1.1 bam fix for single node clusters
+
 ## 1.0.53
 - nodemanager manifest will auto restart nodemanager when a property is changed
 - copydomain now support t3s with custom trust

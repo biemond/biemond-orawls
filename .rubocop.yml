@@ -1,88 +1,144 @@
+# Relaxed.Ruby.Style
 
-Style/Encoding:
+Style/Alias:
   Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylealias
 
-Style/VariableName:
-  Description: 'Use the configured style when naming variables.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars'
+Style/BeginBlock:
   Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylebeginblock
+
+Style/BlockDelimiters:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styleblockdelimiters
 
 Style/Documentation:
-  Description: 'Document classes and non-namespace modules.'
   Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styledocumentation
 
-Style/RedundantSelf:
-  Description: "Don't use self where it's not needed."
+Style/DotPosition:
   Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styledotposition
 
-Style/Blocks:
-  Description: >-
-                Avoid using {...} for multi-line blocks (multiline chaining is
-                always ugly).
-                Prefer {...} over do...end for single-line blocks.
+Style/DoubleNegation:
   Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styledoublenegation
 
-Style/UnlessElse:
-  Description: >-
-                 Never use unless with else. Rewrite these with the positive
-                 case first.
+Style/EndBlock:
   Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styleendblock
+
+Style/FormatString:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styleformatstring
 
 Style/IfUnlessModifier:
-  Description: >-
-                 Favor modifier if/unless usage when you have a
-                 single-line body.
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styleifunlessmodifier
+
+Style/Lambda:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylelambda
+
+Style/ModuleFunction:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylemodulefunction
+
+Style/MultilineBlockChain:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylemultilineblockchain
+
+Style/NegatedIf:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylenegatedif
+
+Style/NegatedWhile:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylenegatedwhile
+
+Style/ParallelAssignment:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styleparallelassignment
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylepercentliteraldelimiters
+
+Style/PerlBackrefs:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styleperlbackrefs
+
+Style/Semicolon:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylesemicolon
+
+Style/SignalException:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylesignalexception
+
+Style/SingleLineBlockParams:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylesinglelineblockparams
+
+Style/SingleLineMethods:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylesinglelinemethods
+
+Style/SpaceBeforeBlockBraces:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylespacebeforeblockbraces
+
+Style/SpaceInsideParens:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylespaceinsideparens
+
+Style/SpecialGlobalVars:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylespecialglobalvars
+
+Style/StringLiterals:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylestringliterals
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#styletrailingcommainliteral
+
+Style/WhileUntilModifier:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#stylewhileuntilmodifier
+
+Lint/AmbiguousRegexpLiteral:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#lintambiguousregexpliteral
+
+Lint/AssignmentInCondition:
+  Enabled: false
+  StyleGuide: http://relaxed.ruby.style/#lintassignmentincondition
+
+Metrics/AbcSize:
   Enabled: false
 
-Style/Next:
-  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+Metrics/BlockNesting:
   Enabled: false
 
-AllCops:
-  Exclude:
-    - 'spec/**/*'
-    - 'pkg/**/*'
-    - 'coverage/**/*'
-    - 'files/**/*'
-    - 'manifests/**/*'
-    - 'Rakefile'
-    - 'Gemfile'
-    - '*.markdown'
-    - '*.md'
-
-Eval:
+Metrics/ClassLength:
   Enabled: false
 
-HashSyntax:
-  EnforcedStyle: hash_rockets
-
-Lambda:
-  Enabled: false
-
-LineLength:
-  Enabled: false
-
-AccessorMethodName:
-  Enabled: false
-
-MethodLength:
+Metrics/ModuleLength:
   Enabled: false
 
 Metrics/CyclomaticComplexity:
-  Severity: convention
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
 
 Metrics/ParameterLists:
-  Max: 8
-  CountKeywordArgs: true
-
-Lint/UnusedMethodArgument:
-  Description: 'Checks for unused method arguments.'
   Enabled: false
 
-Lint/UnusedBlockArgument:
-  Description: 'Checks for unused block arguments.'
-  Enabled: false
-
-
-BlockNesting:
+Metrics/PerceivedComplexity:
   Enabled: false

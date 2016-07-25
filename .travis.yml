@@ -6,19 +6,23 @@ cache:
 rvm:
   - 1.9.3
   - 2.0.0
-bundler_args: --without development
+  - 2.1.0
+bundler_args: --without development system_tests
 before_install:
-  -  gem update --system 2.1.11
+  - rm Gemfile.lock || true
+  - gem update --system 2.1.11
 script:
   - bundle exec rake syntax
   - bundle exec rake lint
   - bundle exec rake ci:setup:rspec spec
 notifications:
   email:
-    - biemond@gmail.com
+    - bryan@autostructure.io
 env:
-  - PUPPET_VERSION=3.4.3
-  - PUPPET_VERSION=3.6.2
-  - PUPPET_VERSION=3.7.4
-  - PUPPET_VERSION=3.8.2
-  - PUPPET_VERSION=4.2.2
+  - PUPPET_GEM_VERSION="~> 3.4.0" STRICT_VARIABLES=yes
+  - PUPPET_GEM_VERSION="~> 3.6.0" STRICT_VARIABLES=yes
+  - PUPPET_GEM_VERSION="~> 3.7.0" STRICT_VARIABLES=yes
+  - PUPPET_GEM_VERSION="~> 3.8.0" STRICT_VARIABLES=yes
+  - PUPPET_GEM_VERSION="~> 4.2.0" STRICT_VARIABLES=yes
+  - PUPPET_GEM_VERSION="~> 4.3.0" STRICT_VARIABLES=yes
+  - PUPPET_GEM_VERSION="~> 4.4.0" STRICT_VARIABLES=yes

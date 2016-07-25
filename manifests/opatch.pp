@@ -59,7 +59,11 @@ define orawls::opatch(
 
   case $::kernel {
     'Linux': {
-      $oraInstPath = '/etc'
+      if ( $orainstpath_dir == undef or $orainstpath_dir == '' ){
+        $oraInstPath = '/etc'
+      } else {
+        $oraInstPath = $orainstpath_dir
+      }
     }
     'SunOS': {
       $oraInstPath = '/var/opt/oracle'

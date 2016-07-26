@@ -33,7 +33,11 @@ EOF"
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
     Puppet.debug "domain_partition_control result: #{output}"
   end
 
@@ -59,7 +63,11 @@ EOF"
 
     Puppet.debug "domain_partition_control status with command #{command}"
 
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
     Puppet.debug output
     output.each_line do |li|
       unless li.nil?

@@ -22,7 +22,11 @@ Puppet::Type.type(:opatch).provide(:opatch) do
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
     Puppet.debug "opatch result: #{output}"
 
     result = false
@@ -47,8 +51,12 @@ Puppet::Type.type(:opatch).provide(:opatch) do
 
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
-
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
 
     output.each_line do |li|
       opatch = li[5, li.index(':') - 5].strip if li['Patch'] && li[': applied on']

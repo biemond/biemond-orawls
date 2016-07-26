@@ -42,7 +42,12 @@ EOF"
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
+    
     Puppet.debug "managedserver result: #{output}"
   end
 
@@ -84,7 +89,11 @@ EOF"
     # kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
     Puppet.debug output
     output.each_line do |li|
       unless li.nil?

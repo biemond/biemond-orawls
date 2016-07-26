@@ -30,7 +30,11 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
     Puppet.debug "bsu_patch action: #{action} with command #{command}"
-    output = `su #{su_shell} - #{user} -c 'export USER="#{user}";export LOGNAME="#{user}";#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c 'export USER="#{user}";export LOGNAME="#{user}";#{command}'`
+    else
+        output = `export USER="#{user}";export LOGNAME="#{user}";#{command}`
+    end
     Puppet.info "bsu_patch result: #{output}"
 
     # Check for 'Result: Success' else raise
@@ -64,7 +68,11 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
     Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
-    output = `su #{su_shell} - #{user} -c '#{command}'`
+    if Puppet.features.root?
+        output = `su #{su_shell} - #{user} -c '#{command}'`
+    else
+        output = `#{command}`
+    end
 
     output.each_line do |li|
       unless li.nil?

@@ -1,0 +1,68 @@
+
+m = ls('/Clusters',returnMap='true')
+
+f = open_file("name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication")
+for token in m:
+  print '___'+token+'___'
+  cd('/Clusters/'+token)
+
+  clusteraddress = get('ClusterAddress')
+
+  datasourceforMigrationMbean = get('DataSourceForAutomaticMigration')
+  if datasourceforMigrationMbean:
+     path = getPath(datasourceforMigrationMbean)
+     cd("/"+path)
+     datasourceMigration = get('Name')
+     cd('/Clusters/'+token)
+  else:
+     datasourceMigration = ''
+
+
+  datasourceforjobschedulerMbean = cmo.getDataSourceForJobScheduler()
+  if datasourceforjobschedulerMbean:
+     path = getPath(datasourceforjobschedulerMbean)
+     cd("/"+path)
+     datasourceforjobscheduler = get('Name')
+     cd('/Clusters/'+token)
+  else:
+     datasourceforjobscheduler = ''
+
+  n = ls('/Clusters/'+token+'/Servers',returnMap='true')
+  servers = []
+  for token2 in n:
+    servers.append(token2)
+
+  print "10"
+  p = ls('/Servers/',returnMap='true')
+  clustered = []
+  present = 1
+  cluster_result = ''
+
+  print "11"
+  for token3 in p:
+    print "2 "+ token3
+    notes = get('/Servers/'+token3+'/Notes')
+    if notes:
+      print "30 "+ notes
+      if token in notes:
+         print "3 "+ token3
+         clustered.append(token3)
+
+  if clustered:
+    for i in clustered:
+      if(i not in servers):
+        present = 0
+
+    if present != 1:
+      cluster_result = 'not_inherited'
+    else:
+      cluster_result = 'inherited'
+
+  cd('/Clusters/'+token)
+  if not clustered:
+    add_index_entry(f,[domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+  else:
+    add_index_entry(f,[domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+
+f.close()
+report_back_success()

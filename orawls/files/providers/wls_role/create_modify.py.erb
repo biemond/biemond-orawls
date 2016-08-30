@@ -1,0 +1,23 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name       = '<%= role_name %>'
+realm      = '<%= realm %>'
+expression = '<%= expression %>'
+
+try:
+    cd('/')
+
+    realmName = cmo.getSecurityConfiguration().getDefaultRealm()
+    mapper    = realmName.lookupRoleMapper('XACMLRoleMapper');
+    if wlst_action == 'create':
+        mapper.createRole('', name, expression)
+    else:
+        mapper.setRoleExpression('', name, expression)
+
+    report_back_success()
+
+except:
+    report_back_error_without_undo()

@@ -1,0 +1,26 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name             = '<%= workmanager_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    domain = get('Name')
+
+    cd('/SelfTuning/'+domain)
+
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/SelfTuning/'+domain+'/WorkManagers/'+name))
+    cmo.destroyWorkManager(getMBean('/SelfTuning/'+domain+'/WorkManagers/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

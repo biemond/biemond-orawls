@@ -1,0 +1,42 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name              = '<%= deployment_name %>'
+localpath         = '<%= localpath %>'
+target            = '<%= target %>'
+deploymenttype    = '<%= deploymenttype %>'
+versionidentifier = '<%= versionidentifier %>'
+
+edit()
+startEdit()
+
+try:
+
+    print 'start....'
+    if deploymenttype == 'Library':
+        library = 'true'
+        mylibs = cmo.getLibraries()
+        for libName in mylibs:
+            cd('/Libraries/' + libName.getName())
+            if get('ApplicationName') == name:
+                currentApp = get('ApplicationName')
+    else:
+        library = 'false'
+        myapps = cmo.getAppDeployments()
+        for appName in myapps:
+            cd('/AppDeployments/' + appName.getName())
+            if get('ApplicationName') == name:
+                currentApp = get('ApplicationName')
+
+    # if we got the right app
+    print 'step 1....'
+    cd('/')
+    print 'undeploy....'
+    undeploy(currentApp, timeout=60000)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,0 +1,60 @@
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+#Set this to true if you wish to specify a directory where latest updates are downloaded. This option would use the software updates from the specified directory
+SPECIFY_DOWNLOAD_LOCATION=false
+
+#
+SKIP_SOFTWARE_UPDATES=true
+
+#If the Software updates are already downloaded and available on your local system, then specify the path to the directory where these patches are available and set SPECIFY_DOWNLOAD_LOCATION to true
+SOFTWARE_UPDATES_DOWNLOAD_LOCATION=
+
+#Set this to true if installation and configuration need to be done, all other required variables need to be provided. Variable "INSTALL AND CONFIGURE LATER TYPE" must be set to false if this is set to true as the variables are mutually exclusive
+INSTALL AND CONFIGURE TYPE=false
+
+#Set this to true if only Software only installation need to be done. If this is set to true then variable "INSTALL AND CONFIGURE TYPE" must be set to false, since the variables are mutually exclusive.
+INSTALL AND CONFIGURE LATER TYPE=true
+
+#Give the complete path for an Oracle Home to be created. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
+ORACLE_HOME=<%= @oracleHome %>
+
+#Write the complete path to a valid Middleware Home.
+MW_HOME=<%= @middleware_home_dir %>
+
+#Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.
+MYORACLESUPPORT_USERNAME=
+
+#Provide the My Oracle Support Password
+MYORACLESUPPORT_PASSWORD=
+
+#Set this to true if you wish to decline the security updates. Setting this to true and providing empty string for My Oracle Support username will ignore the Oracle Configuration Manager configuration
+DECLINE_SECURITY_UPDATES=true
+
+#Set this to true if My Oracle Support Password is specified
+SECURITY_UPDATES_VIA_MYORACLESUPPORT=false
+
+#Provide the Proxy Host
+PROXY_HOST=
+
+#Provide the Proxy Port
+PROXY_PORT=
+
+#Provide the Proxy Username
+PROXY_USER=
+
+#Provide the Proxy Password
+PROXY_PWD=
+
+[SESSION]
+
+[SYSTEM]
+
+
+[APPLICATIONS]
+
+
+[RELATIONSHIPS]

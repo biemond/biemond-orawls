@@ -1,0 +1,45 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name             = '<%= virtual_target_name %>'
+channel          = '<%= channel %>'
+target           = '<%= target %>'
+targettype       = '<%= targettype %>'
+host_names       = '<%= virtual_host_names %>'
+port             = '<%= port %>'
+portoffset       = '<%= portoffset %>'
+uriprefix        = '<%= uriprefix %>'
+
+edit()
+startEdit()
+
+try:
+
+    print 'action = ' + wlst_action
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createVirtualTarget(name)
+
+    cd('/VirtualTargets/' + name)
+    set_attribute_value('PartitionChannel', channel, use_default_value_when_empty)
+    set_attribute_value('PortOffset', portoffset, use_default_value_when_empty)
+    set_attribute_value('ExplicitPort', port, use_default_value_when_empty)
+    set_attribute_value('UriPrefix', uriprefix, use_default_value_when_empty)
+
+    if host_names:
+        hosts = String(host_names).split(",")
+        set('HostNames', jarray.array(hosts, String))
+    else:
+        set('HostNames', None)
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

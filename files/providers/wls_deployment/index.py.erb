@@ -1,0 +1,38 @@
+
+
+f = open_file("name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain")
+
+domainConfig()
+
+cd('/')
+print 'apps'
+myapps = cmo.getAppDeployments()
+for appName in myapps:
+    cd('/AppDeployments/' + appName.getName())
+
+    app               = get('ApplicationName')
+    deploymenttype    = get('Type')
+    versionidentifier = get('VersionIdentifier')
+    stagingmode       = get('StagingMode')
+
+    target, targetType = retrieve_target_list('/AppDeployments/' + appName.getName())
+
+    add_index_entry(f, [domain + '/' + app, versionidentifier, deploymenttype, stagingmode, ','.join(target), ','.join(targetType), domain])
+
+print 'libs'
+cd('/')
+mylibs = cmo.getLibraries()
+for libName in mylibs:
+    cd('/Libraries/' + libName.getName())
+
+    lib               = get('ApplicationName')
+    deploymenttype    = get('Type')
+    versionidentifier = get('VersionIdentifier')
+    stagingmode       = get('StagingMode')
+
+    target, targetType = retrieve_target_list('/Libraries/' + libName.getName())
+
+    add_index_entry(f, [domain + '/' + lib, versionidentifier, deploymenttype, stagingmode, ','.join(target), ','.join(targetType), domain])
+
+f.close()
+report_back_success()

@@ -1,0 +1,41 @@
+
+cd('/')
+realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
+path = getPath(realmName)
+cd(path)
+
+m2 = ls('AuthenticationProviders',returnMap='true')
+m = []
+
+for ap in m2:
+  if 'identityasserter' not in ap.lower():
+    m.append(ap)
+
+f = open_file("name;authentication_provider_name;control_flag;domain;order")
+for token in m:
+    print '___'+token+'___'
+    cd('AuthenticationProviders/'+token)
+    description       = get('Description')
+    providerclassname = get('ProviderClassName')
+
+    control_flag      = ''
+    try:
+      control_flag = get('ControlFlag')
+    except:
+      print "ControlFlag does not exists, continue"
+
+    cd('../')
+    ap = get('AuthenticationProviders')
+    i=0
+    order=''
+    for provider in ap:
+      if provider.getKeyProperty('Name') == "%s%s" % (realmName.getName(), token):
+        order=str(i)
+        break
+      i=i+1
+
+    cd('../')
+    add_index_entry(f, [domain+'/'+token,token,control_flag,domain,order])
+
+f.close()
+report_back_success()

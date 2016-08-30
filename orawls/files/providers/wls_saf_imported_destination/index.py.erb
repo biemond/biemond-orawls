@@ -1,0 +1,51 @@
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;remotecontext;errorhandling;jndiprefix;timetolivedefault;usetimetolivedefault;subdeployment;defaulttargeting;domain")
+for token in m:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('SAFImportedDestinations',returnMap='true')
+        for token2 in n:
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+
+                remoteContextMbean  = cmo.getSAFRemoteContext()
+                if remoteContextMbean:
+                   path = getPath(remoteContextMbean)
+                   cd("/"+path)
+                   remoteContext  = get('Name')
+                   cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                else:
+                   remoteContext = ''
+
+                errorHandlingMbean = cmo.getSAFErrorHandling()
+                if errorHandlingMbean:
+                   path = getPath(errorHandlingMbean)
+                   cd("/"+path)
+                   errorHandling = get('Name')
+                   cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+                else:
+                   errorHandling = ''
+
+                timeToLiveDefault = cmo.getTimeToLiveDefault()
+                if not (timeToLiveDefault):
+                  useSAFTimeToLiveDefault = '0'
+                else:
+                  useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')
+
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+
+
+                defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
+                if defaultTargetingEnabled == '1':
+                  subDeploymentName = ''
+                else:
+                  subDeploymentName = cmo.getSubDeploymentName()
+
+                add_index_entry(f, [domain+'/'+token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,subDeploymentName,defaultTargetingEnabled,domain])
+
+f.close()
+report_back_success()
+
+

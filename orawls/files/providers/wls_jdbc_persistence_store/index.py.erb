@@ -1,0 +1,19 @@
+
+
+m = ls('/JDBCStores',returnMap='true')
+
+f = open_file("name;datasource;prefix_name;target;targettype;domain")
+for token in m:
+    print '___'+token+'___'
+    cd('/JDBCStores/'+token)
+
+    datasourceObject = get('DataSource')
+    datasource = datasourceObject.getKeyProperty('Name')
+
+    prefix_name = get('PrefixName')
+
+    target, targetType = retrieve_target_list('/JDBCStores/'+token)
+
+    add_index_entry(f, [domain+'/'+token,datasource,prefix_name,','.join(target),','.join(targetType),domain])
+f.close()
+report_back_success()

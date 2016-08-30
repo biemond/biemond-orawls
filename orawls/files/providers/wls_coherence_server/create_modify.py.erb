@@ -1,0 +1,42 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                    = '<%= coherence_server_name %>'
+
+unicastaddress          = '<%= unicastaddress %>'
+unicastport             = '<%= unicastport %>'
+machine                 = '<%= machine %>'
+classpath               = '<%= classpath %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+        print 'Create Coherence Server'
+        cmo.createCoherenceServer(name)
+
+    cd('/CoherenceServers/' + name)
+
+    set_attribute_value('UnicastListenAddress', unicastaddress, use_default_value_when_empty)
+    set_attribute_value('UnicastListenPort', unicastport, use_default_value_when_empty)
+
+    if machine:
+        cd('/')
+        m = cmo.lookupMachine(machine)
+        cd('/CoherenceServers/' + name)
+        set('Machine', m)
+
+    cd('/CoherenceServers/' + name + '/CoherenceServerStart/' + name)
+    set_attribute_value('ClassPath', classpath, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

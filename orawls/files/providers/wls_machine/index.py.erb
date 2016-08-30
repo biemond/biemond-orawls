@@ -1,0 +1,18 @@
+
+m = ls('/Machines',returnMap='true')
+
+f = open_file("name;machinetype;nmtype;listenaddress;listenport;domain")
+for token in m:
+    print '___'+token+'___'
+    cd('/Machines/'+token)
+    type = get('Type')
+    cd('NodeManager/'+token)
+
+    listenAddress = get('ListenAddress')
+    if not (listenAddress):
+       listenAddress = ''
+
+    add_index_entry(f, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain])
+
+f.close()
+report_back_success()

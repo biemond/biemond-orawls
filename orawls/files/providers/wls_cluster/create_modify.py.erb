@@ -1,0 +1,89 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                      = '<%= cluster_name %>'
+clusteraddress            = '<%= clusteraddress %>'
+
+manage_servers            = False
+<% unless servers == '' %>
+clusterNodesTargets       = String('<%= servers %>').split(",")
+manage_servers            = True
+<% end %>
+
+messagingmode             = '<%= messagingmode %>'
+migrationbasis            = '<%= migrationbasis %>'
+migration_table_name      = '<%= migration_table_name %>'
+migration_datasource      = '<%= migration_datasource %>'
+
+datasourceforjobscheduler = '<%= datasourceforjobscheduler %>'
+
+unicastbroadcastchannel   = '<%= unicastbroadcastchannel %>'
+multicastaddress          = '<%= multicastaddress %>'
+multicastport             = '<%= multicastport %>'
+
+frontendhost              = '<%= frontendhost %>'
+frontendhttpport          = '<%= frontendhttpport %>'
+frontendhttpsport         = '<%= frontendhttpsport %>'
+
+securereplication         = '<%= securereplication %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+        print 'Create Cluster'
+        cmo.createCluster(name)
+
+    cd('/Clusters/' + name)
+    set_attribute_value('ClusterMessagingMode', messagingmode, use_default_value_when_empty)
+    set_attribute_value('ClusterAddress'      , clusteraddress, use_default_value_when_empty)
+    set_attribute_value('FrontendHost'        , frontendhost, use_default_value_when_empty)
+    set_attribute_value('FrontendHTTPPort'    , frontendhttpport, use_default_value_when_empty)
+    set_attribute_value('FrontendHTTPSPort'   , frontendhttpsport, use_default_value_when_empty)
+
+    set_attribute_value('SecureReplicationEnabled', securereplication, use_default_value_when_empty)
+    set_attribute_value('MigrationBasis'          , migrationbasis, use_default_value_when_empty)
+    set_attribute_value('ClusterAddress'          , clusteraddress, use_default_value_when_empty)
+
+    if migrationbasis == 'database':
+        if migration_datasource:
+            cmo.setDataSourceForAutomaticMigration(getMBean('/SystemResources/' + migration_datasource))
+        set_attribute_value('AutoMigrationTableName', migration_table_name, use_default_value_when_empty)
+
+    set_attribute_value('ClusterBroadcastChannel', unicastbroadcastchannel, use_default_value_when_empty)
+    set_attribute_value('MulticastAddress'       , multicastaddress, use_default_value_when_empty)
+    set_attribute_value('MulticastPort'          , multicastport, use_default_value_when_empty)
+
+    if datasourceforjobscheduler:
+        cmo.setDataSourceForJobScheduler(getMBean('/SystemResources/' + datasourceforjobscheduler))
+
+    if manage_servers:
+        print 'add servers to cluster'
+        clustered = []
+        p = ls('/Servers/', returnMap='true')
+        if 'inherited' not in clusterNodesTargets:
+            for node in clusterNodesTargets:
+                cd('/Servers/' + node)
+                cmo.setCluster(getMBean('/Clusters/' + name))
+        else:
+            for token3 in p:
+                notes = get('/Servers/' + token3 + '/Notes')
+                if notes:
+                    if name in String(notes).split(","):
+                        clustered.append(token3)
+
+            for i in clustered:
+                cd('/Servers/' + i)
+                cmo.setCluster(getMBean('/Clusters/' + name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

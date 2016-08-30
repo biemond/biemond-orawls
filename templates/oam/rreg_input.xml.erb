@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><OAM11GRegRequest>
+    <serverAddress>http://<%= @oamadminserverhostname %>:<%= @oamadminserverport %></serverAddress>
+    <hostIdentifier><%= @webgate_hostidentifier %></hostIdentifier>
+    <agentName><%= @webgate_agentname %></agentName>
+    <protectedResourcesList>
+       <resource>/protected/</resource>
+       <resource>/protected/*</resource>
+       <resource>/protected/.../*</resource>
+    </protectedResourcesList>
+    <publicResourcesList>
+       <resource>/public/</resource>
+       <resource>/public/*</resource>
+       <resource>/public/.../*</resource>
+    </publicResourcesList>
+    <excludedResourcesList>
+        <resource>/excluded/</resource>
+        <resource>/excluded/*</resource>
+        <resource>/excluded/.../*</resource>
+    </excludedResourcesList>
+</OAM11GRegRequest>

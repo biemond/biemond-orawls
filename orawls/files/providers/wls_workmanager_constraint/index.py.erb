@@ -1,0 +1,45 @@
+
+
+def constraint(token2,location,type,value='Count'):
+    cd(location)
+
+    count = ''
+    try:
+        count = get(value)
+        print count
+    except:
+        print "no count value"
+
+    target, targetType = retrieve_target_list(location)
+
+    add_index_entry(f, [domain+'/'+token2,type,','.join(target),','.join(targetType),domain,count])
+
+
+m = ls('/SelfTuning',returnMap='true')
+
+f = open_file("name;constrainttype;target;targettype;domain;constraintvalue")
+for token in m:
+    print '___'+token+'___'
+    cd('/SelfTuning/'+token)
+
+    n = ls('MaxThreadsConstraints',returnMap='true')
+    for token2 in n:
+        constraint(token2,'/SelfTuning/'+token+'/MaxThreadsConstraints/'+token2,'MaxThreadsConstraint')
+
+    cd('/SelfTuning/'+token)
+    n = ls('MinThreadsConstraints',returnMap='true')
+    for token2 in n:
+        constraint(token2,'/SelfTuning/'+token+'/MinThreadsConstraints/'+token2,'MinThreadsConstraint')
+
+    cd('/SelfTuning/'+token)
+    n = ls('Capacities',returnMap='true')
+    for token2 in n:
+        constraint(token2,'/SelfTuning/'+token+'/Capacities/'+token2,'Capacity')
+
+    cd('/SelfTuning/'+token)
+    n = ls('FairShareRequestClasses',returnMap='true')
+    for token2 in n:
+        constraint(token2,'/SelfTuning/'+token+'/FairShareRequestClasses/'+token2,'FairShareRequestClasses','FairShare')
+
+f.close()
+report_back_success()

@@ -1,0 +1,29 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name             = '<%= link_name %>'
+provider_name    = '<%= provider_name %>'
+local_jndi_name  = '<%= local_jndi_name %>'
+remote_jndi_name = '<%= remote_jndi_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/ForeignJNDIProviders/' + provider_name)
+    if wlst_action == 'create':
+        cmo.createForeignJNDILink(name)
+
+    cd('/ForeignJNDIProviders/' + provider_name + '/ForeignJNDILinks/' + name)
+    set_attribute_value('LocalJNDIName', local_jndi_name, use_default_value_when_empty)
+    set_attribute_value('RemoteJNDIName', remote_jndi_name, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

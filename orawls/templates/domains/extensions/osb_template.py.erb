@@ -1,0 +1,158 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+DEVELOPMENT_MODE = <%= @development_mode %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+JSSE_ENABLED = <%= @jsse_enabled %>
+WEBLOGIC_VERSION = <%= @version %>
+WEBTIER_ENABLED = <%= @webtier_enabled %>
+ESS_ENABLED = <%= @ess_enabled %>
+OWSM_ENABLED = <%= @owsm_enabled %>
+
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
+
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
+
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments['OSB'] %>
+OSB_JAVA_ARGUMENTS = '<%= @java_arguments['OSB'] %>'
+<% else %>
+OSB_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @osb_nodemanager_log_dir %>/osb_server1.out -Dweblogic.Stderr=<%= @osb_nodemanager_log_dir %>/osb_server1_err.out'
+<% end %>
+
+<% if @java_arguments['ESS'] %>
+ESS_JAVA_ARGUMENTS = '<%= @java_arguments['ESS'] %>'
+<% else %>
+ESS_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @ess_nodemanager_log_dir %>/ess_server1.out -Dweblogic.Stderr=<%= @ess_nodemanager_log_dir %>/ess_server1_err.out'
+<% end %>
+
+
+REPOS_DBURL = '<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
+REPOS_DBPASSWORD = '<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
+
+cd('/')
+
+<% if @apps_dir %>
+setOption('AppDir', APP_PATH )
+<% end %>
+
+print 'Adding EM Template'
+addTemplate('<%= @templateEM %>')
+
+dumpStack();
+
+print 'Extend...osb domain with template <%= @templateOSB %>'
+addTemplate('<%= @templateWS %>')
+addTemplate('<%= @templateOSB %>')
+
+if WEBLOGIC_VERSION in [1036, 1111] and OWSM_ENABLED == true:
+    print 'Adding JRF Template'
+    try:
+        addTemplate('<%= @templateJRF %>')
+    except:
+        print 'Error adding JRF Template:', sys.exc_info()[0]
+
+    print 'Adding WSM PM Template'
+    addTemplate('<%= @templateWSMPM %>')
+    print 'Adding OWSM template'
+    addTemplate('<%= @templateOWSM %>')
+    print 'Adding advanced JAX-WS Template'
+    addTemplate('<%= @templateJaxWS %>')
+    print 'Change datasource mds-owsm'
+    change_datasource('mds-owsm', REPOS_DBUSER_PREFIX + '_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+    print 'Change datasource wlsbjmsrpDataSource'
+    change_datasource_driver('wlsbjmsrpDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+<% if @apps_dir %>
+setOption('AppDir', APP_PATH )
+<% end %>
+
+print 'change osb_server1'
+cd('/')
+change_managed_server('osb_server1', 'LocalMachine', '<%= @adminserver_address %>', 8011, OSB_JAVA_ARGUMENTS, '<%= @osb_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+if WEBLOGIC_VERSION in [1213,1221]:
+
+    if WEBTIER_ENABLED == true:
+        print 'Adding OHS Template'
+        addTemplate('<%= @templateOHS %>')
+
+    # print 'Add advanced JAX-WS Template'
+    # addTemplate('<%= @templateJaxWS %>')
+    # print 'Add JAX-WS SOAP over JMS Template'
+    # addTemplate('<%= @templateSoapJms %>')
+
+    if ESS_ENABLED == true:
+        print 'Adding ESS Template'
+        addTemplate('<%= @templateESS %>')
+        addTemplate('<%= @templateESS_EM %>')
+
+        print 'change ess_server1'
+        cd('/')
+        change_managed_server('ess_server1', 'LocalMachine', '<%= @adminserver_address %>', 8201, ESS_JAVA_ARGUMENTS, '<%= @ess_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+
+    print 'Change datasources'
+
+    print 'Change datasource LocalScvTblDataSource for service table'
+    change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()
+
+    change_datasource_to_xa('wlsbjmsrpDataSource')
+    change_datasource_to_xa('SOADataSource')
+
+    print 'end datasources'
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
+    serverGroup = ['WSM-CACHE-SVR' , 'WSMPM-MAN-SVR' , 'JRF-MAN-SVR']
+    setServerGroups(ADMIN_SERVER, serverGroup)
+
+    print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
+    serverGroup = ['OSB-MGD-SVRS-COMBINED']
+    setServerGroups('osb_server1', serverGroup)
+
+    if ESS_ENABLED == True:
+        serverGroup = ['ESS-MGD-SVRS']
+        setServerGroups('ess_server1', serverGroup)
+
+    print 'end server groups'
+
+dumpStack();
+updateDomain()
+
+closeDomain()
+
+create_boot_properties_file(DOMAIN_PATH + '/servers/osb_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+
+if WEBLOGIC_VERSION in [1213, 1221]:
+
+  if ESS_ENABLED == true:
+    create_boot_properties_file(DOMAIN_PATH + '/servers/ess_server1/security' , 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+
+
+print 'Exiting...'
+exit()

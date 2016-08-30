@@ -1,0 +1,80 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                       = '<%= connection_factory_name %>'
+jmsmodule                  = '<%= jmsmodule %>'
+jndiname                   = '<%= jndiname %>'
+localjndiname              = '<%= localjndiname %>'
+subdeployment              = '<%= subdeployment %>'
+defaulttargeting           = '<%= defaulttargeting %>'
+xaenabled                  = '<%= xaenabled %>'
+transactiontimeout         = '<%= transactiontimeout %>'
+clientidpolicy             = '<%= clientidpolicy %>'
+subscriptionsharingpolicy  = '<%= subscriptionsharingpolicy %>'
+messagesmaximum            = '<%= messagesmaximum %>'
+reconnectpolicy            = '<%= reconnectpolicy %>'
+loadbalancingenabled       = '<%= loadbalancingenabled %>'
+serveraffinityenabled      = '<%= serveraffinityenabled %>'
+attachjmsxuserid           = '<%= attachjmsxuserid %>'
+defaultdeliverymode        = '<%= defaultdeliverymode %>'
+defaultredeliverydelay     = '<%= defaultredeliverydelay %>'
+
+def formatBoolean(value):
+  if value == '1':
+    return true
+  else:
+    return false
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+
+    if wlst_action == 'create':
+      cmo.createConnectionFactory(name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name)
+    set_attribute_value('JNDIName'     , jndiname, use_default_value_when_empty)
+    set_attribute_value('LocalJNDIName', localjndiname, use_default_value_when_empty)
+
+    if subdeployment and defaulttargeting == "0":
+      set_attribute_value('SubDeploymentName', subdeployment, use_default_value_when_empty)
+    elif not subdeployment and defaulttargeting == "1":
+      set_attribute_value('DefaultTargetingEnabled', true, use_default_value_when_empty)
+    elif subdeployment and defaulttargeting == "1":
+      raise ValueError('Defaulttargeting and Subdeployment are both set, only one can be active for JMS components')
+    else:
+      raise ValueError('Either defaulttargeting or a subdeployment needs to be selected for JMS components')
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/TransactionParams/'+name)
+    set_attribute_value('XAConnectionFactoryEnabled', xaenabled, use_default_value_when_empty)
+    set_attribute_value('TransactionTimeout'        , transactiontimeout, use_default_value_when_empty)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/ClientParams/'+name)
+    set_attribute_value('ClientIdPolicy'           , clientidpolicy, use_default_value_when_empty)
+    set_attribute_value('SubscriptionSharingPolicy', subscriptionsharingpolicy, use_default_value_when_empty)
+    set_attribute_value('MessagesMaximum'          , messagesmaximum, use_default_value_when_empty)
+    set_attribute_value('ReconnectPolicy'          , reconnectpolicy, use_default_value_when_empty)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/LoadBalancingParams/'+name)
+    set_attribute_value('LoadBalancingEnabled' , loadbalancingenabled, use_default_value_when_empty)
+    set_attribute_value('ServerAffinityEnabled', serveraffinityenabled, use_default_value_when_empty)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/SecurityParams/'+name)
+    set_attribute_value('AttachJMSXUserId', attachjmsxuserid, use_default_value_when_empty)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/DefaultDeliveryParams/'+name)
+    set_attribute_value('DefaultDeliveryMode'   , defaultdeliverymode, use_default_value_when_empty)
+    set_attribute_value('DefaultRedeliveryDelay', defaultredeliverydelay, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,0 +1,60 @@
+from weblogic.security.service import JMSResource
+
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+authorizationprovider = '<%= authorizationprovider %>'
+jmsmodule             = '<%= jmsmodule %>'
+destinationtype       = '<%= destinationtype %>'
+resourcename          = '<%= resourcename %>'
+action                = '<%= action %>'
+policyexpression      = '<%= policyexpression %>'
+
+# There may be other characters that need "encoding"...
+# It's very possible there's a better way to do this but I couldn't find anything obvious.
+<% encodedresourcename = resourcename.gsub(/\//, '@U') %>
+
+# Create an empty policy as a placeholder. We will set the policy rules with a call to setPolicyExpression().
+# This is much simpler than trying to translate a policy expression string into XML and including in this serialized policy definition.
+policy = """
+<Policy PolicyId="urn:bea:xacml:2.0:entitlement:resource:type@E@Fjms@G@M@Oapplication@E<%= jmsmodule %>@M@OdestinationType@E<%= destinationtype %>@M@Oresource@E<%= encodedresourcename %><% if action != :all %>@M@Oaction@E<%= action %><% end %>" RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable">
+<Description><%= policyexpression %></Description>
+<Target>
+  <Resources>
+    <Resource>
+      <ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+        <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">type=&lt;jms&gt;, application=<%= jmsmodule %>, destinationType=<%= destinationtype %>, resource=<%= resourcename %>, action=<%= action %></AttributeValue>
+        <ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:resource:resource-ancestor-or-self" DataType="http://www.w3.org/2001/XMLSchema#string" MustBePresent="true"/>
+      </ResourceMatch>
+    </Resource>
+  </Resources>
+</Target>
+<Rule RuleId="primary-rule" Effect="Permit">
+</Rule>
+<Rule RuleId="deny-rule" Effect="Deny">
+</Rule>
+</Policy>
+"""
+
+try:
+    cd('/')
+    securityrealm = cmo.getSecurityConfiguration().getDefaultRealm()
+    authorizer    = securityrealm.lookupAuthorizer(authorizationprovider)
+    print action
+    if action == 'all':
+        resource = weblogic.security.service.JMSResource(jmsmodule, None, destinationtype, resourcename, None)
+    else:
+        resource = weblogic.security.service.JMSResource(jmsmodule, None, destinationtype, resourcename, action)
+    resourceid = resource.toString()
+    print resourceid
+
+    # Add our "empty" policy before we set the policy expression.
+    authorizer.addPolicy(policy)
+    authorizer.setPolicyExpression(resourceid, policyexpression)
+
+    report_back_success()
+
+except:
+    report_back_error_without_undo

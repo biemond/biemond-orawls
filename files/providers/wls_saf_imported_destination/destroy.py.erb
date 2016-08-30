@@ -1,0 +1,23 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name                   = '<%= imported_destination_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    cmo.destroySAFImportedDestinations(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+name))
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

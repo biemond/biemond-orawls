@@ -1,0 +1,303 @@
+import sys
+import getopt
+import string
+
+WLHOME='<%= @weblogic_home_dir %>'
+DOMAIN_PATH='<%= @domain_dir %>'
+
+soacluster  = '<%= @soa_cluster_name %>'
+Admin       = '<%= @adminserver_name %>'
+
+bpmEnabled  = <%= @bpm_enabled %>
+ofm_version = int(<%= @ofm_version %>)
+
+def createFileStore(storeName, serverName):
+    create(storeName, 'FileStore')
+    cd('/FileStore/'+storeName)
+    set ('Target', serverName)
+    set ('Directory', storeName)
+    cd('/')
+
+
+def createJMSServers(cluster, track, currentServerCnt):
+    print ' '
+    print "Creating JMS Servers for the cluster :- ", cluster
+    s = ls('/Server')
+    print ' '
+    clustername = " "
+    serverCnt = currentServerCnt
+    for token in s.split("drw-"):
+        token=token.strip().lstrip().rstrip()
+        path="/Server/"+token
+        cd(path)
+        if not token == 'AdminServer' and not token == '':
+            clustername = get('Cluster')
+            print "Cluster Associated with the Server [",token,"] :- ",clustername
+            print ' '
+            searchClusterStr = cluster+":"
+            clusterNameStr = str(clustername)
+            print "searchClusterStr = ",searchClusterStr
+            print "clusterNameStr = ",clusterNameStr
+            if not clusterNameStr.find(searchClusterStr) == -1:
+                print token, " is associated with ", cluster    
+                print ' '
+                print "Creating JMS Servers for ", track
+                print ' '
+                cd('/')
+
+                if track == 'bpm':
+                    jmsServerName = 'BPMJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'BPMJMSServerFileStore_auto_'+str(serverCnt)
+                elif track == 'ag':
+                    jmsServerName = 'AGJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'AGJMSServerFileStore_auto_'+str(serverCnt)
+                elif track == 'ps6soa' and ofm_version > 1116:
+                    jmsServerName = 'PS6SOAJMSServer_auto_'+str(serverCnt)
+                    fileStoreName = 'PS6SOAJMSServerFileStore_auto_'+str(serverCnt)
+                        
+                createFileStore(fileStoreName, token)
+                print "Created File Store :- ", fileStoreName
+
+                create(jmsServerName, 'JMSServer')
+                print "Created JMS Server :- ", jmsServerName
+                print ' '
+                assign('JMSServer', jmsServerName, 'Target', token)
+                print jmsServerName, " assigned to server :- ", token 
+                print ' '
+                cd('/JMSServer/'+jmsServerName)
+                set ('PersistentStore', fileStoreName)
+
+                serverCnt = serverCnt + 1
+
+
+readDomain(DOMAIN_PATH)
+
+cd('/')
+delete('BPMJMSModule'   ,'JMSSystemResource')
+#delete('BPMJMSServer'   ,'JMSServer')
+
+createJMSServers(soacluster, 'bpm', 1)
+
+cd('/')
+create('BPMJMSModuleUDDs','JMSSystemResource')
+     
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs')
+assign('JMSSystemResource', 'BPMJMSModuleUDDs', 'Target', soacluster)
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs')
+create('BPMJMSSubDM', 'SubDeployment')
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs/SubDeployments/BPMJMSSubDM')
+
+print ' '
+print ("*** Listing SOA JMS Servers ***")
+s = ls('/JMSServers')
+soaJMSServerStr=''
+for token in s.split("drw-"):
+    token=token.strip().lstrip().rstrip()
+    if not token.find("BPMJMSServer_auto") == -1:
+        soaJMSServerStr = soaJMSServerStr + token +","
+    print token
+
+soaJMSSrvCnt=string.count(s, 'BPMJMSServer_auto')
+print ' '
+print "Number of BPM JMS Servers := ", soaJMSSrvCnt
+print ' '
+print "soaJMSServerStr := ", soaJMSServerStr
+print ' '
+
+print ("*** Setting JMS SubModule for SOA JMS Server's target***")
+assign('JMSSystemResource.SubDeployment', 'BPMJMSModuleUDDs.BPMJMSSubDM', 'Target', soaJMSServerStr) 
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+udd=create('MeasurementTopic','UniformDistributedTopic')
+udd.setJNDIName('jms/bpm/MeasurementTopic')
+udd.setJMSCreateDestinationIdentifier('jms/bpm/MeasurementTopic')
+udd.setSubDeploymentName('BPMJMSSubDM')
+
+udd=create('PeopleQueryTopic','UniformDistributedTopic')
+udd.setJNDIName('jms/bpm/PeopleQueryTopic')
+udd.setJMSCreateDestinationIdentifier('jms/bpm/PeopleQueryTopic')
+udd.setSubDeploymentName('BPMJMSSubDM')
+
+soacf=create('BAMCommandXAConnectionFactory','ConnectionFactory')
+soacf.setJNDIName('jms/bpm/BAMCommandXAConnectionFactory')
+cd('/JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/BAMCommandXAConnectionFactory')
+set('DefaultTargetingEnabled', 'true')
+create('TransactionParams', 'TransactionParams')
+cd('TransactionParams/NO_NAME_0')
+cmo.setXAConnectionFactoryEnabled(true)
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+soacf=create('CubeCommandXAConnectionFactory','ConnectionFactory')
+soacf.setJNDIName('jms/bpm/CubeCommandXAConnectionFactory')
+cd('/JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/CubeCommandXAConnectionFactory')
+set('DefaultTargetingEnabled', 'true')
+create('TransactionParams', 'TransactionParams')
+cd('TransactionParams/NO_NAME_0')
+cmo.setXAConnectionFactoryEnabled(true)
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+soacf=create('MeasurementTopicConnectionFactory','ConnectionFactory')
+soacf.setJNDIName('jms/bpm/MeasurementTopicConnectionFactory')
+cd('/JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/MeasurementTopicConnectionFactory')
+set('DefaultTargetingEnabled', 'true')
+create('TransactionParams', 'TransactionParams')
+cd('TransactionParams/NO_NAME_0')
+cmo.setXAConnectionFactoryEnabled(true)
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+soacf=create('PeopleQueryConnectionFactory','ConnectionFactory')
+soacf.setJNDIName('jms/bpm/PeopleQueryConnectionFactory')
+cd('/JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/PeopleQueryConnectionFactory')
+set('DefaultTargetingEnabled', 'true')
+create('TransactionParams', 'TransactionParams')
+cd('TransactionParams/NO_NAME_0')
+cmo.setXAConnectionFactoryEnabled(true)
+
+cd('/')
+cd('JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+soacf=create('PeopleQueryTopicConnectionFactory','ConnectionFactory')
+soacf.setJNDIName('jms/bpm/PeopleQueryTopicConnectionFactory')
+cd('/JMSSystemResource/BPMJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/PeopleQueryTopicConnectionFactory')
+set('DefaultTargetingEnabled', 'true')
+create('TransactionParams', 'TransactionParams')
+cd('TransactionParams/NO_NAME_0')
+cmo.setXAConnectionFactoryEnabled(true)
+
+if bpmEnabled == true:
+    cd('/')
+    delete('AGJMSModule'    ,'JMSSystemResource')
+    dumpStack()
+
+    #delete('AGJMSServer'    ,'JMSServer')
+    createJMSServers(soacluster, 'ag', 1)
+
+    cd('/')
+    create('AGJMSModuleUDDs','JMSSystemResource')
+         
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs')
+    assign('JMSSystemResource', 'AGJMSModuleUDDs', 'Target', soacluster)
+
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs')
+    create('AGJMSSubDM', 'SubDeployment')
+
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs/SubDeployments/AGJMSSubDM')
+
+    print ' '
+    print ("*** Listing SOA JMS Servers ***")
+    s = ls('/JMSServers')
+    soaJMSServerStr=''
+    for token in s.split("drw-"):
+        token=token.strip().lstrip().rstrip()
+        if not token.find("AGJMSServer_auto") == -1:
+            soaJMSServerStr = soaJMSServerStr + token +","
+        print token
+
+    soaJMSSrvCnt=string.count(s, 'AGJMSServer_auto')
+    print ' '
+    print "Number of AG JMS Servers := ", soaJMSSrvCnt
+    print ' '
+    print "soaJMSServerStr := ", soaJMSServerStr
+    print ' '
+
+    print ("*** Setting JMS SubModule for SOA JMS Server's target***")
+    assign('JMSSystemResource.SubDeployment', 'AGJMSModuleUDDs.AGJMSSubDM', 'Target', soaJMSServerStr) 
+
+    cd('/')
+    cd('JMSSystemResource/AGJMSModuleUDDs/JmsResource/NO_NAME_0')
+
+    udd=create('UIBrokerTopic','UniformDistributedTopic')
+    udd.setJNDIName('jms/bpm/UIBrokerTopic')
+    udd.setJMSCreateDestinationIdentifier('jms/bpm/UIBrokerTopic')
+    udd.setSubDeploymentName('AGJMSSubDM')
+
+    soacf=create('UIBrokerTopicConnectionFactory','ConnectionFactory')
+    soacf.setJNDIName('jms/bpm/UIBrokerTopicConnectionFactory')
+    cd('/JMSSystemResource/AGJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/UIBrokerTopicConnectionFactory')
+    set('DefaultTargetingEnabled', 'true')
+    create('TransactionParams', 'TransactionParams')
+    cd('TransactionParams/NO_NAME_0')
+    cmo.setXAConnectionFactoryEnabled(true)
+
+cd('/')
+if ofm_version > 1116:
+    delete('PS6SOAJMSModule','JMSSystemResource')
+    dumpStack()
+    createJMSServers(soacluster, 'ps6soa', 1)
+    cd('/')
+    create('PS6SOAJMSModuleUDDs','JMSSystemResource')
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs')
+    assign('JMSSystemResource', 'PS6SOAJMSModuleUDDs', 'Target', soacluster)
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs')
+    create('PS6SOAJMSSubDM', 'SubDeployment')
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs/SubDeployments/PS6SOAJMSSubDM')
+else:
+    print "Warning: PS6 components not created. This is expected behaviour for versions of OFM 11.1.1.6 and below."
+
+
+
+print ' '
+print ("*** Listing SOA JMS Servers ***")
+s = ls('/JMSServers')
+soaJMSServerStr=''
+for token in s.split("drw-"):
+    token=token.strip().lstrip().rstrip()
+    if not token.find("PS6SOAJMSServer_auto") == -1:
+        soaJMSServerStr = soaJMSServerStr + token +","
+    print token
+
+soaJMSSrvCnt=string.count(s, 'PS6SOAJMSServer_auto')
+print ' '
+print "Number of PS6SOA JMS Servers := ", soaJMSSrvCnt
+print ' '
+print "soaJMSServerStr := ", soaJMSServerStr
+print ' '
+
+print ("*** Setting JMS SubModule for SOA JMS Server's target***")
+if ofm_version > 1116:
+    assign('JMSSystemResource.SubDeployment', 'PS6SOAJMSModuleUDDs.PS6SOAJMSSubDM', 'Target', soaJMSServerStr)
+    cd('/')
+    cd('JMSSystemResource/PS6SOAJMSModuleUDDs/JmsResource/NO_NAME_0') 
+
+    udd=create('CaseEventQueue','UniformDistributedQueue')
+    udd.setJNDIName('jms/bpm/CaseEventQueue')
+    udd.setJMSCreateDestinationIdentifier('jms/bpm/CaseEventQueue')
+    udd.setSubDeploymentName('PS6SOAJMSSubDM')
+    
+    soacf=create('CaseEventConnectionFactory','ConnectionFactory')
+    soacf.setJNDIName('jms/bpm/CaseEventConnectionFactory')
+    cd('/JMSSystemResource/PS6SOAJMSModuleUDDs/JmsResource/NO_NAME_0/ConnectionFactory/CaseEventConnectionFactory')
+    set('DefaultTargetingEnabled', 'true')
+    create('TransactionParams', 'TransactionParams')
+    cd('TransactionParams/NO_NAME_0')
+    cmo.setXAConnectionFactoryEnabled(true)
+else:
+    print "Warning: PS6 components not created. This is expected behaviour for versions of OFM 11.1.1.6 and below."
+
+dumpStack()
+
+updateDomain()
+dumpStack();
+
+print 'Successfully Updated SOA Domain.'
+
+closeDomain() 

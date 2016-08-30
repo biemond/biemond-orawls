@@ -1,0 +1,28 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name                   = '<%= object_name %>'
+jmsmodule              = '<%= jmsmodule %>'
+imported_destination   = '<%= imported_destination %>'
+object_type            = '<%= object_type %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination)
+    if object_type == "queue":
+        cmo.destroySAFQueue(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFQueues/'+name))
+    else:
+        cmo.destroySAFTopic(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/SAFImportedDestinations/'+imported_destination+'/SAFTopics/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

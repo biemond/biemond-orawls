@@ -1,0 +1,32 @@
+
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain")
+
+for token in m:
+    print '_jmsmodule_'+token+'___'
+    cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+    n = ls('ForeignServers',returnMap='true')
+    for token2 in n:
+            cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+
+            p = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties',returnMap='true')
+            properties     = []
+            for token3 in p:
+              cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2 + '/JNDIProperties/'+token3)
+              properties.append(token3+"="+str(get('Value')))
+
+            cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+            defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
+            if defaultTargetingEnabled == '1':
+              subDeploymentName = ''
+            else:
+              subDeploymentName = cmo.getSubDeploymentName()
+
+            add_index_entry(f, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain])
+
+f.close()
+report_back_success()
+

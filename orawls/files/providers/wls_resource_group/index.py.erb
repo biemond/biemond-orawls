@@ -1,0 +1,27 @@
+
+
+wlst_name = '/ResourceGroups/'
+
+m = ls(wlst_name, returnMap='true')
+
+f = open_file("name;resource_group_template;virtual_target")
+for token in m:
+    print '___'+token+'___'
+    cd(wlst_name + token)
+
+    resourceGroupTemplateMbean = cmo.getResourceGroupTemplate()
+    if resourceGroupTemplateMbean:
+        path = getPath(resourceGroupTemplateMbean)
+        cd('/' + path)
+        resource_group_template = get('Name')
+        cd(wlst_name + token)
+    else:
+        resource_group_template = ''
+
+    virtual_target, targetType = retrieve_target_list('/ResourceGroups/'+token)
+
+    add_index_entry(f, [domain+'/'+token, resource_group_template,','.join(virtual_target)])
+
+f.close()
+report_back_success()
+

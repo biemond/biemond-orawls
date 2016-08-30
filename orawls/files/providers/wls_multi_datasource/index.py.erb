@@ -1,0 +1,24 @@
+
+m = ls('/JDBCSystemResources',returnMap='true')
+
+f = open_file("name;datasources;target;targettype;jndinames;algorithmtype;testfrequency")
+for token in m:
+    print '___'+token+'___'
+
+    cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
+    datasources = get('DataSourceList')
+    # Multi datasource check
+    if datasources != None:
+
+        target, targetType = retrieve_target_list('/SystemResources/'+token)
+
+        cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
+        jndinames = get('JNDINames')
+        algorithmtype = get('AlgorithmType')
+
+        cd('/JDBCSystemResources/'+token+'/JDBCResource/'+token+'/JDBCConnectionPoolParams/'+token)
+        testfrequency = get('TestFrequencySeconds')
+
+        add_index_entry(f, [domain+'/'+token,datasources,','.join(target),','.join(targetType),','.join(jndinames),algorithmtype,testfrequency])
+f.close()
+report_back_success()

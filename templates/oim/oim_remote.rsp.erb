@@ -1,0 +1,45 @@
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#Provide the complete path of the Oracle Home. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
+ORACLE_HOME=<%= @oim_home %>
+
+#Provide the service name for Remote Manager under which this Remote Manager will be registered. It is used along with Registry URL to build fully qualified service name. For e.g. rmi://host:RMI Registry Port/service name.
+RM_SERVICE_NAME=RManager
+
+#Provide the Remote Manager RMI Registry Port. RMI Registry is started on this port.
+REMOTEMANAGER_RMI_REGISTRY_PORT=12345
+
+#Provide the Remote Manager Listen Port. A Secure Socket is opened on this port to listen client requests.
+REMOTEMANAGER_LISTEN_PORT=12346
+
+#Provide the KeyStore Password. Valid passwords are 6 to 30 characters long, must begin with an alphabetic character, use only alphanumeric, underscore (_), dollar ($) or pound (#) characters and include at least one number.
+KEYSTORE_PASSWORD=<%= @keystore_password %>
+
+#Confirm the KeyStore Password.
+KEYSTORE_CONFIRM_PASSWORD=<%= @keystore_password %>
+
+
+[SYSTEM]
+
+
+[APPLICATIONS]
+
+
+[RELATIONSHIPS]
+
+#
+COMPONENT_OIM_SELECTION_ROOT=false
+
+#Provide true to configure OIM Server.
+OIM_SERVER=false
+
+#Provide true to configure OIM Design Console.
+INSTALL_OIM_DESIGN_CONSOLE=false
+
+#Provide true to configure OIM Remote Manager.
+INSTALL_OIM_REMOTE_MANAGER=true

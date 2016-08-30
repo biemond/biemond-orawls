@@ -1,0 +1,57 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                  = '<%= workmanager_name %>'
+stuckthreads          = '<%= stuckthreads %>'
+target                = '<%= target %>'
+targettype            = '<%= targettype %>'
+minthreadsconstraint  = '<%= minthreadsconstraint %>'
+maxthreadsconstraint  = '<%= maxthreadsconstraint %>'
+fairsharerequestclass = '<%= fairsharerequestclass %>'
+capacity              = '<%= capacity %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    domain = get('Name')
+
+    cd('/SelfTuning/'+domain)
+    if wlst_action == 'create':
+        cmo.createWorkManager(name)
+
+    cd('/SelfTuning/'+domain+'/WorkManagers/'+name)
+
+    set_attribute_value('IgnoreStuckThreads', stuckthreads, use_default_value_when_empty)
+
+    targetList = target_list(String(target).split(","), String(targettype).split(","))
+    set('Targets', targetList)
+
+    cmo.setResponseTimeRequestClass(None)
+
+    if fairsharerequestclass:
+      cmo.setFairShareRequestClass(getMBean('/SelfTuning/'+domain+'/FairShareRequestClasses/'+fairsharerequestclass))
+    else:
+      cmo.setFairShareRequestClass(None)
+
+    cmo.setContextRequestClass(None)
+
+    if minthreadsconstraint:
+      cmo.setMinThreadsConstraint(getMBean('/SelfTuning/'+domain+'/MinThreadsConstraints/'+minthreadsconstraint))
+
+    if maxthreadsconstraint:
+      cmo.setMaxThreadsConstraint(getMBean('/SelfTuning/'+domain+'/MaxThreadsConstraints/'+maxthreadsconstraint))
+
+    if capacity:
+      cmo.setCapacity(getMBean('/SelfTuning/'+domain+'/Capacities/'+capacity))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

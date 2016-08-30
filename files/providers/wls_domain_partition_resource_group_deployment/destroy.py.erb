@@ -1,0 +1,40 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+domain_partition_name = '<%= domain_partition_name %>'
+resource_group_name = '<%= resource_group_name %>'
+name = '<%= deployment_name %>'
+deploymenttype = '<%= deploymenttype %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + resource_group_name)
+    print 'start....'
+    if deploymenttype == 'Library':
+        mylibs = cmo.getLibraries()
+        for libName in mylibs:
+            cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/Libraries/' + libName.getName())
+            if get('ApplicationName') == name:
+                currentApp = get('ApplicationName')
+    else:
+        myapps = cmo.getAppDeployments()
+        for appName in myapps:
+            cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/AppDeployments/' + appName.getName())
+            if get('ApplicationName') == name:
+                currentApp = get('ApplicationName')
+
+    # if we got the right app
+    print 'step 1....'
+    cd('/')
+    print 'undeploy....'
+    undeploy(currentApp, timeout=90000, partition=domain_partition_name, resourceGroup=resource_group_name)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

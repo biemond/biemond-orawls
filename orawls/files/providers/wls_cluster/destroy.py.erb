@@ -1,0 +1,24 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name = '<%= cluster_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cmo = cd('/')
+    cl = cmo.lookupCluster(name)
+
+    editService.getConfigurationManager().removeReferencesToBean(cl)
+
+    cmo = cd('/')
+    cmo.destroyCluster(cl)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

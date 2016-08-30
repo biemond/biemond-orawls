@@ -1,0 +1,31 @@
+
+m = ls('/Servers',returnMap='true')
+
+f = open_file("name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain;two_way_ssl;client_certificate_enforced;custom_identity_alias;channel_identity_customized")
+for token in m:
+        print '___'+token+'___'
+        cd('/Servers/'+token)
+
+        n = ls('/Servers/'+token+'/NetworkAccessPoints',returnMap='true')
+        for token2 in n:
+               cd('/Servers/'+token+'/NetworkAccessPoints/'+token2)
+               protocol                    = get('Protocol')
+               enabled                     = str(get('Enabled'))
+               listenaddress               = get('ListenAddress')
+               publicaddress               = get('PublicAddress')
+               listenport                  = str(get('ListenPort'))
+               publicport                  = str(get('PublicPort'))
+               max_message_size            = str(get('MaxMessageSize'))
+
+               httpenabled                 = str(get('HttpEnabledForThisProtocol'))
+               outboundenabled             = str(get('OutboundEnabled'))
+               tunnelingenabled            = str(get('TunnelingEnabled'))
+               two_way_ssl                 = str(get('TwoWaySSLEnabled'))
+               client_certificate_enforced = str(get('ClientCertificateEnforced'))
+               custom_identity_alias       = str(get('CustomPrivateKeyAlias'))
+               channel_identity_customized = str(get('ChannelIdentityCustomized'))
+
+               add_index_entry(f, [domain+'/'+token+":"+token2,token,protocol,enabled,listenport,httpenabled,outboundenabled,tunnelingenabled,listenaddress,publicport,max_message_size,publicaddress,domain,two_way_ssl,client_certificate_enforced,custom_identity_alias,channel_identity_customized])
+
+f.close()
+report_back_success()

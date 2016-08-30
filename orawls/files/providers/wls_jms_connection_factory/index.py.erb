@@ -1,0 +1,45 @@
+
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay")
+
+for token in m:
+  n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories',returnMap='true')
+  for token2 in n:
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2)
+         jndiname           = get('JNDIName')
+         localjndiname      = get('LocalJNDIName')
+         defaultTargeting   = str(get('DefaultTargetingEnabled'))
+         if defaultTargeting == '1':
+            subdeployment = ''
+         else:
+            subdeployment = cmo.getSubDeploymentName()
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/TransactionParams/'+token2)
+         xaEnabled          = str(get('XAConnectionFactoryEnabled'))
+         transactionTimeout = get('TransactionTimeout')
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/ClientParams/'+token2)
+         clientIdPolicy = str(get('ClientIdPolicy'))
+         subscriptionSharingPolicy = str(get('SubscriptionSharingPolicy'))
+         messagesMaximum = get('MessagesMaximum')
+         reconnectPolicy = str(get('ReconnectPolicy'))
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/LoadBalancingParams/'+token2)
+         loadBalancingEnabled = str(get('LoadBalancingEnabled'))
+         serverAffinityEnabled = str(get('ServerAffinityEnabled'))
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/SecurityParams/'+token2)
+         attachJmsXUserId = str(get('AttachJMSXUserId'))
+
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/DefaultDeliveryParams/'+token2)
+         defaultDeliveryMode = get('DefaultDeliveryMode')
+         defaultRedeliveryDelay = get('DefaultRedeliveryDelay')
+
+         add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay])
+
+f.close()
+report_back_success()
+

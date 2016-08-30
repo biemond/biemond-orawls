@@ -1,0 +1,43 @@
+
+m = ls('/JMSServers',returnMap='true')
+
+f = open_file("name;target;targettype;persistentstore;persistentstoretype;bytes_maximum;allows_persistent_downgrade;store_enabled;domain;insertionpaused;consumptionpaused;productionpaused")
+for token in m:
+  print '___'+token+'___'
+  cd('/JMSServers/'+token)
+
+  bytesMaximum = get('BytesMaximum')
+  insertion_paused   = translate(get('InsertionPausedAtStartup'))
+  consumption_paused = translate(get('ConsumptionPausedAtStartup'))
+  production_paused  = translate(get('ProductionPausedAtStartup'))
+
+  try:
+    storeEnabled = str(get('StoreEnabled'))
+  except:
+    print "probably not supported"
+    storeEnabled = ''
+
+  allowsPersistentDowngrade  = str(get('AllowsPersistentDowngrade'))
+
+  n = ls('/JMSServers/'+token+'/Targets',returnMap='true')
+  target = ''
+
+  for token2 in n:
+     target = token2
+     cd('/JMSServers/'+token+'/Targets/'+token2)
+     targetType = get('Type')
+
+  l = ls('/JMSServers/'+token+'/PersistentStore',returnMap='true')
+
+
+  persistentStore     = ''
+  persistentStoreType = ''
+  for token3 in l:
+     persistentStore = token3
+     cd('/JMSServers/'+token+'/PersistentStore/'+token3)
+     persistentStoreType = get('Type')
+
+  add_index_entry(f, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,bytesMaximum,allowsPersistentDowngrade,storeEnabled,domain,insertion_paused, consumption_paused, production_paused])
+f.close()
+report_back_success()
+

@@ -1,0 +1,14 @@
+fixtures:
+  forge_modules:
+    easy_type: "hajee/easy_type"
+  repositories:
+    'yamlfile':
+      repo: 'git://github.com/reidmv/puppet-module-yamlfile'
+    'filemapper':
+      repo: 'git://github.com/adrienthebo/puppet-filemapper'
+    'sleep':
+      repo: 'git://github.com/fiddyspence/puppet-sleep'
+    'stdlib':
+      repo: 'git://github.com/puppetlabs/puppetlabs-stdlib.git'
+  symlinks:
+    'orawls': '#{source_dir}'

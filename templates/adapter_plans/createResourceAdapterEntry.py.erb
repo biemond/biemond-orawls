@@ -1,0 +1,81 @@
+import random
+import sys
+import traceback
+
+wlsUser    = '<%= @weblogic_user %>'  
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+                                
+eisName                     = '<%= @adapter_entry %>'
+cfName                      = '<%= @adapter_entry_value %>'
+propertyName                = '<%= @adapter_entry_property %>'
+connectionFactoryInterface  = '<%= @connectionFactoryInterface %>'
+
+appName                     = '<%= @adapter_name %>'
+appPath                     = '<%= @adapter_path %>'
+planPath                    = '<%= @adapter_plan_dir %>/<%= @adapter_plan %>'
+
+useStoreConfig = '<%= @useStoreConfig %>'
+ 
+moduleOverrideName=appName + '.rar'
+moduleDescriptorName='META-INF/weblogic-ra.xml'
+connectionInstance='ConnectionInstance_' + eisName
+
+def makeDeploymentPlanVariable(wlstPlan, name, value, xpath, origin='planbased'):
+ 
+    while wlstPlan.getVariableAssignment(name, moduleOverrideName, moduleDescriptorName):
+        wlstPlan.destroyVariableAssignment(name, moduleOverrideName, moduleDescriptorName)
+    
+    while wlstPlan.getVariable(name):
+        wlstPlan.destroyVariable(name)
+    
+    variableAssignment = wlstPlan.createVariableAssignment( name, moduleOverrideName, moduleDescriptorName )
+    variableAssignment.setXpath( xpath )
+    variableAssignment.setOrigin( origin )
+    wlstPlan.createVariable( name, value )
+ 
+def main():
+    edit()
+    try:
+      startEdit()
+
+      myPlan=loadApplication(appPath, planPath)
+
+      print '___ BEGIN change plan'
+      makeDeploymentPlanVariable(myPlan, connectionInstance, eisName, '/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="' + connectionFactoryInterface + '"]/connection-instance/[jndi-name="' + eisName + '"]/jndi-name')
+      myPlan.save();
+
+      pList = propertyName.split(';')
+
+      encodedValues = cfName.replace('\;','#') # Replace escaped semicolons for a dash
+      encodedList = encodedValues.split(';')
+
+      vList = []
+      for valueString in encodedList:
+        vList.append(valueString.replace('#', ';'))
+
+      if len(pList) == len(vList):
+        i = 0
+        for p in pList:
+          configProperty='ConfigProperty_' + p + '_'+eisName
+          configPropertyValue=vList[i]
+          makeDeploymentPlanVariable(myPlan, configProperty, configPropertyValue, '/weblogic-connector/outbound-resource-adapter/connection-definition-group/[connection-factory-interface="' + connectionFactoryInterface + '"]/connection-instance/[jndi-name="' + eisName + '"]/connection-properties/properties/property/[name="' + p + '"]/value')
+          myPlan.save();
+          i += 1
+        print '___ DONE change plan'
+        save();
+        activate(block='true');
+      else:
+        print 'ERROR: The amount of properties and values are not correct.'
+        stopEdit('y')
+    except:
+      apply(traceback.print_exception, sys.exc_info())
+      stopEdit('y')
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile='<%= @userConfigFile %>', userKeyFile='<%= @userKeyFile %>', url='t3://'+machine+':'+portNumber)    
+
+main()

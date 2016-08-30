@@ -1,0 +1,28 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+
+name         = '<%= topic_name %>'
+jmsmodule    = '<%= jmsmodule %>'
+distributed  = '<%= distributed %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if distributed == '1':
+      cmo.destroyUniformDistributedTopic(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/UniformDistributedTopics/'+name))
+    else:
+      cmo.destroyTopic(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Topics/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

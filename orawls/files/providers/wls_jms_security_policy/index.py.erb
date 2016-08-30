@@ -1,0 +1,71 @@
+from weblogic.security.service import JMSResource
+
+f = open_file("name;domain;authorizationprovider;jmsmodule;destinationtype;resourcename;action;policyexpression")
+
+securityRealm = cmo.getSecurityConfiguration().getDefaultRealm()
+authorizer = securityRealm.lookupAuthorizer('XACMLAuthorizer')
+
+# get all jms resources
+jmsModules = ls('/JMSSystemResources',returnMap='true')
+resourceTypes = [
+    ('Topics','topic'),
+    ('Queues','queue'),
+    ('DistributedTopics','topic'),
+    ('DistributedQueues','queue'),
+    ('UniformDistributedTopics','topic'),
+    ('UniformDistributedQueues','queue')
+]
+jmsResources = []
+
+try:
+    print "current jms policies"
+    cursor = authorizer.listPoliciesByResourceType('<jms>', 0)
+    while authorizer.haveCurrent(cursor):
+      print authorizer.getCurrentProperties(cursor)
+      authorizer.advance(cursor)
+    authorizer.close
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+
+# First, collect all JMS resources (queues/topics) in the domain
+for jmsModule in jmsModules:
+  cd('/JMSSystemResources/'+jmsModule+'/JMSResource/'+jmsModule)
+  for resourceType in resourceTypes:
+      resources = ls(resourceType[0],returnMap='true')
+      for resource in resources:
+          for action in [None, 'send', 'receive', 'browse']:
+              print "retrieve " + str(resource) + " - " + resourceType[1] + " - " + str(jmsModule)  + " - " + str(action)
+              try:
+                jmsResources.append(JMSResource(jmsModule, None, resourceType[1], resource, action))
+              except:
+                print "Unexpected error:", sys.exc_info()[0]
+                report_back_error()
+                raise
+
+print "done retrieving"
+# Now find all JMS resources that have security policies defined
+for jmsResource in jmsResources:
+    resourceId = jmsResource.toString()
+    print "check for " +resourceId
+    if authorizer.policyExists(resourceId):
+        print "policyExists"
+        if authorizer.getPolicyExpression(resourceId) == None:
+            policyExpression = ""
+        else:
+            policyExpression = authorizer.getPolicyExpression(resourceId)
+
+        print "got PolicyExpression"
+        authorizerName  = authorizer.getName()
+        jmsModuleName   = jmsResource.getApplicationName()
+        resourceName    = jmsResource.getResourceName()
+        destinationType = jmsResource.getDestinationType()
+        if jmsResource.getActionName() == None:
+            actionName = 'all'
+        else:
+            actionName = jmsResource.getActionName()
+
+        print resourceId + ', policyexpression=' + policyExpression
+        add_index_entry(f, [domain+'/'+jmsModuleName+":"+resourceName+":"+actionName,domain,authorizerName,jmsModuleName,destinationType,resourceName,actionName,policyExpression])
+
+f.close()
+report_back_success()

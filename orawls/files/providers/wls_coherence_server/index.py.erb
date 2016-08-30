@@ -1,0 +1,20 @@
+
+cd('/')
+
+m = ls('/CoherenceServers',returnMap='true')
+
+f = open_file("name;autorestart;machine;restartdelay;restartinterval;restartmax;unicastaddress;unicastport;classpath;domain")
+for token in m:
+    print '___'+token+'___'
+    cd('/CoherenceServers/'+token)
+
+    n = ls('/CoherenceServers/'+token+'/Machine')
+    machine = 'none'
+    for token2 in n.split("drw-"):
+        token2=token2.strip().lstrip().rstrip()
+        if token2:
+             machine = token2
+
+    add_index_entry(f, [domain+'/'+token,get('AutoRestart'),machine,get('RestartDelaySeconds'),get('RestartIntervalSeconds'),get('RestartMax'),get('UnicastListenAddress'),get('UnicastListenPort'),get('CoherenceServerStart/'+machine+'_coherence/ClassPath'),domain])
+f.close()
+report_back_success()

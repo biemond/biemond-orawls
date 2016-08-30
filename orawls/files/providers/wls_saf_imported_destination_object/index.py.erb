@@ -1,0 +1,43 @@
+
+
+
+
+def object(token,token2,token3,location,type):
+    cd(location)
+
+    remotejndiname    = cmo.getRemoteJNDIName()
+    nonpersistentqos  = cmo.getNonPersistentQos()
+    localjndiname     = cmo.getLocalJNDIName()
+    unitoforder       = cmo.getUnitOfOrderRouting()
+
+    timeToLiveDefault = str(cmo.getTimeToLiveDefault())
+    if not (timeToLiveDefault):
+      useSAFTimeToLiveDefault = '0'
+    else:
+      useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')
+
+    add_index_entry(f, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,timeToLiveDefault,useSAFTimeToLiveDefault,unitoforder,nonpersistentqos,remotejndiname,localjndiname,domain])
+
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain")
+for token in m:
+    print '_jmsmodule_'+token+'___'
+    cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+    n = ls('SAFImportedDestinations',returnMap='true')
+    for token2 in n:
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+        l = ls('SAFQueues',returnMap='true')
+        for token3 in l:
+               object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFQueues/'+token3,"queue")
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
+        l = ls('SAFTopics',returnMap='true')
+        for token3 in l:
+               object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2+'/SAFTopics/'+token3,"topic")
+
+
+f.close()
+report_back_success()
+

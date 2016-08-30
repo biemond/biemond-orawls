@@ -1,0 +1,19 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+migratable_target_name = '<%= migratable_target_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cmo.destroyMigratableTarget(cmo.lookupMigratableTarget(migratable_target_name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

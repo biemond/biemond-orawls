@@ -1,0 +1,47 @@
+
+cd('/')
+realmName  = cmo.getSecurityConfiguration().getDefaultRealm()
+path = getPath(realmName)
+cd(path)
+
+m = ls('AuthenticationProviders',returnMap='true')
+m2 = []
+
+for ap in m:
+  if 'identityasserter' in ap.lower():
+    m2.append(ap)
+
+f = open_file("name;authentication_provider_name;domain;activetypes;defaultmappertype;order")
+for token in m2:
+    print '___'+token+'___'
+    cd('AuthenticationProviders/'+token)
+    description       = get('Description')
+    providerclassname = get('ProviderClassName')
+
+    activetypes      = ''
+    try:
+      activetypes = "::".join(get('ActiveTypes'))
+    except:
+      print "Failed to convert to list the Active Types."
+
+    defaultmappertype = ''
+    try:
+      defaultmappertype = get('DefaultUserNameMapperAttributeType')
+    except:
+      print "Failed to get DefaultUserNameMapperAttributeType"
+
+    cd('../')
+    ap = get('AuthenticationProviders')
+    i=0
+    order=''
+    for provider in ap:
+      if provider.getKeyProperty('Name') == "%s%s" % (realmName.getName(), token):
+        order=str(i)
+        break
+      i=i+1
+
+    cd('../')
+
+    add_index_entry(f, [domain+'/'+token,token,domain,activetypes,defaultmappertype,order])
+f.close()
+report_back_success()

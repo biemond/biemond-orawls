@@ -1,0 +1,37 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name             = '<%= workmanager_constraint_name %>'
+type             = '<%= constrainttype %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    domain = get('Name')
+
+    cd('/SelfTuning/'+domain)
+
+    if type == 'MaxThreadsConstraint':
+      editService.getConfigurationManager().removeReferencesToBean(getMBean('/SelfTuning/'+domain+'/MaxThreadsConstraints/'+name))
+      cmo.destroyMaxThreadsConstraint(getMBean('/SelfTuning/'+domain+'/MaxThreadsConstraints/'+name))
+    elif type == 'MinThreadsConstraint':
+      editService.getConfigurationManager().removeReferencesToBean(getMBean('/SelfTuning/'+domain+'/MinThreadsConstraints/'+name))
+      cmo.destroyMinThreadsConstraint(getMBean('/SelfTuning/'+domain+'/MinThreadsConstraints/'+name))
+    elif type == 'Capacity':
+      editService.getConfigurationManager().removeReferencesToBean(getMBean('/SelfTuning/'+domain+'/Capacities/'+name))
+      cmo.destroyCapacity(getMBean('/SelfTuning/'+domain+'/Capacities/'+name))
+    elif type == 'FairShareRequestClasses':
+      cd('/SelfTuning/'+domain+'/FairShareRequestClasses')
+      destroy(name)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

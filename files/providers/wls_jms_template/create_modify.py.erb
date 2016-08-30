@@ -1,0 +1,31 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                       = '<%= template_name %>'
+jmsmodule                  = '<%= jmsmodule %>'
+redeliverydelay            = '<%= redeliverydelay %>'
+redeliverylimit            = '<%= redeliverylimit %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if wlst_action == 'create':
+        cmo.createTemplate(name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryParamsOverrides/'+name)
+    set_attribute_value('RedeliveryDelay', redeliverydelay, use_default_value_when_empty)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Templates/'+name+'/DeliveryFailureParams/'+name)
+    set_attribute_value('RedeliveryLimit', redeliverylimit, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

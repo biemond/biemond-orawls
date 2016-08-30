@@ -1,0 +1,200 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name          = '<%= server_name %>'
+classpath     = '<%= classpath %>'
+<% unless arguments.nil? %>
+arguments     = '<%= arguments.join(' ') %>'
+<% end %>
+machineName   = '<%= machine %>'
+bea_home      = '<%= bea_home %>'
+
+logFilename                 = '<%= logfilename %>'
+log_http_Filename           = '<%= log_http_filename %>'
+log_http_format             = '<%= log_http_format %>'
+log_http_format_type        = '<%= log_http_format_type %>'
+log_http_file_count              = '<%= log_http_file_count %>'
+log_http_number_of_files_limited = '<%= log_http_number_of_files_limited %>'
+log_datasource_Filename     = '<%= log_datasource_filename %>'
+log_file_min_size           = '<%= log_file_min_size %>'
+log_filecount               = '<%= log_filecount %>'
+log_rotate_logon_startup    = '<%= log_rotate_logon_startup %>'
+log_rotationtype            = '<%= log_rotationtype %>'
+log_number_of_files_limited = '<%= log_number_of_files_limited %>'
+log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
+log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
+log_date_pattern              = '<%= log_date_pattern %>'
+log_stdout_severity           = '<%= log_stdout_severity %>'
+log_log_file_severity         = '<%= log_log_file_severity %>'
+
+restart_max       = '<%= restart_max %>'
+listenAddress     = '<%= listenaddress %>'
+listenPort        = '<%= listenport %>'
+listenPortEnabled = '<%= listenportenabled %>'
+sslEnabled        = '<%= sslenabled %>'
+sslHostnameVerificationIgnored = '<%= sslhostnameverificationignored %>'
+sslhostnameverifier = '<%= sslhostnameverifier %>'
+two_way_ssl       = '<%= two_way_ssl %>'
+client_certificate_enforced = '<%= client_certificate_enforced %>'
+sslListenPort     = '<%= ssllistenport %>'
+useservercerts = '<%= useservercerts %>'
+
+
+logintimeout      = '<%= logintimeout %>'
+jsseenabled       = '<%= jsseenabled %>'
+tunnelingenabled  = '<%= tunnelingenabled %>'
+
+custom_identity                        = '<%= custom_identity %>'
+custom_identity_keystore_filename      = '<%= custom_identity_keystore_filename %>'
+custom_identity_keystore_passphrase    = '<%= custom_identity_keystore_passphrase %>'
+custom_identity_alias                  = '<%= custom_identity_alias %>'
+custom_identity_privatekey_passphrase  = '<%= custom_identity_privatekey_passphrase %>'
+trust_keystore_file                    = '<%= trust_keystore_file %>'
+trust_keystore_passphrase              = '<%= trust_keystore_passphrase %>'
+
+default_file_store                     = '<%= default_file_store %>'
+max_message_size                       = '<%= max_message_size %>'
+weblogic_plugin_enabled                = '<%= weblogic_plugin_enabled %>'
+auto_restart                           = '<%= auto_restart %>'
+autokillwfail                          = '<%= autokillwfail %>'
+
+server_parameters		       = '<%= server_parameters %>'
+
+frontend_host                  = '<%= frontendhost %>'
+frontend_http_port             = '<%= frontendhttpport %>'
+frontend_https_port            = '<%= frontendhttpsport %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    AdminServerName = get('AdminServerName')
+    if name == AdminServerName:
+      raise "Cannot create a new AdminServer, its not allowed"
+
+    cmo.createServer(name)
+
+    cd('/Servers/'+name)
+    set('Machine',getMBean('/Machines/'+machineName))
+
+    print "Change Notes"
+    if server_parameters and server_parameters != 'None':
+      set_attribute_value('Notes', server_parameters, use_default_value_when_empty)
+
+    print "Change listenAddress"
+    if listenAddress and not listenAddress.isspace():
+      set_attribute_value('ListenAddress', listenAddress, use_default_value_when_empty)
+
+    set_attribute_value('ListenPort', listenPort)
+    if listenPortEnabled and listenPortEnabled != '-1':
+      set_attribute_value('ListenPortEnabled', listenPortEnabled, use_default_value_when_empty)
+
+    set_attribute_value('LoginTimeoutMillis', logintimeout, use_default_value_when_empty)
+    set_attribute_value('MaxMessageSize', max_message_size, use_default_value_when_empty)
+    set_attribute_value('RestartMax', restart_max, use_default_value_when_empty)
+
+    if classpath:
+      set('ServerStart/'+name+'/ClassPath', classpath)
+
+    if bea_home:
+      set('ServerStart/'+name+'/BeaHome', bea_home)
+
+    if arguments:
+      set('ServerStart/'+name+'/Arguments', arguments)
+
+    set_attribute_value('TunnelingEnabled', tunnelingenabled, use_default_value_when_empty)
+    set_attribute_value('WeblogicPluginEnabled', weblogic_plugin_enabled, use_default_value_when_empty)
+
+    if custom_identity == '1':
+      set_attribute_value('KeyStores', 'CustomIdentityAndCustomTrust', use_default_value_when_empty)
+      set_attribute_value('CustomIdentityKeyStoreFileName', custom_identity_keystore_filename, use_default_value_when_empty)
+      set_attribute_value('CustomIdentityKeyStorePassPhrase', custom_identity_keystore_passphrase, use_default_value_when_empty)
+      set_attribute_value('CustomTrustKeyStoreFileName', trust_keystore_file, use_default_value_when_empty)
+      set_attribute_value('CustomTrustKeyStorePassPhrase', trust_keystore_passphrase, use_default_value_when_empty)
+
+      cd('SSL/'+name)
+      set_attribute_value('ServerPrivateKeyAlias', custom_identity_alias, use_default_value_when_empty)
+      set_attribute_value('ServerPrivateKeyPassPhrase', custom_identity_privatekey_passphrase, use_default_value_when_empty)
+
+    if custom_identity == '0':
+      set_attribute_value('KeyStores', 'DemoIdentityAndDemoTrust', use_default_value_when_empty)
+
+    cd('/Servers/'+name)
+    set_attribute_value('AutoRestart', auto_restart, use_default_value_when_empty)
+    set_attribute_value('AutoKillIfFailed', autokillwfail, use_default_value_when_empty)
+
+    cd('/Servers/'+name+'/WebServer/'+name)
+
+    set_attribute_value('FrontendHost', frontend_host, use_default_value_when_empty)
+    set_attribute_value('FrontendHTTPPort', frontend_http_port, use_default_value_when_empty)
+    set_attribute_value('FrontendHTTPSPort', frontend_https_port, use_default_value_when_empty)
+
+    print "Change SSL"
+    cd('/Servers/'+name+'/SSL/'+name)
+
+    if sslEnabled and sslEnabled != '-1':
+      set_attribute_value('Enabled', sslEnabled, use_default_value_when_empty)
+    if jsseenabled and jsseenabled != '-1':
+      set_attribute_value('JSSEEnabled', jsseenabled, use_default_value_when_empty)
+    if sslHostnameVerificationIgnored and sslHostnameVerificationIgnored != '-1':
+      set_attribute_value('HostnameVerificationIgnored', sslHostnameVerificationIgnored, use_default_value_when_empty)
+      if sslHostnameVerificationIgnored == '0' and sslhostnameverifier:
+        set_attribute_value('HostnameVerifier', sslhostnameverifier, use_default_value_when_empty)
+
+    set_attribute_value('TwoWaySSLEnabled', two_way_ssl, use_default_value_when_empty)
+    set_attribute_value('ClientCertificateEnforced', client_certificate_enforced, use_default_value_when_empty)
+    set_attribute_value('ListenPort', sslListenPort, use_default_value_when_empty)
+    set_attribute_value('UseServerCerts', useservercerts, use_default_value_when_empty)
+
+    cd('/Servers/'+name+'/Log/'+name)
+    set_attribute_value('FileName', logFilename, use_default_value_when_empty)
+    set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
+    set_attribute_value('DateFormatPattern', log_date_pattern, use_default_value_when_empty)
+    set_attribute_value('RedirectStderrToServerLogEnabled', log_redirect_stderr_to_server, use_default_value_when_empty)
+    set_attribute_value('RedirectStdoutToServerLogEnabled', log_redirect_stdout_to_server, use_default_value_when_empty)
+    set_attribute_value('StdoutSeverity', log_stdout_severity, use_default_value_when_empty)
+    set_attribute_value('LogFileSeverity', log_log_file_severity, use_default_value_when_empty)
+
+    print "web server log: " + name
+    cd('/Servers/'+name+'/WebServer/'+name+'/WebServerLog/'+name)
+    set_attribute_value('NumberOfFilesLimited', log_http_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileCount', log_http_file_count, use_default_value_when_empty)
+    set_attribute_value('FileName', log_http_Filename, use_default_value_when_empty)
+    set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
+    set_attribute_value('LogFileFormat', log_http_format_type, use_default_value_when_empty)
+    set_attribute_value('ELFFields', log_http_format, use_default_value_when_empty)
+
+
+    print "datasource server log: " + name
+    cd('/Servers/'+name+'/DataSource/'+name+'/DataSourceLogFile/'+name)
+    set_attribute_value('FileName', log_datasource_Filename, use_default_value_when_empty)
+    set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
+    set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
+
+    if default_file_store:
+        cd('/Servers/'+name+'/DefaultFileStore/'+name)
+        set_attribute_value('Directory', default_file_store, use_default_value_when_empty)
+
+    cd('/')
+    DOMAIN_PATH = get('RootDirectory')
+
+    create_boot_properties_file(DOMAIN_PATH+'/servers/'+name+'/security','boot.properties',weblogicUser,weblogicPassword)
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,0 +1,27 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name         = '<%= queue_name %>'
+jmsmodule    = '<%= jmsmodule %>'
+distributed  = '<%= distributed %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if distributed == '1':
+      cmo.destroyUniformDistributedQueue(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/UniformDistributedQueues/'+name))
+    else:
+      cmo.destroyQueue(getMBean('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Queues/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

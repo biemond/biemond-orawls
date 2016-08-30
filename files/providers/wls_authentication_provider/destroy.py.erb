@@ -1,0 +1,22 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name = '<%= authentication_provider_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    realmName = cmo.getSecurityConfiguration().getDefaultRealm()
+    path = getPath(realmName)
+    cd(path)
+
+    cmo.destroyAuthenticationProvider(getMBean(path + '/AuthenticationProviders/' + name))
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

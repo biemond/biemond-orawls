@@ -1,0 +1,18 @@
+
+m = ls('/VirtualHosts',returnMap='true')
+
+f = open_file("name;channelname;target;targettype;domain;virtualhostnames")
+for token in m:
+        print '___'+token+'___'
+        cd('/VirtualHosts/'+token)
+        channelname = get('NetworkAccessPoint')
+
+        hosts = get('VirtualHostNames')
+
+        target, targetType = retrieve_target_list('/VirtualHosts/'+token)
+
+        add_index_entry(f, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts)])
+
+f.close()
+report_back_success()
+

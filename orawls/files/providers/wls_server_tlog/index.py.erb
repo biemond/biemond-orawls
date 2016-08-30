@@ -1,0 +1,25 @@
+
+cd("/")
+m = ls('/Servers',returnMap='true')
+
+f = open_file("name;tlog_enabled;tlog_datasource;tlog_datasource_prefix")
+for token in m:
+  print '___'+token+'___'
+  cd('/Servers/'+token+'/TransactionLogJDBCStore/'+token)
+  prefixName = cmo.getPrefixName()
+  enabled = cmo.isEnabled()
+  dataSource = cmo.getDataSource()
+  dataSourceName = ""
+  if dataSource != None:
+    dataSourceName = dataSource.getName()
+
+  if enabled == 0:
+    enabledBoolean = 'false'
+  if enabled == 1:
+    enabledBoolean = 'true'
+  add_index_entry(f, [domain + '/' + token,
+          enabledBoolean,
+          dataSourceName,
+          prefixName])
+f.close()
+report_back_success()

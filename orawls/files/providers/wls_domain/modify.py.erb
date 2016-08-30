@@ -1,0 +1,84 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+print "modify domain"
+
+name                                               = '<%= weblogic_domain_name %>'
+jta_transaction_timeout                            = '<%= jta_transaction_timeout %>'
+jta_max_transactions                               = '<%= jta_max_transactions %>'
+jpa_default_provider                               = '<%= jpa_default_provider %>'
+security_crossdomain                               = '<%= security_crossdomain %>'
+jmx_platform_mbean_server_enabled                  = '<%= jmx_platform_mbean_server_enabled %>'
+jmx_platform_mbean_server_used                     = '<%= jmx_platform_mbean_server_used %>'
+web_app_container_show_archived_real_path_enabled  = '<%= web_app_container_show_archived_real_path_enabled %>'
+log_filename                                       = '<%= log_filename %>'
+
+log_file_min_size                                  = '<%= log_file_min_size %>'
+log_filecount                                      = '<%= log_filecount %>'
+log_rotate_logon_startup                           = '<%= log_rotate_logon_startup %>'
+log_rotationtype                                   = '<%= log_rotationtype %>'
+log_number_of_files_limited                        = '<%= log_number_of_files_limited %>'
+log_date_pattern                                   = '<%= log_date_pattern %>'
+log_domain_log_broadcast_severity                  = '<%= log_domain_log_broadcast_severity %>'
+credential                                         = '<%= credential %>'
+
+setinternalappdeploymentondemandenable             = '<%= setinternalappdeploymentondemandenable %>'
+setarchiveconfigurationcount                       = '<%= setarchiveconfigurationcount %>'
+setconfigbackupenabled                             = '<%= setconfigbackupenabled %>'
+setconfigurationaudittype                          = '<%= setconfigurationaudittype %>'
+exalogicoptimizationsenabled                       = '<%= exalogicoptimizationsenabled %>'
+
+edit()
+startEdit()
+
+try:
+
+    print "change log"
+    cd('/Log/'+name)
+    set_attribute_value('RotationType'               , log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('RotateLogOnStartup'         , log_rotate_logon_startup, use_default_value_when_empty)
+    set_attribute_value('FileCount'                  , log_filecount, use_default_value_when_empty)
+    set_attribute_value('NumberOfFilesLimited'       , log_number_of_files_limited, use_default_value_when_empty)
+    set_attribute_value('FileName'                   , log_filename, use_default_value_when_empty)
+    set_attribute_value('FileMinSize'                , log_file_min_size, use_default_value_when_empty)
+    set_attribute_value('DateFormatPattern'          , log_date_pattern, use_default_value_when_empty)
+    set_attribute_value('DomainLogBroadcastSeverity' , log_domain_log_broadcast_severity, use_default_value_when_empty)
+
+    print "change jta"
+    cd('/JTA/' + name)
+    set_attribute_value('TimeoutSeconds' , jta_transaction_timeout, use_default_value_when_empty)
+    set_attribute_value('MaxTransactions', jta_max_transactions, use_default_value_when_empty)
+
+    print "change jpa"
+    cd('/JPA/' + name)
+    set_attribute_value('DefaultJPAProvider', jpa_default_provider, use_default_value_when_empty)
+
+    print "change security"
+    cd('/SecurityConfiguration/' + name)
+    set_attribute_value('CrossDomainSecurityEnabled', security_crossdomain, use_default_value_when_empty)
+    if credential:
+      auto_typed_set('Credential', credential)
+
+    print "change jmx"
+    cd('/JMX/' + name)
+    set_attribute_value('PlatformMBeanServerEnabled', jmx_platform_mbean_server_enabled, use_default_value_when_empty)
+    set_attribute_value('PlatformMBeanServerUsed'   , jmx_platform_mbean_server_used, use_default_value_when_empty)
+
+    print "change web app container"
+    cd('/WebAppContainer/' + name)
+    set_attribute_value('ShowArchivedRealPathEnabled', web_app_container_show_archived_real_path_enabled, use_default_value_when_empty)
+
+    cd('/')
+
+    set_attribute_value('InternalAppsDeployOnDemandEnabled', setinternalappdeploymentondemandenable, use_default_value_when_empty)
+    set_attribute_value('ArchiveConfigurationCount', setarchiveconfigurationcount, use_default_value_when_empty)
+    set_attribute_value('ConfigBackupEnabled', setconfigbackupenabled, use_default_value_when_empty)
+    set_attribute_value('ConfigurationAuditType', setconfigurationaudittype, use_default_value_when_empty)
+    set_attribute_value('ExalogicOptimizationsEnabled', exalogicoptimizationsenabled, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

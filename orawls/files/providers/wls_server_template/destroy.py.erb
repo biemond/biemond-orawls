@@ -1,0 +1,27 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name    = '<%= server_template %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/ServerTemplates/'+name)
+    cmo.setCluster(None)
+    cmo.setMachine(None)
+
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/ServerTemplates/'+name))
+
+    cd('/')
+    cmo.destroyServerTemplate(getMBean('/ServerTemplates/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

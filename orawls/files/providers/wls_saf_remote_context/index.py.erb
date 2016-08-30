@@ -1,0 +1,18 @@
+
+
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;connect_url;weblogic_user;domain")
+for token in m:
+        print '_jmsmodule_'+token+'___'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+        n = ls('SAFRemoteContexts',returnMap='true')
+        for token2 in n:
+                cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFRemoteContexts/'+token2+'/SAFLoginContext/'+token2)
+                add_index_entry(f, [domain+'/'+token+":"+token2,token,cmo.getLoginURL(),cmo.getUsername(),domain])
+
+f.close()
+report_back_success()
+

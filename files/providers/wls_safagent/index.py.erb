@@ -1,0 +1,31 @@
+
+m = ls('/SAFAgents',returnMap='true')
+
+f = open_file("name;target;targettype;persistentstore;persistentstoretype;servicetype;domain")
+for token in m:
+        print '___'+token+'___'
+        cd('/SAFAgents/'+token)
+
+        serviceType = get('ServiceType')
+
+        n = ls('/SAFAgents/'+token+'/Targets',returnMap='true')
+        target     = ''
+        targetType = ''
+
+        for token2 in n:
+                target     = token2
+                cd('/SAFAgents/'+token+'/Targets/'+token2)
+                targetType = get('Type')
+
+        l = ls('/SAFAgents/'+token+'/Store',returnMap='true')
+
+        persistentStore     = ''
+        persistentStoreType = ''
+        for token3 in l:
+               persistentStore = token3
+               cd('/SAFAgents/'+token+'/Store/'+token3)
+               persistentStoreType = get('Type')
+
+        add_index_entry(f, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,serviceType,domain])
+f.close()
+report_back_success()

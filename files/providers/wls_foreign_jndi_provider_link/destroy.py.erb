@@ -1,0 +1,21 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name             = '<%= link_name %>'
+provider_name    = '<%= provider_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/ForeignJNDIProviders/' + provider_name + '/ForeignJNDILinks')
+    bean = getMBean('/ForeignJNDIProviders/' + provider_name + '/ForeignJNDILinks/' + name)
+    cmo.destroyForeignJNDILink(bean)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

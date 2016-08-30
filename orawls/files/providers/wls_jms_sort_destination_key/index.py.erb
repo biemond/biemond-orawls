@@ -1,0 +1,16 @@
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;key_name;key_type;property_name;sort_order;domain")
+for token in m:
+    print '_jmsmodule_'+token+'___'
+    cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+    n = ls('DestinationKeys',returnMap='true')
+    for token2 in n:
+        print 'cd(\''+'/JMSSystemResources/'+token+'/JMSResource/'+token+'/DestinationKeys/'+token2+'\')'
+        cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/DestinationKeys/'+token2)
+        add_index_entry(f, [domain+'/'+token+":"+token2,token,token2,get('KeyType'),get('Property'),get('SortOrder'),domain])
+
+f.close()
+report_back_success()
+

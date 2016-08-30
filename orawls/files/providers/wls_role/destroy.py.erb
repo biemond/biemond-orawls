@@ -1,0 +1,16 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name       = '<%= role_name %>'
+realm      = '<%= realm %>'
+expression = '<%= expression %>'
+
+
+try:
+    realmName = cmo.getSecurityConfiguration().getDefaultRealm()
+    mapper    = realmName.lookupRoleMapper('XACMLRoleMapper');
+    mapper.removeRole('', name)
+    report_back_success()
+
+except:
+    report_back_error_without_undo()

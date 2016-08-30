@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<deployment-plan xmlns="http://xmlns.oracle.com/weblogic/deployment-plan" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/weblogic/deployment-plan http://xmlns.oracle.com/weblogic/deployment-plan/1.0/deployment-plan.xsd" global-variables="false">
+  <application-name>MQSeriesAdapter.rar</application-name>
+  <module-override>
+    <module-name>MQSeriesAdapter.rar</module-name>
+    <module-type>rar</module-type>
+    <module-descriptor external="false">
+      <root-element>weblogic-connector</root-element>
+      <uri>META-INF/weblogic-ra.xml</uri>
+    </module-descriptor>
+    <module-descriptor external="false">
+      <root-element>connector</root-element>
+      <uri>META-INF/ra.xml</uri>
+    </module-descriptor>
+    <module-descriptor external="true">
+      <root-element>wldf-resource</root-element>
+      <uri>META-INF/weblogic-diagnostics.xml</uri>
+    </module-descriptor>
+  </module-override>
+  <config-root><%= @adapter_plan_dir %></config-root>
+</deployment-plan>

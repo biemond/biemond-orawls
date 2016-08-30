@@ -1,0 +1,21 @@
+
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;redeliverydelay;redeliverylimit")
+for token in m:
+  n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates',returnMap='true')
+  for token2 in n:
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates/'+token2)
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates/'+token2+'/DeliveryParamsOverrides/'+token2)
+         redeliverydelay=get('RedeliveryDelay')
+
+         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates/'+token2+'/DeliveryFailureParams/'+token2)
+         redeliverylimit=get('RedeliveryLimit')
+
+         add_index_entry(f, [domain+'/'+token+":"+token2,token,redeliverydelay,redeliverylimit])
+
+f.close()
+report_back_success()
+

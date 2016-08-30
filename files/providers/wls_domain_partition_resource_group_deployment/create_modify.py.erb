@@ -1,0 +1,96 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+domain_partition_name = '<%= domain_partition_name %>'
+resource_group_name = '<%= resource_group_name %>'
+name = '<%= deployment_name %>'
+localpath = '<%= localpath %>'
+planpath = '<%= planpath %>'
+deploymenttype = '<%= deploymenttype %>'
+versionidentifier = '<%= versionidentifier %>'
+remote = '<%= remote %>'
+upload = '<%= upload %>'
+stagingmode = '<%= stagingmode %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + resource_group_name)
+
+    if remote == '1':
+        remoteflag = 'true'
+    else:
+        remoteflag = 'false'
+
+    if upload == '1':
+        uploadflag = 'true'
+    else:
+        uploadflag = 'false'
+
+    if deploymenttype == 'Library':
+        library = 'true'
+        if wlst_action == 'modify':
+            mylibs = cmo.getLibraries()
+            for libName in mylibs:
+                cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/Libraries/' + libName.getName())
+                if get('ApplicationName') == name:
+                    fullApp = libName.getName()
+                    currentApp = get('ApplicationName')
+                    currentVersionidentifier = get('VersionIdentifier')
+    else:
+        library = 'false'
+        if wlst_action == 'modify':
+            myapps = cmo.getAppDeployments()
+            for appName in myapps:
+                cd('/Partitions/' + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/AppDeployments/' + appName.getName())
+                if get('ApplicationName') == name:
+                    fullApp = appName.getName()
+                    currentApp = get('ApplicationName')
+                    currentVersionidentifier = get('VersionIdentifier')
+
+    if wlst_action == 'modify':
+        # if we got the right app
+        print 'step 1....'
+        cd('/')
+        print 'current version: ' + str(currentVersionidentifier)
+        # version is different
+        if currentVersionidentifier != versionidentifier:
+            print 'undeploy....'
+            undeploy(currentApp, timeout=90000, partition=domain_partition_name, resourceGroup=resource_group_name)
+
+    print 'deploying....'
+    if versionidentifier:
+        if planpath:
+            print 'deploying with version and deploymentplan....'
+            if stagingmode:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, planPath=planpath, stageMode=stagingmode, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+            else:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, planPath=planpath, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+        else:
+            print 'deploying with version without deploymentplan....'
+            if stagingmode:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+            else:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+    else:
+        if planpath:
+            if stagingmode:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, planPath=planpath, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library)
+            else:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, planPath=planpath, remote=remoteflag, upload=uploadflag, libraryModule=library)
+        else:
+            if stagingmode:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library)
+            else:
+                deploy(appName=name, partition=domain_partition_name, resourceGroup=resource_group_name, path=localpath, remote=remoteflag, upload=uploadflag, libraryModule=library)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

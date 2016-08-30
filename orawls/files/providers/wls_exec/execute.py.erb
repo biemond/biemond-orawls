@@ -1,0 +1,13 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+try:
+    puppet = open("/tmp/wlstScript.out", "w")
+    print >>puppet, "output" # This is the header for the conversion
+
+<%= statement %>
+
+    puppet.close()
+    report_back_success()
+except:
+    report_back_error()

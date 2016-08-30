@@ -1,0 +1,76 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                  = '<%= mailsession_name %>'
+jndiname              = '<%= jndiname %>'
+
+mailproperty          = '<%= mailproperty %>'
+target                = '<%= target %>'
+targettype            = '<%= targettype %>'
+
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createMailSession(name)
+
+    cd('/MailSessions/' + name)
+
+    cmo.setJNDIName(jndiname)
+
+    if mailproperty:
+        properties  = String(mailproperty).split(",")
+
+        final_properties = "{" + ",".join(properties) + "}"
+        set('Properties', final_properties)
+
+    else:
+        set('Properties', None)
+
+    targets     = String(target).split(",")
+    targettypes = String(targettype).split(",")
+    targetList  = []
+
+    if 'inherited' in targets:
+
+        tagged = []
+        taggedtype = []
+        i = ls('/Servers/', returnMap='true')
+
+        for token4 in i:
+            notes = get('/Servers/'+token4+'/Notes')
+            if notes:
+                if name in notes:
+                    for i in ls('/Clusters/', returnMap='true'):
+                        if i in notes:
+                            tagged.append(i)
+                            taggedtype.append('Cluster')
+                        else:
+                            tagged.append(token4)
+                            taggedtype.append('Server')
+
+        for i in range(len(tagged)):
+            print "target "+tagged[i] + " " + taggedtype[i]
+            targetList.append( ObjectName('com.bea:Name=' + tagged[i] + ',Type='+taggedtype[i]) )
+
+    else:
+
+        for i in range(len(targets)):
+          print "target "+targets[i] + " " + targettypes[i]
+          targetList.append( ObjectName('com.bea:Name=' + targets[i] + ',Type='+targettypes[i]) )
+
+
+    set('Targets',jarray.array(targetList, ObjectName))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

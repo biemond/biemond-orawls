@@ -1,0 +1,40 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                      = '<%= cluster_name %>'
+nodemanager_match         = '<%= nodemanager_match %>'
+maximum_server_count      = '<%= maximum_server_count %>'
+server_name_prefix        = '<%= server_name_prefix %>'
+server_template_name      = '<%= server_template_name %>'
+calculated_listen_port    = '<%= calculated_listen_port %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+        server_template = cmo.lookupServerTemplate(server_template_name)
+        print 'Create Cluster'
+        cluster = cmo.createCluster(name)
+        cd('/Clusters/' + name)
+        set_attribute_value('ClusterMessagingMode', 'unicast', use_default_value_when_empty)
+        server_template.setCluster(cluster)
+        cluster.getDynamicServers().setServerTemplate(server_template)
+
+    cd('/Clusters/' + name + '/DynamicServers/' + name)
+    set_attribute_value('CalculatedMachineNames'    , true, use_default_value_when_empty)
+    set_attribute_value('MaximumDynamicServerCount' , maximum_server_count, use_default_value_when_empty)
+    set_attribute_value('MachineNameMatchExpression', nodemanager_match, use_default_value_when_empty)
+    set_attribute_value('ServerNamePrefix'          , server_name_prefix, use_default_value_when_empty)
+    set_attribute_value('CalculatedListenPorts'     , calculated_listen_port, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

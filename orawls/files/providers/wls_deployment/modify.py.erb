@@ -1,0 +1,111 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name              = '<%= deployment_name %>'
+localpath         = '<%= localpath %>'
+planpath          = '<%= planpath %>'
+target            = '<%= target %>'
+targettype        = '<%= targettype %>'
+deploymenttype    = '<%= deploymenttype %>'
+versionidentifier = '<%= versionidentifier %>'
+remote            = '<%= remote %>'
+upload            = '<%= upload %>'
+stagingmode       = '<%= stagingmode %>'
+
+edit()
+startEdit()
+
+try:
+
+    print 'start....'
+
+    if remote == '1':
+        remoteflag = 'true'
+    else:
+        remoteflag = 'false'
+
+    if upload == '1':
+        uploadflag = 'true'
+    else:
+        uploadflag = 'false'
+
+    if deploymenttype == 'Library':
+        library = 'true'
+        mylibs = cmo.getLibraries()
+        for libName in mylibs:
+            cd('/Libraries/' + libName.getName())
+            if get('ApplicationName') == name:
+                fullApp                  = libName.getName()
+                currentApp               = get('ApplicationName')
+                currentVersionidentifier = get('VersionIdentifier')
+    else:
+        library = 'false'
+        myapps = cmo.getAppDeployments()
+        for appName in myapps:
+            cd('/AppDeployments/' + appName.getName())
+            if get('ApplicationName') == name:
+                fullApp                  = appName.getName()
+                currentApp               = get('ApplicationName')
+                currentVersionidentifier = get('VersionIdentifier')
+
+    # if we got the right app
+    print 'step 1....'
+    cd('/')
+    print 'current version: ' + str(currentVersionidentifier)
+    # version is different
+    if currentVersionidentifier != versionidentifier:
+        print 'undeploy....'
+        undeploy(currentApp, timeout=60000)
+        print 'deploying....'
+        if versionidentifier:
+            if planpath:
+                print 'deploying with version and deploymentplan....'
+                if stagingmode:
+                    deploy(appName=name, path=localpath, planPath=planpath, targets=target, stageMode=stagingmode, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+                else:
+                    deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+            else:
+                print 'deploying with version without deploymentplan....'
+                if stagingmode:
+                    deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+                else:
+                    deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library, versionIdentifier=versionidentifier)
+        else:
+            if planpath:
+                if stagingmode:
+                    deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library)
+                else:
+                    deploy(appName=name, path=localpath, planPath=planpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library)
+            else:
+                if stagingmode:
+                    deploy(appName=name, path=localpath, targets=target, remote=remoteflag, stageMode=stagingmode, upload=uploadflag, libraryModule=library)
+                else:
+                    deploy(appName=name, path=localpath, targets=target, remote=remoteflag, upload=uploadflag, libraryModule=library)
+    else:
+        print 'change targets for app ' + fullApp
+
+        print 'target....' + target
+        print 'targettype....' + targettype
+        targets     = String(target).split(",")
+        targettypes = String(targettype).split(",")
+        targetList  = []
+        for i in range(len(targets)):
+            print "target " + targets[i] + " " + targettypes[i]
+            targetList.append(ObjectName('com.bea:Name=' + targets[i] + ',Type=' + targettypes[i]) )
+
+        print 'set targets....'
+        if deploymenttype == 'Library':
+            print 'lib....'
+            cd('/Libraries/' + fullApp)
+        else:
+            print 'app....'
+            cd('/AppDeployments/' + fullApp)
+
+        set('Targets', jarray.array(targetList, ObjectName))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

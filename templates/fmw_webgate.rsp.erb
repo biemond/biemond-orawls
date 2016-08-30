@@ -1,0 +1,23 @@
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#Set this to true if you wish to specify a directory where latest updates are downloaded. This option would use the software updates from the specified directory
+SPECIFY_DOWNLOAD_LOCATION=false
+#Set this to true to skip the Software updates
+SKIP_SOFTWARE_UPDATES=true
+#If the Software updates are already downloaded and available on your local system, then specify the path to the directory where these patches are available and set SPECIFY_DOWNLOAD_LOCATION to true
+SOFTWARE_UPDATES_DOWNLOAD_LOCATION=
+#Provide the Oracle Home location. The location has to be the immediate child under the specified Middleware Home location. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character. The total length has to be less than or equal to 128 characters.
+ORACLE_HOME=<%= @oracleHome %>
+#Provide existing Middleware Home location.
+MIDDLEWARE_HOME=<%= @middleware_home_dir %>
+
+[SYSTEM]
+
+[APPLICATIONS]
+
+[RELATIONSHIPS]

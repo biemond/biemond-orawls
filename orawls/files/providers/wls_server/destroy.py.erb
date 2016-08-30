@@ -1,0 +1,31 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name    = '<%= server_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    AdminServerName = get('AdminServerName')
+    if name == AdminServerName:
+      raise "Cannot destroy the AdminServer, its not allowed"
+
+    cd('/Servers/'+name)
+    cmo.setCluster(None)
+    cmo.setMachine(None)
+
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/Servers/'+name))
+
+    cd('/')
+    cmo.destroyServer(getMBean('/Servers/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

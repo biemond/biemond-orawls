@@ -1,0 +1,22 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name                    = '<%= resource_group_name %>'
+domain_partition_name   = '<%= domain_partition_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    editService.getConfigurationManager().removeReferencesToBean(getMBean('/Partitions/' + domain_partition_name + '/ResourceGroups/' + name))
+
+    cd('/Partitions/' + domain_partition_name)
+    cmo.destroyResourceGroup(getMBean('/Partitions/' + domain_partition_name + '/ResourceGroups/' + name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

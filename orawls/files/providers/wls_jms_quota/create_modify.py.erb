@@ -1,0 +1,34 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name               = '<%= quota_name %>'
+jmsmodule          = '<%= jmsmodule %>'
+bytesmaximum       = '<%= bytesmaximum %>'
+messagesmaximum    = '<%= messagesmaximum %>'
+policy             = '<%= policy %>'
+shared             = '<%= shared %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule)
+    if wlst_action == 'create':
+        cmo.createQuota(name)
+
+    cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/Quotas/'+name)
+    set_attribute_value('BytesMaximum', bytesmaximum, use_default_value_when_empty)
+    set_attribute_value('MessagesMaximum', messagesmaximum, use_default_value_when_empty)
+    set_attribute_value('Policy', policy, use_default_value_when_empty)
+    set_attribute_value('Shared', shared, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

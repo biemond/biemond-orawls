@@ -1,0 +1,32 @@
+
+cd('/')
+serverTemplates = ls('/ServerTemplates',returnMap='true')
+
+f = open_file("name;listenaddress;listenport;ssllistenport;sslenabled;classpath;arguments;domain")
+for serverTemplate in serverTemplates:
+    print serverTemplate
+    cd('/ServerTemplates/'+serverTemplate)
+    if get('ListenAddress') == None:
+      listenAddress = ''
+    else:
+      listenAddress = get('ListenAddress')
+
+    listenPort    = str(get('ListenPort'))
+
+    cd('/ServerTemplates/'+serverTemplate+'/SSL/'+serverTemplate)
+    sslListenPort  = str(get('ListenPort'))
+    sslEnabled     = str(get('Enabled'))
+
+    cd('/ServerTemplates/'+serverTemplate+'/ServerStart/'+serverTemplate)
+
+    classpath     = get('ClassPath')
+    if classpath == None:
+       classpath = ''
+
+    arguments     = get('Arguments')
+    if arguments == None:
+       arguments = ''
+
+    add_index_entry(f, [domain+'/'+serverTemplate, listenAddress, listenPort, sslListenPort, sslEnabled, classpath, arguments,domain])
+f.close()
+report_back_success()

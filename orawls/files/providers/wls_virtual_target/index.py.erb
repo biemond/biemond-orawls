@@ -1,0 +1,24 @@
+
+
+wlst_name = '/VirtualTargets/'
+
+m = ls(wlst_name, returnMap='true')
+
+f = open_file("name;channelname;target;targettype;domain;virtualhostnames;port;portoffset;uriprefix")
+for token in m:
+    print '___'+token+'___'
+    cd(wlst_name + token)
+
+    channelname = get('PartitionChannel')
+    hosts = get('HostNames')
+    port = get('ExplicitPort')
+    portoffset = get('PortOffset')
+    uriprefix = get('UriPrefix')
+
+    target, targetType = retrieve_target_list(wlst_name + token)
+
+    add_index_entry(f, [domain+'/'+token, channelname ,','.join(target),','.join(targetType),domain,','.join(hosts),port,portoffset,uriprefix])
+
+f.close()
+report_back_success()
+

@@ -1,0 +1,30 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name           = '<%= jdbc_persistence_name %>'
+datasource     = '<%= datasource %>'
+prefix_name    = '<%= prefix_name %>'
+target         = '<%= target %>'
+targettype     = '<%= targettype %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    if wlst_action == 'create':
+        cmo.createJDBCStore(name)
+
+    cd('/JDBCStores/'+name)
+    cmo.setDataSource(getMBean('/SystemResources/'+datasource))
+    set_attribute_value('PrefixName', prefix_name, use_default_value_when_empty)
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,0 +1,46 @@
+
+m = ls('/MailSessions',returnMap='true')
+
+f = open_file("name;target;targettype;jndiname;mailproperty")
+for token in m:
+        print '___'+token+'___'
+        cd('/MailSessions/'+token)
+
+        jndiname = get('JNDIName')
+        mailproperties = get('Properties').toString()[1:-1].split(", ")
+        properties     = []
+        for pair in mailproperties:
+            properties.append(pair)
+
+        target, targetType = retrieve_target_list('/MailSessions/'+token)
+
+        tagged = []
+        i = ls('/Servers/', returnMap='true')
+
+        for token4 in i:
+            notes = get('/Servers/'+token4+'/Notes')
+            if notes:
+                if token in notes:
+                    for i in ls('/Clusters/', returnMap='true'):
+                        if i in notes:
+                            tagged.append(i)
+                        else:
+                            tagged.append(token4)
+
+        missing = 0
+        for k in tagged:
+            if k not in target:
+                missing = 1
+
+        for k in target:
+            if k not in tagged:
+                missing = 1
+
+        if not tagged:
+            add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),jndiname,','.join(properties)])
+        elif missing == 0:
+            add_index_entry(f, [domain+'/'+token,'inherited','inherited',jndiname,','.join(properties)])
+        else:
+            add_index_entry(f, [domain+'/'+token,'not_inherited','not_inherited',jndiname,','.join(properties)])
+f.close()
+report_back_success()

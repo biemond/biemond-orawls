@@ -1,0 +1,21 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+singleton_service_name                           = '<%= singleton_service_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+
+    cmo.destroySingletonService(cmo.lookupSingletonService(singleton_service_name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,0 +1,17 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name = '<%= file_persistence_name %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/FileStores')
+    cmo.destroyFileStore(getMBean('/FileStores/' + name))
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

@@ -1,0 +1,24 @@
+language: ruby
+sudo: false
+cache:
+  directories:
+  - vendor/bundle
+rvm:
+  - 1.9.3
+  - 2.0.0
+bundler_args: --without development
+before_install:
+  -  gem update --system 2.1.11
+script:
+  - bundle exec rake syntax
+  - bundle exec rake lint
+  - bundle exec rake ci:setup:rspec spec
+notifications:
+  email:
+    - biemond@gmail.com
+env:
+  - PUPPET_VERSION=3.4.3
+  - PUPPET_VERSION=3.6.2
+  - PUPPET_VERSION=3.7.4
+  - PUPPET_VERSION=3.8.2
+  - PUPPET_VERSION=4.2.2

@@ -1,0 +1,18 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+name = '<%= coherence_cluster_name %>'
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    cmo.destroyCoherenceClusterSystemResource(getMBean('/CoherenceClusterSystemResources/' + name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

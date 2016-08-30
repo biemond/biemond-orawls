@@ -1,0 +1,17 @@
+
+
+m = ls('/FileStores',returnMap='true')
+
+f = open_file("name;directory;target;targettype;domain")
+for token in m:
+    print '___'+token+'___'
+    cd('/FileStores/'+token)
+
+    directory = get('Directory')
+
+    target, targetType = retrieve_target_list('/FileStores/'+token)
+
+    add_index_entry(f, [domain+'/'+token,directory,','.join(target),','.join(targetType),domain])
+f.close()
+report_back_success()
+

@@ -1,0 +1,15 @@
+
+f = open_file("name;realm;expression;domain")
+
+realmName = cmo.getSecurityConfiguration().getDefaultRealm()
+mapper    = realmName.lookupRoleMapper('XACMLRoleMapper');
+roles     = mapper.listRolesForResource('')
+
+for role in roles:
+  expression = mapper.getRoleExpression(None,role);
+  add_index_entry(f, [domain+'/'+role, realmName.getName(), expression, domain])
+
+f.close()
+report_back_success()
+
+

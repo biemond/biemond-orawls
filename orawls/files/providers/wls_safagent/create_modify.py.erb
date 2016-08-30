@@ -1,0 +1,37 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+wlst_action = '<%= wlst_action %>'
+
+name                 = '<%= safagent_name %>'
+target               = '<%= target %>'
+targettype           = '<%= targettype %>'
+persistentstore      = '<%= persistentstore %>'
+persistentstoretype  = '<%= persistentstoretype %>'
+servicetype          = '<%= servicetype %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    if wlst_action == 'create':
+      cmo.createSAFAgent(name)
+
+    cd('/SAFAgents/'+name)
+
+    if persistentstoretype == "FileStore":
+      cmo.setStore(getMBean('/FileStores/'+persistentstore))
+    elif persistentstoretype == "JDBCStore":
+      cmo.setStore(getMBean('/JDBCStores/'+persistentstore))
+
+    set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+    set_attribute_value('ServiceType', servicetype, use_default_value_when_empty)
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

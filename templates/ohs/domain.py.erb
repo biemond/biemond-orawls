@@ -1,0 +1,32 @@
+# Directories
+domainName = '<%= @domain_name %>'
+domainDir = '<%= @domain_dir %>'
+
+# Read OHS Standalone template
+readTemplate('<%= @templateOHS %>')
+
+# Configure Nodemanager
+
+cd('/')
+create(domainName, 'SecurityConfiguration')
+cd('SecurityConfiguration/' + domainName)
+set('NodeManagerUsername', '<%= @nodemanager_username %>')
+set('NodeManagerPasswordEncrypted', '<%= @nodemanager_password %>')
+setOption('NodeManagerType', 'PerDomainNodeManager')
+
+# Optional Steps:
+# The standalone OHS template already comes with an
+# out-of-the-box machine ('localmachine') and a single
+# instance of OHS ('ohs1') with default configuration
+# values. The remaining steps are needed only if the
+# out-of-the-box defaults need to be changed
+
+cd('/OHS/ohs1')
+cmo.setAdminHost('<%= @adminserver_address %>')
+cmo.setAdminPort('<%= @adminserver_port %>')
+cmo.setListenAddress('<%= @ohs_standalone_listen_address %>')
+cmo.setListenPort('<%= @ohs_standalone_listen_port %>')
+cmo.setSSLListenPort('<%= @ohs_standalone_ssl_listen_port %>')
+
+writeDomain(domainDir)
+closeTemplate()

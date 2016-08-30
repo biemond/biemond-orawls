@@ -1,0 +1,98 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED = <%= @jsse_enabled %>
+WEBTIER_ENABLED = <%= @webtier_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
+WEBLOGIC_VERSION = <%= @version %>
+
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
+
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
+
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+REPOS_DBURL = '<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
+REPOS_DBPASSWORD = '<%= @repository_password %>'
+
+RESTRICTED=False
+<%- unless @restricted.nil? then -%>
+RESTRICTED=True
+<% end %>
+
+readDomain(DOMAIN_PATH)
+
+change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
+
+cd('/')
+
+<% if @apps_dir %>
+setOption('AppDir', APP_PATH )
+<% end %>
+
+print 'Adding JRF Template'
+addTemplate('<%= @templateJRF %>')
+print 'Adding EM Template'
+addTemplate('<%= @templateEM %>')
+
+dumpStack();
+
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION == 1221:
+
+    if WEBTIER_ENABLED == true:
+        print 'Adding OHS Template'
+        addTemplate('<%= @templateOHS %>')
+
+    print 'Add advanced JAX-WS Template'
+    addTemplate('<%= @templateJaxWS %>')
+    print 'Add JAX-WS SOAP over JMS Template'
+    addTemplate('<%= @templateSoapJms %>')
+
+    if RESTRICTED == False:
+        print 'Add WSMPM Template'
+        addTemplate('<%= @templateWSMPM %>')
+
+        print 'Change datasource LocalScvTblDataSource'
+        change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+
+        print 'Call getDatabaseDefaults which reads the service table'
+        getDatabaseDefaults()
+
+        print 'end datasources'
+
+    if RESTRICTED == False:
+        print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR for AdminServer'
+        serverGroup = ['WSM-CACHE-SVR' , 'WSMPM-MAN-SVR' , 'JRF-MAN-SVR']
+    else:
+        print 'Add server groups JRF-MAN-SVR for AdminServer'
+        serverGroup = ['JRF-MAN-SVR']
+
+    setServerGroups(ADMIN_SERVER, serverGroup)
+
+    print 'end datasources'
+
+dumpStack();
+updateDomain()
+dumpStack();
+closeDomain();
+
+print('Exiting...')
+exit()

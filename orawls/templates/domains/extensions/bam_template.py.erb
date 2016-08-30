@@ -1,0 +1,132 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED = <%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
+WEBLOGIC_VERSION = <%= @version %>
+WEBTIER_ENABLED = <%= @webtier_enabled %>
+
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
+
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
+
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments['BAM'] %>
+BAM_JAVA_ARGUMENTS = '<%= @java_arguments['BAM'] %>'
+<% else %>
+BAM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @bam_nodemanager_log_dir %>/bam_server1.out -Dweblogic.Stderr=<%= @bam_nodemanager_log_dir %>/bam_server1_err.out'
+<% end %>
+
+REPOS_DBURL = '<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
+REPOS_DBPASSWORD = '<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
+
+cd('/')
+
+<% if @apps_dir %>
+setOption('AppDir', APP_PATH )
+<% end %>
+
+print 'Adding standard Template'
+addTemplate('<%= @templateApplCore %>')
+addTemplate('<%= @templateJRF %>')
+
+print 'Adding BAM Template'
+addTemplate('<%= @templateBAM %>')
+
+if WEBLOGIC_VERSION not in [1213, 1221]:
+    print 'Adding EM Template'
+    addTemplate('<%= @templateEM %>')
+
+dumpStack();
+
+<% if @apps_dir %>
+setOption('AppDir', APP_PATH )
+<% end %>
+
+if WEBLOGIC_VERSION not in [1213, 1221]:
+    cd('/')
+    # destroy the normal one
+    delete('LocalMachine', 'Machine')
+    print('change the default machine LocalMachine with type Machine')
+    create_machine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
+
+print 'Change AdminServer'
+cd('/Servers/' + ADMIN_SERVER)
+set('Machine', 'LocalMachine')
+
+print 'change bam_server1'
+cd('/')
+change_managed_server('bam_server1', 'LocalMachine', '<%= @adminserver_address %>', 9001, BAM_JAVA_ARGUMENTS, '<%= @bam_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+### only for 11g
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION not in [1213,1221]:
+
+    print 'create opss datasource'
+
+    target = ADMIN_SERVER + ',bam_server1'
+
+    create_opss_datasource(target, REPOS_DBUSER_PREFIX, REPOS_DBPASSWORD, REPOS_DBURL)
+
+    print 'Change datasources'
+
+    change_datasource('OraSDPMDataSource', REPOS_DBUSER_PREFIX+'_ORASDPM', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('BAMDataSource', REPOS_DBUSER_PREFIX+'_ORABAM', REPOS_DBPASSWORD, REPOS_DBURL)
+
+print 'weblogic version' + str(WEBLOGIC_VERSION)
+
+if WEBLOGIC_VERSION in [1213,1221]:
+
+    print 'Change datasources'
+
+    print 'Change datasource LocalScvTblDataSource'
+    change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+
+    print 'Call getDatabaseDefaults which reads the service table'
+    getDatabaseDefaults()
+
+    change_datasource_to_xa('OraSDPMDataSource')
+    change_datasource_to_xa('BamDataSource')
+
+    print 'end datasources'
+
+    print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
+    serverGroup = ['WSM-CACHE-SVR', 'WSMPM-MAN-SVR', 'JRF-MAN-SVR']
+    setServerGroups(ADMIN_SERVER, serverGroup)
+
+    print 'Add server group BAM-MGD-SVRS to bam_server1'
+    serverGroup = ['BAM12-MGD-SVRS']
+    setServerGroups('bam_server1', serverGroup)
+
+    print 'end server groups'
+
+updateDomain()
+closeDomain();
+
+create_boot_properties_file(DOMAIN_PATH + '/servers/bam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+
+print('Exiting...soa_bpm')
+exit()

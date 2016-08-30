@@ -1,0 +1,21 @@
+# check the domain else we need to skip this (done in wls_access.rb)
+real_domain='<%= domain %>'
+
+
+
+name                 = '<%= jmsserver_name %>'
+
+edit()
+startEdit()
+
+try:
+
+    cd('/')
+    cmo.destroyJMSServer(getMBean('/Deployments/'+name))
+
+    save()
+    activate()
+    report_back_success()
+
+except:
+    report_back_error()

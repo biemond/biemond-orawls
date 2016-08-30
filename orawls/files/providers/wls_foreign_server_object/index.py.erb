@@ -1,0 +1,28 @@
+
+
+def object(token,token2,token3,location,type):
+    cd(location)
+    add_index_entry(f, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,cmo.getLocalJNDIName(),cmo.getRemoteJNDIName(),domain])
+
+m = ls('/JMSSystemResources',returnMap='true')
+
+f = open_file("name;jmsmodule;foreign_server;object_type;localjndiname;remotejndiname;domain")
+for token in m:
+    print '_jmsmodule_'+token+'___'
+    cd('/JMSSystemResources/'+token+'/JMSResource/'+token)
+
+    n = ls('ForeignServers',returnMap='true')
+    for token2 in n:
+            cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+            l = ls('ForeignDestinations',returnMap='true')
+            for token3 in l:
+                   object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignDestinations/'+token3,"destination")
+            cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
+            l = ls('ForeignConnectionFactories',returnMap='true')
+            for token3 in l:
+                   object(token,token2,token3,'/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2+'/ForeignConnectionFactories/'+token3,"connectionfactory")
+
+
+f.close()
+report_back_success()
+

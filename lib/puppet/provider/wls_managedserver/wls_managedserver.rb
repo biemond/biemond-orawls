@@ -19,7 +19,7 @@ Puppet::Type.type(:wls_managedserver).provide(:wls_managedserver) do
     if action == :start
       wls_action = "start(\"#{name}\",\"#{target}\")"
     else
-      wls_action = "shutdown(\"#{name}\",\"#{target}\",\"force=true\")"
+      wls_action = "shutdown(\"#{name}\",\"#{target}\",force=\"true\")"
     end
 
     command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF

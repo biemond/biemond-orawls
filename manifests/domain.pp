@@ -608,6 +608,9 @@ define orawls::domain (
         group   => $os_group,
         require => Exec["execwlst ${domain_name} ${title}"],
       }
+      if $extensionsTemplateFile {
+        Exec["execwlst ${domain_name} extension ${title}"] -> Exec["rm ${domain_name} nodemanager.properties"]
+      }
     }
 
     yaml_setting { "domain ${title}":

@@ -2,6 +2,8 @@
 
 ## 1.0.54
 - SOA 12.2.1.1 bam fix for single node clusters
+- wls_managedserver fix for forced shutdown/restart
+- domain fix for nodemanager properties & domain extension template
 
 ## 1.0.53
 - nodemanager manifest will auto restart nodemanager when a property is changed

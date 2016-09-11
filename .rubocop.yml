@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Relaxed.Ruby.Style
 
 Style/Alias:
@@ -141,4 +142,93 @@ Metrics/ParameterLists:
   Enabled: false
 
 Metrics/PerceivedComplexity:
+=======
+
+Style/Encoding:
+  Enabled: false
+
+Style/VariableName:
+  Description: 'Use the configured style when naming variables.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars'
+  Enabled: false
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+Style/RedundantSelf:
+  Description: "Don't use self where it's not needed."
+  Enabled: false
+
+Style/Blocks:
+  Description: >-
+                Avoid using {...} for multi-line blocks (multiline chaining is
+                always ugly).
+                Prefer {...} over do...end for single-line blocks.
+  Enabled: false
+
+Style/UnlessElse:
+  Description: >-
+                 Never use unless with else. Rewrite these with the positive
+                 case first.
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Description: >-
+                 Favor modifier if/unless usage when you have a
+                 single-line body.
+  Enabled: false
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - 'spec/**/*'
+    - 'pkg/**/*'
+    - 'coverage/**/*'
+    - 'files/**/*'
+    - 'manifests/**/*'
+    - 'Rakefile'
+    - 'Gemfile'
+    - '*.markdown'
+    - '*.md'
+
+Eval:
+  Enabled: false
+
+HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Lambda:
+  Enabled: false
+
+LineLength:
+  Enabled: false
+
+AccessorMethodName:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Severity: convention
+
+Metrics/ParameterLists:
+  Max: 8
+  CountKeywordArgs: true
+
+Lint/UnusedMethodArgument:
+  Description: 'Checks for unused method arguments.'
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  Description: 'Checks for unused block arguments.'
+  Enabled: false
+
+
+BlockNesting:
+>>>>>>> fa322b563d9261cfb16b585e35f9a5f2f169b204
   Enabled: false

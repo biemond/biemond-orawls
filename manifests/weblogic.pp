@@ -20,7 +20,7 @@ class orawls::weblogic (
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
 ) {
 
-  orawls::weblogic_type{'base':
+  ::orawls::weblogic_type{'base':
     version              => $version,
     filename             => $filename,
     oracle_base_home_dir => $oracle_base_home_dir,
@@ -39,5 +39,4 @@ class orawls::weblogic (
     log_output           => $log_output,
     temp_directory       => $temp_directory,
   }
-
 }

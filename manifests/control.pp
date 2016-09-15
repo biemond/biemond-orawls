@@ -17,6 +17,7 @@ define orawls::control (
   $server                      = 'AdminServer',
   $adminserver_address         = hiera('domain_adminserver_address'    , 'localhost'),
   $adminserver_port            = hiera('domain_adminserver_port'       , 7001),
+  $adminserver_secure_listener = false,
   $nodemanager_secure_listener = true,
   $nodemanager_port            = hiera('domain_nodemanager_port'       , 5556),
   $action                      = 'start', # start|stop
@@ -67,17 +68,18 @@ define orawls::control (
   }
   else {
     wls_managedserver{"${title}:Server":
-      ensure              => $action,   #running|start|abort|stop
-      target              => $target,
-      server_name         => $server,
-      domain_name         => $domain_name,
-      os_user             => $os_user,
-      weblogic_home_dir   => $weblogic_home_dir,
-      weblogic_user       => $weblogic_user,
-      weblogic_password   => $weblogic_password,
-      jdk_home_dir        => $jdk_home_dir,
-      adminserver_address => $adminserver_address,
-      adminserver_port    => $adminserver_port,
+      ensure                      => $action,   #running|start|abort|stop
+      target                      => $target,
+      server_name                 => $server,
+      domain_name                 => $domain_name,
+      os_user                     => $os_user,
+      weblogic_home_dir           => $weblogic_home_dir,
+      weblogic_user               => $weblogic_user,
+      weblogic_password           => $weblogic_password,
+      jdk_home_dir                => $jdk_home_dir,
+      adminserver_address         => $adminserver_address,
+      adminserver_port            => $adminserver_port,
+      adminserver_secure_listener => $adminserver_secure_listener,
     }
   }
 }

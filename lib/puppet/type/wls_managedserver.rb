@@ -103,6 +103,16 @@ module Puppet
       EOT
     end
 
+    newparam(:adminserver_secure_listener ) do
+      desc <<-EOT
+        Whether to use ssl (t3s) when connecting to the admin server
+      EOT
+
+      newvalues(:true, :false)
+
+      defaultto :false
+    end
+
     newparam(:refreshonly) do
       desc <<-EOT
         The command should only be run as a
@@ -118,6 +128,5 @@ module Puppet
       Puppet.info 'wls_managedserver refresh'
       provider.restart
     end
-
   end
 end

@@ -694,13 +694,24 @@ define orawls::domain (
           group   => $os_group,
         }
 
-        exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
-          command => "sed -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain3.tmp && mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
+        if ( $owsm_enabled == true ) {
+          exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
+            command => "sed -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain3.tmp && mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+        } else {
+          exec { "setDERBY_FLAGOnTrue ${domain_name} ${title}":
+            command => "sed -e's/DERBY_FLAG=\"false\"/DERBY_FLAG=\"true\"/g' ${domain_dir}/bin/setDomainEnv.sh > /tmp/domain3.tmp && mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep DERBY_FLAG=\"false\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
         }
 
       }
@@ -731,13 +742,24 @@ define orawls::domain (
           group   => $os_group,
         }
 
-        exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
-          command => "sed -i -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
-          onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
-          require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
+        if ( $owsm_enabled == true ) {
+          exec { "setDERBY_FLAGOnFalse ${domain_name} ${title}":
+            command => "sed -i -e's/DERBY_FLAG=\"true\"/DERBY_FLAG=\"false\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep DERBY_FLAG=\"true\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
+        } else {
+          exec { "setDERBY_FLAGOnTrue ${domain_name} ${title}":
+            command => "sed -i -e's/DERBY_FLAG=\"false\"/DERBY_FLAG=\"true\"/g' ${domain_dir}/bin/setDomainEnv.sh",
+            onlyif  => "/bin/grep DERBY_FLAG=\"false\" ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l",
+            require => Exec["setOSBDebugFlagOnFalse ${domain_name} ${title}"],
+            path    => $exec_path,
+            user    => $os_user,
+            group   => $os_group,
+          }
         }
 
       }

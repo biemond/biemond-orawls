@@ -1,5 +1,9 @@
 # History
 
+## 1.0.55
+- Option for Control.pp and wls_managedserver to use secure connection to the adminserver
+- For an OSB domain without a DB ( owsm_enabled = false ) enables now the Derby database so wlsbjmsrpDataSource is active and osb servers comes up in running mode
+
 ## 1.0.54
 - SOA 12.2.1.1 bam fix for single node clusters
 - wls_managedserver fix for forced shutdown/restart

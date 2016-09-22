@@ -22,7 +22,6 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     trust_keystore_file         = resource[:trust_keystore_file]
     trust_keystore_passphrase   = resource[:trust_keystore_passphrase]
     extra_arguments             = resource[:extra_arguments]
-    ohs_standalone_server       = resource[:ohs_standalone_server]
 
     Puppet.debug "adminserver custom trust: #{custom_trust}"
 
@@ -32,24 +31,12 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} #{extra_arguments}"
     end
 
-    if "#{ohs_standalone_server}" == 'true'
-      base_path = "#{weblogic_home_dir}/../oracle_common"
-    else
-      base_path = weblogic_home_dir
-    end
+    base_path = weblogic_home_dir
 
     if action == :start
-      if "#{ohs_standalone_server}" == 'true'
-        wls_action = "nmStart(serverName=\"#{name}\", serverType=\"OHS\")"
-      else
-        wls_action = "nmStart(\"#{name}\")"
-      end
+      wls_action = "nmStart(\"#{name}\")"
     else
-      if "#{ohs_standalone_server}" == 'true'
-        wls_action = "nmKill(serverName=\"#{name}\", serverType=\"OHS\")"
-      else
-        wls_action = "nmKill(\"#{name}\")"
-      end
+      wls_action = "nmKill(\"#{name}\")"
     end
 
     if "#{nodemanager_secure_listener}" == 'true'

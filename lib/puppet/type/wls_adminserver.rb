@@ -49,16 +49,6 @@ module Puppet
       EOT
     end
 
-    newparam(:ohs_standalone_server) do
-      desc <<-EOT
-        Flag to determinate if the server is a OHS standalone server.
-      EOT
-
-      newvalues(:true, :false)
-
-      defaultto :false
-    end
-
     newparam(:domain_name) do
       desc <<-EOT
         The weblogic domain name.

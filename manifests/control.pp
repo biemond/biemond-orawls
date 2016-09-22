@@ -61,7 +61,6 @@ define orawls::control (
       trust_keystore_file         => $trust_keystore_file,
       trust_keystore_passphrase   => $trust_keystore_passphrase,
       extra_arguments             => $extra_arguments,
-      ohs_standalone_server       => false,
     }
   }
   elsif $server_type == 'ohs_standalone' {

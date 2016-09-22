@@ -1,11 +1,11 @@
-Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
+Puppet::Type.type(:wls_ohsserver).provide(:wls_ohsserver) do
 
   def self.instances
     []
   end
 
-  def adminserver_control(action)
-    Puppet.debug "adminserver action: #{action}"
+  def ohsserver_control(action)
+    Puppet.debug "ohs server action: #{action}"
 
     domain_name                 = resource[:domain_name]
     domain_path                 = resource[:domain_path]
@@ -23,7 +23,7 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
     trust_keystore_passphrase   = resource[:trust_keystore_passphrase]
     extra_arguments             = resource[:extra_arguments]
 
-    Puppet.debug "adminserver custom trust: #{custom_trust}"
+    Puppet.debug "ohs server custom trust: #{custom_trust}"
 
     if "#{custom_trust}" == 'true'
       config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{trust_keystore_passphrase} #{extra_arguments}"
@@ -31,12 +31,12 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       config = "-Dweblogic.ssl.JSSEEnabled=#{jsse_enabled} -Dweblogic.security.SSL.enableJSSE=#{jsse_enabled} #{extra_arguments}"
     end
 
-    base_path = weblogic_home_dir
+    base_path = "#{weblogic_home_dir}/../oracle_common"
 
     if action == :start
-      wls_action = "nmStart(\"#{name}\")"
+      wls_action = "nmStart(serverName=\"#{name}\", serverType=\"OHS\")"
     else
-      wls_action = "nmKill(\"#{name}\")"
+      wls_action = "nmKill(serverName=\"#{name}\", serverType=\"OHS\")"
     end
 
     if "#{nodemanager_secure_listener}" == 'true'
@@ -57,7 +57,7 @@ nmConnect(\"#{weblogic_user}\",\"xxxxx\",\"#{nodemanager_address}\",#{nodemanage
 nmDisconnect()
 EOF"
 
-    Puppet.info "adminserver action: #{action} with command #{command2} and CONFIG_JVM_ARGS=#{config}"
+    Puppet.info "ohs server action: #{action} with command #{command2} and CONFIG_JVM_ARGS=#{config}"
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
         
@@ -67,28 +67,45 @@ EOF"
       output = `export CONFIG_JVM_ARGS="#{config}";#{command}`
     end
     
-    Puppet.info "adminserver result: #{output}"
+    Puppet.info "ohs server result: #{output}"
   end
 
-  def adminserver_status
-    domain_name    = resource[:domain_name]
-    name           = resource[:server_name]
+  def ohsserver_status
+    domain_name                 = resource[:domain_name]
+    name                        = resource[:server_name]
+    user                        = resource[:os_user]
+    domain_path                 = resource[:domain_path]
+    nodemanager_address         = resource[:nodemanager_address]
+    nodemanager_port            = resource[:nodemanager_port]
+    nodemanager_secure_listener = resource[:nodemanager_secure_listener]
+    weblogic_home_dir           = resource[:weblogic_home_dir]
+    weblogic_user               = resource[:weblogic_user]
+    weblogic_password           = resource[:weblogic_password]
+
+    if "#{nodemanager_secure_listener}" == 'true'
+      nm_protocol = 'ssl'
+    else
+      nm_protocol = 'plain'
+    end
 
     kernel = Facter.value(:kernel)
 
     ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
     ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
 
-    command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
+    command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
+nmServerStatus(serverName=\"#{name}\", serverType=\"OHS\")
+exit()
+EOF"
 
-    Puppet.debug "adminserver_status #{command}"
-    output = `#{command}`
-
+    su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
+    output = `su #{su_shell} - #{user} -c '#{command}'`
+    Puppet.debug output
     output.each_line do |li|
       unless li.nil?
-        Puppet.debug "line #{li}"
-        if li.include? name
-          Puppet.debug 'found server'
+        if li.include? 'RUNNING'
+          Puppet.debug 'found target'
           return 'Found'
         end
       end
@@ -97,21 +114,21 @@ EOF"
   end
 
   def start
-    adminserver_control :start
+    ohsserver_control :start
   end
 
   def stop
-    adminserver_control :stop
+    ohsserver_control :stop
   end
 
   def restart
-    adminserver_control :stop
-    adminserver_control :start
+    ohsserver_control :stop
+    ohsserver_control :start
   end
 
   def status
-    output  = adminserver_status
-    Puppet.debug "adminserver_status output #{output}"
+    output  = ohsserver_status
+    Puppet.debug "ohsserver_status output #{output}"
     if output == 'Found'
       return :start
     else

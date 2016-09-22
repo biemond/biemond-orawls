@@ -1,17 +1,17 @@
 module Puppet
-  Type.newtype(:wls_adminserver) do
-    desc 'control the adminserver state like running,stop,restart'
+  Type.newtype(:wls_ohsserver) do
+    desc 'control the ohs server state like running,stop,restart'
 
     newproperty(:ensure) do
       desc 'Whether to do something.'
 
-      newvalue(:start, :event => :adminserver_running) do
+      newvalue(:start, :event => :ohsserver_running) do
         unless :refreshonly == true
           provider.start
         end
       end
 
-      newvalue(:stop, :event => :adminserver_stop) do
+      newvalue(:stop, :event => :ohsserver_stop) do
         unless :refreshonly == true
           provider.stop
         end
@@ -45,7 +45,7 @@ module Puppet
 
     newparam(:server_name) do
       desc <<-EOT
-        The adminserver name.
+        The ohs server name.
       EOT
     end
 
@@ -163,7 +163,7 @@ module Puppet
     end
 
     def refresh
-      Puppet.info 'wls_adminserver refresh'
+      Puppet.info 'wls_ohsserver refresh'
       provider.restart
     end
 

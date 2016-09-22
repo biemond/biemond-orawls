@@ -42,9 +42,7 @@ define orawls::control (
 
   $domain_dir = "${domains_dir}/${domain_name}"
 
-  if $server_type == 'admin' or $server_type == 'ohs_standalone' {
-    $ohs_standalone_server = ($server_type == 'ohs_standalone')
-
+  if $server_type == 'admin' {
     wls_adminserver{"${title}:AdminServer":
       ensure                      => $action,   #running|start|abort|stop
       server_name                 => $server,
@@ -63,7 +61,27 @@ define orawls::control (
       trust_keystore_file         => $trust_keystore_file,
       trust_keystore_passphrase   => $trust_keystore_passphrase,
       extra_arguments             => $extra_arguments,
-      ohs_standalone_server       => $ohs_standalone_server,
+    }
+  }
+  elsif $server_type == 'ohs_standalone' {
+    wls_ohsserver{"${title}:AdminServer":
+      ensure                      => $action,   #running|start|abort|stop
+      server_name                 => $server,
+      domain_name                 => $domain_name,
+      domain_path                 => $domain_dir,
+      os_user                     => $os_user,
+      weblogic_home_dir           => $weblogic_home_dir,
+      weblogic_user               => $weblogic_user,
+      weblogic_password           => $weblogic_password,
+      jdk_home_dir                => $jdk_home_dir,
+      nodemanager_address         => $adminserver_address,
+      nodemanager_port            => $nodemanager_port,
+      nodemanager_secure_listener => $nodemanager_secure_listener,
+      jsse_enabled                => $jsse_enabled,
+      custom_trust                => $custom_trust,
+      trust_keystore_file         => $trust_keystore_file,
+      trust_keystore_passphrase   => $trust_keystore_passphrase,
+      extra_arguments             => $extra_arguments,
     }
   }
   else {

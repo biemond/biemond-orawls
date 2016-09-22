@@ -93,6 +93,7 @@ This will use WLST to retrieve the current state and to the changes. With WebLog
 - [wls_setting](#wls_setting), set the default wls parameters for the other types and also used by puppet resource
 - [wls_adminserver](#wls_adminserver) control the adminserver or subscribe to changes
 - [wls_managedserver](#wls_managedserver) control the managed server,cluster or subscribe to changes
+- [wls_ohsserver](#wls_ohsserver) control the ohs standalone server or subscribe to changes
 - [wls_domain](#wls_domain)
 - [wls_deployment](#wls_deployment)
 - [wls_domain](#wls_domain)
@@ -1403,7 +1404,7 @@ here is an overview of all the parameters you can set with its defaults
 
 
 ### control
-__orawls::control__ start or stops the AdminServer,Managed Server or a Cluster of a WebLogic Domain, this will call the wls_managedserver and wls_adminserver types
+__orawls::control__ start or stops the AdminServer,Managed Server, OHS Standalone Server or a Cluster of a WebLogic Domain, this will call the wls_managedserver, wls_adminserver and wls_ohsserver types
 
     orawls::control{'startWLSAdminServer12c':
       domain_name                 => "Wls12c",
@@ -2300,6 +2301,28 @@ subscribe to a wls_domain, wls_identity_asserter or wls_authenticaton_provider e
       subscribe                 => Wls_domain['Wls1036'],
     }
 
+### wls_ohsserver
+
+type for ohs server control like start, running, abort and stop.
+also supports subscribe with refreshonly
+
+
+    # for this type you won't need a wls_setting identifier
+    wls_ohsserver{'OHS Server:':
+      ensure                    => 'running',   #running|start|abort|stop
+      server_name               => hiera('domain_adminserver'),
+      domain_name               => hiera('domain_name'),
+      domain_path               => "/opt/oracle/wlsdomains/domains/Wls1036",
+      os_user                   => hiera('wls_os_user'),
+      weblogic_home_dir         => hiera('wls_weblogic_home_dir'),
+      weblogic_user             => hiera('wls_weblogic_user'),
+      weblogic_password         => hiera('domain_wls_password'),
+      jdk_home_dir              => hiera('wls_jdk_home_dir'),
+      nodemanager_address       => hiera('domain_adminserver_address'),
+      nodemanager_port          => hiera('domain_nodemanager_port'),
+      jsse_enabled              => false,
+      custom_trust              => false,
+    }
 
 ### wls_deployment
 

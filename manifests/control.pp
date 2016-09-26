@@ -83,14 +83,6 @@ define orawls::control (
       trust_keystore_passphrase   => $trust_keystore_passphrase,
       extra_arguments             => $extra_arguments,
     }
-    ->
-    file { "${domain_dir}/config/fmwconfig/components/OHS/instances/ohs1/mod_wl_ohs.conf":
-      ensure  => present,
-      source  => 'puppet:///modules/orawls/mod_wl_ohs.conf',
-      owner   => $os_user,
-      group   => $os_group,
-      mode    => '0640',
-    }
   }
   else {
     wls_managedserver{"${title}:Server":

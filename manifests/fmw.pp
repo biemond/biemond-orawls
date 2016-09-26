@@ -670,6 +670,18 @@ define orawls::fmw(
                         Orawls::Utils::Orainst["create oraInst for ${name}"],
                         Exec["extract ${fmw_file1} for ${name}"],],
       }
+
+      # Change some OHS template options
+      if $version == 1212 and $ohs_mode == 'standalone' {
+        file { "${weblogic_home_dir}/ohs/templates/conf/mod_wl_ohs.conf":
+          ensure  => present,
+          source  => 'puppet:///modules/orawls/mod_wl_ohs.conf',
+          owner   => $os_user,
+          group   => $os_group,
+          mode    => '0640',
+          require => Exec["install ${sanitised_title}"],
+        }
+      }
     } else {
       if !defined(File[$oracleHome]) {
         file { $oracleHome:

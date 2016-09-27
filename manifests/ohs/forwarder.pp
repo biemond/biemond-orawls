@@ -1,6 +1,23 @@
 #
 # Usage:
-# TODO
+#  orawls::ohs::forwarder { '/console':
+#    servers     => ['192.168.1.1:7000'],
+#    owner       => 'oracle',
+#    group       => 'oracle',
+#    domain_path => '/opt/test/wls/domains/domain1',
+#    require     => Orawls::Control["start ohs ${domain_name}"],
+#    notify      => Wls_ohsserver["reload ohs ${domain_name}"],
+#  }
+#
+#  orawls::ohs::forwarder { 'apps':
+#    servers     => ['192.168.1.2', '192.168.1.3', '192.168.1.4:7002'],
+#    owner       => 'oracle',
+#    group       => 'oracle',
+#    location    => '^(?!(/console|/OracleHTTPServer12c_files|/index.html))',
+#    domain_path => '/opt/test/wls/domains/domain1',
+#    require     => Orawls::Control["start ohs ${domain_name}"],
+#    notify      => Wls_ohsserver["reload ohs ${domain_name}"],
+#  }
 # 
 define orawls::ohs::forwarder (
   $owner,

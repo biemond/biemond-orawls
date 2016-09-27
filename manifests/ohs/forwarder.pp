@@ -19,6 +19,9 @@
 #    notify      => Wls_ohsserver["reload ohs ${domain_name}"],
 #  }
 # 
+# notify option is needed to OHS restart and load changes.
+# require is needed because without it, notify option may attempt to reload server before it's running.
+#
 define orawls::ohs::forwarder (
   $owner,
   $group,

@@ -11,6 +11,10 @@ define orawls::ohs::forwarder (
   $ensure       = 'present',
   $location     = $title,
 ) {
+  if empty($servers) {
+    fail("servers can't be empty")
+  }
+
   # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
   $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
   $sanitised_title = regsubst($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')

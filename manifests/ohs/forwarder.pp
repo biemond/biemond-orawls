@@ -9,6 +9,7 @@ define orawls::ohs::forwarder (
   $ohs_config_dir,
   $ensure = 'present',
   $location = $title,
+  $default_port = 7001,
 ) {
   # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
   $convert_spaces_to_underscores = regsubst($title,'\s','_','G')

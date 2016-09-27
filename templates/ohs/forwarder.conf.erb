@@ -5,16 +5,12 @@
 <LocationMatch "<%= @location %>">
   SetHandler weblogic-handler
 
-  <% if @servers.is_a? String %>
-    WebLogicHost <%= @servers.split(/:/).first %>
-    WebLogicPort <%= @servers.split(/:/).last %>
+  <% if @servers.size == 1 %>
+  <% host, port = @servers[0].split(/:/) %>
+  WebLogicHost <%= host %>
+  WebLogicPort <%= port || @default_port %>
   <% else %>
-    <% if @servers.size == 1 %>
-    WebLogicHost <%= @servers[0].split(/:/).first %>
-    WebLogicPort <%= @servers[0].split(/:/).last %>
-    <% else %>
-    WebLogicCluster <%= @servers.map { |item| "#{item.split(/:/).first}:#{item.split(/:/).last}" }.join ',' %>
-    <% end %>
+  WebLogicCluster <%= @servers.map { |server| host, port = server.split(/:/); "#{host}:#{port || @default_port}" }.join ',' %>
   <% end %>
 </LocationMatch>
 </IfModule>

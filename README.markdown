@@ -1649,26 +1649,22 @@ the cluster if the managed server is in a cluster.
 
 ### Configure Oracle HTTP Server
 
-You can configure OHS rewrites and locations using __orawls::ohs::config__ resource:
+You can configure OHS locations using __orawls::ohs::forwarder__ resource:
 
-    orawls::ohs::config { 'default':
-      server_name => 'ohs1',
-      domain_path => '/opt/oracle/middleware12c/user_projects/domains/domain_name',
+    orawls::ohs::forwarder { '/console':
+      servers     => ['192.168.1.1:7000'],
       owner       => 'oracle',
-      group       => 'dba',
-      rewrites    => {
-        '^/mail$' => {
-          'to'      => 'http://mail.domain.com',
-          'options' => 'R',
-        },
-      },
-      locations   => {
-        '/application' => ['192.168.1.1:7001'],
-      },
+      group       => 'oracle',
+      domain_path => '/opt/test/wls/domains/domain1',
+      require     => Orawls::Control["start ohs ${domain_name}"],
+      notify      => Wls_ohsserver["reload ohs ${domain_name}"],
     }
 
-OHS will include all __.conf__ files at ${domain_path}/config/fmwconfig/components/OHS/instances/${server_name}/mod_wl_ohs.d folder.
+Notify option is needed to OHS restart and load changes. Require is needed because, without it, notify option may attempt to reload server before it's running.
 
+OHS will include all __.conf__ files at ${domain_path}/config/fmwconfig/components/OHS/${server_name}/mod_wl_ohs.d folder.
+
+This resource has been tested only with OHS 12.1.2 Standalone.
 
 ### fmwlogdir
 __orawls::fmwlogdir__ Change a log folder location of a FMW server

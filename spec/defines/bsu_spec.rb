@@ -15,7 +15,7 @@ describe 'orawls::bsu', :type => :define do
                   :patch_file           => 'p17572726_1036_Generic.zip',
                   :source               => 'puppet:///middleware',
                 }}
-    let(:title) {'FCX7'}
+    let(:title) {'/opt/oracle/middleware11gR1:FCX7'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
                    :osfamily        => 'RedHat' }}
@@ -38,13 +38,13 @@ describe 'orawls::bsu', :type => :define do
       it {
            should contain_exec("extract p17572726_1036_Generic.zip").with({
              'command'  => 'unzip -o /install/p17572726_1036_Generic.zip -d /opt/oracle/middleware11gR1/utils/bsu/cache_dir',
-           }).that_comes_before('Bsu_patch[FCX7]')
+           }).that_comes_before('Bsu_patch[/opt/oracle/middleware11gR1:FCX7]')
          }
     end
 
     describe "install BSU" do
       it {
-           should contain_bsu_patch("FCX7").with({
+           should contain_bsu_patch("/opt/oracle/middleware11gR1:FCX7").with({
              'ensure'               => 'present',
              'middleware_home_dir'  => '/opt/oracle/middleware11gR1',
              'os_user'              => 'oracle',
@@ -68,7 +68,7 @@ describe 'orawls::bsu', :type => :define do
                   :patch_file           => 'p17572726_1036_Generic.zip',
                   :source               => '/mnt',
                 }}
-    let(:title) {'FCX7'}
+    let(:title) {'/opt/oracle/middleware11gR1:FCX7'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
                    :osfamily        => 'RedHat' }}
@@ -83,13 +83,13 @@ describe 'orawls::bsu', :type => :define do
       it {
            should contain_exec("extract p17572726_1036_Generic.zip").with({
              'command'  => 'unzip -o /mnt/p17572726_1036_Generic.zip -d /opt/oracle/middleware11gR1/utils/bsu/cache_dir',
-           }).that_comes_before('Bsu_patch[FCX7]')
+           }).that_comes_before('Bsu_patch[/opt/oracle/middleware11gR1:FCX7]')
          }
     end
 
     describe "install BSU" do
       it {
-           should contain_bsu_patch("FCX7").with({
+           should contain_bsu_patch("/opt/oracle/middleware11gR1:FCX7").with({
              'ensure'               => 'present',
              'middleware_home_dir'  => '/opt/oracle/middleware11gR1',
              'os_user'              => 'oracle',

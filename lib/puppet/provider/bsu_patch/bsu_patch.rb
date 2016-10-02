@@ -7,10 +7,12 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
 
   def bsu_patch(action)
     user                = resource[:os_user]
-    patchName           = resource[:name]
+    patch_name           = resource[:name]
     middleware_home_dir = resource[:middleware_home_dir]
     weblogic_home_dir   = resource[:weblogic_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
+
+    patch_id = patch_name.split(':')[1]
 
     if action == :present
       bsuaction = '-install'
@@ -21,9 +23,9 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     Puppet.debug "bsu_patch action: #{action}"
 
     if patch_download_dir.nil?
-      command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh ' + bsuaction + ' -patchlist=' + patchName + ' -prod_dir=' + weblogic_home_dir + ' -verbose'
+      command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh ' + bsuaction + ' -patchlist=' + patch_id + ' -prod_dir=' + weblogic_home_dir + ' -verbose'
     else
-      command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh ' + bsuaction + ' -patchlist=' + patchName + ' -prod_dir=' + weblogic_home_dir + ' -patch_download_dir=' + patch_download_dir + ' -verbose'
+      command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh ' + bsuaction + ' -patchlist=' + patch_id + ' -prod_dir=' + weblogic_home_dir + ' -patch_download_dir=' + patch_download_dir + ' -verbose'
     end
 
     kernel = Facter.value(:kernel)
@@ -53,11 +55,13 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
 
   def bsu_status
     user                = resource[:os_user]
-    patchName           = resource[:name]
+    patch_name           = resource[:name]
     middleware_home_dir = resource[:middleware_home_dir]
     weblogic_home_dir   = resource[:weblogic_home_dir]
     patch_download_dir  = resource[:patch_download_dir]
 
+    patch_id = patch_name.split(':')[1]
+    
     if patch_download_dir.nil?
       command = 'cd ' + middleware_home_dir + '/utils/bsu;' + middleware_home_dir + '/utils/bsu/bsu.sh -view -status=applied -prod_dir=' + weblogic_home_dir + ' -verbose'
     else
@@ -67,7 +71,7 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
 
-    Puppet.debug "bsu_status for patch #{patchName} command: #{command}"
+    Puppet.debug "bsu_status for patch #{patch_id} command: #{command}"
     if Puppet.features.root?
         output = `su #{su_shell} - #{user} -c '#{command}'`
     else
@@ -77,9 +81,9 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
     output.each_line do |li|
       unless li.nil?
         Puppet.debug "line #{li}"
-        if li.include? patchName
+        if li.include? patch_id
           Puppet.debug 'found patch'
-          return patchName
+          return patch_name
         end
       end
     end
@@ -96,9 +100,9 @@ Puppet::Type.type(:bsu_patch).provide(:bsu_patch) do
 
   def status
     output  = bsu_status
-    patchId = resource[:name]
-    Puppet.debug "bsu_status output #{output} for patchId #{patchId}"
-    if output == patchId
+    patch_name = resource[:name]
+    Puppet.debug "bsu_status output #{output} for patch_name #{patch_name}"
+    if output == patch_name
       return :present
     else
       return :absent

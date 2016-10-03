@@ -5,6 +5,7 @@
 - orawls::ohs::forwarder type, re-factored and improved version of orawls::ohs::config
 - ohs standalone domain fix for startComponent ( > 12.1.2, adding machine to the domain)
 - Apply same BSU patch on different middleware homes
+- added weblogic install parameters force & validation
 
 ## 1.0.55
 - Option for Control.pp and wls_managedserver to use secure connection to the adminserver

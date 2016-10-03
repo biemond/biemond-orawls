@@ -1,5 +1,10 @@
 # History
 
+## 1.0.56
+- new type wls_ohsserver to control the ohs standalone server or subscribe to changes
+- orawls::ohs::forwarder type , refactored and improved version of orawls::ohs::config
+- Apply same BSU patch on different middleware homes
+
 ## 1.0.55
 - Option for Control.pp and wls_managedserver to use secure connection to the adminserver
 - For an OSB domain without a DB ( owsm_enabled = false ) enables now the Derby database so wlsbjmsrpDataSource is active and osb servers comes up in running mode

@@ -18,6 +18,8 @@ class orawls::weblogic (
   $java_parameters      = '',    # '-Dspace.detection=false'
   $log_output           = false, # true|false
   $temp_directory       = '/tmp',# /tmp temporay directory for files extractions
+  $validation           = true,  # true|false
+  $force                = false, # true|false
 ) {
 
   orawls::weblogic_type{'base':
@@ -37,7 +39,9 @@ class orawls::weblogic (
     remote_file          => $remote_file,
     java_parameters      => $java_parameters,
     log_output           => $log_output,
-    temp_directory       => $temp_directory
+    temp_directory       => $temp_directory,
+    validation           => $validation,
+    force                => $force,
   }
 
 }

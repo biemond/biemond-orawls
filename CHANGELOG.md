@@ -2,7 +2,8 @@
 
 ## 1.0.56
 - new type wls_ohsserver to control the ohs standalone server or subscribe to changes
-- orawls::ohs::forwarder type , refactored and improved version of orawls::ohs::config
+- orawls::ohs::forwarder type, re-factored and improved version of orawls::ohs::config
+- ohs standalone domain fix for startComponent ( > 12.1.2, adding machine to the domain)
 - Apply same BSU patch on different middleware homes
 
 ## 1.0.55

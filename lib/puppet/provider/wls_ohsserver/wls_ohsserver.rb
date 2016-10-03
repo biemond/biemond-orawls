@@ -60,13 +60,13 @@ EOF"
     Puppet.info "ohs server action: #{action} with command #{command2} and CONFIG_JVM_ARGS=#{config}"
     kernel = Facter.value(:kernel)
     su_shell = kernel == 'Linux' ? '-s /bin/bash' : ''
-        
+
     if Puppet.features.root?
       output = `su #{su_shell} - #{user} -c 'export CONFIG_JVM_ARGS="#{config}";#{command}'`
     else
       output = `export CONFIG_JVM_ARGS="#{config}";#{command}`
     end
-    
+
     Puppet.info "ohs server result: #{output}"
   end
 
@@ -82,6 +82,8 @@ EOF"
     weblogic_user               = resource[:weblogic_user]
     weblogic_password           = resource[:weblogic_password]
 
+    base_path = "#{weblogic_home_dir}/../oracle_common"
+
     if "#{nodemanager_secure_listener}" == 'true'
       nm_protocol = 'ssl'
     else
@@ -93,7 +95,7 @@ EOF"
     ps_bin = (kernel != 'SunOS' || (kernel == 'SunOS' && Facter.value(:kernelrelease) == '5.11')) ? '/bin/ps' : '/usr/ucb/ps'
     ps_arg = kernel == 'SunOS' ? 'awwx' : '-ef'
 
-    command = "#{weblogic_home_dir}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+    command = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
 nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 nmServerStatus(serverName=\"#{name}\", serverType=\"OHS\")
 exit()

@@ -583,7 +583,7 @@ define orawls::domain (
       group       => $os_group,
     }
 
-    if ($domain_template == 'ohs_standalone' and $version == 1212) {
+    if ($domain_template == 'ohs_standalone') {
       ## Create OHS standalone config directory
       file { "${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.d":
         ensure  => directory,
@@ -593,10 +593,15 @@ define orawls::domain (
         require => Exec["execwlst ${domain_name} ${title}"],
       }
 
-      ## Create OHS standalone config file
+      if ( $version <= 1212 ){
+        $source_mod = 'puppet:///modules/orawls/mod_wl_ohs.conf'
+      } else {
+        $source_mod = 'puppet:///modules/orawls/mod_wl_ohs_12c.conf'
+      }
+
       file { "${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.conf":
         ensure  => present,
-        source  => 'puppet:///modules/orawls/mod_wl_ohs.conf',
+        source  => $source_mod,
         owner   => $os_user,
         group   => $os_group,
         mode    => '0640',

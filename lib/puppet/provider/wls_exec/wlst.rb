@@ -33,7 +33,7 @@ Puppet::Type.type(:wls_exec).provide(:sqlplus) do
       statement = File.read(file_name)
     end
 
-    statement = statement.indent(2)
+    statement = statement.indent(4)
     environment = { 'action' => 'execute', 'type' => 'wls_exec' }
     output = wlst template('puppet:///modules/orawls/providers/wls_exec/execute.py.erb', binding), environment
     Puppet.debug(output) if resource.logoutput == :true

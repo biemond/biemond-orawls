@@ -72,11 +72,11 @@ if BPM_ENABLED == True:
     print 'Adding BPM Template'
     addTemplate('<%= @templateBPM %>')
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
     print 'Adding EM Template'
     addTemplate('<%= @templateEM %>')
 
-if WEBLOGIC_VERSION in [1213, 1221, 12211]:
+if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
     if WEBTIER_ENABLED == True:
         print 'Adding OHS Template'
@@ -99,7 +99,7 @@ setOption('AppDir', APP_PATH )
 <% end %>
 
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
     cd('/')
     # destroy the normal one
     delete('LocalMachine','Machine')
@@ -124,7 +124,7 @@ if BAM_ENABLED == True:
 ### only for 11g
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
     print 'create opss datasource'
 
@@ -135,7 +135,7 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211]:
 
     create_opss_datasource(target, REPOS_DBUSER_PREFIX, REPOS_DBPASSWORD, REPOS_DBURL)
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
     print 'Change datasources'
 
@@ -152,7 +152,7 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211]:
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION in [1213, 1221, 12211]:
+if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
     print 'Change datasources'
 

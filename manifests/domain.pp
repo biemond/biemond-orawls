@@ -3,7 +3,7 @@
 # setup a new weblogic domain
 ##
 define orawls::domain (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211
+  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211|12212
   $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45

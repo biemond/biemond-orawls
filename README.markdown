@@ -497,10 +497,10 @@ common.yaml
 ## WebLogic Module Usage
 
 ### weblogic
-__orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2, 12.1.3, 12.2.1
+__orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.2
 
     class{'orawls::weblogic':
-      version              => 12211,                       # 1036|1211|1212|1213|1221
+      version              => 12211,                       # 1036|1211|1212|1213|1221|12212
       filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
       jdk_home_dir         => '/usr/java/jdk1.8.0_45',
       oracle_base_home_dir => "/opt/oracle",
@@ -587,7 +587,7 @@ vagrantcentos64.example.com.yaml
 __orawls::weblogic_type__ same as weblogic manifest/class but now as define which supports multiple middleware home on same VM
 
     orawls::weblogic{'1221':
-      version              => 12211,                       # 1036|1211|1212|1213|1221
+      version              => 12211,                       # 1036|1211|1212|1213|1221|12212
       filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
       jdk_home_dir         => '/usr/java/jdk1.8.0_45',
       oracle_base_home_dir => "/opt/oracle",

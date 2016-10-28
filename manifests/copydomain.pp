@@ -3,7 +3,7 @@
 #   copydomain to an other nodes
 ##
 define orawls::copydomain (
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1221|12211
+  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1221|12211|12212
   $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
   $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45

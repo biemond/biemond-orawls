@@ -4,7 +4,7 @@
 #
 ##
 define orawls::fmw(
-  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213|1221|12211
+  $version              = hiera('wls_version', 1111),        # 1036|1111|1211|1212|1213|1221|12211|12212
   $weblogic_home_dir    = hiera('wls_weblogic_home_dir'),    # /opt/oracle/middleware11gR1/wlserver_103
   $middleware_home_dir  = hiera('wls_middleware_home_dir'),  # /opt/oracle/middleware11gR1
   $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
@@ -134,7 +134,7 @@ define orawls::fmw(
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
       } else {
-        $binFile1                 = 'fmw_12.2.1.1.0_soa.jar'
+        $binFile1                 = 'fmw_12.2.1.2.0_soa.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/bin"
@@ -180,8 +180,8 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_soa_quickstart.jar'
         $binFile2                 = 'fmw_12.2.1.0.0_soa_quickstart2.jar'
       } else {
-        $binFile1                 = 'fmw_12.2.1.1.0_soa_quickstart.jar'
-        $binFile2                 = 'fmw_12.2.1.1.0_soa_quickstart2.jar'
+        $binFile1                 = 'fmw_12.2.1.2.0_soa_quickstart.jar'
+        $binFile2                 = 'fmw_12.2.1.2.0_soa_quickstart2.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $createFile2              = "${download_dir}/${sanitised_title}/${binFile2}"

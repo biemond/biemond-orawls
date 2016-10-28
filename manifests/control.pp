@@ -27,7 +27,7 @@ define orawls::control (
   $custom_trust                = hiera('wls_custom_trust'              , false),
   $trust_keystore_file         = hiera('wls_trust_keystore_file'       , undef),
   $trust_keystore_passphrase   = hiera('wls_trust_keystore_passphrase' , undef),
-  $extra_arguments             = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1',
+  $extra_arguments             = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
   $os_user                     = hiera('wls_os_user'), # oracle
   $os_group                    = hiera('wls_os_group'), # dba
   $download_dir                = hiera('wls_download_dir'), # /data/install

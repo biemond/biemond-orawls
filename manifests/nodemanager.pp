@@ -3,7 +3,7 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211
+  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211|12212
   $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
   $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'),
   $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
@@ -142,6 +142,8 @@ define orawls::nodemanager (
     $nodemanager_property_version = '12.2.1'
   } elsif $version == 12211 {
     $nodemanager_property_version = '12.2.1.1.0'
+  } elsif $version == 12212 {
+    $nodemanager_property_version = '12.2.1.2.0'
   }
 
   $property_defaults = {

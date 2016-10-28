@@ -55,7 +55,7 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 cd('/')
 
 <% if @apps_dir %>
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 <% end %>
 
 print 'Adding SOA Template'
@@ -64,11 +64,11 @@ addTemplate('<%= @templateJRF %>')
 addTemplate('<%= @templateWSMPM %>')
 addTemplate('<%= @templateSOA %>')
 
-if BAM_ENABLED == True:
+if BAM_ENABLED is True:
     print 'Adding BAM Template'
     addTemplate('<%= @templateBAM %>')
 
-if BPM_ENABLED == True:
+if BPM_ENABLED is True:
     print 'Adding BPM Template'
     addTemplate('<%= @templateBPM %>')
 
@@ -78,15 +78,15 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
 if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
-    if WEBTIER_ENABLED == True:
+    if WEBTIER_ENABLED is True:
         print 'Adding OHS Template'
         addTemplate('<%= @templateOHS %>')
 
-    if B2B_ENABLED == True:
+    if B2B_ENABLED is True:
         print 'Adding B2B Template'
         addTemplate('<%= @templateB2B %>')
 
-    if ESS_ENABLED == True:
+    if ESS_ENABLED is True:
         print 'Adding ESS Template'
         addTemplate('<%= @templateESS %>')
         addTemplate('<%= @templateESS_EM %>')
@@ -95,40 +95,38 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 dumpStack()
 
 <% if @apps_dir %>
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 <% end %>
 
 
 if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
     cd('/')
     # destroy the normal one
-    delete('LocalMachine','Machine')
+    delete('LocalMachine', 'Machine')
     print('change the default machine LocalMachine with type Machine')
     create_machine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>',NODEMANAGER_SECURE_LISTENER)
 
 print 'Change AdminServer'
 cd('/Servers/' + ADMIN_SERVER)
-set('Machine','LocalMachine')
-
-
+set('Machine', 'LocalMachine')
 
 print 'change soa_server1'
 cd('/')
-change_managed_server('soa_server1','LocalMachine','<%= @adminserver_address %>',8001,SOA_JAVA_ARGUMENTS,'<%= @soa_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+change_managed_server('soa_server1', 'LocalMachine', '<%= @adminserver_address %>', 8001, SOA_JAVA_ARGUMENTS, '<%= @soa_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
-if BAM_ENABLED == True:
+if BAM_ENABLED is True:
     print 'change bam_server1'
     cd('/')
-    change_managed_server('bam_server1','LocalMachine','<%= @adminserver_address %>',9001,BAM_JAVA_ARGUMENTS,'<%= @bam_nodemanager_log_dir %>',JAVA_HOME,JSSE_ENABLED)
+    change_managed_server('bam_server1', 'LocalMachine', '<%= @adminserver_address %>', 9001, BAM_JAVA_ARGUMENTS, '<%= @bam_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
-### only for 11g
+# only for 11g
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
     print 'create opss datasource'
 
-    if BAM_ENABLED == True:
+    if BAM_ENABLED is True:
         target = ADMIN_SERVER + ',soa_server1,bam_server1'
     else:
         target = ADMIN_SERVER + ',soa_server1'
@@ -139,16 +137,16 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
     print 'Change datasources'
 
-    change_datasource('EDNDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('EDNLocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('OraSDPMDataSource', REPOS_DBUSER_PREFIX+'_ORASDPM', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('SOADataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('SOALocalTxDataSource', REPOS_DBUSER_PREFIX+'_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('mds-soa', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('EDNDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('EDNLocalTxDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('OraSDPMDataSource', REPOS_DBUSER_PREFIX + '_ORASDPM', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('SOADataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('SOALocalTxDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('mds-owsm', REPOS_DBUSER_PREFIX + '_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('mds-soa', REPOS_DBUSER_PREFIX + '_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
 
-    if BAM_ENABLED == True:
-        change_datasource('BAMDataSource', REPOS_DBUSER_PREFIX+'_ORABAM', REPOS_DBPASSWORD, REPOS_DBURL)
+    if BAM_ENABLED is True:
+        change_datasource('BAMDataSource', REPOS_DBUSER_PREFIX + '_ORABAM', REPOS_DBPASSWORD, REPOS_DBURL)
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
@@ -157,7 +155,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     print 'Change datasources'
 
     print 'Change datasource LocalScvTblDataSource'
-    change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX+'_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 
     print 'Call getDatabaseDefaults which reads the service table'
     getDatabaseDefaults()
@@ -166,7 +164,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     change_datasource_to_xa('OraSDPMDataSource')
     change_datasource_to_xa('SOADataSource')
 
-    if BAM_ENABLED == true:
+    if BAM_ENABLED is True:
         change_datasource_to_xa('BamDataSource')
 
     print 'end datasources'
@@ -175,7 +173,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     serverGroup = ['WSM-CACHE-SVR', 'WSMPM-MAN-SVR', 'JRF-MAN-SVR']
     setServerGroups(ADMIN_SERVER, serverGroup)
 
-    if ESS_ENABLED == true:
+    if ESS_ENABLED is True:
         print 'Add server group SOA-MGD-SVRS,ESS-MGD-SVRS to soa_server1'
         cd('/')
         delete('ess_server1', 'Server')
@@ -186,7 +184,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
     setServerGroups('soa_server1', serverGroup)
 
-    if BAM_ENABLED == true:
+    if BAM_ENABLED is True:
         print 'Add server group BAM-MGD-SVRS to bam_server1'
         serverGroup = ['BAM12-MGD-SVRS']
         setServerGroups('bam_server1', serverGroup)
@@ -198,8 +196,8 @@ closeDomain()
 
 create_boot_properties_file(DOMAIN_PATH + '/servers/soa_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
-if BAM_ENABLED == true:
-  create_boot_properties_file(DOMAIN_PATH + '/servers/bam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+if BAM_ENABLED is True:
+    create_boot_properties_file(DOMAIN_PATH + '/servers/bam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
 print 'Exiting...soa_bpm'
 exit()

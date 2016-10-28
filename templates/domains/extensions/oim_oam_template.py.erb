@@ -79,13 +79,13 @@ addTemplate('<%= @templateOIM %>')
 print 'Adding OAM Template'
 addTemplate('<%= @templateOAM %>')
 
-dumpStack();
+dumpStack()
 
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 
 cd('/')
 # destroy the normal one
-delete('LocalMachine','Machine')
+delete('LocalMachine', 'Machine')
 print('change the default machine LocalMachine with type Machine')
 create_machine('UnixMachine', 'LocalMachine', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
 
@@ -129,9 +129,8 @@ change_datasource('bip_datasource'      , REPOS_DBUSER_PREFIX + '_BIPLATFORM', R
 
 print 'Finished datasources'
 
-
 updateDomain()
-closeDomain();
+closeDomain()
 
 # end check
 

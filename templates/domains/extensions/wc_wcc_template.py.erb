@@ -61,7 +61,7 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 
 print 'Adding WC Template'
 addTemplate('<%= @templateJRF %>')
@@ -82,7 +82,7 @@ addTemplate('<%= @templateUCM %>')
 
 dumpStack()
 
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 
 print 'Adding BPM Space Template'
 addTemplate('<%= @templateBPMSpaces %>')
@@ -93,7 +93,7 @@ cd('Machine/LocalMachine')
 create('LocalMachine', 'NodeManager')
 cd('NodeManager/LocalMachine')
 set('ListenAddress', '<%= @adminserver_address %>')
-if nodemanager_secure_listener == True:
+if nodemanager_secure_listener is True:
     set('NMType', 'SSL')
 else:
     set('NMType', 'Plain')

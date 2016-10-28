@@ -58,7 +58,7 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
     print 'Adding EM Template'
     addTemplate('<%= @templateEM %>')
 
-dumpStack();
+dumpStack()
 
 <% if @apps_dir %>
 setOption('AppDir', APP_PATH )
@@ -79,10 +79,10 @@ print 'change bam_server1'
 cd('/')
 change_managed_server('bam_server1', 'LocalMachine', '<%= @adminserver_address %>', 9001, BAM_JAVA_ARGUMENTS, '<%= @bam_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
-### only for 11g
+# only for 11g
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION not in [1213,1221]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
     print 'create opss datasource'
 
@@ -92,9 +92,9 @@ if WEBLOGIC_VERSION not in [1213,1221]:
 
     print 'Change datasources'
 
-    change_datasource('OraSDPMDataSource', REPOS_DBUSER_PREFIX+'_ORASDPM', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('mds-owsm', REPOS_DBUSER_PREFIX+'_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
-    change_datasource('BAMDataSource', REPOS_DBUSER_PREFIX+'_ORABAM', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('OraSDPMDataSource', REPOS_DBUSER_PREFIX + '_ORASDPM', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('mds-owsm', REPOS_DBUSER_PREFIX + '_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('BAMDataSource', REPOS_DBUSER_PREFIX + '_ORABAM', REPOS_DBPASSWORD, REPOS_DBURL)
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
@@ -124,7 +124,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     print 'end server groups'
 
 updateDomain()
-closeDomain();
+closeDomain()
 
 create_boot_properties_file(DOMAIN_PATH + '/servers/bam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 

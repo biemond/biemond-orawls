@@ -31,9 +31,9 @@ REPOS_DBURL = '<%= @repository_database_url %>'
 REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
 REPOS_DBPASSWORD = '<%= @repository_password %>'
 
-RESTRICTED=False
+RESTRICTED = False
 <%- unless @restricted.nil? then -%>
-RESTRICTED=True
+RESTRICTED = True
 <% end %>
 
 readDomain(DOMAIN_PATH)
@@ -51,13 +51,13 @@ addTemplate('<%= @templateJRF %>')
 print 'Adding EM Template'
 addTemplate('<%= @templateEM %>')
 
-dumpStack();
+dumpStack()
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1221:
 
-    if WEBTIER_ENABLED == true:
+    if WEBTIER_ENABLED is True:
         print 'Adding OHS Template'
         addTemplate('<%= @templateOHS %>')
 
@@ -66,7 +66,7 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1
     print 'Add JAX-WS SOAP over JMS Template'
     addTemplate('<%= @templateSoapJms %>')
 
-    if RESTRICTED == False:
+    if RESTRICTED is False:
         print 'Add WSMPM Template'
         addTemplate('<%= @templateWSMPM %>')
 
@@ -78,9 +78,9 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1
 
         print 'end datasources'
 
-    if RESTRICTED == False:
+    if RESTRICTED is False:
         print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR for AdminServer'
-        serverGroup = ['WSM-CACHE-SVR' , 'WSMPM-MAN-SVR' , 'JRF-MAN-SVR']
+        serverGroup = ['WSM-CACHE-SVR', 'WSMPM-MAN-SVR', 'JRF-MAN-SVR']
     else:
         print 'Add server groups JRF-MAN-SVR for AdminServer'
         serverGroup = ['JRF-MAN-SVR']
@@ -89,10 +89,10 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1
 
     print 'end datasources'
 
-dumpStack();
+dumpStack()
 updateDomain()
-dumpStack();
-closeDomain();
+dumpStack()
+closeDomain()
 
 print('Exiting...')
 exit()

@@ -11,6 +11,7 @@ def create_boot_properties_file(directory_path, file_name, username, password):
     file_new.close()
     os.system('chmod 600 ' + full_file_name)
 
+
 def create_admin_startup_properties_file(directory_path, args):
     adminserver_dir = File(directory_path)
     adminserver_dir.mkdirs()
@@ -23,6 +24,7 @@ def create_admin_startup_properties_file(directory_path, args):
     file_new.close()
     os.system('chmod 600 ' + full_file_name)
 
+
 def create_machine(machine_type, name, address, nodemanager_secure_listener):
     cd('/')
     create(name, machine_type)
@@ -30,12 +32,13 @@ def create_machine(machine_type, name, address, nodemanager_secure_listener):
     create(name, 'NodeManager')
     cd('NodeManager/' + name)
 
-    if nodemanager_secure_listener == True:
+    if nodemanager_secure_listener is True:
         set('NMType', 'SSL')
     else:
         set('NMType', 'Plain')
 
     set('ListenAddress', address)
+
 
 def change_datasource(datasource, username, password, db_url):
     print 'Change datasource ' + datasource
@@ -46,6 +49,7 @@ def change_datasource(datasource, username, password, db_url):
     cd('Properties/NO_NAME_0/Property/user')
     set('Value', username)
     cd('/')
+
 
 def change_datasource_driver(datasource, username, password, db_url):
     print 'change_datasource_driver ' + datasource
@@ -58,8 +62,9 @@ def change_datasource_driver(datasource, username, password, db_url):
     set('Value', username)
     cd('/')
 
+
 def change_datasource_to_xa(datasource):
-    print 'change_datasource_to_xa '+ datasource
+    print 'change_datasource_to_xa ' + datasource
     cd('/')
     cd('/JDBCSystemResource/' + datasource + '/JdbcResource/' + datasource + '/JDBCDriverParams/NO_NAME_0')
     set('DriverName', 'oracle.jdbc.xa.client.OracleXADataSource')
@@ -67,6 +72,7 @@ def change_datasource_to_xa(datasource):
     cd('/JDBCSystemResource/' + datasource + '/JdbcResource/' + datasource + '/JDBCDataSourceParams/NO_NAME_0')
     set('GlobalTransactionsProtocol', 'TwoPhaseCommit')
     cd('/')
+
 
 def create_opss_datasource(target, prefix, password, db_url):
     cd('/')
@@ -103,6 +109,7 @@ def create_opss_datasource(target, prefix, password, db_url):
     cd('JDBCConnectionPoolParams/NO_NAME_0')
     set('TestTableName', 'SQL SELECT 1 FROM DUAL')
 
+
 def change_log(wls_type, name, log_folder):
     if wls_type == 'server':
         cd('/Server/' + name)
@@ -119,6 +126,7 @@ def change_log(wls_type, name, log_folder):
     set('RotationType', 'byTime')
     set('FileTimeSpan', 24)
 
+
 def change_ssl_with_port(server, jsse_enabled, ssl_listen_port):
     cd('/Server/' + server)
     create(server, 'SSL')
@@ -131,19 +139,22 @@ def change_ssl_with_port(server, jsse_enabled, ssl_listen_port):
     else:
         set('Enabled', 'False')
 
-    if jsse_enabled == True:
+    if jsse_enabled is True:
         set('JSSEEnabled', 'True')
     else:
         set('JSSEEnabled', 'False')
 
+
 def change_ssl(server, jsse_enabled):
     change_ssl_with_port(server, jsse_enabled, None)
+
 
 def change_server_arguments(server, java_arguments):
     print 'change_server_arguments for server ' + server
     cd('/Servers/' + server)
     cd('ServerStart/' + server)
     set('Arguments', java_arguments)
+
 
 def change_default_server_attributes(server, machine, address, port, java_arguments, java_home):
     print 'change_default_server_attributes for server ' + server
@@ -162,15 +173,18 @@ def change_default_server_attributes(server, machine, address, port, java_argume
     set('JavaVendor', 'Sun')
     set('JavaHome', java_home)
 
+
 def change_managed_server(server, machine, address, port, java_arguments, log_folder, java_home, jsse_enabled):
     change_default_server_attributes(server, machine, address, port, java_arguments, java_home)
     change_ssl(server, jsse_enabled)
     change_log('server', server, log_folder)
 
+
 def change_admin_server(adminserver, machine, address, port, java_arguments, java_home):
     cd('/Servers/AdminServer')
     set('Name', adminserver)
     change_default_server_attributes(adminserver, machine, address, port, java_arguments, java_home)
+
 
 def change_custom_identity_store(server, ks_filename, ks_passphrase, trust_ks_filename, trust_ks_passphrase, alias, alias_passphrase):
     print 'set custom identity'
@@ -184,10 +198,12 @@ def change_custom_identity_store(server, ks_filename, ks_passphrase, trust_ks_fi
     set('ServerPrivateKeyAlias', alias)
     set('ServerPrivateKeyPassPhraseEncrypted', alias_passphrase)
 
+
 def set_domain_password(domain, password):
     print 'set domain password...'
     cd('/SecurityConfiguration/' + domain)
     set('CredentialEncrypted', password)
+
 
 def set_nodemanager_password(domain, password, username):
     print 'set nodemanager password...'
@@ -195,11 +211,13 @@ def set_nodemanager_password(domain, password, username):
     set('NodeManagerUsername', username)
     set('NodeManagerPasswordEncrypted', password)
 
+
 def set_weblogic_password(username, password):
     print 'set weblogic password...'
     cd('/Security/base_domain/User/weblogic')
     set('Name', username)
     cmo.setPassword(password)
+
 
 def set_cross_domain():
     print 'set crossdomain'

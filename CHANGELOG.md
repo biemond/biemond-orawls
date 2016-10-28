@@ -1,5 +1,9 @@
 # History
 
+## 1.0.57
+- Added support for Wls/FMW 12.2.1.2
+- Changing indentation from "2" to "4" in wls_exec statements
+
 ## 1.0.56
 - new type wls_ohsserver to control the ohs standalone server or subscribe to changes
 - orawls::ohs::forwarder type, re-factored and improved version of orawls::ohs::config

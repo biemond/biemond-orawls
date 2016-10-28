@@ -55,7 +55,7 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 
 print 'Adding WC Template'
 addTemplate('<%= @templateJRF %>')
@@ -74,7 +74,7 @@ addTemplate('<%= @templateDiscussion %>')
 
 dumpStack()
 
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 
 print('change the default machine LocalMachine with type Machine')
 cd('/')
@@ -82,7 +82,7 @@ cd('Machine/LocalMachine')
 create('LocalMachine', 'NodeManager')
 cd('NodeManager/LocalMachine')
 set('ListenAddress', '<%= @adminserver_address %>')
-if nodemanager_secure_listener == True:
+if nodemanager_secure_listener is True:
     set('NMType', 'SSL')
 else:
     set('NMType', 'Plain')
@@ -121,9 +121,9 @@ updateDomain()
 dumpStack()
 closeDomain()
 
-create_boot_properties_file(DOMAIN_PATH+'/servers/WC_Collaboration/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-create_boot_properties_file(DOMAIN_PATH+'/servers/WC_Spaces/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
-create_boot_properties_file(DOMAIN_PATH+'/servers/WC_Portlet/security','boot.properties',ADMIN_USER,ADMIN_PASSWORD)
+create_boot_properties_file(DOMAIN_PATH + '/servers/WC_Collaboration/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+create_boot_properties_file(DOMAIN_PATH + '/servers/WC_Spaces/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+create_boot_properties_file(DOMAIN_PATH + '/servers/WC_Portlet/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
 print 'Exiting...'
 exit()

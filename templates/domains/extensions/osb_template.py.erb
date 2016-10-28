@@ -53,13 +53,13 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 cd('/')
 
 <% if @apps_dir %>
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 <% end %>
 
 print 'Adding EM Template'
 addTemplate('<%= @templateEM %>')
 
-dumpStack();
+dumpStack()
 
 print 'Extend...osb domain with template <%= @templateOSB %>'
 addTemplate('<%= @templateWS %>')
@@ -86,7 +86,7 @@ if WEBLOGIC_VERSION in [1036, 1111] and OWSM_ENABLED == true:
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 <% if @apps_dir %>
-setOption('AppDir', APP_PATH )
+setOption('AppDir', APP_PATH)
 <% end %>
 
 print 'change osb_server1'
@@ -113,7 +113,6 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
         cd('/')
         change_managed_server('ess_server1', 'LocalMachine', '<%= @adminserver_address %>', 8201, ESS_JAVA_ARGUMENTS, '<%= @ess_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
-
     print 'Change datasources'
 
     print 'Change datasource LocalScvTblDataSource for service table'
@@ -128,20 +127,20 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     print 'end datasources'
 
     print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR to AdminServer'
-    serverGroup = ['WSM-CACHE-SVR' , 'WSMPM-MAN-SVR' , 'JRF-MAN-SVR']
+    serverGroup = ['WSM-CACHE-SVR', 'WSMPM-MAN-SVR', 'JRF-MAN-SVR']
     setServerGroups(ADMIN_SERVER, serverGroup)
 
     print 'Add server group OSB-MGD-SVRS-COMBINED to osb_server1'
     serverGroup = ['OSB-MGD-SVRS-COMBINED']
     setServerGroups('osb_server1', serverGroup)
 
-    if ESS_ENABLED == True:
+    if ESS_ENABLED is True:
         serverGroup = ['ESS-MGD-SVRS']
         setServerGroups('ess_server1', serverGroup)
 
     print 'end server groups'
 
-dumpStack();
+dumpStack()
 updateDomain()
 
 closeDomain()
@@ -150,8 +149,8 @@ create_boot_properties_file(DOMAIN_PATH + '/servers/osb_server1/security', 'boot
 
 if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
-  if ESS_ENABLED == true:
-    create_boot_properties_file(DOMAIN_PATH + '/servers/ess_server1/security' , 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+    if ESS_ENABLED == true:
+        create_boot_properties_file(DOMAIN_PATH + '/servers/ess_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
 
 print 'Exiting...'

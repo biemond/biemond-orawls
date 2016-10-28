@@ -91,8 +91,10 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/fmw_silent_forms_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_fr_linux64.bin'
-      } else {
+      } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_fr_linux64.bin'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_fr_linux64.bin'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'
@@ -133,6 +135,8 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/fmw_silent_soa_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
+      } elsif $version == 12211 {
+        $binFile1                 = 'fmw_12.2.1.1.0_soa.jar'
       } else {
         $binFile1                 = 'fmw_12.2.1.2.0_soa.jar'
       }
@@ -179,6 +183,9 @@ define orawls::fmw(
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_soa_quickstart.jar'
         $binFile2                 = 'fmw_12.2.1.0.0_soa_quickstart2.jar'
+      } elsif $version == 12211 {
+        $binFile1                 = 'fmw_12.2.1.1.0_soa_quickstart.jar'
+        $binFile2                 = 'fmw_12.2.1.1.0_soa_quickstart2.jar'
       } else {
         $binFile1                 = 'fmw_12.2.1.2.0_soa_quickstart.jar'
         $binFile2                 = 'fmw_12.2.1.2.0_soa_quickstart2.jar'
@@ -217,8 +224,10 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/fmw_silent_osb_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_osb.jar'
-      } else {
+      } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_osb.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_osb.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/osb/bin"
@@ -262,8 +271,10 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/fmw_silent_b2b_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_b2bhealthcare.jar'
-      } else {
+      } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_b2bhealthcare.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_b2bhealthcare.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
@@ -306,8 +317,10 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/fmw_silent_wc_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_wcportal_generic.jar'
-      } else {
+      } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_wcportal_generic.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_wcportal_generic.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
@@ -333,8 +346,10 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/fmw_silent_wcc_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_wccontent_generic.jar'
-      } else {
+      } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_wccontent_generic.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_wccontent_generic.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
@@ -384,8 +399,10 @@ define orawls::fmw(
       $fmw_silent_response_file = 'orawls/web_http_server_1221.rsp.erb'
       if $version == 1221 {
         $binFile1                 = 'fmw_12.2.1.0.0_ohs_linux64.bin'
-      } else {
+      } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_ohs_linux64.bin'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_ohs_linux64.bin'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'

@@ -93,7 +93,7 @@ cd('Machine/LocalMachine')
 create('LocalMachine', 'NodeManager')
 cd('NodeManager/LocalMachine')
 set('ListenAddress', '<%= @adminserver_address %>')
-if nodemanager_secure_listener is True:
+if nodemanager_secure_listener == True:
     set('NMType', 'SSL')
 else:
     set('NMType', 'Plain')

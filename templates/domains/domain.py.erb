@@ -54,7 +54,7 @@ else:
 
 change_ssl_with_port(ADMIN_SERVER, JSSE_ENABLED, '<%= @adminserver_ssl_port %>')
 
-if CUSTOM_IDENTITY_ENABLED is True:
+if CUSTOM_IDENTITY_ENABLED == True:
     print('Set adminserver custom identity')
     change_custom_identity_store(ADMIN_SERVER, '<%= @custom_identity_keystore_filename %>', '<%= @custom_identity_keystore_passphrase %>', '<%= @trust_keystore_file %>', '<%= @trust_keystore_passphrase %>', '<%= @custom_identity_alias %>', '<%= @custom_identity_privatekey_passphrase %>')
 
@@ -68,7 +68,7 @@ set_weblogic_password(ADMIN_USER, ADMIN_PASSWORD)
 # - ServerStartMode: Set mode to development.
 # - JavaHome: Sets home directory for the JVM used when starting the server.
 
-if DEVELOPMENT_MODE is True:
+if DEVELOPMENT_MODE == True:
     setOption('ServerStartMode', 'dev')
 else:
     setOption('ServerStartMode', 'prod')

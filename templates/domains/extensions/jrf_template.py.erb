@@ -57,7 +57,7 @@ print 'weblogic version' + str(WEBLOGIC_VERSION)
 
 if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1221:
 
-    if WEBTIER_ENABLED is True:
+    if WEBTIER_ENABLED == True:
         print 'Adding OHS Template'
         addTemplate('<%= @templateOHS %>')
 
@@ -66,7 +66,7 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1
     print 'Add JAX-WS SOAP over JMS Template'
     addTemplate('<%= @templateSoapJms %>')
 
-    if RESTRICTED is False:
+    if RESTRICTED == False:
         print 'Add WSMPM Template'
         addTemplate('<%= @templateWSMPM %>')
 
@@ -78,7 +78,7 @@ if WEBLOGIC_VERSION == 1212 or WEBLOGIC_VERSION == 1213 or WEBLOGIC_VERSION >= 1
 
         print 'end datasources'
 
-    if RESTRICTED is False:
+    if RESTRICTED == False:
         print 'Add server groups WSM-CACHE-SVR WSMPM-MAN-SVR JRF-MAN-SVR for AdminServer'
         serverGroup = ['WSM-CACHE-SVR', 'WSMPM-MAN-SVR', 'JRF-MAN-SVR']
     else:

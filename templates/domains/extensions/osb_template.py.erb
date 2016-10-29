@@ -65,7 +65,7 @@ print 'Extend...osb domain with template <%= @templateOSB %>'
 addTemplate('<%= @templateWS %>')
 addTemplate('<%= @templateOSB %>')
 
-if WEBLOGIC_VERSION in [1036, 1111] and OWSM_ENABLED == true:
+if WEBLOGIC_VERSION in [1036, 1111] and OWSM_ENABLED == True:
     print 'Adding JRF Template'
     try:
         addTemplate('<%= @templateJRF %>')
@@ -95,7 +95,7 @@ change_managed_server('osb_server1', 'LocalMachine', '<%= @adminserver_address %
 
 if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
-    if WEBTIER_ENABLED == true:
+    if WEBTIER_ENABLED == True:
         print 'Adding OHS Template'
         addTemplate('<%= @templateOHS %>')
 
@@ -104,7 +104,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     # print 'Add JAX-WS SOAP over JMS Template'
     # addTemplate('<%= @templateSoapJms %>')
 
-    if ESS_ENABLED == true:
+    if ESS_ENABLED == True:
         print 'Adding ESS Template'
         addTemplate('<%= @templateESS %>')
         addTemplate('<%= @templateESS_EM %>')
@@ -134,7 +134,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
     serverGroup = ['OSB-MGD-SVRS-COMBINED']
     setServerGroups('osb_server1', serverGroup)
 
-    if ESS_ENABLED is True:
+    if ESS_ENABLED == True:
         serverGroup = ['ESS-MGD-SVRS']
         setServerGroups('ess_server1', serverGroup)
 
@@ -149,7 +149,7 @@ create_boot_properties_file(DOMAIN_PATH + '/servers/osb_server1/security', 'boot
 
 if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 
-    if ESS_ENABLED == true:
+    if ESS_ENABLED == True:
         create_boot_properties_file(DOMAIN_PATH + '/servers/ess_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
 

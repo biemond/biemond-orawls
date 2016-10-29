@@ -32,7 +32,7 @@ def create_machine(machine_type, name, address, nodemanager_secure_listener):
     create(name, 'NodeManager')
     cd('NodeManager/' + name)
 
-    if nodemanager_secure_listener is True:
+    if nodemanager_secure_listener == True:
         set('NMType', 'SSL')
     else:
         set('NMType', 'Plain')
@@ -139,7 +139,7 @@ def change_ssl_with_port(server, jsse_enabled, ssl_listen_port):
     else:
         set('Enabled', 'False')
 
-    if jsse_enabled is True:
+    if jsse_enabled == True:
         set('JSSEEnabled', 'True')
     else:
         set('JSSEEnabled', 'False')

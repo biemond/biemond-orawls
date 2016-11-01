@@ -421,7 +421,7 @@ define orawls::domain (
       if !defined(File[$log_dir]) {
         file { $log_dir:
           ensure  => directory,
-          recurse => false,
+          recurse => true,
           replace => false,
           require => Exec["create ${log_dir} directory"],
           mode    => '0775',
@@ -501,7 +501,7 @@ define orawls::domain (
       # check oracle install folder
       file { $domains_dir:
         ensure  => directory,
-        recurse => false,
+        recurse => true,
         replace => false,
         mode    => '0775',
         owner   => $os_user,
@@ -514,7 +514,7 @@ define orawls::domain (
         # check oracle install folder
         file { $apps_dir:
           ensure  => directory,
-          recurse => false,
+          recurse => true,
           replace => false,
           mode    => '0775',
           owner   => $os_user,

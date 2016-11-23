@@ -4,6 +4,7 @@ puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>=
 
 gem 'coveralls', :require => false
 gem 'simplecov', :require => false
+gem 'simplecov-console'
 
 gem 'puppet-lint'
 gem 'puppet', puppetversion

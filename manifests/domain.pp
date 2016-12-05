@@ -58,6 +58,7 @@ define orawls::domain (
   $ohs_standalone_ssl_listen_port        = undef,
   $wls_domains_file                      = hiera('wls_domains_file'          , undef),
   $puppet_os_user                        = hiera('puppet_os_user','root'),
+  $create_defaultCoherenceCluster        = true,
 )
 {
   if ( $wls_domains_file == undef or $wls_domains_file == '' ){

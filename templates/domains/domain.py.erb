@@ -28,6 +28,8 @@ NODEMANAGER_PASSWORD = '<%= @nodemanager_password %>'
 ADMINSERVER_LISTEN_ON_ALL_INTERFACES = <%= @adminserver_listen_on_all_interfaces %>
 NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
 
+CREATE_DEFAULT_COHERENCE_CLUSTER = <%= @create_default_coherence_cluster %>
+
 <% if @java_arguments["ADM"] %>
 ADM_JAVA_ARGUMENTS = '<%= @java_arguments["ADM"] %>'
 <% else %>
@@ -81,13 +83,14 @@ writeDomain(DOMAIN_PATH)
 closeTemplate()
 
 if WEBLOGIC_VERSION in [1212, 1213, 1221, 12211, 12212]:
-    readDomain(DOMAIN_PATH)
+    if CREATE_DEFAULT_COHERENCE_CLUSTER == True:
+        readDomain(DOMAIN_PATH)
 
-    print 'Adding WLS Coherence Template'
-    addTemplate('<%= @templateCoherence %>')
+        print 'Adding WLS Coherence Template'
+        addTemplate('<%= @templateCoherence %>')
 
-    updateDomain()
-    closeDomain()
+        updateDomain()
+        closeDomain()
 
 readDomain(DOMAIN_PATH)
 #

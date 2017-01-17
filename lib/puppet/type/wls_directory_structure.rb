@@ -17,17 +17,22 @@ module Puppet
       end
 
       def retrieve
-        oracle_base     = resource[:oracle_base_dir]
-        ora_inventory   = resource[:ora_inventory_dir]
-        download_folder = resource[:download_dir]
-
-        if File.exist?(oracle_base) && File.exist?(ora_inventory) && File.exist?(download_folder)
-          :present
-        else
-          :absent
+        [
+          :download_dir,
+          :ora_inventory_dir,
+          :oracle_base_dir,
+          :wls_apps_dir,
+          :wls_domains_dir,
+        ].map do |resourceSymbol|
+          resource[resourceSymbol]
+        end.map do |directory|
+          if !directory.nil? && !File.exist?(directory)
+            return :absent
+          end
         end
-      end
 
+        return :present
+      end
     end
 
     newparam(:oracle_base_dir) do

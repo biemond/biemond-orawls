@@ -2504,6 +2504,24 @@ or use puppet resource wls_role
       realm      => 'myrealm',
     }
 
+    wls_role { 'default/OracleSystemRole':
+      ensure     => 'present',
+      expression => 'Grp(OracleSystemGroup)',
+      realm      => 'myrealm',
+    }
+
+    wls_role { 'default/Admin':
+      ensure     => 'present',
+      expression => '?weblogic.entitlement.rules.AdministrativeGroup(Administrators)',
+      realm      => 'myrealm',
+    }
+
+    wls_role { 'default/Anonymous':
+      ensure     => 'present',
+      expression => 'Grp(everyone)',
+      realm      => 'myrealm',
+    }
+
 ### wls_authentication_provider
 
 it needs wls_setting and when identifier is not provided it will use the 'default' and probably after the creation the AdminServer needs a reboot or subscribe to a restart with the wls_adminserver type

@@ -2498,15 +2498,11 @@ it needs wls_setting and when identifier is not provided it will use the 'defaul
 or use puppet resource wls_role
 
     # this will use default as wls_setting identifier
-
-in hiera
-
-    $default_params = {}
-    $role_instances = hiera('role_instances', {})
-    create_resources('wls_role',$role_instances, $default_params)
-
-    # this will use default as wls_setting identifier
-    role_instances:
+    wls_role { 'default/Deployer':
+      ensure     => 'present',
+      expression => 'Grp(Deployers)',
+      realm      => 'myrealm',
+    }
 
 ### wls_authentication_provider
 

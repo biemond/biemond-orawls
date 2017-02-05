@@ -2,3 +2,6 @@
 
 orawls::user_base_dir:  '/export/home'
 orawls::orainst_dir:    '/var/opt/oracle'
+
+orawls::java:        'java -d64'
+orawls::native_lib:  'solaris/x64'

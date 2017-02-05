@@ -3,35 +3,35 @@
 # install and configures the nodemanager
 #
 define orawls::nodemanager (
-  $version                               = hiera('wls_version'                   , 1111),  # 1036|1111|1211|1212|1213|1221|12211|12212
-  $middleware_home_dir                   = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir                     = hiera('wls_weblogic_home_dir'),
-  $nodemanager_port                      = hiera('domain_nodemanager_port'       , 5556),
-  $nodemanager_address                   = undef,
-  $nodemanager_secure_listener           = true,
-  $jsse_enabled                          = hiera('wls_jsse_enabled'              , false),
-  $custom_trust                          = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file                   = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase             = hiera('wls_trust_keystore_passphrase' , undef),
-  $custom_identity                       = false,
-  $custom_identity_keystore_filename     = undef,
-  $custom_identity_keystore_passphrase   = undef,
-  $custom_identity_alias                 = undef,
-  $custom_identity_privatekey_passphrase = undef,
-  $extra_arguments                       = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
-  $wls_domains_dir                       = hiera('wls_domains_dir'               , undef),
-  $domain_name                           = hiera('domain_name'                   , undef),
-  $jdk_home_dir                          = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $os_user                               = hiera('wls_os_user'), # oracle
-  $os_group                              = hiera('wls_os_group'), # dba
-  $download_dir                          = hiera('wls_download_dir'), # /data/install
-  $log_dir                               = hiera('wls_log_dir'                   , undef), # /data/logs
-  $log_file                              = 'nodemanager.log',
-  $log_output                            = false, # true|false
-  $sleep                                 = hiera('wls_nodemanager_sleep'         , 20), # default sleep time
-  $properties                            = {},
-  $ohs_standalone                        = false,
-  $puppet_os_user                        = hiera('puppet_os_user','root'),
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  Integer $nodemanager_port                               = 5556,
+  String $nodemanager_address                             = undef,
+  Boolean $nodemanager_secure_listener                    = true,
+  Boolean $jsse_enabled                                   = false,
+  Boolean $custom_trust                                   = false,
+  Optional[String] $trust_keystore_file                   = undef,
+  Optional[String] $trust_keystore_passphrase             = undef,
+  Boolean $custom_identity                                = false,
+  Optional[String] $custom_identity_keystore_filename     = undef,
+  Optional[String] $custom_identity_keystore_passphrase   = undef,
+  Optional[String] $custom_identity_alias                 = undef,
+  Optional[String] $custom_identity_privatekey_passphrase = undef,
+  String $extra_arguments                                 = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
+  String $wls_domains_dir                                 = $::orawls::weblogic::wls_domains_dir,
+  String $domain_name                                     = undef,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Optional[String] $log_dir                               = undef, # /data/logs
+  String $log_file                                        = 'nodemanager.log',
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+  Integer $sleep                                          = 20, # default sleep time
+  Hash $properties                                        = {},
+  Boolean $ohs_standalone                                 = false,
+  String $puppet_os_user                                  = 'root',
 )
 {
 
@@ -52,7 +52,7 @@ define orawls::nodemanager (
     $startHome   = "${weblogic_home_dir}/server/bin"
   }
 
-  $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   if $log_dir == undef {
     $nodeMgrLogDir = "${nodeMgrHome}/${log_file}"
@@ -82,20 +82,21 @@ define orawls::nodemanager (
       $nodeMgrLogDir = "${log_dir}/${log_file}"
   }
 
-  case $::kernel {
+  $java_statement    = lookup('orawls::java')
+  $nativeLib         = lookup('orawls::native_lib')
+
+  case $facts['kernel'] {
     'Linux': {
       if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
         $checkCommand = "/bin/ps -eo pid,cmd | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
       } else {
         $checkCommand = '/bin/ps -eo pid,cmd | grep -v grep | /bin/grep \'weblogic.NodeManager\''
       }
-      $nativeLib         = 'linux/x86_64'
       $suCommand         = "su -l ${os_user}"
-      $java_statement    = 'java'
       $netstat_statement = "/bin/netstat -lnt | /bin/grep ':${nodemanager_port}'"
     }
     'SunOS': {
-      case $::kernelrelease {
+      case $facts['kernelrelease'] {
         '5.11': {
           if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
             $checkCommand = "/bin/ps wwxa | /bin/grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
@@ -111,9 +112,7 @@ define orawls::nodemanager (
           }
         }
       }
-      $nativeLib         = 'solaris/x64'
       $suCommand         = "su - ${os_user}"
-      $java_statement    = 'java -d64'
       $netstat_statement = "/bin/netstat -an -P tcp | /bin/grep LISTEN | /bin/grep '.${nodemanager_port}'"
     }
     default: {
@@ -177,10 +176,22 @@ define orawls::nodemanager (
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
       replace => $replaceNodemanagerProperties,
-      content => template('orawls/nodemgr/nodemanager.properties.erb'),
+      content => epp('orawls/nodemgr/nodemanager.properties.epp',
+                    {'weblogic_home_dir' => $weblogic_home_dir,
+                     'jdk_home_dir' => $jdk_home_dir,
+                     'nodemanager_address' => $nodemanager_address,
+                     'nodemanager_port' => $nodemanager_port,
+                     'nodemanager_secure_listener' => $nodemanager_secure_listener,
+                     'properties_merged' => $properties_merged,
+                     'nodeMgrLogDir' => $nodeMgrLogDir,
+                     'custom_identity' => $custom_identity,
+                     'custom_identity_keystore_filename' => $custom_identity_keystore_filename,
+                     'custom_identity_keystore_passphrase' => $custom_identity_keystore_passphrase,
+                     'custom_identity_alias' => $custom_identity_alias,
+                     'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase }),
       owner   => $os_user,
       group   => $os_group,
-      mode    => '0775',
+      mode    => lookup('orawls::permissions'),
       before  => Exec["startNodemanager ${title}"],
     }
   } else {
@@ -196,10 +207,23 @@ define orawls::nodemanager (
       ensure  => present,
       path    => "${nodeMgrHome}/nodemanager.properties",
       replace => $replaceNodemanagerProperties,
-      content => template("orawls/nodemgr/nodemanager.properties_${new_version}.erb"),
+      content => epp("orawls/nodemgr/nodemanager.properties_${new_version}.epp",
+                    {'domains_dir' => $domains_dir,
+                     'domain_name' => $domain_name,
+                     'jdk_home_dir' => $jdk_home_dir,
+                     'nodemanager_address' => $nodemanager_address,
+                     'nodemanager_port' => $nodemanager_port,
+                     'nodemanager_secure_listener' => $nodemanager_secure_listener,
+                     'properties_merged' => $properties_merged,
+                     'nodeMgrLogDir' => $nodeMgrLogDir,
+                     'custom_identity' => $custom_identity,
+                     'custom_identity_keystore_filename' => $custom_identity_keystore_filename,
+                     'custom_identity_keystore_passphrase' => $custom_identity_keystore_passphrase,
+                     'custom_identity_alias' => $custom_identity_alias,
+                     'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase }),
       owner   => $os_user,
       group   => $os_group,
-      mode    => '0775',
+      mode    => lookup('orawls::permissions'),
       before  => Exec["startNodemanager ${title}"],
     }
   }

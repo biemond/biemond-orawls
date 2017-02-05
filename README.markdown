@@ -46,7 +46,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 ## Complete vagrant examples
 
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)
-- WebLogic 12.2.1.1 MT multi tenancy / Puppet 4.2.2 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1](https://github.com/biemond/biemond-orawls-vagrant-12.2.1)
+- WebLogic 12.2.1.1 MT multi tenancy / Puppet 4 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1-puppet4](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-puppet4)
 - WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
 - WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
 - WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs](https://github.com/biemond/biemond-orawls-vagrant-ohs)
@@ -1113,29 +1113,6 @@ for t3s you can use this
 ### nodemanager
 __orawls::nodemanager__ start the nodemanager of a WebLogic Domain or Middleware Home
 
-    orawls::nodemanager{'nodemanager12c':
-      version                     => 1212, # 1036|1111|1211|1212
-      weblogic_home_dir           => "/opt/oracle/middleware12c/wlserver",
-      jdk_home_dir                => "/usr/java/jdk1.7.0_45",
-      nodemanager_port            => 5556,
-      nodemanager_secure_listener => true,
-      domain_name                 => "Wls12c",
-      os_user                     => "oracle",
-      os_group                    => "dba",
-      log_dir                     => "/data/logs",
-      download_dir                => "/data/install",
-      log_output                  => true,
-      sleep                       => 20,
-      properties                  => {},
-    }
-
-or when you set the defaults hiera variables
-
-    orawls::nodemanager{'nodemanager12c':
-      nodemanager_port           => 5556,
-      domain_name                => "Wls12c",
-      log_output                 => true,
-    }
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
@@ -1143,215 +1120,74 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
     $nodemanager_instances = hiera('nodemanager_instances', [])
     create_resources('orawls::nodemanager',$nodemanager_instances, $default)
 
-vagrantcentos64.example.com.yaml
-
-    ---
-    nodemanager_instances:
-      'nodemanager12c':
-         version:                     1212
-         weblogic_home_dir:           "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir:                "/usr/java/jdk1.7.0_45"
-         nodemanager_port:            5556
-         nodemanager_secure_listener: true
-         domain_name:                 "Wls12c"
-         os_user:                     "oracle"
-         os_group:                    "dba"
-         log_dir:                     "/data/logs"
-         download_dir:                "/data/install"
-         log_output:                  true
-
-or when you set the defaults hiera variables
-
-    ---
-    nodemanager_instances:
-      'nodemanager12c':
-         nodemanager_port:     5556
-         domain_name:          "Wls12c"
-         log_output:           true
-
-
-when you just have one WebLogic domain on a server
-
-    #when you just have one domain on a server
-    domain_name:                "Wls1036"
-    domain_nodemanager_port:    5556
-
-    ---
-    nodemanager_instances:
-      'nodemanager12c':
-         log_output:           true
-
-or with custom identity and custom truststore
-
-    # used by nodemanager, control and domain creation
-    wls_custom_trust:                  &wls_custom_trust              true
-    wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
-    wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
-
-    nodemanager_instances:
-      'nodemanager':
-        log_output:                            *logoutput
-        custom_identity:                       true
-        custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
-        custom_identity_keystore_passphrase:   'welcome'
-        custom_identity_alias:                 'admin'
-        custom_identity_privatekey_passphrase: 'welcome'
-        nodemanager_address:                   *domain_adminserver_address
-
-
-you can also set some extra nodemanager properties by using the properties parameter like this
-
-    nodemanager_instances:
-      'nodemanager12c':
-         version:                     1212
-         weblogic_home_dir:           "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir:                "/usr/java/jdk1.7.0_45"
-         nodemanager_port:            5556
-         nodemanager_secure_listener: true
-         domain_name:                 "Wls12c"
-         os_user:                     "oracle"
-         os_group:                    "dba"
-         log_dir:                     "/data/logs"
-         download_dir:                "/data/install"
-         log_output:                  true
-         properties:
-          'log_level':                'INFO'
-          'log_count':                '2'
-          'log_append':               true
-          'log_formatter':            'weblogic.nodemanager.server.LogFormatter'
-          'listen_backlog':           60
-
-here is an overview of all the parameters you can set with its defaults
-
-    'log_limit'                          => 0,
-    'domains_dir_remote_sharing_enabled' => false,
-    'authentication_enabled'             => true,
-    'log_level'                          => 'INFO',
-    'domains_file_enabled'               => true,
-    'start_script_name'                  => 'startWebLogic.sh',
-    'native_version_enabled'             => true,
-    'log_to_stderr'                      => true,
-    'log_count'                          => '1',
-    'domain_registration_enabled'        => false,
-    'stop_script_enabled'                => true,
-    'quit_enabled'                       => false,
-    'log_append'                         => true,
-    'state_check_interval'               => 500,
-    'crash_recovery_enabled'             => true,
-    'start_script_enabled'               => true,
-    'log_formatter'                      => 'weblogic.nodemanager.server.LogFormatter',
-    'listen_backlog'                     => 50,
-
+	nodemanager_instances:
+	  'nodemanager':
+	    weblogic_home_dir:                     *wls_weblogic_home_dir 
+	    log_file:                              'nodemanager_wls1221.log'
+	    extra_arguments:                       '-Daa=1 -Dbb=2'
+	    custom_trust:                          *wls_custom_trust
+	    trust_keystore_file:                   *wls_trust_keystore_file
+	    trust_keystore_passphrase:             *wls_trust_keystore_passphrase
+	    custom_identity:                       true
+	    custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
+	    custom_identity_keystore_passphrase:   'welcome'
+	    custom_identity_alias:                 'admin'
+	    custom_identity_privatekey_passphrase: 'welcome'
+	    nodemanager_address:                   *domain_adminserver_address
+	    domain_name:                           *domain_name
+	    jsse_enabled:                          *wls_jsse_enabled
+	    sleep:                                 21
+	    properties:
+	      'log_level':                         'INFO'
+	      'log_count':                         '2'
+	      'log_append':                        true
+	      'log_formatter':                     'weblogic.nodemanager.server.LogFormatter'
+	      'listen_backlog':                    60
+	  'nodemanager_plain':
+	    weblogic_home_dir:                     *wls_weblogic_home_dir 
+	    log_file:                              'nodemanager_plain.log'
+	    nodemanager_address:                   *domain_adminserver_address
+	    nodemanager_port:                      5557
+	    domain_name:                           "plain_Wls"
+	    custom_trust:                          false
+	    custom_identity:                       false
+	    nodemanager_secure_listener:           false
+	    sleep:                                 21
+	    jsse_enabled:                          *wls_jsse_enabled
 
 ### control
 __orawls::control__ start or stops the AdminServer,Managed Server, OHS Standalone Server or a Cluster of a WebLogic Domain, this will call the wls_managedserver, wls_adminserver and wls_ohsserver types
 
-    orawls::control{'startWLSAdminServer12c':
-      domain_name                 => "Wls12c",
-      server_type                 => 'admin',  # admin|managed
-      target                      => 'Server', # Server|Cluster
-      server                      => 'AdminServer',
-      action                      => 'start',
-      weblogic_home_dir           => "/opt/oracle/middleware12c/wlserver",
-      jdk_home_dir                => "/usr/java/jdk1.7.0_45",
-      weblogic_user               => "weblogic",
-      weblogic_password           => "weblogic1",
-      adminserver_address         => 'localhost',
-      adminserver_port            => 7001,
-      nodemanager_port            => 5556,
-      nodemanager_secure_listener => true,
-      os_user                     => "oracle",
-      os_group                    => "dba",
-      download_dir                => "/data/install",
-      log_output                  => true,
-    }
-
-or when you set the defaults hiera variables
-
-    orawls::control{'startWLSAdminServer12c':
-      domain_name                => "Wls12c",
-      server_type                => 'admin',  # admin|managed
-      target                     => 'Server', # Server|Cluster
-      server                     => 'AdminServer',
-      action                     => 'start',
-      weblogic_password          => "weblogic1",
-      adminserver_address        => 'localhost',
-      adminserver_port           => 7001,
-      nodemanager_port           => 5556,
-      log_output                 => true,
-     }
-
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
     $default = {}
     $control_instances = hiera('control_instances', {})
     create_resources('orawls::control',$control_instances, $default)
 
-
-vagrantcentos64.example.com.yaml
-
-    ---
-    control_instances:
-      'startWLSAdminServer12c':
-         domain_name:                  "Wls12c"
-         domain_dir:                   "/opt/oracle/middleware12c/user_projects/domains/Wls12c"
-         server_type:                  'admin'
-         target:                       'Server'
-         server:                       'AdminServer'
-         action:                       'start'
-         weblogic_home_dir:            "/opt/oracle/middleware12c/wlserver"
-         jdk_home_dir:                 "/usr/java/jdk1.7.0_45"
-         weblogic_user:                "weblogic"
-         weblogic_password:            "weblogic1"
-         adminserver_address:          'localhost'
-         adminserver_port:             7001
-         nodemanager_port:             5556
-         nodemanager_secure_listener:  true
-         os_user:                      "oracle"
-         os_group:                     "dba"
-         download_dir:                 "/data/install"
-         log_output:                   true
-
-or when you set the defaults hiera variables
-
-    ---
-    control_instances:
-      'startWLSAdminServer12c':
-         domain_name:          "Wls12c"
-         domain_dir:           "/opt/oracle/middleware12c/user_projects/domains/Wls12c"
-         server_type:          'admin'
-         target:               'Server'
-         server:               'AdminServer'
-         action:               'start'
-         weblogic_password:    "weblogic1"
-         adminserver_address:  'localhost'
-         adminserver_port:     7001
-         nodemanager_port:     5556
-         log_output:           true
-
-
-when you just have one WebLogic domain on a server
-
-    ---
-    #when you just have one domain on a server
-    domain_name:                "Wls1036"
-    domain_adminserver_address: "localhost"
-    domain_adminserver_port:    7001
-    domain_nodemanager_port:    5556
-    domain_wls_password:        "weblogic1"
-
-
-
-    # startup adminserver for extra configuration
-    control_instances:
-      'startWLSAdminServer':
-         domain_dir:           "/opt/oracle/middleware11g/user_projects/domains/Wls1036"
-         server_type:          'admin'
-         target:               'Server'
-         server:               'AdminServer'
-         action:               'start'
-         log_output:           *logoutput
+	control_instances:
+	  'startWLSAdminServer':
+	     weblogic_home_dir:           *wls_weblogic_home_dir 
+	     domain_name:                 *domain_name
+	     server_type:                 'admin'
+	     target:                      'Server'
+	     action:                      'start'
+	     custom_trust:                *wls_custom_trust
+	     trust_keystore_file:         *wls_trust_keystore_file
+	     trust_keystore_passphrase:   *wls_trust_keystore_passphrase
+	     jsse_enabled:                *wls_jsse_enabled
+	     adminserver_address:         *domain_adminserver_address
+	     weblogic_password:           *domain_wls_password                 
+	  'startWLSAdminServer_plain':
+	     weblogic_home_dir:           *wls_weblogic_home_dir 
+	     domain_name:                 'plain_Wls'
+	     server_type:                 'admin'
+	     nodemanager_port:            5557
+	     nodemanager_secure_listener: false
+	     custom_trust:                false
+	     target:                      'Server'
+	     action:                      'start'
+	     jsse_enabled:                *wls_jsse_enabled
+	     adminserver_address:         *domain_adminserver_address
+	     weblogic_password:           *domain_wls_password   
 
 
 

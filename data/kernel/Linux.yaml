@@ -2,3 +2,6 @@
 
 orawls::user_base_dir:  '/home'
 orawls::orainst_dir:    '/etc'
+
+orawls::java:        'java'
+orawls::native_lib:  'linux/x86_64'

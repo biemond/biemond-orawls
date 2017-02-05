@@ -7,31 +7,31 @@
 #  wlsTarget     = Server|Cluster
 #
 define orawls::control (
-  $middleware_home_dir         = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir           = hiera('wls_weblogic_home_dir'),
-  $jdk_home_dir                = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir             = hiera('wls_domains_dir', undef),
-  $domain_name                 = hiera('domain_name'),
-  $server_type                 = 'admin',  # admin|managed|ohs_standalone
-  $target                      = 'Server', # Server|Cluster
-  $server                      = 'AdminServer',
-  $adminserver_address         = hiera('domain_adminserver_address'    , 'localhost'),
-  $adminserver_port            = hiera('domain_adminserver_port'       , 7001),
-  $adminserver_secure_listener = false,
-  $nodemanager_secure_listener = true,
-  $nodemanager_port            = hiera('domain_nodemanager_port'       , 5556),
-  $action                      = 'start', # start|stop
-  $weblogic_user               = hiera('wls_weblogic_user'             , 'weblogic'),
-  $weblogic_password           = hiera('domain_wls_password'),
-  $jsse_enabled                = hiera('wls_jsse_enabled'              , false),
-  $custom_trust                = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file         = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase   = hiera('wls_trust_keystore_passphrase' , undef),
-  $extra_arguments             = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
-  $os_user                     = hiera('wls_os_user'), # oracle
-  $os_group                    = hiera('wls_os_group'), # dba
-  $download_dir                = hiera('wls_download_dir'), # /data/install
-  $log_output                  = false, # true|false
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $wls_domains_dir                                 = $::orawls::weblogic::wls_domains_dir,
+  String $domain_name                                     = undef,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+  Enum['admin','managed','ohs_standalone'] $server_type   = 'admin',
+  Enum['Server','Cluster'] $target                        = 'Server',
+  String $server                                          = 'AdminServer',
+  String $adminserver_address                             = 'localhost',
+  Integer $adminserver_port                               = 7001,
+  Boolean $adminserver_secure_listener                    = false,
+  Integer $nodemanager_port                               = 5556,
+  Boolean $nodemanager_secure_listener                    = true,
+  Enum['start','stop','running','abort'] $action          = 'start', 
+  String $weblogic_user                                   = 'weblogic',
+  String $weblogic_password                               = undef,
+  Boolean $jsse_enabled                                   = false,
+  Boolean $custom_trust                                   = false,
+  Optional[String] $trust_keystore_file                   = undef,
+  Optional[String] $trust_keystore_passphrase             = undef,
+  String $extra_arguments                                 = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '') {

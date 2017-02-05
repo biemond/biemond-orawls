@@ -70,18 +70,7 @@ define orawls::weblogic_type (
   }
 
   $oraInstPath = lookup('orawls::orainst_dir')
-  case $facts['kernel'] {
-    'Linux': {
-      $java_statement    = "java ${java_parameters}"
-    }
-    'SunOS': {
-      $java_statement    = "java -d64 ${java_parameters}"
-    }
-    default: {
-      fail("Unrecognized operating system ${facts['kernel']}, please use it on a Linux or Solaris host")
-    }
-  }
-
+  $java_statement = "${lookup('orawls::java')} ${java_parameters}"
   $file_ext = regsubst($filename, '.*(\.jar)$', '\1')
 
   if $file_ext == '.jar' {

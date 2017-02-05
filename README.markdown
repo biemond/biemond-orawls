@@ -252,11 +252,6 @@ Set the following wls_domains_dir & wls_apps_dir parameters in
 - fmwcluster.pp
 - fmwclusterjrf.pp
 
-or hiera parameters of weblogic.pp
-
-    orawls::weblogic::wls_domains_dir:      *wls_domains_dir
-    orawls::weblogic::wls_apps_dir:         *wls_apps_dir
-
 ## <a name="jsse">Java Secure Socket Extension support</a>
 
 Requires the JDK 7 or 8 JCE extension
@@ -292,9 +287,6 @@ To enable this in orawls you can set the jsse_enabled on the following manifests
 - domain.pp
 - control.pp
 
-or set the following hiera parameter
-
-     wls_jsse_enabled:         true
 
 ## <a name="identity">Enterprise security with Custom Identity and Trust store</a>
 
@@ -842,46 +834,29 @@ __orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | 
 
 optional override the default server arguments in the domain.py template with java_arguments parameter
 
-    orawls::domain { 'wlsDomain12c':
-      version                     => 1212,  # 1036|1111|1211|1212|1213
-      weblogic_home_dir           => "/opt/oracle/middleware12c/wlserver",
-      middleware_home_dir         => "/opt/oracle/middleware12c",
-      jdk_home_dir                => "/usr/java/jdk1.7.0_45",
-      domain_template             => "standard",  #standard|adf|osb|osb_soa|osb_soa_bpm|soa|soa_bpm
-      domain_name                 => "Wls12c",
-      development_mode            => false,
-      adminserver_name            => "AdminServer",
-      adminserver_address         => "localhost",
-      adminserver_port            => 7001,
-      nodemanager_secure_listener => true,
-      nodemanager_port            => 5556,
-      java_arguments              => { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."},
-      weblogic_user               => "weblogic",
-      weblogic_password           => "weblogic1",
-      os_user                     => "oracle",
-      os_group                    => "dba",
-      log_dir                     => "/data/logs",
-      download_dir                => "/data/install",
-      log_output                  => true,
-    }
-
-or when you set the defaults hiera variables
-
-    orawls::domain { 'wlsDomain12c':
-      domain_template            => "standard",
-      domain_name                => "Wls12c",
-      development_mode           => false,
-      adminserver_name           => "AdminServer",
-      adminserver_address        => "localhost",
-      adminserver_port           => 7001,
-      nodemanager_port           => 5556,
-      weblogic_password          => "weblogic1",
-      log_output                 => true,
-    }
-
+ 
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
+	wls_os_user:              &wls_os_user              "oracle"
+	wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
+	wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
+
+	wls_jsse_enabled:         &wls_jsse_enabled         true
+	wls_log_dir:              &wls_log_dir              "/var/log/weblogic"
+
+	# when you have just one domain on a server
+	domain_name:                &domain_name                "Wls1221"
+	domain_wls_password:        &domain_wls_password        "weblogic1"
+
+	domain_adminserver_address: &domain_adminserver_address "%{hiera('adminserver_address')}"
+	domain_node1_address:       &domain_node1_address       "%{hiera('node1_address')}"
+	domain_node2_address:       &domain_node2_address       "%{hiera('node2_address')}"
+
+	# used by nodemanager, control and domain creation
+	wls_custom_trust:                  &wls_custom_trust              true
+	wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
+	wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
 
     $default = {}
     $domain_instances = hiera('domain_instances', {})
@@ -891,85 +866,41 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 vagrantcentos64.example.com.yaml
 
     ---
-    domain_instances:
-      'wlsDomain12c':
-         version:                     1212
-         weblogic_home_dir:           "/opt/oracle/middleware12c/wlserver"
-         middleware_home_dir:         "/opt/oracle/middleware12c"
-         jdk_home_dir:                "/usr/java/jdk1.7.0_45"
-         domain_template:             "standard"
-         domain_name:                 "Wls12c"
-         development_mode:            false
-         adminserver_name:            "AdminServer"
-         adminserver_address:         "localhost"
-         adminserver_port:            7001
-         nodemanager_secure_listener: true
-         nodemanager_port:            5556
-         weblogic_user:               "weblogic"
-         weblogic_password:           "weblogic1"
-         os_user:                     "oracle"
-         os_group:                    "dba"
-         log_dir:                     "/data/logs"
-         download_dir:                "/data/install"
-         java_arguments:
+	domain_instances:
+	  'Wls1221':
+	    domain_template:                       "standard"
+	    weblogic_home_dir:                     *wls_weblogic_home_dir
+	    domain_name:                           *domain_name
+	    development_mode:                      false
+	    adminserver_address:                   *domain_adminserver_address
+	    adminserver_ssl_port:                  7002
+	    custom_trust:                          *wls_custom_trust
+	    trust_keystore_file:                   *wls_trust_keystore_file
+	    trust_keystore_passphrase:             *wls_trust_keystore_passphrase
+	    custom_identity:                       true
+	    custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
+	    custom_identity_keystore_passphrase:   'welcome'
+	    custom_identity_alias:                 'admin'
+	    custom_identity_privatekey_passphrase: 'welcome'
+	    weblogic_password:                     *domain_wls_password
+	    jsse_enabled:                          *wls_jsse_enabled
+	    log_dir:                               *wls_log_dir
+	  'plain_Wls':
+	    domain_template:                       "standard"
+	    weblogic_home_dir:                     *wls_weblogic_home_dir
+	    domain_name:                           "plain_Wls"
+	    development_mode:                      false
+	    adminserver_address:                   *domain_adminserver_address
+	    adminserver_listen_on_all_interfaces:  true
+	    adminserver_port:                      7101
+	    nodemanager_port:                      5557
+	    nodemanager_secure_listener:           false
+	    weblogic_password:                     *domain_wls_password
+	    jsse_enabled:                          *wls_jsse_enabled
+	    log_dir:                               *wls_log_dir
+        java_arguments:
             ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
-            OSB:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
-         log_output:                  true
-
-or when you set the defaults hiera variables
-
-    ---
-    domain_instances:
-      'wlsDomain12c':
-         domain_template:      "standard"
-         domain_name:          "Wls12c"
-         development_mode:     false
-         adminserver_name:     "AdminServer"
-         adminserver_address:  "localhost"
-         adminserver_port:     7001
-         nodemanager_port:     5556
-         weblogic_password:    "weblogic1"
-         java_arguments:
-            ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
-         log_output:           true
-
-when you just have one WebLogic domain on a server
-
-    ---
-    # when you have just one domain on a server
-    domain_name:                "Wls1036"
-    domain_adminserver:         "AdminServer"
-    domain_adminserver_address: "localhost"
-    domain_adminserver_port:    7001
-    domain_nodemanager_port:    5556
-    domain_wls_password:        "weblogic1"
-
-
-    # create a standard domain
-    domain_instances:
-      'wlsDomain':
-         domain_template:      "standard"
-         development_mode:     false
-         log_output:           *logoutput
-
-or with custom identity and custom truststore
-
-    # used by nodemanager, control and domain creation
-    wls_custom_trust:                  &wls_custom_trust              true
-    wls_trust_keystore_file:           &wls_trust_keystore_file       '/vagrant/truststore.jks'
-    wls_trust_keystore_passphrase:     &wls_trust_keystore_passphrase 'welcome'
-
-    # create a standard domain with custom identity for the adminserver
-    domain_instances:
-      'Wls1036':
-        domain_template:                       "standard"
-        development_mode:                      false
-        log_output:                            *logoutput
-        custom_identity:                       true
-        custom_identity_keystore_filename:     '/vagrant/identity_admin.jks'
-        custom_identity_keystore_passphrase:   'welcome'
-        custom_identity_alias:                 'admin'
-        custom_identity_privatekey_passphrase: 'welcome'
+ 
 
 FMW 11g, 12.1.2 , 12.1.3 ADF domain with webtier
 

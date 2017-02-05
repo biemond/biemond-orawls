@@ -13,13 +13,3 @@ orawls::module_mountpoint: 'puppet:///modules/orawls/'
 
 orawls::default_version:           1111
 
-# check on all supported weblogic versions
-orawls::versions:
- - 1036
- - 1111
- - 1211
- - 1212
- - 1213
- - 1221
- - 12211
- - 12212

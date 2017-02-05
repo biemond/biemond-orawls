@@ -1,0 +1,54 @@
+<%- |  String $domain_name,
+       String $domain_dir,
+       Integer $version, 
+       String $templateOHS,
+       String $nodemanager_username,
+       String $nodemanager_password,
+       String $adminserver_address,
+       Integer $adminserver_port,
+       String $ohs_standalone_listen_address,
+       Integer $ohs_standalone_listen_port,
+       Boolean $ohs_standalone_ssl_listen_port | -%>
+
+# Directories
+domainName = '<%= $domain_name %>'
+domainDir = '<%= $domain_dir %>'
+OHS_VERSION = <%= $version %>
+
+# Read OHS Standalone template
+readTemplate('<%= $templateOHS %>')
+
+# Configure Nodemanager
+
+cd('/')
+create(domainName, 'SecurityConfiguration')
+cd('SecurityConfiguration/' + domainName)
+set('NodeManagerUsername', '<%= $nodemanager_username %>')
+set('NodeManagerPasswordEncrypted', '<%= $nodemanager_password %>')
+setOption('NodeManagerType', 'PerDomainNodeManager')
+
+# Optional Steps:
+# <= 12.1.2 The standalone OHS template already comes with an
+# out-of-the-box machine ('localmachine') and a single
+# instance of OHS ('ohs1') with default configuration
+# values. The remaining steps are needed only if the
+# out-of-the-box defaults need to be changed
+
+if OHS_VERSION > 1212:
+    print('Create machine localmachine with type UnixMachine')
+    cd('/')
+    create('localmachine', 'UnixMachine')
+    cd('UnixMachine/localmachine')
+    create('localmachine', 'NodeManager')
+    cd('NodeManager/localmachine')
+    set('ListenAddress', 'localhost')
+
+cd('/OHS/ohs1')
+cmo.setAdminHost('<%= $adminserver_address %>')
+cmo.setAdminPort('<%= $adminserver_port %>')
+cmo.setListenAddress('<%= $ohs_standalone_listen_address %>')
+cmo.setListenPort('<%= $ohs_standalone_listen_port %>')
+cmo.setSSLListenPort('<%= $ohs_standalone_ssl_listen_port %>')
+
+writeDomain(domainDir)
+closeTemplate()

@@ -1,0 +1,4 @@
+---
+
+orawls::user_base_dir:  '/home'
+orawls::orainst_dir:    '/etc'

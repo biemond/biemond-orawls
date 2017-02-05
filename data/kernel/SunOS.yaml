@@ -1,0 +1,4 @@
+---
+
+orawls::user_base_dir:  '/export/home'
+orawls::orainst_dir:    '/var/opt/oracle'

@@ -5,6 +5,17 @@ Install, configures and manages WebLogic version 10.3 - 12.2.1.1
 
 This module should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86
 
+Only for Puppet >= 4.3 and uses the latest puppet 4 features like
+- Strong data typing
+- Internal hiera module data
+- uses Facts array
+- epp templating instead of erb
+
+For Puppet 3, 4 you have to use the latest 1.x version of this orawls module
+
+source code is located at [puppet4 branch](https://github.com/biemond/biemond-orawls/tree/puppet4)
+
+
 ## Author
 
 Edwin Biemond email biemond at gmail dot com
@@ -370,7 +381,7 @@ three options
 
 Some manifests like orawls:weblogic bsu opatch fmw supports an alternative mountpoint for the big oracle setup/install files.
 When not provided it uses the files folder located in the orawls puppet module
-else you can use $source =>
+else you can use $puppet_download_mnt_point =>
 - "/mnt"
 - "/vagrant"
 - "puppet:///modules/orawls/" (default)
@@ -449,49 +460,21 @@ vagrantcentos64.example.com.yaml
 common.yaml
 
     ---
-    # global WebLogic vars
-    wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
-    wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+	# global WebLogic vars
+	wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
+	wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
+	wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
+	wls_version:              &wls_version              12212
 
-    # 12.1.2 settings
-    #wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
-    #wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
-    #wls_version:              &wls_version              1212
+	# global OS vars
+	wls_source:               &wls_source               "/software"
+	wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/latest"
+	wls_log_dir:              &wls_log_dir              "/var/log/weblogic"
 
-    # 10.3.6 settings
-    wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware11g/wlserver_10.3"
-    wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware11g"
-    wls_version:              &wls_version              1036
+	wls_domains_dir:          &wls_domains_dir          '/opt/oracle/wlsdomains/domains'
+	wls_apps_dir:             &wls_apps_dir             '/opt/oracle/wlsdomains/applications'
 
-    # global OS vars
-    wls_os_user:              &wls_os_user              "oracle"
-    wls_os_group:             &wls_os_group             "dba"
-    wls_download_dir:         &wls_download_dir         "/data/install"
-    wls_source:               &wls_source               "/vagrant"
-    wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/jdk1.7.0_45"
-    wls_log_dir:              &wls_log_dir              "/data/logs"
-
-
-    #WebLogic installation variables
-    orawls::weblogic::version:              *wls_version
-    orawls::weblogic::filename:             "wls1036_generic.jar"
-
-    # weblogic 12.1.2
-    #orawls::weblogic::filename:             "wls_121200.jar"
-    # or with 12.1.2 FMW infra
-    #orawls::weblogic::filename:             "fmw_infra_121200.jar"
-    #orawls::weblogic::fmw_infra:            true
-
-    orawls::weblogic::middleware_home_dir:  *wls_middleware_home_dir
-    orawls::weblogic::log_output:           false
-
-    # hiera default anchors
-    orawls::weblogic::jdk_home_dir:         *wls_jdk_home_dir
-    orawls::weblogic::oracle_base_home_dir: *wls_oracle_base_home_dir
-    orawls::weblogic::os_user:              *wls_os_user
-    orawls::weblogic::os_group:             *wls_os_group
-    orawls::weblogic::download_dir:         *wls_download_dir
-    orawls::weblogic::source:               *wls_source
+	wls_jsse_enabled:         true
 
 
 ## WebLogic Module Usage
@@ -499,105 +482,66 @@ common.yaml
 ### weblogic
 __orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.2
 
-    class{'orawls::weblogic':
-      version              => 12211,                       # 1036|1211|1212|1213|1221|12212
-      filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
-      jdk_home_dir         => '/usr/java/jdk1.8.0_45',
-      oracle_base_home_dir => "/opt/oracle",
-      middleware_home_dir  => "/opt/oracle/middleware12c",
-      weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
-      os_user              => "oracle",
-      os_group             => "dba",
-      download_dir         => "/data/install",
-      source               => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
-      log_output           => true,
-    }
 
-    class{'orawls::weblogic':
-      version              => 1212,                       # 1036|1211|1212|1213
-      filename             => 'wls_121200.jar',           # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
-      jdk_home_dir         => '/usr/java/jdk1.7.0_45',
-      oracle_base_home_dir => "/opt/oracle",
-      middleware_home_dir  => "/opt/oracle/middleware12c",
-      weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
-      os_user              => "oracle",
-      os_group             => "dba",
-      download_dir         => "/data/install",
-      source               => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
-      log_output           => true,
-    }
+	include orawls::weblogic
+
+	orawls::weblogic::version:                   *wls_version  # 1036|1211|1212|1213|1221|12212
+	orawls::weblogic::filename:                  'fmw_12.2.1.2.0_wls.jar'
+	orawls::weblogic::log_output:                true
+	orawls::weblogic::jdk_home_dir:              *wls_jdk_home_dir
+	orawls::weblogic::oracle_base_home_dir:      *wls_oracle_base_home_dir
+	orawls::weblogic::puppet_download_mnt_point: *wls_source
+	orawls::weblogic::remote_file:               false
+	orawls::weblogic::wls_domains_dir:           *wls_domains_dir
+	orawls::weblogic::wls_apps_dir:              *wls_apps_dir
+	orawls::weblogic::middleware_home_dir:       *wls_middleware_home_dir
 
 12.1.3 infra
 
-    class{'orawls::weblogic':
-      version              => 1213,
-      filename             => 'fmw_12.1.3.0.0_infrastructure.jar',
-      fmw_infra            => true,
-      jdk_home_dir         => '/usr/java/jdk1.7.0_55',
-      oracle_base_home_dir => "/opt/oracle",
-      middleware_home_dir  => "/opt/oracle/middleware12c",
-      weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
-      os_user              => "oracle",
-      os_group             => "dba",
-      download_dir         => "/data/install",
-      source               => "puppet:///middleware",
-      log_output           => true,
-    }
+	orawls::weblogic::version:                   1213
+	orawls::weblogic::filename:                  'fmw_12.1.3.0.0_infrastructure.jar'
+	orawls::weblogic::fmw_infra:                 true
+	orawls::weblogic::log_output:                true
+	orawls::weblogic::jdk_home_dir:              *wls_jdk_home_dir
+	orawls::weblogic::oracle_base_home_dir:      *wls_oracle_base_home_dir
+	orawls::weblogic::puppet_download_mnt_point: *wls_source
+	orawls::weblogic::remote_file:               false
+	orawls::weblogic::wls_domains_dir:           *wls_domains_dir
+	orawls::weblogic::wls_apps_dir:              *wls_apps_dir
+	orawls::weblogic::middleware_home_dir:       *wls_middleware_home_dir
 
 
 or with a bin file located on a share
 
-    class{'orawls::weblogic':
-        version              => 1036,
-        filename             => "oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin",
-        oracle_base_home_dir => "/opt/weblogic",
-        middleware_home_dir  => "/opt/weblogic/Middleware",
-        weblogic_home_dir    => "/opt/weblogic/Middleware/wlserver_10.3",
-        fmw_infra            => false,
-        jdk_home_dir         => "/usr/java/latest",
-        os_user              => "weblogic",
-        os_group             => "bea",
-        download_dir         => "/data/tmp",
-        source               => "/misc/tact/products/oracle/11g/fmw/wls/11.1.1.8",
-        remote_file          => false,
-        log_output           => true,
-        temp_directory       => "/data/tmp",
-     }
+	orawls::weblogic::version:                   1036
+	orawls::weblogic::filename:                  "oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin"
+	orawls::weblogic::fmw_infra:                 true
+	orawls::weblogic::log_output:                true
+	orawls::weblogic::jdk_home_dir:              *wls_jdk_home_dir
+	orawls::weblogic::oracle_base_home_dir:      *wls_oracle_base_home_dir
+	orawls::weblogic::puppet_download_mnt_point: "/misc/tact/products/oracle/11g/fmw/wls/11.1.1.8"
+	orawls::weblogic::remote_file:               true
+	orawls::weblogic::wls_domains_dir:           *wls_domains_dir
+	orawls::weblogic::wls_apps_dir:              *wls_apps_dir
+	orawls::weblogic::middleware_home_dir:       *wls_middleware_home_dir
+    orawls::weblogic::weblogic_home_dir:         "/opt/weblogic/Middleware/wlserver_10.3"
 
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
-
-
-    include orawls::weblogic
-
-or this
-
-
-    class{'orawls::weblogic':
-      log_output => true,
-    }
-
-
-vagrantcentos64.example.com.yaml
-
-     ---
-     orawls::weblogic::log_output:   true
 
 ### weblogic_type
 __orawls::weblogic_type__ same as weblogic manifest/class but now as define which supports multiple middleware home on same VM
 
     orawls::weblogic{'1221':
-      version              => 12211,                       # 1036|1211|1212|1213|1221|12212
-      filename             => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
-      jdk_home_dir         => '/usr/java/jdk1.8.0_45',
-      oracle_base_home_dir => "/opt/oracle",
-      middleware_home_dir  => "/opt/oracle/middleware12c",
-      weblogic_home_dir    => "/opt/oracle/middleware12c/wlserver",
-      os_user              => "oracle",
-      os_group             => "dba",
-      download_dir         => "/data/install",
-      source               => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
-      log_output           => true,
+      version                   => 12211,                       # 1036|1211|1212|1213|1221|12212
+      filename                  => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
+      jdk_home_dir              => '/usr/java/jdk1.8.0_45',
+      oracle_base_home_dir      => "/opt/oracle",
+      middleware_home_dir       => "/opt/oracle/middleware12c",
+      weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
+      os_user                   => "oracle",
+      os_group                  => "dba",
+      download_dir              => "/data/install",
+      puppet_download_mnt_point => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
+      log_output                => true,
     }
 
 
@@ -607,60 +551,25 @@ __orawls::opatch__ apply an OPatch on a Middleware home or a Oracle product home
     orawls::opatch {'16175470':
       ensure                  => "present",
       oracle_product_home_dir => "/opt/oracle/middleware12c",
-      jdk_home_dir            => "/usr/java/jdk1.7.0_45",
-      patch_id                => "16175470",
-      patch_file              => "p16175470_121200_Generic.zip",
-      os_user                 => "oracle",
-      os_group                => "dba",
-      download_dir            => "/data/install",
-      source                  => "/vagrant",
-      log_output              => false,
-    }
-
-
-or when you set the defaults hiera variables
-
-    orawls::opatch {'16175470':
-      ensure                  => "present",
-      oracle_product_home_dir => "/opt/oracle/middleware12c",
-      patch_id                => "16175470",
+      patch_id                => 16175470,
       patch_file              => "p16175470_121200_Generic.zip",
     }
 
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
-
+Same configuration but then with Hiera
 
     $default_params = {}
     $opatch_instances = hiera('opatch_instances', {})
     create_resources('orawls::opatch',$opatch_instances, $default_params)
 
-
 common.yaml
 
     ---
-    opatch_instances:
-      '16175470':
-         ensure:                   "present"
-         oracle_product_home_dir:  "/opt/oracle/middleware12c"
-         patch_id:                 "16175470"
-         patch_file:               "p16175470_121200_Generic.zip"
-         jdk_home_dir              "/usr/java/jdk1.7.0_45"
-         os_user:                  "oracle"
-         os_group:                 "dba"
-         download_dir:             "/data/install"
-         source:                   "/vagrant"
-         log_output:               true
-
-or when you set the defaults hiera variables
-
-    ---
-    opatch_instances:
-      '16175470':
-         ensure:                   "present"
-         oracle_product_home_dir:  "/opt/oracle/middleware12c"
-         patch_id:                 "16175470"
-         patch_file:               "p16175470_121200_Generic.zip"
+	opatch_instances:
+	  '24910964':
+	    ensure:                   'present'
+	    oracle_product_home_dir:  *wls_middleware_home_dir
+	    patch_id:                 24910964
+	    patch_file:               "p24910964_122120_Generic.zip"
 
 
 ### bsu

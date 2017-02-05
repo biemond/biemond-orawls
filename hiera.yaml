@@ -1,0 +1,10 @@
+---
+version: 4
+datadir: data
+hierarchy:
+  - name: "kernel"
+    backend: yaml
+    path: "kernel/%{facts.kernel}"
+
+  - name: "common"
+    backend: yaml

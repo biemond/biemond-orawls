@@ -1,0 +1,25 @@
+---
+
+orawls::exec_path:         '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
+
+orawls::user:              'oracle'
+orawls::group:             'dba'
+
+orawls::permissions:       '0755'
+  
+orawls::tmp_dir:           '/tmp'
+orawls::download_dir:      '/var/tmp/install'
+orawls::module_mountpoint: 'puppet:///modules/orawls/'
+
+orawls::default_version:           1111
+
+# check on all supported weblogic versions
+orawls::versions:
+ - 1036
+ - 1111
+ - 1211
+ - 1212
+ - 1213
+ - 1221
+ - 12211
+ - 12212

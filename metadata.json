@@ -1,5 +1,6 @@
 {
   "author": "Edwin Biemond",
+  "data_provider": "hiera",
   "dependencies": [
     {
       "name": "hajee/easy_type",
@@ -28,7 +29,7 @@
   "project_page": "https://github.com/biemond/biemond-orawls",
   "source": "https://github.com/biemond/biemond-orawls",
   "summary": "Oracle WebLogic puppet module v2 for Linux & Solaris with wls puppet types & providers",
-  "version": "1.0.58",
+  "version": "2.0.0",
   "tags": [
     "weblogic",
     "11g",
@@ -115,12 +116,8 @@
   ],
   "requirements": [
     {
-      "name": "pe",
-      "version_requirement": ">=2.7.20"
-    },
-    {
       "name": "puppet",
-      "version_requirement": ">=2.7.20"
+      "version_requirement": ">=4.3.0"
     }
   ]
 }

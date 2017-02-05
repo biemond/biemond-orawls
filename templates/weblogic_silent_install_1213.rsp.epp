@@ -1,12 +1,15 @@
+<%- |  String $middleware_home_dir,
+       Optional[String] $install_type = 'WebLogic Server',
+       Optional[String] $weblogic_home_dir = 'notused' | -%>
 [ENGINE]
 Response File Version=1.0.0.0.0
 [GENERIC]
 
 #The oracle home location. This can be an existing Oracle Home or a new Oracle Home
-ORACLE_HOME=<%= @middleware_home_dir %>
+ORACLE_HOME=<%= $middleware_home_dir %>
 #Set this variable value to the Installation Type selected. e.g. WebLogic Server, Coherence, Complete with Examples.
-INSTALL_TYPE=<%= @install_type %>
-
+INSTALL_TYPE=<%= $install_type %>
+ 
 #Provide the My Oracle Support Username. If you wish to ignore Oracle Configuration Manager configuration provide empty string for user name.
 MYORACLESUPPORT_USERNAME=
 #Provide the My Oracle Support Password

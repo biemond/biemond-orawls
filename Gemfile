@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>= 3.0']
+puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['>= 4.3']
 
 gem 'coveralls', :require => false
 gem 'simplecov', :require => false
@@ -8,7 +8,7 @@ gem 'simplecov-console'
 
 gem 'puppet-lint'
 gem 'puppet', puppetversion
-gem 'rspec-puppet', '= 2.3.2'
+gem 'rspec-puppet'
 gem 'puppetlabs_spec_helper'
 gem 'metadata-json-lint'
 gem 'puppet-syntax'

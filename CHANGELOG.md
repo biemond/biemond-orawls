@@ -1,5 +1,8 @@
 # History
 
+## 2.0.0
+- Puppet 4 new features, removed support for Puppet 3, please use latest version 1.X of oradb
+
 ## 1.0.57
 - Added support for Wls/FMW 12.2.1.2
 - Changing indentation from "2" to "4" in wls_exec statements

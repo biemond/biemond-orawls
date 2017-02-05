@@ -1,0 +1,4 @@
+<%- |  String $ora_inventory_dir,
+       String $os_group = 'dba' | -%>
+inventory_loc=<%= $ora_inventory_dir %>
+inst_group=<%= $os_group %>

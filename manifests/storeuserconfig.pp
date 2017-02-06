@@ -3,25 +3,31 @@
 # generic storeuserconfig wlst script
 #
 define orawls::storeuserconfig (
-  $domain_name                = hiera('domain_name'),
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'),      # /usr/java/jdk1.7.0_45
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $user_config_dir            = undef,                                           #'/home/oracle',
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false,                                           # true|false
+  String $domain_name         = undef,
+  String $weblogic_home_dir   = $::orawls::weblogic::weblogic_home_dir,
+  String $jdk_home_dir        = $::orawls::weblogic::jdk_home_dir,
+  String $adminserver_address = 'localhost',
+  Integer $adminserver_port   = 7001,
+  String $user_config_dir     = undef,
+  String $weblogic_user       = 'weblogic',
+  String $weblogic_password   = undef,
+  String $os_user             = $::orawls::weblogic::os_user,
+  String $os_group            = $::orawls::weblogic::os_group,
+  String $download_dir        = $::orawls::weblogic::download_dir,
+  Boolean $log_output         = $::orawls::weblogic::log_output,
 )
 {
   # the py script used by the wlst*-
   file { "${download_dir}/${title}storeUserConfig.py":
     ensure  => present,
     path    => "${download_dir}/${title}storeUserConfig.py",
-    content => template('orawls/wlst/storeUserConfig.py.erb'),
+    content => epp('orawls/wlst/storeUserConfig.py.epp',
+                   { 'weblogic_user' => $weblogic_user,
+                     'adminserver_address' => $adminserver_address,
+                     'adminserver_port' => $adminserver_port,
+                     'domain_name' => $domain_name,
+                     'os_user' => $os_user,       
+                     'user_config_dir' => $user_config_dir }),
     backup  => false,
     replace => true,
     mode    => '0555',
@@ -30,7 +36,7 @@ define orawls::storeuserconfig (
   }
 
   $javaCommand = 'java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
-  $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   exec { "execwlst ${title}storeUserConfig.py":
     command     => "${javaCommand} ${download_dir}/${title}storeUserConfig.py ${weblogic_password}",

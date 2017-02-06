@@ -1019,27 +1019,19 @@ Standalone Webtier
 ### packdomain
 __orawls::packdomain__ pack a WebLogic Domain and add this to the download folder
 
-    orawls::packdomain{"Wls12c":
-      weblogic_home_dir      => "/opt/oracle/middleware12c/wlserver",
-      middleware_home_dir    => "/opt/oracle/middleware12c",
-      jdk_home_dir           => "/usr/java/jdk1.7.0_45",
-      wls_domains_dir        => "/opt/oracle/domains",
-      domain_name            => "Wls12c",
-      os_user                => "oracle",
-      os_group               => "dba",
-      download_dir           => "/data/install",
-    }
-
-or with hiera
-
     $default_params = {}
     $pack_domain_instances = hiera('pack_domain_instances', {})
     create_resources('orawls::packdomain',$pack_domain_instances, $default_params)
 
-    # pack domains
-    pack_domain_instances:
-      'wlsDomain':
-         log_output:               *logoutput
+	# pack domains
+	pack_domain_instances:
+	  'Wls1221':
+	     weblogic_home_dir:           *wls_weblogic_home_dir 
+	     domain_name:                 *domain_name
+	  'plain':
+	     weblogic_home_dir:           *wls_weblogic_home_dir 
+	     domain_name:                 "plain_Wls"
+
 
 
 ### copydomain
@@ -1047,67 +1039,24 @@ __orawls::copydomain__ copies a WebLogic domain with SSH or from a share, unpack
 
 When using ssh (use_ssh = true) you need to setup ssh so you won't need to provide a password
 
-    orawls::copydomain{"Wls12c":
-      version                => 1212,
-      weblogic_home_dir      => "/opt/oracle/middleware12c/wlserver",
-      middleware_home_dir    => "/opt/oracle/middleware12c",
-      jdk_home_dir           => "/usr/java/jdk1.7.0_45",
-      wls_domains_dir        => "/opt/oracle/domains",
-      wls_apps_dir           => "/opt/oracle/applications",
-      domain_name            => "Wls12c",
-      os_user                => "oracle",
-      os_group               => "dba",
-      download_dir           => "/data/install",
-      log_dir                => "/var/log/weblogic",
-      log_output             => true,
-      use_ssh                => false,
-      domain_pack_dir        => /mnt/fmw_share,
-      adminserver_address    => "10.10.10.10",
-      adminserver_port       => 7001,
-      weblogic_user          => "weblogic",
-      weblogic_password      => "weblogic1",
-      server_start_mode      => 'dev',
-    }
-
-Configuration with Hiera ( need to have puppet > 3.0 )
-
-
     $default_params = {}
     $copy_instances = hiera('copy_instances', {})
     create_resources('orawls::copydomain',$copy_instances, $default_params)
 
-
-when you just have one WebLogic domain on a server
-
-    ---
-    # when you have just one domain on a server
-    domain_name:                "Wls1036"
-    domain_adminserver:         "AdminServer"
-    domain_adminserver_address: "localhost"
-    domain_adminserver_port:    7001
-    domain_nodemanager_port:    5556
-    domain_wls_password:        "weblogic1"
-
-    # copy domains to other nodes
-    copy_instances:
-      'wlsDomain':
-         use_ssh:                 false
-         domain_pack_dir:         /mnt/fmw_share
-         log_output:              *logoutput
-      'wlsDomain2':
-         log_output:              *logoutput
-
-for t3s you can use this
-
-    copy_instances:
-      'wlsDomain':
-         log_output:               true
-         use_t3s:                  true
-         jsse_enabled              true
-         custom_trust              true
-         trust_keystore_file       '/vagrant/truststore.jks'
-         trust_keystore_passphrase 'welcome'
-
+	# copy domains to other nodes
+	copy_instances:
+	  'wlsDomain':
+	     log_output:                *logoutput
+	     weblogic_home_dir:         *wls_weblogic_home_dir 
+	     domain_name:               *domain_name
+	     jsse_enabled:              *wls_jsse_enabled
+	     adminserver_address:       *domain_adminserver_address
+	     weblogic_user:             'weblogic'
+	     weblogic_password:         *domain_wls_password
+	     server_start_mode:         'prod'
+	     custom_trust:              *wls_custom_trust
+	     trust_keystore_file:       *wls_trust_keystore_file
+	     trust_keystore_passphrase: *wls_trust_keystore_passphrase
 
 
 ### nodemanager
@@ -1206,50 +1155,19 @@ three options
 __orawls::storeuserconfig__ Creates WLST user config for WLST , this way you don't need to know the weblogic password.
 when you set the defaults hiera variables
 
-    orawls::storeuserconfig{'Wls12c':
-      domain_name                => "Wls12c",
-      adminserver_address        => "localhost",
-      adminserver_port           => 7001,
-      weblogic_password          => "weblogic1",
-      user_config_dir            => '/home/oracle',
-      log_output                 => false,
-    }
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
     notify { 'class userconfig':}
     $default_params = {}
     $userconfig_instances = hiera('userconfig_instances', {})
     create_resources('orawls::storeuserconfig',$userconfig_instances, $default_params)
 
-vagrantcentos64.example.com.yaml
-or when you set the defaults hiera variables
-
-
-    ---
-    userconfig_instances:
-      'Wls12c':
-         domain_name:          "Wls12c"
-         adminserver_address:  "localhost"
-         adminserver_port:     7001
-         weblogic_password:    "weblogic1"
-         log_output:           true
-         user_config_dir:      '/home/oracle'
-
-
-when you just have one WebLogic domain on a server
-
-    #when you just have one domain on a server
-    domain_name:                "Wls1036"
-    domain_adminserver_address: "localhost"
-    domain_adminserver_port:    7001
-    domain_wls_password:        "weblogic1"
-
-    ---
-    userconfig_instances:
-      'Wls12c':
-         log_output:           true
-         user_config_dir:      '/home/oracle'
+	userconfig_instances:
+	  'Wls1221':
+	    user_config_dir:      '/home/oracle'
+	    weblogic_home_dir:    *wls_weblogic_home_dir 
+	    domain_name:          *domain_name
+	    adminserver_address:  *domain_adminserver_address
+	    weblogic_password:    *domain_wls_password   
 
 ### Dynamictargetting
 Sometimes you do not know how many managed services you will have,

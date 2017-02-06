@@ -3,43 +3,35 @@
 #   copydomain to an other nodes
 ##
 define orawls::copydomain (
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1221|12211|12212
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $wls_apps_dir               = hiera('wls_apps_dir'              , undef),
-  $use_ssh                    = true,
-  $domain_pack_dir            = undef,
-  $domain_name                = hiera('domain_name'),
-  $adminserver_address        = hiera('domain_adminserver_address'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $use_t3s                    = false,
-  $user_config_file           = hiera('domain_user_config_file'   , undef),
-  $user_key_file              = hiera('domain_user_key_file'      , undef),
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'       , undef),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_dir                    = hiera('wls_log_dir'               , undef), # /data/logs
-  $log_output                 = false, # true|false
-  $server_start_mode          = 'dev', # dev/prod
-  $wls_domains_file           = hiera('wls_domains_file'          , undef),
-  $puppet_os_user             = hiera('puppet_os_user','root'),
-  $jsse_enabled               = hiera('wls_jsse_enabled'              , false),
-  $custom_trust               = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file        = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase  = hiera('wls_trust_keystore_passphrase' , undef),
-  $extra_arguments            = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
+  Integer $version                            = $::orawls::weblogic::version,
+  String $weblogic_home_dir                   = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                 = $::orawls::weblogic::middleware_home_dir, 
+  String $jdk_home_dir                        = $::orawls::weblogic::jdk_home_dir,
+  String $wls_domains_dir                     = $::orawls::weblogic::wls_domains_dir,
+  String $wls_apps_dir                        = $::orawls::weblogic::wls_apps_dir,
+  String $domain_name                         = undef,
+  String $os_user                             = $::orawls::weblogic::os_user,
+  String $os_group                            = $::orawls::weblogic::os_group,
+  String $download_dir                        = $::orawls::weblogic::download_dir,
+  Boolean $log_output                         = $::orawls::weblogic::log_output,
+  Optional[String] $domain_pack_dir           = undef,
+  String $adminserver_address                 = 'localhost',
+  Integer $adminserver_port                   = 7001,
+  Boolean $use_ssh                            = true,
+  Boolean $use_t3s                            = false,
+  String $weblogic_user                       = 'weblogic',
+  String $weblogic_password                   = undef,
+  Optional[String] $log_dir                   = undef, # /data/logs
+  Enum['dev','prod'] $server_start_mode       = 'dev',
+  String $wls_domains_file                    = '/etc/wls_domains.yaml',
+  String $puppet_os_user                      = 'root',
+  Boolean $jsse_enabled                       = false,
+  Boolean $custom_trust                       = false,
+  Optional[String] $trust_keystore_file       = undef,
+  Optional[String] $trust_keystore_passphrase = undef,
+  String $extra_arguments                     = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
 )
 {
-  if ( $wls_domains_file == undef or $wls_domains_file == '' ){
-    $wls_domains_file_location = '/etc/wls_domains.yaml'
-  } else {
-    $wls_domains_file_location = $wls_domains_file
-  }
-
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
   } else {
@@ -83,7 +75,7 @@ define orawls::copydomain (
   }
 
   if ($continue) {
-    $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
+    $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
     if $log_dir != undef {
 
@@ -102,7 +94,7 @@ define orawls::copydomain (
           recurse => false,
           replace => false,
           require => Exec["create ${log_dir} directory"],
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }
@@ -117,7 +109,7 @@ define orawls::copydomain (
             path    => "${middleware_home_dir}/user_projects",
             recurse => false,
             replace => false,
-            mode    => '0775',
+            mode    => lookup('orawls::permissions'),
             owner   => $os_user,
             group   => $os_group,
           }
@@ -131,7 +123,7 @@ define orawls::copydomain (
         ensure  => directory,
         recurse => false,
         replace => false,
-        mode    => '0775',
+        mode    => lookup('orawls::permissions'),
         owner   => $os_user,
         group   => $os_group,
       }
@@ -144,7 +136,7 @@ define orawls::copydomain (
           ensure  => directory,
           recurse => false,
           replace => false,
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }
@@ -198,7 +190,7 @@ define orawls::copydomain (
     }
 
     yaml_setting { "domain ${title}":
-      target =>  $wls_domains_file_location,
+      target =>  $wls_domains_file,
       key    =>  "domains/${domain_name}",
       value  =>  "${domains_dir}/${domain_name}",
     }
@@ -207,9 +199,16 @@ define orawls::copydomain (
     file { "enroll.py ${domain_name} ${title}":
       ensure  => present,
       path    => "${download_dir}/enroll_domain_${domain_name}.py",
-      content => template('orawls/wlst/enrollDomain.py.erb'),
+      content => epp('orawls/wlst/enrollDomain.py.epp',
+                     { 'weblogic_user' => $weblogic_user,
+                       'adminserver_address' => $adminserver_address,
+                       'adminserver_port' => $adminserver_port,
+                       'domains_dir' => $domains_dir,
+                       'domain_name' => $domain_name,
+                       'nodeMgrHome' => $nodeMgrHome,       
+                       'use_t3s' => $use_t3s }),
       replace => true,
-      mode    => '0775',
+      mode    => lookup('orawls::permissions'),
       owner   => $os_user,
       group   => $os_group,
       backup  => false,
@@ -217,6 +216,16 @@ define orawls::copydomain (
 
     if $custom_trust == true {
       $config = "-Dweblogic.ssl.JSSEEnabled=${jsse_enabled} -Dweblogic.security.SSL.enableJSSE=${jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase} ${extra_arguments}"
+      if ($version == 1212 or $version == 1213 or $version >= 1221) { 
+        # remove nodemanager.properties, else it won't be updated by nodemanager
+        exec { "rm ${domains_dir}/${domain_name}/nodemanager/nodemanager.properties":
+          path      => $exec_path,
+          user      => $os_user,
+          group     => $os_group,
+          logoutput => $log_output,
+          require   => Exec["unpack ${domain_name}"],
+        }
+      }
     }
     else {
       $config = "-Dweblogic.ssl.JSSEEnabled=${jsse_enabled} -Dweblogic.security.SSL.enableJSSE=${jsse_enabled} ${extra_arguments}"

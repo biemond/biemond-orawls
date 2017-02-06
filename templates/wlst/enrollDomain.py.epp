@@ -1,0 +1,23 @@
+<%- |  String $weblogic_user = 'weblogic',
+       String $adminserver_address = 'localhost',
+       Integer $adminserver_port = 7001,
+       String $domains_dir,
+       String $domain_name,
+       String $nodeMgrHome,       
+       Boolean $use_t3s | -%>
+wlsUser = '<%= $weblogic_user %>'
+password = sys.argv[1]
+machine = '<%= $adminserver_address %>'
+portNumber = '<%= $adminserver_port %>'
+domains_path = '<%= $domains_dir %>'
+domain = '<%= $domain_name %>'
+nodeMgrHome = '<%= $nodeMgrHome %>'
+useT3s = '<%= $use_t3s %>'
+
+if useT3s == 'false':
+    connectStr = 't3://'
+else:
+    connectStr = 't3s://'
+
+connect(wlsUser, password, connectStr + machine + ':' + portNumber)
+nmEnroll(domainDir=domains_path + '/' + domain, nmHome=nodeMgrHome)

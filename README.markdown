@@ -49,7 +49,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - WebLogic 12.2.1.1 MT multi tenancy / Puppet 4 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1-puppet4](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-puppet4)
 - WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
 - WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
-- WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs](https://github.com/biemond/biemond-orawls-vagrant-ohs)
+- WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs-puppet4](https://github.com/biemond/biemond-orawls-vagrant-ohs-puppet4)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
 - WebLogic 12.1.3 infra (JRF), the vagrant test case for full working WebLogic 12.1.3 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.1.3-infra](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra)
 - WebLogic 12.1.3 infra with OSB, the vagrant test case for full working WebLogic 12.1.3 infra OSB cluster example [biemond-orawls-vagrant-12.1.3-infra-osb](https://github.com/biemond/biemond-orawls-vagrant-12.1.3-infra-osb)
@@ -1066,20 +1066,35 @@ the cluster if the managed server is in a cluster.
 
 You can configure OHS locations using __orawls::ohs::forwarder__ resource:
 
-    orawls::ohs::forwarder { '/console':
-      servers     => ['192.168.1.1:7000'],
-      owner       => 'oracle',
-      group       => 'oracle',
-      domain_path => '/opt/test/wls/domains/domain1',
-      require     => Orawls::Control["start ohs ${domain_name}"],
-      notify      => Wls_ohsserver["reload ohs ${domain_name}"],
-    }
+	ohs_forwarder_instances:
+	  '/console':
+	      servers:    ['10.10.10.10:7001']
+	      os_user:     *wls_os_user
+	      os_group:    *wls_os_group
+	      domain_dir: '/opt/oracle/middleware12c/user_projects/domains/Wls1212'
+	      require:     Orawls::Control[startOHS1server]
+	      notify:      Wls_ohsserver[reloadOHS1server]
+
+	# subscribe on a ohs change and restart the ohs server
+	osh_reload_domain:
+	  'reloadOHS1server':
+	     ensure:                    'running'
+	     domain_name:               *domain_name
+	     server_name:               'ohs1'
+	     domain_path:               '/opt/oracle/middleware12c/user_projects/domains/Wls1212'
+	     os_user:                   *wls_os_user
+	     weblogic_home_dir:         *wls_weblogic_home_dir
+	     weblogic_user:             *wls_weblogic_user
+	     weblogic_password:         *domain_wls_password
+	     jdk_home_dir:              *wls_jdk_home_dir
+	     nodemanager_address:       *domain_adminserver_address
+	     nodemanager_port:          *domain_nodemanager_port
+	     refreshonly:               true
 
 Notify option is needed to OHS restart and load changes. Require is needed because, without it, notify option may attempt to reload server before it's running.
 
 OHS will include all __.conf__ files at ${domain_path}/config/fmwconfig/components/OHS/${server_name}/mod_wl_ohs.d folder.
 
-This resource has been tested only with OHS 12.1.2 Standalone.
 
 ### fmwlogdir
 __orawls::fmwlogdir__ Change a log folder location of a FMW server

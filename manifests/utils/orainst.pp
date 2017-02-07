@@ -8,6 +8,7 @@ define orawls::utils::orainst
 (
   $ora_inventory_dir = undef,
   $os_group          = undef,
+  $mode              = '0755',
   $orainstpath_dir   = hiera('orainstpath_dir', undef),
 )
 {
@@ -25,7 +26,7 @@ define orawls::utils::orainst
         file { $oraInstPath:
           ensure => directory,
           before => File["${oraInstPath}/oraInst.loc"],
-          mode   => '0755',
+          mode   => $mode,
         }
       }
     }
@@ -38,7 +39,7 @@ define orawls::utils::orainst
     file { "${oraInstPath}/oraInst.loc":
       ensure  => present,
       content => template('orawls/utils/oraInst.loc.erb'),
-      mode    => '0755',
+      mode    => $mode,
     }
   }
 }

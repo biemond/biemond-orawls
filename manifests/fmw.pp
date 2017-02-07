@@ -27,6 +27,7 @@ define orawls::fmw(
   $ohs_mode             = hiera('ohs_mode', 'collocated'),
   $oracle_inventory_dir = undef,
   $orainstpath_dir      = hiera('orainstpath_dir', undef),
+  $oraInst_mode         = '0755',
 )
 {
   $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
@@ -483,6 +484,7 @@ define orawls::fmw(
     orawls::utils::orainst { "create oraInst for ${name}":
       ora_inventory_dir => $oraInventory,
       os_group          => $os_group,
+      mode              => $oraInst_mode,
     }
 
     file { "${download_dir}/${sanitised_title}_silent.rsp":

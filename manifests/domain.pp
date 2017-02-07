@@ -54,7 +54,7 @@ define orawls::domain (
   Boolean $create_rcu                                     = true,
   Optional[String] $ohs_standalone_listen_address         = undef,
   Optional[Integer] $ohs_standalone_listen_port           = undef,
-  Optional[Boolean] $ohs_standalone_ssl_listen_port       = undef,
+  Optional[Integer] $ohs_standalone_ssl_listen_port       = undef,
   String $wls_domains_file                                = '/etc/wls_domains.yaml',
   String $puppet_os_user                                  = 'root',
   Boolean $create_default_coherence_cluster               = true,

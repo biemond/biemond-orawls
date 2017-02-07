@@ -632,201 +632,50 @@ or when you set the defaults hiera variables
 ### fmw
 __orawls::fmw__ installs FMW software (add-on) to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center + Content
 
-
-    # fmw_product = adf|soa|osb|wcc|wc|oim|web|webgate|b2b|mft
-    orawls::fmw{"osbPS6":
-      middleware_home_dir     => "/opt/oracle/middleware11gR1",
-      weblogic_home_dir       => "/opt/oracle/middleware11gR1/wlserver",
-      jdk_home_dir            => "/usr/java/jdk1.7.0_45",
-      oracle_base_home_dir    => "/opt/oracle",
-      fmw_product             => "osb",  # adf|soa|osb|oim|wc|wcc|web
-      fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
-      os_user                 => "oracle",
-      os_group                => "dba",
-      download_dir            => "/data/install",
-      source                  => "/vagrant",
-      log_output              => false,
-    }
-
-
-or when you set the defaults hiera variables
-
-    orawls::fmw{"osbPS6":
-      fmw_product             => "osb"  # adf|soa|osb|oim|wc|wcc|web|webgate
-      fmw_file1               => "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip",
-      log_output              => false,
-    }
-
-    orawls::fmw{"osb12.1.3":
-      version                 => 1213
-      fmw_product             => "osb"
-      fmw_file1               => "fmw_12.1.3.0.0_osb_Disk1_1of1.zip",
-      log_output              => false,
-    }
-
+    Enum['adf','soa','soaqs','osb','wcc','wc','oim','oam','web','webgate','oud','mft','b2b','forms'] fmw_product
 
 
 Same configuration but then with Hiera ( need to have puppet > 3.0 )
+
+	logoutput:                &logoutput                true
+
+	wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
+	wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+	wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
+	wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
+	wls_version:              &wls_version              12212
+
+	# global OS vars
+	wls_os_user:              &wls_os_user              "oracle"
+	wls_os_group:             &wls_os_group             "dba"
+	wls_download_dir:         &wls_download_dir         "/var/tmp/install"
+	wls_source:               &wls_source               "/software"
+	wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/latest"
+	wls_log_dir:              &wls_log_dir              "/var/log/weblogic"
 
     $default_params = {}
     $fmw_installations = hiera('fmw_installations', {})
     create_resources('orawls::fmw',$fmw_installations, $default_params)
 
-
-common.yaml
-
-when you set the defaults hiera variables
-
-    # FMW installation on top of WebLogic 12.2.1
-    fmw_installations:
-      'soa1221':
-        version:                 1221
-        fmw_product:             "soa"
-        fmw_file1:               "fmw_12.2.1.0.0_soa_Disk1_1of1.zip"
-        bpm:                     true
-        log_output:              true
-        remote_file:             false
-      'osb1221':
-        version:                 1221
-        fmw_product:             "osb"
-        fmw_file1:               "fmw_12.2.1.0.0_osb_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'webtier1221':
-        version:                 1221
-        fmw_product:             "web"
-        fmw_file1:               "fmw_12.2.1.0.0_ohs_linux64_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'forms1221':
-        version:                 1221
-        fmw_product:             "forms"
-        fmw_file1:               "fmw_12.2.1.0.0_fr_linux64_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'wcc1221':
-        version:                 1221
-        fmw_product:             "wcc"
-        fmw_file1:               "fmw_12.2.1.0.0_wccontent_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'wc1221':
-        version:                 1221
-        fmw_product:             "wc"
-        fmw_file1:               "fmw_12.2.1.0.0_wcportal_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-
-
-
-    if ( defined(Orawls::Fmw["b2b1213"])) {
-      Orawls::Fmw["soa1213"] -> Orawls::Fmw["b2b1213"]
-    }
-
-
-    fmw_installations:
-      'soa1213':
-        version:                 *wls_version
-        fmw_product:             "soa"
-        fmw_file1:               "fmw_12.1.3.0.0_soa_Disk1_1of1.zip"
-        bpm:                     true
-        log_output:              true
-        remote_file:             false
-      'webtier1213':
-        version:                 *wls_version
-        fmw_product:             "web"
-        fmw_file1:               "fmw_12.1.3.0.0_ohs_linux64_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'osb1213':
-        version:                 *wls_version
-        fmw_product:             "osb"
-        fmw_file1:               "fmw_12.1.3.0.0_osb_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'mft1213':
-        version:                 *wls_version
-        fmw_product:             "mft"
-        fmw_file1:               "fmw_12.1.3.0.0_mft_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'b2b1213':
-        version:                 *wls_version
-        fmw_product:             "b2b"
-        healthcare:              true
-        fmw_file1:               "fmw_12.1.3.0.0_b2b_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-
-    # FMW installation on top of WebLogic 10.3.6
-    fmw_installations:
-      'osbPS6':
-        fmw_product:             "osb"
-        fmw_file1:               "ofm_osb_generic_11.1.1.7.0_disk1_1of1.zip"
-        log_output:              true
-      'soaPS6':
-        fmw_product:             "soa"
-        fmw_file1:               "ofm_soa_generic_11.1.1.7.0_disk1_1of2.zip"
-        fmw_file2:               "ofm_soa_generic_11.1.1.7.0_disk1_2of2.zip"
-        log_output:              true
-
-
-    # FMW installation on top of WebLogic 12.1.2
-    fmw_installations:
-      'webtier1212':
-        version:                 1212
-        fmw_product:             "web"
-        fmw_file1:               "ofm_ohs_linux_12.1.2.0.0_64_disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-
-    fmw_installations:
-      'webTierPS6':
-        fmw_product:             "web"
-        fmw_file1:               "ofm_webtier_linux_11.1.1.7.0_64_disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-
-    fmw_installations:
-      'wcPS7':
-        fmw_product:             "wc"
-        fmw_file1:               "ofm_wc_generic_11.1.1.8.0_disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'soaPS6':
-        fmw_product:             "soa"
-        fmw_file1:               "ofm_soa_generic_11.1.1.7.0_disk1_1of2.zip"
-        fmw_file2:               "ofm_soa_generic_11.1.1.7.0_disk1_2of2.zip"
-        log_output:              true
-        remote_file:             false
-      'wccPS7':
-        fmw_product:             "wcc"
-        fmw_file1:               "ofm_wcc_generic_11.1.1.8.0_disk1_1of2.zip"
-        fmw_file2:               "ofm_wcc_generic_11.1.1.8.0_disk1_2of2.zip"
-        log_output:              true
-        remote_file:             false
-      'webGate11.1.2.2':
-        version:                 1112
-        fmw_product:             "webgate"
-        fmw_file1:               "ofm_webgates_generic_11.1.2.2.0_disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-      'oud11.1.2.2':
-        version:                 1112
-        fmw_product:             "oud"
-        fmw_file1:               "ofm_oud_generic_11.1.2.2.0_disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
-
-
     # OHS standalone
-    fmw_installations:
-      'webtier1212':
-        fmw_product:             "web"
-        ohs_mode:                "standalone"
-        fmw_file1:               "fmw_12.2.1.0.0_ohs_linux64_Disk1_1of1.zip"
-        log_output:              true
-        remote_file:             false
+	fmw_installations:
+	  'webtier1212':
+	    fmw_product:               "web"
+	    ohs_mode:                  "standalone"
+	    fmw_file1:                 "fmw_12.2.1.2.0_ohs_linux64_Disk1_1of1.zip"
+	    log_output:                true
+	    remote_file:               false
+	    version:                   *wls_version
+	    weblogic_home_dir:         *wls_weblogic_home_dir
+	    middleware_home_dir:       *wls_middleware_home_dir
+	    jdk_home_dir:              *wls_jdk_home_dir
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	    os_user:                   *wls_os_user
+	    os_group:                  *wls_os_group
+	    download_dir:              *wls_download_dir
+	    puppet_download_mnt_point: *wls_source
+
+
 
 
 ### domain
@@ -902,117 +751,89 @@ vagrantcentos64.example.com.yaml
             ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
  
 
-FMW 11g, 12.1.2 , 12.1.3 ADF domain with webtier
-
-    # create a standard domain
-    domain_instances:
-      'adf_domain':
-         domain_template:          "adf"
-         development_mode:         true
-         log_output:               *logoutput
-         nodemanager_address:      "10.10.10.21"
-         repository_database_url:  "jdbc:oracle:thin:@wlsdb.example.com:1521/wlsrepos.example.com"
-         repository_prefix:        "DEV"
-         repository_password:      "Welcome01"
-         repository_sys_user:      "sys"
-         repository_sys_password:  "Welcome01"
-         rcu_database_url:         "wlsdb.example.com:1521:wlsrepos.example.com"
-         webtier_enabled:          true
-         create_rcu:               true
-
-FMW 11g WebLogic SOA Suite domain
-
-    # create a standard domain
-    domain_instances:
-      'wlsDomain':
-         domain_template:          "osb_soa_bpm"
-         development_mode:         false
-         log_output:               *logoutput
-         repository_database_url:  "jdbc:oracle:thin:@10.10.10.5:1521/test.oracle.com"
-         repository_prefix:        "DEV"
-         repository_password:      "Welcome01"
-
-FMW 11g WebLogic OIM / OAM domain
-
-    domain_instances:
-      'oimDomain':
-        version:                  1112
-        domain_template:          "oim"
-        development_mode:         true
-        log_output:               *logoutput
-        repository_database_url:  "jdbc:oracle:thin:@oimdb.example.com:1521/oimrepos.example.com"
-        repository_prefix:        "DEV"
-        repository_password:      "Welcome01"
-        repository_sys_user:      "sys"
-        repository_sys_password:  "Welcome01"
-        rcu_database_url:         "oimdb.example.com:1521/oimrepos.example.com"
-
-FMW 12.1.3 WebLogic SOA Suite domain
-
-    # create a soa domain
-    domain_instances:
-      'soa_domain':
-        version:                  1213
-        domain_template:          "osb_soa_bpm"
-        bam_enabled:              true
-        b2b_enabled:              true
-        ess_enabled:              true
-        development_mode:         true
-        log_output:               *logoutput
-        nodemanager_address:      "10.10.10.21"
-        repository_database_url:  "jdbc:oracle:thin:@soadb.example.com:1521/soarepos.example.com"
-        repository_prefix:        "DEV"
-        repository_password:      "Welcome01"
-        repository_sys_user:      "sys"
-        repository_sys_password:  "Welcome01"
-        rcu_database_url:         "soadb.example.com:1521:soarepos.example.com"
-
-FMW 12.1.3 WebLogic OSB domain
-
-    domain_instances:
-      'osb_domain':
-         version:                  *wls_version
-         domain_template:          "osb"
-         development_mode:         true
-         log_output:               *logoutput
-         nodemanager_address:      *domain_adminserver_address
-         repository_database_url:  "jdbc:oracle:thin:@osbdb.example.com:1521/osbrepos.example.com"
-         repository_prefix:        "DEV"
-         repository_password:      "Welcome01"
-         repository_sys_user:      "sys"
-         repository_sys_password:  "Welcome01"
-         rcu_database_url:         "osbdb.example.com:1521:osbrepos.example.com"
-
 Standalone Webtier
 
-    domain_instances:
-      'Wls1221':
-        domain_template:                       "ohs_standalone"
-        development_mode:                      false
-        ohs_standalone_listen_address:         *domain_adminserver_address
-        ohs_standalone_listen_port:            8180
-        ohs_standalone_ssl_listen_port:        8181
-        nodemanager_password:                  *domain_wls_password
-        nodemanager_username:                  *wls_weblogic_user
-        log_output:                            *logoutput
+	logoutput:                &logoutput                true
 
-    nodemanager_instances:
-      'nodemanager':
-        ohs_standalone:                        true
-        log_output:                            *logoutput
-        log_file:                              'nodemanager_wls1221.log'
-        nodemanager_address:                   *domain_adminserver_address
-        sleep:                                 21
+	wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
+	wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+	wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"
+	wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware12c"
+	wls_version:              &wls_version              12212
 
-    # startup adminserver for extra configuration
-    control_instances:
-      'startOHS1server':
-         domain_name:                 *domain_name
-         server_type:                 'ohs_standalone'
-         target:                      'Server'
-         server:                      'ohs1'
-         action:                      'start'
-         log_output:                  *logoutput
+	# global OS vars
+	wls_os_user:              &wls_os_user              "oracle"
+	wls_os_group:             &wls_os_group             "dba"
+	wls_download_dir:         &wls_download_dir         "/var/tmp/install"
+	wls_source:               &wls_source               "/software"
+	wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/latest"
+	wls_log_dir:              &wls_log_dir              "/var/log/weblogic"
+
+	domain_name:                &domain_name                "Wls1221"
+	domain_nodemanager_port:    &domain_nodemanager_port    5556
+	domain_wls_password:        &domain_wls_password        "weblogic1"
+
+	domain_adminserver_address: &domain_adminserver_address "10.10.10.36"
+
+	domain_instances:
+	  'Wls1221':
+	    version:                               *wls_version
+	    domain_template:                       "ohs_standalone"
+	    development_mode:                      false
+	    ohs_standalone_listen_address:         *domain_adminserver_address
+	    ohs_standalone_listen_port:            8180
+	    ohs_standalone_ssl_listen_port:        8181
+	    nodemanager_password:                  *domain_wls_password
+	    nodemanager_username:                  *wls_weblogic_user
+	    log_output:                            *logoutput
+	    weblogic_home_dir:                     *wls_weblogic_home_dir
+	    middleware_home_dir:                   *wls_middleware_home_dir
+	    jdk_home_dir:                          *wls_jdk_home_dir
+	    domain_name:                           *domain_name
+	    adminserver_address:                   *domain_adminserver_address
+	    weblogic_password:                     *domain_wls_password
+	    log_dir:                               *wls_log_dir
+	    wls_domains_dir:                       ''
+	    wls_apps_dir:                          ''
+	    os_user:                               *wls_os_user
+	    os_group:                              *wls_os_group
+	    download_dir:                          *wls_download_dir
+
+	nodemanager_instances:
+	  'nodemanager':
+	    ohs_standalone:                        true
+	    log_output:                            *logoutput
+	    log_file:                              'nodemanager_wls1221.log'
+	    version:                               *wls_version
+	    weblogic_home_dir:                     *wls_weblogic_home_dir
+	    middleware_home_dir:                   *wls_middleware_home_dir
+	    jdk_home_dir:                          *wls_jdk_home_dir
+	    sleep:                                 21
+	    domain_name:                           *domain_name
+	    nodemanager_address:                   *domain_adminserver_address
+	    wls_domains_dir:                       ''
+	    os_user:                               *wls_os_user
+	    os_group:                              *wls_os_group
+	    download_dir:                          *wls_download_dir
+
+	# startup adminserver for extra configuration
+	control_instances:
+	  'startOHS1server':
+	    domain_name:                 *domain_name
+	    server_type:                 'ohs_standalone'
+	    target:                      'Server'
+	    server:                      'ohs1'
+	    action:                      'start'
+	    log_output:                  *logoutput
+	    wls_domains_dir:             ''
+	    os_user:                     *wls_os_user
+	    os_group:                    *wls_os_group
+	    download_dir:                *wls_download_dir
+	    weblogic_home_dir:           *wls_weblogic_home_dir
+	    middleware_home_dir:         *wls_middleware_home_dir
+	    jdk_home_dir:                *wls_jdk_home_dir
+	    adminserver_address:         *domain_adminserver_address
+	    weblogic_password:           *domain_wls_password      
 
 
 

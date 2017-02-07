@@ -1,6 +1,6 @@
 <%- |  String $middleware_home_dir,
        Optional[String] $install_type = 'WebLogic Server',
-       Optional[String] $weblogic_home_dir | -%>
+       Optional[String] $weblogic_home_dir = undef | -%>
 <?xml version="1.0" encoding="UTF-8"?>
 <bea-installer>
 <input-fields>

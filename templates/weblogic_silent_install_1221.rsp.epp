@@ -1,6 +1,6 @@
 <%- |  String $middleware_home_dir,
        Optional[String] $install_type = 'WebLogic Server',
-       Optional[String] $weblogic_home_dir = 'notused' | -%>
+       Optional[String] $weblogic_home_dir = undef | -%>
 [ENGINE]
 Response File Version=1.0.0.0.0
 [GENERIC]

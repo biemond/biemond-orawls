@@ -483,7 +483,6 @@ define orawls::fmw(
     orawls::utils::orainst { "create oraInst for ${name}":
       ora_inventory_dir => $oraInventory,
       os_group          => $os_group,
-      mode              => '0644',
     }
 
     file { "${download_dir}/${sanitised_title}_silent.rsp":

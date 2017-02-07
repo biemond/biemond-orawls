@@ -32,6 +32,7 @@ define orawls::nodemanager (
   $properties                            = {},
   $ohs_standalone                        = false,
   $puppet_os_user                        = hiera('puppet_os_user','root'),
+  $nodemanager_properties_mode           = '0775',
 )
 {
 
@@ -180,7 +181,7 @@ define orawls::nodemanager (
       content => template('orawls/nodemgr/nodemanager.properties.erb'),
       owner   => $os_user,
       group   => $os_group,
-      mode    => '0775',
+      mode    => $nodemanager_properties_mode,
       before  => Exec["startNodemanager ${title}"],
     }
   } else {
@@ -199,7 +200,7 @@ define orawls::nodemanager (
       content => template("orawls/nodemgr/nodemanager.properties_${new_version}.erb"),
       owner   => $os_user,
       group   => $os_group,
-      mode    => '0775',
+      mode    => $nodemanager_properties_mode,
       before  => Exec["startNodemanager ${title}"],
     }
   }

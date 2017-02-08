@@ -1,11 +1,14 @@
+<%- |  String $weblogic_home_dir,
+       String $domain_dir,
+       String $jrf_target_name,
+       String $opss_datasource_name | -%>
 
-VERSION='<%= @version %>'
-WLHOME='<%= @weblogic_home_dir %>'
-DOMAIN_PATH='<%= @domain_dir %>'
-JRFTargetName = '<%= @jrf_target_name %>'
-OPSSDatasourceName ='<%= @opss_datasource_name %>'
+WLHOME='<%= $weblogic_home_dir %>'
+DOMAIN_PATH='<%= $domain_dir %>'
+JRFTargetName = '<%= $jrf_target_name %>'
+OPSSDatasourceName ='<%= $opss_datasource_name %>'
 
-DOMAIN_PATH='<%= @domain_dir %>'
+DOMAIN_PATH='<%= $domain_dir %>'
 
 if OPSSDatasourceName:
     readDomain(DOMAIN_PATH)

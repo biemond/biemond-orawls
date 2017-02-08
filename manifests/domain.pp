@@ -18,7 +18,7 @@ define orawls::domain (
   Boolean $development_mode                               = true,
   String $adminserver_name                                = 'AdminServer',
   String $adminserver_machine_name                        = 'LocalMachine',
-  Optional[String] $adminserver_address                   = undef,
+  Optional[String] $adminserver_address                   = 'localhost',
   Integer $adminserver_port                               = 7001,
   Optional[Integer] $adminserver_ssl_port                 = undef,
   Boolean $adminserver_listen_on_all_interfaces           = false,

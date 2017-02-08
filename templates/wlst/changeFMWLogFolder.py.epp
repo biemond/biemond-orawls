@@ -1,0 +1,30 @@
+<%- |  String $weblogic_user = 'weblogic',
+       String $adminserver_address = 'localhost',
+       Integer $adminserver_port = 7001,
+       Optional[String] $userConfigFile = undef,
+       Optional[String] $userKeyFile = undef,
+       Boolean $useStoreConfig = false,       
+       String $server,
+       String $log_dir | -%>
+
+wlsUser    = '<%= $weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= $adminserver_address %>'
+portNumber = '<%= $adminserver_port %>'
+
+user_config = '<%= $userConfigFile %>'
+user_key    = '<%= $userKeyFile %>'
+
+useStoreConfig = <%= $useStoreConfig %>
+
+if useStoreConfig == false:
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile=user_config, userKeyFile=user_key, url='t3://'+machine+':'+portNumber)    
+
+domainRuntime()
+
+configureLogHandler(target='<%= $server %>', name='odl-handler', path='<%= $log_dir %>/${weblogic.Name}-diagnostic.log')
+configureLogHandler(target='<%= $server %>', name='odl-handler', rotationFrequency='daily',retentionPeriod='week')
+configureLogHandler(target='<%= $server %>', name='odl-handler', maxFileSize='10M')
+configureLogHandler(target='<%= $server %>', name='owsm-message-handler', path='<%= $log_dir %>/${weblogic.Name}-owsm.log')

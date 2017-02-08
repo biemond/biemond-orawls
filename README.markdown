@@ -47,7 +47,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 
 - Docker with WebLogic 12.1.3 Cluster [docker-weblogic-puppet](https://github.com/biemond/docker-weblogic-puppet)
 - WebLogic 12.2.1.1 MT multi tenancy / Puppet 4 Reference implementation, the vagrant test case for full working WebLogic 12.2.1 cluster example [biemond-orawls-vagrant-12.2.1-puppet4](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-puppet4)
-- WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra)
+- WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra-puppet4](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-puppet4)
 - WebLogic 12.2.1.1 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa)
 - WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs-puppet4](https://github.com/biemond/biemond-orawls-vagrant-ohs-puppet4)
 - WebLogic 12.1.3 / Puppet 4.2.1 Reference implementation, the vagrant test case for full working WebLogic 12.1.3 cluster example [biemond-orawls-vagrant-12.1.3](https://github.com/biemond/biemond-orawls-vagrant-12.1.3)
@@ -1131,36 +1131,26 @@ OHS will include all __.conf__ files at ${domain_path}/config/fmwconfig/componen
 
 ### fmwlogdir
 __orawls::fmwlogdir__ Change a log folder location of a FMW server
-when you set the defaults hiera variables
-
-    orawls::fmwlogdir{'AdminServer':
-      middleware_home_dir    => "/opt/oracle/middleware11gR1",
-      weblogic_user          => "weblogic",
-      weblogic_password      => "weblogic1",
-      os_user                => "oracle",
-      os_group               => "dba",
-      download_dir           => "/data/install"
-      log_dir                => "/var/log/weblogic"
-      adminserver_address    => "localhost",
-      adminserver_port       => 7001,
-      server                 => "AdminServer",
-      log_output             => false,
-    }
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
     $default_params = {}
     $fmwlogdir_instances = hiera('fmwlogdir_instances', {})
     create_resources('orawls::fmwlogdir',$fmwlogdir_instances, $default_params)
 
-vagrantcentos64.example.com.yaml
-or when you set the defaults hiera variables
-
-    ---
-    fmwlogdir_instances:
-      'AdminServer':
-         log_output:      true
-         server:          'AdminServer'
+	fmwlogdir_instances:
+	  'AdminServer':
+	     server:               'AdminServer'
+	     weblogic_user:        *wls_weblogic_user
+	     weblogic_password:    *domain_wls_password
+	     adminserver_address:  *domain_adminserver_address
+	     log_dir:              *wls_log_dir
+	     require:              Orawls::Utils::Fmwclusterjrf[WebCluster]
+	  'WebServer1':
+	     server:              'WebServer1'
+	     weblogic_user:        *wls_weblogic_user
+	     weblogic_password:    *domain_wls_password
+	     adminserver_address:  *domain_adminserver_address
+	     log_dir:              *wls_log_dir
+	     require:              Orawls::Utils::Fmwclusterjrf[WebCluster]
 
 
 
@@ -1331,14 +1321,16 @@ you need to create a wls cluster with some managed servers first
     $fmw_jrf_cluster_instances = hiera('fmw_jrf_cluster_instances', $default_params)
     create_resources('orawls::utils::fmwclusterjrf',$fmw_jrf_cluster_instances, $default_params)
 
-hiera configuration
+	fmw_jrf_cluster_instances:
+	  'WebCluster':
+	     domain_name:          "adf_domain"
+	     jrf_target_name:      "WebCluster"
+	     opss_datasource_name: "opss-data-source"
+	     log_output:           *logoutput
+	     weblogic_user:        *wls_weblogic_user
+	     weblogic_password:    *domain_wls_password
+	     adminserver_address:  *domain_adminserver_address
 
-    fmw_jrf_cluster_instances:
-      'WebCluster':
-         domain_name:          "adf_domain"
-         jrf_target_name:      "WebCluster"
-         opss_datasource_name: "opss-data-source" #optional
-         log_output:           *logoutput
 
 ### webtier
 __orawls::utils::webtier__ add an OHS instance to a WebLogic Domain and in the Enterprise Manager, optional with OHS OAM Webgate

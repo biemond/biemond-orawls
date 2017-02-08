@@ -191,7 +191,7 @@ define orawls::nodemanager (
                      'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase }),
       owner   => $os_user,
       group   => $os_group,
-      mode    => lookup('orawls::permissions'),
+      mode    => lookup('orawls::permissions_group_restricted'),
       before  => Exec["startNodemanager ${title}"],
     }
   } else {
@@ -223,7 +223,7 @@ define orawls::nodemanager (
                      'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase }),
       owner   => $os_user,
       group   => $os_group,
-      mode    => lookup('orawls::permissions'),
+      mode    => lookup('orawls::permissions_group_restricted'),
       before  => Exec["startNodemanager ${title}"],
     }
   }

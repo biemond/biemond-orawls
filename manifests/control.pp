@@ -10,7 +10,7 @@ define orawls::control (
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
   String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
-  String $wls_domains_dir                                 = $::orawls::weblogic::wls_domains_dir,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
   String $domain_name                                     = undef,
   String $os_user                                         = $::orawls::weblogic::os_user,
   String $os_group                                        = $::orawls::weblogic::os_group,

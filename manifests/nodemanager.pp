@@ -19,7 +19,7 @@ define orawls::nodemanager (
   Optional[String] $custom_identity_alias                 = undef,
   Optional[String] $custom_identity_privatekey_passphrase = undef,
   String $extra_arguments                                 = '', # '-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1'
-  String $wls_domains_dir                                 = $::orawls::weblogic::wls_domains_dir,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
   String $domain_name                                     = undef,
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   String $os_user                                         = $::orawls::weblogic::os_user,

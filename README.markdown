@@ -490,16 +490,15 @@ __orawls::weblogic__ installs WebLogic 10.3.[0-6], 12.1.1, 12.1.2, 12.1.3, 12.2.
 
 12.1.3 infra
 
-	orawls::weblogic::version:                   1213
-	orawls::weblogic::filename:                  'fmw_12.1.3.0.0_infrastructure.jar'
+	orawls::weblogic::version:                   *wls_version
+	orawls::weblogic::filename:                  'fmw_12.2.1.2.0_infrastructure.jar'
 	orawls::weblogic::fmw_infra:                 true
 	orawls::weblogic::log_output:                true
 	orawls::weblogic::jdk_home_dir:              *wls_jdk_home_dir
 	orawls::weblogic::oracle_base_home_dir:      *wls_oracle_base_home_dir
 	orawls::weblogic::puppet_download_mnt_point: *wls_source
 	orawls::weblogic::remote_file:               false
-	orawls::weblogic::wls_domains_dir:           *wls_domains_dir
-	orawls::weblogic::wls_apps_dir:              *wls_apps_dir
+	orawls::weblogic::weblogic_home_dir:         *wls_weblogic_home_dir
 	orawls::weblogic::middleware_home_dir:       *wls_middleware_home_dir
 
 
@@ -750,6 +749,40 @@ vagrantcentos64.example.com.yaml
         java_arguments:
             ADM:  "-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m"
  
+
+ADF with and without RCU
+
+		domain_instances:
+		  'adf_domain':
+		     # domain_template:          "adf_restricted"
+		     domain_template:          "adf"
+		     repository_database_url:  "jdbc:oracle:thin:@wlsdb.example.com:1521/wlsrepos.example.com"
+		     repository_prefix:        "DEV"
+		     repository_password:      "Welcome01"
+		     repository_sys_password:  "Welcome01"
+		     rcu_database_url:         "wlsdb.example.com:1521:wlsrepos.example.com"
+		     domain_name:              *domain_name
+		     development_mode:         true
+		     log_output:               *logoutput
+		     webtier_enabled:          true
+		     adminserver_address:      *domain_adminserver_address
+		     weblogic_password:        *domain_wls_password
+		     jsse_enabled:             *wls_jsse_enabled
+		     log_dir:                  *wls_log_dir
+
+		domain_instances:
+		  'adf_domain':
+		     domain_template:          "adf_restricted"
+		     domain_name:              *domain_name
+		     development_mode:         true
+		     log_output:               *logoutput
+		     webtier_enabled:          true
+		     adminserver_address:      *domain_adminserver_address
+		     weblogic_password:        *domain_wls_password
+		     jsse_enabled:             *wls_jsse_enabled
+		     log_dir:                  *wls_log_dir
+
+
 
 Standalone Webtier
 

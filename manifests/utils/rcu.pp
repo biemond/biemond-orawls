@@ -1,25 +1,25 @@
 # == Class: orawls::utils::rcu
-#    rcu for adf 12.1.2 & 12.1.3
+#    rcu for 12c
 #
 define orawls::utils::rcu(
-  $version                     = hiera('wls_version', 1111),  # 1036|1111|1211|1212|1213|1221
-  $fmw_product                 = 'adf', # adf|soa|mft
-  $oracle_fmw_product_home_dir = undef,
-  $jdk_home_dir                = hiera('wls_jdk_home_dir'),
-  $os_user                     = hiera('wls_os_user'),      # oracle
-  $os_group                    = hiera('wls_os_group'),     # dba
-  $download_dir                = hiera('wls_download_dir'), # /data/install
-  $rcu_action                  = 'create',
-  $rcu_jdbc_url                = undef,   #jdbc...
-  $rcu_database_url            = undef,   #192.168.50.5:1521:XE
-  $rcu_prefix                  = undef,
-  $rcu_password                = undef,
-  $rcu_sys_user                = 'sys',
-  $rcu_sys_password            = undef,
-  $log_output                  = false, # true|false
+  Integer $version                       = $::orawls::weblogic::version,
+  Enum['adf','soa','mft'] $fmw_product   = 'adf',
+  String $oracle_fmw_product_home_dir    = undef,
+  String $jdk_home_dir                   = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                        = $::orawls::weblogic::os_user,
+  String $os_group                       = $::orawls::weblogic::os_group,
+  String $download_dir                   = $::orawls::weblogic::download_dir,
+  Boolean $log_output                    = $::orawls::weblogic::log_output,
+  Enum['create','delete'] $rcu_action    = 'create',
+  String $rcu_jdbc_url                   = undef,   #jdbc...
+  String $rcu_database_url               = undef,   #192.168.50.5:1521:XE
+  String $rcu_prefix                     = undef,
+  String $rcu_password                   = undef,
+  String $rcu_sys_user                   = 'sys',
+  String $rcu_sys_password               = undef,
 ){
 
-  case $::kernel {
+  case $facts['kernel'] {
     'Linux','SunOS': {
       $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
     }
@@ -58,7 +58,7 @@ define orawls::utils::rcu(
   file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt":
     ensure  => present,
     content => template('orawls/utils/rcu_passwords.txt.erb'),
-    mode    => '0600',
+    mode    => lookup('orawls::permissions_secret'),
     owner   => $os_user,
     group   => $os_group,
     backup  => false,
@@ -69,7 +69,7 @@ define orawls::utils::rcu(
     file { "${download_dir}/checkrcu.py":
       ensure => present,
       source => 'puppet:///modules/orawls/wlst/checkrcu.py',
-      mode   => '0775',
+      mode   => lookup('orawls::permissions'),
       owner  => $os_user,
       group  => $os_group,
       backup => false,

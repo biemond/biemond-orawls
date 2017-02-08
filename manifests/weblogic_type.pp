@@ -31,6 +31,8 @@ define orawls::weblogic_type (
     } else {
         $domains_dir =  $wls_domains_dir
     }
+  } else {
+    $domains_dir =  undef
   }
   if ( $wls_apps_dir != undef) {
     # make sure you don't create the middleware home, else root will be owner
@@ -39,6 +41,8 @@ define orawls::weblogic_type (
     } else {
         $apps_dir =  $wls_apps_dir
     }
+  } else {
+    $apps_dir =  undef
   }
 
   if ($version == 1036 or $version == 1111 or $version == 1211) {

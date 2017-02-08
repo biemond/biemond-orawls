@@ -8,19 +8,19 @@ class orawls::weblogic (
   Optional[String] $weblogic_home_dir = undef, # /opt/oracle/middleware11gR1/wlserver
   Optional[String] $wls_domains_dir   = undef, # /opt/oracle/wlsdomains/domains
   Optional[String] $wls_apps_dir      = undef, # /opt/oracle/wlsdomains/applications
-  Boolean $fmw_infra                = false, # plain weblogic or fmw infra
-  String $jdk_home_dir              = undef, # /usr/java/jdk1.7.0_45
-  String $os_user                   = lookup('orawls::user'),
-  String $os_group                  = lookup('orawls::group'),
-  String $download_dir              = lookup('orawls::download_dir'),
-  String $puppet_download_mnt_point = lookup('orawls::module_mountpoint'), # puppet:///modules/orawls/ | /mnt | /vagrant
-  Boolean $remote_file              = true,
-  String $java_parameters           = '', # '-Dspace.detection=false'
-  Boolean $log_output               = false,
-  String $temp_dir                  = lookup('orawls::tmp_dir'),# /tmp temporary directory for files extractions
-  Boolean $validation               = true,
-  Boolean $force                    = false,
-  String $orainstpath_dir           = lookup('orawls::orainst_dir'),
+  Boolean $fmw_infra                  = false, # plain weblogic or fmw infra
+  String $jdk_home_dir                = undef, # /usr/java/jdk1.7.0_45
+  String $os_user                     = lookup('orawls::user'),
+  String $os_group                    = lookup('orawls::group'),
+  String $download_dir                = lookup('orawls::download_dir'),
+  String $puppet_download_mnt_point   = lookup('orawls::module_mountpoint'), # puppet:///modules/orawls/ | /mnt | /vagrant
+  Boolean $remote_file                = true,
+  String $java_parameters             = '', # '-Dspace.detection=false'
+  Boolean $log_output                 = false,
+  String $temp_dir                    = lookup('orawls::tmp_dir'),# /tmp temporary directory for files extractions
+  Boolean $validation                 = true,
+  Boolean $force                      = false,
+  String $orainstpath_dir             = lookup('orawls::orainst_dir'),
 ) 
 {
 

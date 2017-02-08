@@ -16,7 +16,7 @@ define orawls::utils::orainst
       file { $orainstpath_dir:
         ensure => directory,
         before => File["${orainstpath_dir}/oraInst.loc"],
-        mode   => lookup('orawls::permissions'),
+        mode   => lookup('orawls::permissions_restricted'),
       }
     }
   }
@@ -27,7 +27,7 @@ define orawls::utils::orainst
       content => epp('orawls/utils/oraInst.loc.epp',
                      {'ora_inventory_dir'=> $ora_inventory_dir,
                       'os_group'         => $os_group }),
-      mode    => lookup('orawls::permissions'),
+      mode    => lookup('orawls::permissions_restricted'),
     }
   }
 }

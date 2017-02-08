@@ -5,8 +5,11 @@ orawls::exec_path:         '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sb
 orawls::user:              'oracle'
 orawls::group:             'dba'
 
-orawls::permissions:       '0755'
-  
+orawls::permissions:            '0755'
+orawls::permissions_restricted: '0644'
+orawls::permissions_secret:     '0600'
+   
+
 orawls::tmp_dir:           '/tmp'
 orawls::download_dir:      '/var/tmp/install'
 orawls::module_mountpoint: 'puppet:///modules/orawls/'

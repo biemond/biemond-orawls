@@ -180,7 +180,7 @@ define orawls::nodemanager (
       content => template('orawls/nodemgr/nodemanager.properties.erb'),
       owner   => $os_user,
       group   => $os_group,
-      mode    => '0775',
+      mode    => '0640',
       before  => Exec["startNodemanager ${title}"],
     }
   } else {
@@ -199,7 +199,7 @@ define orawls::nodemanager (
       content => template("orawls/nodemgr/nodemanager.properties_${new_version}.erb"),
       owner   => $os_user,
       group   => $os_group,
-      mode    => '0775',
+      mode    => '0640',
       before  => Exec["startNodemanager ${title}"],
     }
   }

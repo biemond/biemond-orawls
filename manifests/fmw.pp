@@ -379,7 +379,7 @@ define orawls::fmw(
     } elsif ($wcs_mode == 'satelite') {
       $install_type = 'WebCenter Sites - Satellite Server'
     } else {
-      fail("Unrecognized parameter wcs_mode: ${ohs_mode}, please use sites|examples|satellite")
+      fail("Unrecognized parameter wcs_mode: ${wcs_mode}, please use sites|examples|satellite")
     }
 
     if $version >= 1221 {

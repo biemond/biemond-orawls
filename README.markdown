@@ -82,7 +82,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - [OIM IDM](#oimconfig) / OAM 11.1.2.3 configurations with Oracle OHS OAM WebGate, Also it has Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
 - [Forms/Reports](#forms) Oracle Forms & Reports 11.1.1.7, 11.1.2 or 12.2.1
-- [WC, WCC](#Webcenter) Webcenter portal, content 11g or 12.2.1
+- [WC, WCC, WCS](#Webcenter) Webcenter portal, content, sites 11g or 12.2.1
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB, MQ, FTP, File and JMS
 
@@ -5029,5 +5029,3 @@ start or stop a domain partition
          adminserver_port:            *domain_adminserver_port
          require:
             - Wls_domain_partition[CustomerB_Partition]
-
-

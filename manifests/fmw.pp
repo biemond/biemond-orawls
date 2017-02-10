@@ -10,7 +10,7 @@ define orawls::fmw(
   $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
   $oracle_home_dir      = undef,                             # /opt/oracle/middleware/Oracle_SOA
   $jdk_home_dir         = hiera('wls_jdk_home_dir'),         # /usr/java/jdk1.7.0_45
-  $fmw_product          = undef,                             # adf|soa|soaqs|osb|wcc|wc|oim|oam|web|webgate|oud|mft|b2b|forms
+  $fmw_product          = undef,                             # adf|soa|soaqs|osb|wcc|wcs|wc|oim|oam|web|webgate|oud|mft|b2b|forms
   $fmw_file1            = undef,
   $fmw_file2            = undef,
   $fmw_file3            = undef,
@@ -25,6 +25,7 @@ define orawls::fmw(
   $log_output           = false,                             # true|false
   $temp_directory       = hiera('wls_temp_dir','/tmp'),      # /tmp directory
   $ohs_mode             = hiera('ohs_mode', 'collocated'),
+  $wcs_mode             = hiera('wcs_mode', 'sites'),        # sites|examples|satellite
   $oracle_inventory_dir = undef,
   $orainstpath_dir      = hiera('orainstpath_dir', undef),
 )
@@ -367,6 +368,35 @@ define orawls::fmw(
       $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
       $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
       $total_files = 2
+    }
+
+  } elsif ( $fmw_product == 'wcs' ) {
+
+    if ($wcs_mode == 'sites') {
+      $install_type = 'WebCenter Sites'
+    } elsif ($wcs_mode == 'examples') {
+      $install_type = 'WebCenter Sites - With Examples'
+    } elsif ($wcs_mode == 'satelite') {
+      $install_type = 'WebCenter Sites - Satellite Server'
+    } else {
+      fail("Unrecognized parameter wcs_mode: ${wcs_mode}, please use sites|examples|satellite")
+    }
+
+    if $version >= 1221 {
+      $fmw_silent_response_file = 'orawls/fmw_silent_wcs_1221.rsp.erb'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_wcsites_generic.jar'
+      } elsif $version == 12211 {
+        $binFile1                 = 'fmw_12.2.1.1.0_wcsites.jar'
+      } elsif $version == 12212 {
+        $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
+      }
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $type                     = 'java'
+      $total_files              = 1
+      $oracleHome               = "${middleware_home_dir}/wcsites"
     }
 
   } elsif ( $fmw_product == 'web') {

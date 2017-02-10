@@ -1,6 +1,7 @@
 <%- |  String $middleware_home_dir,
        Optional[String] $oracleHome = undef,
-       Optional[String] $install_type = undef | -%>
+       Optional[String] $install_type = undef,
+       Optional[String] $weblogic_home_dir = undef | -%>
 [ENGINE]
 
 #DO NOT CHANGE THIS.

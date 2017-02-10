@@ -93,7 +93,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - [OIM IDM](#oimconfig) / OAM 11.1.2.3 configurations with Oracle OHS OAM WebGate, Also it has Cluster support for OIM OAM
 - [OUD](#instance) OUD Oracle Unified Directory install, WebLogic domain, instances creation & [OUD control](#oud_control)
 - [Forms/Reports](#forms) Oracle Forms & Reports 11.1.1.7, 11.1.2 or 12.2.1
-- [WC, WCC](#Webcenter) Webcenter portal, content 11g or 12.2.1
+- [WC, WCC, WCS](#Webcenter) Webcenter portal, content, sites 11g or 12.2.1
 - [Change FMW log](#fmwlogdir) location of a managed server
 - [Resource Adapter](#resourceadapter) plan and entries for AQ, DB, MQ, FTP, File and JMS
 
@@ -539,6 +539,9 @@ __orawls::weblogic_type__ same as weblogic manifest/class but now as define whic
 ### opatch
 __orawls::opatch__ apply an OPatch on a Middleware home or a Oracle product home
 
+Most general parameters are derived from weblogic.pp, you don't need to specify them again
+
+
     orawls::opatch {'16175470':
       ensure                  => "present",
       oracle_product_home_dir => "/opt/oracle/middleware12c",
@@ -566,6 +569,10 @@ common.yaml
 ### bsu
 __orawls::bsu__ apply or remove a WebLogic BSU Patch ( ensure = present or absent )
 
+
+Most general parameters are derived from weblogic.pp, you don't need to specify them again
+
+
     orawls::bsu {'BYJ1':
       ensure                  => "present",
       middleware_home_dir     => "/opt/oracle/middleware11gR1",
@@ -579,19 +586,6 @@ __orawls::bsu__ apply or remove a WebLogic BSU Patch ( ensure = present or absen
       source                  => "/vagrant",
       log_output              => false,
     }
-
-
-or when you set the defaults hiera variables
-
-    orawls::bsu {'BYJ1':
-      ensure                  => "present",
-      patch_id                => "BYJ1",
-      patch_file              => "p17071663_1036_Generic.zip",
-      log_output              => false,
-    }
-
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 
     $default_params = {}
@@ -629,12 +623,11 @@ or when you set the defaults hiera variables
 
 
 ### fmw
-__orawls::fmw__ installs FMW software (add-on) to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center + Content
+__orawls::fmw__ installs FMW software (add-on) to a middleware home like OSB,SOA Suite, WebTier (HTTP Server), Oracle Identity Management, Web Center, Content + Sites
 
-    Enum['adf','soa','soaqs','osb','wcc','wc','oim','oam','web','webgate','oud','mft','b2b','forms'] fmw_product
+    Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms'] fmw_product
 
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
+Most general parameters are derived from weblogic.pp, you don't need to specify them again
 
 	logoutput:                &logoutput                true
 
@@ -655,6 +648,38 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
     $default_params = {}
     $fmw_installations = hiera('fmw_installations', {})
     create_resources('orawls::fmw',$fmw_installations, $default_params)
+
+	# FMW installation on top of WebLogic 12.2.1
+	fmw_installations:
+	  'webtier1221':
+	    fmw_product:               "web"
+	    fmw_file1:                 "fmw_12.2.1.2.0_ohs_linux64_Disk1_1of1.zip"
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	  'soa1221':
+	    fmw_product:               "soa"
+	    fmw_file1:                 "fmw_12.2.1.2.0_soa_Disk1_1of1.zip"
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	  'osb1221':
+	    fmw_product:               "osb"
+	    fmw_file1:                 "fmw_12.2.1.2.0_osb_Disk1_1of1.zip"
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	  'forms1221':
+	    fmw_product:               "forms"
+	    fmw_file1:                 "fmw_12.2.1.2.0_fr_linux64_Disk1_1of1.zip"
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	  'wcc1221':
+	    fmw_product:               "wcc"
+	    fmw_file1:                 "fmw_12.2.1.2.0_wccontent_Disk1_1of1.zip"
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	  'wc1221':
+	    fmw_product:               "wc"
+	    fmw_file1:                 "fmw_12.2.1.2.0_wcportal_Disk1_1of1.zip"
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	  'wcs1221':
+	    fmw_product:               "wcs"
+	    fmw_file1:                 "fmw_12.2.1.2.0_wcsites_Disk1_1of1.zip"
+	    wcs_mode:                  'sites' # Enum['sites','examples','satellite']
+	    oracle_base_home_dir:      *wls_oracle_base_home_dir
 
     # OHS standalone
 	fmw_installations:
@@ -680,11 +705,11 @@ Same configuration but then with Hiera ( need to have puppet > 3.0 )
 ### domain
 __orawls::domain__ creates WebLogic domain like a standard | OSB or SOA Suite | ADF | WebCenter | OIM or OAM or OUD
 
+
+Most general parameters are derived from weblogic.pp, you don't need to specify them again
+
 optional override the default server arguments in the domain.py template with java_arguments parameter
 
- 
-
-Same configuration but then with Hiera ( need to have puppet > 3.0 )
 
 	wls_os_user:              &wls_os_user              "oracle"
 	wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware12c/wlserver"

@@ -1,0 +1,40 @@
+<%- |  String $weblogic_user = 'weblogic',
+       String $adminserver_address = 'localhost',
+       Integer $adminserver_port = 7001,
+       Optional[String] $userConfigFile = undef,
+       Optional[String] $userKeyFile = undef,
+       Boolean $useStoreConfig = false,       
+       String $adapter_name,
+       String $adapter_plan_dir,
+       String $adapter_plan | -%>
+
+wlsUser    = '<%= $weblogic_user %>'  
+password   = sys.argv[1] 
+machine    = '<%= $adminserver_address %>'
+portNumber = '<%= $adminserver_port %>'
+                                
+appName    = '<%= $adapter_name %>'                  
+planPath   = '<%= $adapter_plan_dir %>/<%= $adapter_plan %>'
+
+useStoreConfig = '<%= $useStoreConfig %>'
+
+if useStoreConfig != "true":
+    connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+else:
+    connect(userConfigFile='<%= $userConfigFile %>', userKeyFile='<%= $userKeyFile %>', url='t3://'+machine+':'+portNumber)    
+
+edit()
+startEdit()
+
+try:
+    cd('/')
+    print '__ Using plan ' + planPath
+    cd('/AppDeployments/'+appName+'/Targets');
+    redeploy(appName, planPath,targets=cmo.getTargets());
+
+    save()
+    activate() 
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    stopEdit('y')
+    raise

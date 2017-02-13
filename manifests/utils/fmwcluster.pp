@@ -1,48 +1,48 @@
 # == Define: orawls::utils::fmwcluster
 #
-# transform domain to a soa,osb,bam cluster
+# transform domain to a soa,osb,bam,ess,oim,oam cluster
 ##
 define orawls::utils::fmwcluster (
-  $version                     = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1213|1221
-  $ofm_version                 = hiera('ofm_version'               , 1117),   # 1116|1117
-  $weblogic_home_dir           = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir         = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir                = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir             = hiera('wls_domains_dir'           , undef),
-  $domain_name                 = hiera('domain_name'),
-  $adminserver_name            = hiera('domain_adminserver'        , 'AdminServer'),
-  $adminserver_address         = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port            = hiera('domain_adminserver_port'   , 7001),
-  $nodemanager_port            = hiera('domain_nodemanager_port'   , 5556),
-  $soa_cluster_name            = undef,
-  $bam_cluster_name            = undef,
-  $osb_cluster_name            = undef,
-  $oam_cluster_name            = undef,
-  $oim_cluster_name            = undef,
-  $ess_cluster_name            = undef,
-  $bi_cluster_name             = undef,
-  $bpm_enabled                 = false, # true|false
-  $bam_enabled                 = false, # true|false
-  $osb_enabled                 = false, # true|false
-  $soa_enabled                 = false, # true|false
-  $oam_enabled                 = false, # true|false
-  $oim_enabled                 = false, # true|false
-  $b2b_enabled                 = false, # true|false
-  $ess_enabled                 = false, # true|false
-  $bi_enabled                  = false, # true|false
-  $repository_prefix           = hiera('repository_prefix'         , 'DEV'),
-  $weblogic_user               = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password           = hiera('domain_wls_password'),
-  $os_user                     = hiera('wls_os_user'), # oracle
-  $os_group                    = hiera('wls_os_group'), # dba
-  $download_dir                = hiera('wls_download_dir'), # /data/install
-  $log_output                  = false, # true|false
-  $retain_file_store           = hiera('retain_security_file_store', false), # true|false
-  $jsse_enabled                = hiera('wls_jsse_enabled'              , false),
-  $custom_trust                = hiera('wls_custom_trust'              , false),
-  $trust_keystore_file         = hiera('wls_trust_keystore_file'       , undef),
-  $trust_keystore_passphrase   = hiera('wls_trust_keystore_passphrase' , undef),
-  $nodemanager_secure_listener = true,
+  Integer $version                                        = $::orawls::weblogic::version,
+  Integer $ofm_version                                    = 1117,   # 1116|1117
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $domain_name                                     = undef,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  String $adminserver_name                                = 'AdminServer',
+  String $adminserver_address                             = 'localhost',
+  Integer $adminserver_port                               = 7001,
+  Integer $nodemanager_port                               = 5556,
+  Optional[String] $soa_cluster_name                      = undef,
+  Optional[String] $bam_cluster_name                      = undef,
+  Optional[String] $osb_cluster_name                      = undef,
+  Optional[String] $oam_cluster_name                      = undef,
+  Optional[String] $oim_cluster_name                      = undef,
+  Optional[String] $ess_cluster_name                      = undef,
+  Optional[String] $bi_cluster_name                       = undef,
+  Boolean $bpm_enabled                         = false, # true|false
+  Boolean $bam_enabled                         = false, # true|false
+  Boolean $osb_enabled                         = false, # true|false
+  Boolean $soa_enabled                         = false, # true|false
+  Boolean $oam_enabled                         = false, # true|false
+  Boolean $oim_enabled                         = false, # true|false
+  Boolean $b2b_enabled                         = false, # true|false
+  Boolean $ess_enabled                         = false, # true|false
+  Boolean $bi_enabled                          = false, # true|false
+  String $repository_prefix                    = 'DEV',
+  String $weblogic_user                        = 'weblogic',
+  String $weblogic_password                    = undef,
+  String $os_user                              = $::orawls::weblogic::os_user,
+  String $os_group                             = $::orawls::weblogic::os_group,
+  String $download_dir                         = $::orawls::weblogic::download_dir,
+  Boolean $log_output                          = $::orawls::weblogic::log_output,
+  Boolean $retain_file_store                   = false,
+  Boolean $jsse_enabled                        = false,
+  Boolean $custom_trust                        = false,
+  Optional[String] $trust_keystore_file        = undef,
+  Optional[String] $trust_keystore_passphrase  = undef,
+  Boolean $nodemanager_secure_listener         = true,
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
@@ -94,7 +94,7 @@ define orawls::utils::fmwcluster (
 
   if $convert_soa or $convert_osb or $convert_bam {
 
-    $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+    $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
     if ( $version == 1213 or $version >= 1221 ) {
       #shutdown adminserver for offline WLST scripts
@@ -134,7 +134,7 @@ define orawls::utils::fmwcluster (
         content => template("orawls/wlst/wlstexec/fmw/assignOsbSoaBpmBamToClusters_${new_version}.py.erb"),
         backup  => false,
         replace => true,
-        mode    => '0775',
+        mode    => lookup('orawls::permissions'),
         owner   => $os_user,
         group   => $os_group,
       }
@@ -210,7 +210,7 @@ define orawls::utils::fmwcluster (
           content => template('orawls/wlst/wlstexec/fmw/migrateSecurityStore.py.erb'),
           replace => true,
           backup  => false,
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }
@@ -256,7 +256,7 @@ define orawls::utils::fmwcluster (
         content => template('orawls/wlst/wlstexec/fmw/assignOsbSoaBpmBamToClusters.py.erb'),
         backup  => false,
         replace => true,
-        mode    => '0775',
+        mode    => lookup('orawls::permissions'),
         owner   => $os_user,
         group   => $os_group,
       }
@@ -287,7 +287,7 @@ define orawls::utils::fmwcluster (
           content => template('orawls/wlst/wlstexec/fmw/soa-createUDD.py.erb'),
           backup  => false,
           replace => true,
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }
@@ -311,7 +311,7 @@ define orawls::utils::fmwcluster (
           content => template('orawls/wlst/wlstexec/fmw/soa-bpm-createUDD.py.erb'),
           backup  => false,
           replace => true,
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }
@@ -339,7 +339,7 @@ define orawls::utils::fmwcluster (
             content => template('orawls/wlst/wlstexec/fmw/oim-createUDD.py.erb'),
             backup  => false,
             replace => true,
-            mode    => '0775',
+            mode    => lookup('orawls::permissions'),
             owner   => $os_user,
             group   => $os_group,
           }
@@ -373,7 +373,7 @@ define orawls::utils::fmwcluster (
           content => template('orawls/wlst/wlstexec/fmw/osb-createUDD.py.erb'),
           backup  => false,
           replace => true,
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }
@@ -427,7 +427,7 @@ define orawls::utils::fmwcluster (
         content => template('orawls/wlst/wlstexec/fmw/changeWorkmanagers.py.erb'),
         backup  => false,
         replace => true,
-        mode    => '0775',
+        mode    => lookup('orawls::permissions'),
         owner   => $os_user,
         group   => $os_group,
       }
@@ -452,7 +452,7 @@ define orawls::utils::fmwcluster (
           content => template('orawls/wlst/wlstexec/fmw/changeWorkmanagersOim.py.erb'),
           backup  => false,
           replace => true,
-          mode    => '0775',
+          mode    => lookup('orawls::permissions'),
           owner   => $os_user,
           group   => $os_group,
         }

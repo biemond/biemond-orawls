@@ -29,8 +29,8 @@ define orawls::ohs::forwarder (
   Enum['present','absent'] $ensure  = 'present',
   String $os_user                   = $::orawls::weblogic::os_user,
   String $os_group                  = $::orawls::weblogic::os_group,
-  Array $servers,
-  String $domain_dir
+  Array $servers                    = undef,
+  String $domain_dir                = undef,
 ) 
 {
   $size = size($servers)

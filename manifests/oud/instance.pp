@@ -3,20 +3,20 @@
 # create an Oracle Unified Directory LDAP instance
 ##
 define orawls::oud::instance (
-  $version                    = undef,
-  $oracle_base_home_dir       = hiera('wls_oracle_base_home_dir') , # /opt/oracle
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $oud_home                   = undef,
-  $oud_instance_name          = undef,
-  $oud_root_user_password     = undef,
-  $oud_baseDN                 = 'dc=example,dc=com',
-  $oud_ldapPort               = 1389,
-  $oud_adminConnectorPort     = 4444,
-  $oud_ldapsPort              = 1636,
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $oracle_base_home_dir                            = $::orawls::weblogic::oracle_base_home_dir, 
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $oud_home                                        = undef,
+  String $oud_instance_name                               = undef,
+  String $oud_root_user_password                          = undef,
+  String $oud_base_dn                                     = 'dc=example,dc=com',
+  Integer $oud_ldap_port                                  = 1389,
+  Integer $oud_admin_connector_port                       = 4444,
+  Integer $oud_ldaps_port                                 = 1636,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
 ){
 
   $instances_home = "${oracle_base_home_dir}/oud_instances"
@@ -26,13 +26,13 @@ define orawls::oud::instance (
       ensure  => directory,
       recurse => false,
       replace => false,
-      mode    => '0775',
+      mode    => lookup('orawls::permissions'),
       owner   => $os_user,
       group   => $os_group,
     }
   }
 
-  $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:'
+  $exec_path = lookup('orawls::exec_path')
 
   exec { "rootUserPasswordFile ${title}":
     command   => "echo ${oud_root_user_password} > ${instances_home}/${oud_instance_name}pass.txt",
@@ -46,7 +46,7 @@ define orawls::oud::instance (
   }
 
   exec { "create ldap ${title}":
-    command     => "${oud_home}/oud-setup --cli --baseDN ${oud_baseDN} --addBaseEntry --netsvc --ldapPort ${oud_ldapPort} --adminConnectorPort ${oud_adminConnectorPort} --skipPortCheck --rootUserDN cn=Directory\\ Manager --rootUserPasswordFile ${instances_home}/${oud_instance_name}pass.txt --doNotStart --serverTuning autotune --importTuning autotune --enableStartTLS --ldapsPort ${oud_ldapsPort} --generateSelfSignedCertificate --hostName ${::fqdn} --no-prompt --noPropertiesFile",
+    command     => "${oud_home}/oud-setup --cli --baseDN ${oud_base_dn} --addBaseEntry --netsvc --ldapPort ${oud_ldap_port} --adminConnectorPort ${oud_admin_connector_port} --skipPortCheck --rootUserDN cn=Directory\\ Manager --rootUserPasswordFile ${instances_home}/${oud_instance_name}pass.txt --doNotStart --serverTuning autotune --importTuning autotune --enableStartTLS --ldapsPort ${oud_ldaps_port} --generateSelfSignedCertificate --hostName ${facts['fqdn']} --no-prompt --noPropertiesFile",
     timeout     => 0,
     environment => ["INSTANCE_NAME=../oud_instances/${oud_instance_name}"],
     unless      => "test -d ${instances_home}/${oud_instance_name}",

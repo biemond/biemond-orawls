@@ -659,6 +659,7 @@ Most general parameters are derived from weblogic.pp, you don't need to specify 
 	    fmw_product:               "soa"
 	    fmw_file1:                 "fmw_12.2.1.2.0_soa_Disk1_1of1.zip"
 	    oracle_base_home_dir:      *wls_oracle_base_home_dir
+	    bpm:                       true
 	  'osb1221':
 	    fmw_product:               "osb"
 	    fmw_file1:                 "fmw_12.2.1.2.0_osb_Disk1_1of1.zip"
@@ -1187,95 +1188,86 @@ when you set the defaults hiera variables
     $resource_adapter_instances = hiera('resource_adapter_instances', {})
     create_resources('orawls::resourceadapter',$resource_adapter_instances, $default_params)
 
-vagrantcentos64.example.com.yaml
-or when you set the defaults hiera variables
+	resource_adapter_instances:
+	  'JmsAdapter_hr':
+	    adapter_name:              'JmsAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/JmsAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_JMS.xml'
+	    adapter_entry:             'eis/JMS/cf'
+	    adapter_entry_property:    'ConnectionFactoryLocation'
+	    adapter_entry_value:       'jms/cf'
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
+	  'JmsAdapter_hr2':
+	    adapter_name:              'JmsAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/JmsAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_JMS.xml'
+	    adapter_entry:             'eis/JMS/cf2'
+	    adapter_entry_property:    'ConnectionFactoryLocation'
+	    adapter_entry_value:       'jms/cf2'
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
+	  'AqAdapter_hr':
+	    adapter_name:              'AqAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/AqAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_AQ.xml'
+	    adapter_entry:             'eis/AQ/hr'
+	    adapter_entry_property:    'XADataSourceName'
+	    adapter_entry_value:       'jdbc/hrDS'
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
+	  'DbAdapter_hr':
+	    adapter_name:              'DbAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/DbAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_DB.xml'
+	    adapter_entry:             'eis/DB/hr'
+	    adapter_entry_property:    'XADataSourceName'
+	    adapter_entry_value:       'jdbc/hrDS'
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
+	  'DbAdapter_hr2':
+	    adapter_name:              'DbAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/DbAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_DB.xml'
+	    adapter_entry:             'eis/DB/hr2'
+	    adapter_entry_property:    'xADataSourceName'
+	    adapter_entry_value:       'jdbc/hrDS2'
+	    log_output:                *logoutput
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
+	  'FTPAdapter_hr':
+	    adapter_name:              'FtpAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/FtpAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_FTP.xml'
+	    adapter_entry:             'eis/FTP/xx'
+	    adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
+	    adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
+	  'FileAdapter_hr':
+	    adapter_name:              'FileAdapter'
+	    adapter_path:              "/opt/oracle/middleware12c/soa/soa/connectors/FileAdapter.rar"
+	    adapter_plan_dir:          "/opt/oracle/middleware12c"
+	    adapter_plan:              'Plan_FILE.xml'
+	    adapter_entry:             'eis/FileAdapterXX'
+	    adapter_entry_property:    'ControlDir;IsTransacted'
+	    adapter_entry_value:       '/tmp/aaa;false'
+	    domain_name:                *domain_name
+	    weblogic_password:          *domain_wls_password                 
+	    adminserver_address:        *domain_adminserver_address
 
-    resource_adapter_instances:
-      'JmsAdapter_hr':
-        adapter_name:              'JmsAdapter'
-        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/JmsAdapter.rar"
-        adapter_plan_dir:          "/opt/oracle/wlsdomains"
-        adapter_plan:              'Plan_JMS.xml'
-        adapter_entry:             'eis/JMS/cf'
-        adapter_entry_property:    'ConnectionFactoryLocation'
-        adapter_entry_value:       'jms/cf'
-      'AqAdapter_hr':
-        adapter_name:              'AqAdapter'
-        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/AqAdapter.rar"
-        adapter_plan_dir:          "/opt/oracle/wlsdomains"
-        adapter_plan:              'Plan_AQ.xml'
-        adapter_entry:             'eis/AQ/hr'
-        adapter_entry_property:    'xADataSourceName'
-        adapter_entry_value:       'jdbc/hrDS'
-      'DbAdapter_hr':
-        adapter_name:              'DbAdapter'
-        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/DbAdapter.rar"
-        adapter_plan_dir:          "/opt/oracle/wlsdomains"
-        adapter_plan:              'Plan_DB.xml'
-        adapter_entry:             'eis/DB/hr'
-        adapter_entry_property:    'xADataSourceName'
-        adapter_entry_value:       'jdbc/hrDS'
-      'FTPAdapter_hr':
-        adapter_name:              'FtpAdapter'
-        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/FtpAdapter.rar"
-        adapter_plan_dir:          "/opt/oracle/wlsdomains"
-        adapter_plan:              'Plan_FTP.xml'
-        adapter_entry:             'eis/FTP/xx'
-        adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
-        adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
-      'FileAdapter_hr':
-        adapter_name:              'FileAdapter'
-        adapter_path:              "/opt/oracle/middleware11g/Oracle_SOA1/soa/connectors/FileAdapter.rar"
-        adapter_plan_dir:          "/opt/oracle/wlsdomains"
-        adapter_plan:              'Plan_FILE.xml'
-        adapter_entry:             'eis/FileAdapterXX'
-        adapter_entry_property:    'ControlDir;IsTransacted'
-        adapter_entry_value:       '/tmp/aaa;false'
-
-
-or for 12.1.3 ( 12c )
-
-    resource_adapter_instances:
-      'JmsAdapter_hr':
-        adapter_name:              'JmsAdapter'
-        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/JmsAdapter.rar"
-        adapter_plan_dir:          "/oracle/product/12.1/middleware"
-        adapter_plan:              'Plan_JMS.xml'
-        adapter_entry:             'eis/JMS/cf'
-        adapter_entry_property:    'ConnectionFactoryLocation'
-        adapter_entry_value:       'jms/cf'
-      'AqAdapter_hr':
-        adapter_name:              'AqAdapter'
-        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/AqAdapter.rar"
-        adapter_plan_dir:          "/oracle/product/12.1/middleware"
-        adapter_plan:              'Plan_AQ.xml'
-        adapter_entry:             'eis/AQ/hr'
-        adapter_entry_property:    'XADataSourceName'
-        adapter_entry_value:       'jdbc/hrDS'
-      'DbAdapter_hr':
-        adapter_name:              'DbAdapter'
-        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/DbAdapter.rar"
-        adapter_plan_dir:          "/oracle/product/12.1/middleware"
-        adapter_plan:              'Plan_DB.xml'
-        adapter_entry:             'eis/DB/hr'
-        adapter_entry_property:    'XADataSourceName'
-        adapter_entry_value:       'jdbc/hrDS'
-      'FTPAdapter_hr':
-        adapter_name:              'FtpAdapter'
-        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/FtpAdapter.rar"
-        adapter_plan_dir:          "/oracle/product/12.1/middleware"
-        adapter_plan:              'Plan_FTP.xml'
-        adapter_entry:             'eis/FTP/xx'
-        adapter_entry_property:    'FtpAbsolutePathBegin;FtpPathSeparator;Host;ListParserKey;Password;ServerType;UseFtps;Username;UseSftp'
-        adapter_entry_value:       '/BDDC;/;l2-ibrfongen02.nl.rsg;UNIX;;unix;false;kim;false'
-      'FileAdapter_hr':
-        adapter_name:              'FileAdapter'
-        adapter_path:              "/oracle/product/12.1/middleware/soa/soa/connectors/FileAdapter.rar"
-        adapter_plan_dir:          "/oracle/product/12.1/middleware"
-        adapter_plan:              'Plan_FILE.xml'
-        adapter_entry:             'eis/FileAdapterXX'
-        adapter_entry_property:    'ControlDir;IsTransacted'
-        adapter_entry_value:       '/tmp/aaa;false'
 
 
 ### fmwcluster
@@ -1288,8 +1280,6 @@ for OSB 11g or SOA Suite 11g managed servers make sure to also set the coherence
     $default_params = {}
     $fmw_cluster_instances = hiera('fmw_cluster_instances', $default_params)
     create_resources('orawls::utils::fmwcluster',$fmw_cluster_instances, $default_params)
-
-hiera configuration
 
     # FMW 11g cluster
     fmw_cluster_instances:
@@ -1304,6 +1294,9 @@ hiera configuration
          soa_enabled:          true
          osb_enabled:          true
          repository_prefix:    "DEV"
+	     weblogic_user:        *wls_weblogic_user
+	     weblogic_password:    *domain_wls_password
+	     adminserver_address:  *domain_adminserver_address
 
     # FMW 12.1.3 cluster
     fmw_cluster_instances:
@@ -1321,6 +1314,26 @@ hiera configuration
         b2b_enabled:          true
         ess_enabled:          true
         repository_prefix:    "DEV"
+	    weblogic_user:        *wls_weblogic_user
+	    weblogic_password:    *domain_wls_password
+	    adminserver_address:  *domain_adminserver_address
+
+	fmw_cluster_instances:
+	  'soaCluster':
+	    domain_name:          "soa_domain"
+	    soa_cluster_name:     "SoaCluster"
+	    bam_cluster_name:     "BamCluster"
+	    osb_cluster_name:     "OsbCluster"
+	    bpm_enabled:          true
+	    bam_enabled:          true
+	    soa_enabled:          true
+	    osb_enabled:          true
+	    b2b_enabled:          true
+	    ess_enabled:          true
+	    repository_prefix:    "DEV6"
+	    weblogic_user:        *wls_weblogic_user
+	    weblogic_password:    *domain_wls_password
+	    adminserver_address:  *domain_adminserver_address
 
     # OIM 11.1.2.3 cluster
     fmw_cluster_instances:

@@ -1,28 +1,28 @@
 #
 #
 define orawls::resourceadapter(
-  $middleware_home_dir       = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir         = hiera('wls_weblogic_home_dir'),
-  $jdk_home_dir              = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir           = hiera('wls_domains_dir'           , undef),
-  $domain_name               = hiera('domain_name'               , undef),
-  $adapter_name              = undef,
-  $adapter_path              = undef,
-  $adapter_plan_dir          = undef,
-  $adapter_plan              = undef,
-  $adapter_entry             = undef,
-  $adapter_entry_property    = undef,
-  $adapter_entry_value       = undef,
-  $adminserver_address       = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port          = hiera('domain_adminserver_port'   , 7001),
-  $userConfigFile            = hiera('domain_user_config_file'   , undef),
-  $userKeyFile               = hiera('domain_user_key_file'      , undef),
-  $weblogic_user             = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password         = hiera('domain_wls_password'       , undef),
-  $os_user                   = hiera('wls_os_user'), # oracle
-  $os_group                  = hiera('wls_os_group'), # dba
-  $download_dir              = hiera('wls_download_dir'), # /data/install
-  $log_output                = false, # true|false
+  String $weblogic_home_dir                   = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                 = $::orawls::weblogic::middleware_home_dir, 
+  String $jdk_home_dir                        = $::orawls::weblogic::jdk_home_dir,
+  String $wls_domains_dir                     = $::orawls::weblogic::wls_domains_dir,
+  String $domain_name                         = undef,
+  String $os_user                             = $::orawls::weblogic::os_user,
+  String $os_group                            = $::orawls::weblogic::os_group,
+  String $download_dir                        = $::orawls::weblogic::download_dir,
+  Boolean $log_output                         = $::orawls::weblogic::log_output,
+  String $adapter_name                        = undef,
+  String $adapter_path                        = undef,
+  String $adapter_plan_dir                    = undef,
+  String $adapter_plan                        = undef,
+  String $adapter_entry                       = undef,
+  String $adapter_entry_property              = undef,
+  String $adapter_entry_value                 = undef,
+  Optional[String] $adminserver_address       = 'localhost',
+  Integer $adminserver_port                   = 7001,
+  Optional[String] $userConfigFile            = undef,
+  Optional[String] $userKeyFile               = undef,
+  String $weblogic_user                       = 'weblogic',
+  String $weblogic_password                   = undef,
 )
 {
 
@@ -34,45 +34,36 @@ define orawls::resourceadapter(
 
   $domain_dir = "${domains_dir}/${domain_name}"
 
-  # if these params are empty always continue
-  if $domain_name == undef or $adapter_name == undef or $adapter_plan_dir == undef or $adapter_plan == undef {
-    fail('domain, adapter_name,adapter_plan_dir or adapter_plan is nill')
+  # check if the object already exists on the weblogic domain
+  $found = artifact_exists($domain_dir,'resource',$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
+  if $found == undef {
+    $continuePlan = true
+    notify {"wls::resourceadapter ${title} continue cause nill":}
   } else {
-    # check if the object already exists on the weblogic domain
-    $found = artifact_exists($domain_dir,'resource',$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
-    if $found == undef {
+    if ( $found ) {
+      $continuePlan = false
+    } else {
+      notify {"wls::resourceadapter ${title} continue, does not exists":}
       $continuePlan = true
-      notify {"wls::resourceadapter ${title} continue cause nill":}
-    } else {
-      if ( $found ) {
-        $continuePlan = false
-      } else {
-        notify {"wls::resourceadapter ${title} continue, does not exists":}
-        $continuePlan = true
-      }
     }
   }
 
-  # if these params are empty always continue
-  if $domain_name == undef or $adapter_name == undef or $adapter_entry == undef {
-    fail('domain, adapter_name or adapter_entry is nill')
+
+  # check if the object already exists on the weblogic domain
+  $foundEntry = artifact_exists($domain_dir ,'resource_entry',$adapter_name,$adapter_entry )
+  if $foundEntry == undef {
+    $continueEntry = true
+    notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue cause nill":}
   } else {
-    # check if the object already exists on the weblogic domain
-    $foundEntry = artifact_exists($domain_dir ,'resource_entry',$adapter_name,$adapter_entry )
-    if $foundEntry == undef {
-      $continueEntry = true
-      notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue cause nill":}
+    if ( $foundEntry ) {
+      $continueEntry = false
     } else {
-      if ( $foundEntry ) {
-        $continueEntry = false
-      } else {
-        notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue, does not exists":}
-        $continueEntry = true
-      }
+      notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue, does not exists":}
+      $continueEntry = true
     }
   }
 
-  $execPath = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $execPath = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   # are we using credentials or using the WLST userConfig file
   if $userConfigFile != undef {
@@ -91,13 +82,13 @@ define orawls::resourceadapter(
       if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
         file { "${adapter_plan_dir}/${adapter_plan}":
           ensure  => present,
-          mode    => '0744',
+          mode    => lookup('orawls::permissions_group_restricted'),
           replace => false,
           owner   => $os_user,
           group   => $os_group,
           backup  => false,
           path    => "${adapter_plan_dir}/${adapter_plan}",
-          content => template('orawls/adapter_plans/Plan_JMS.xml.erb'),
+          content => epp('orawls/adapter_plans/Plan_JMS.xml.epp', { 'adapter_plan_dir' => $adapter_plan_dir }),
         }
       }
     }
@@ -106,13 +97,13 @@ define orawls::resourceadapter(
       if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
         file { "${adapter_plan_dir}/${adapter_plan}":
           ensure  => present,
-          mode    => '0744',
+          mode    => lookup('orawls::permissions_group_restricted'),
           replace => false,
           owner   => $os_user,
           group   => $os_group,
           backup  => false,
           path    => "${adapter_plan_dir}/${adapter_plan}",
-          content => template('orawls/adapter_plans/Plan_DB.xml.erb'),
+          content => epp('orawls/adapter_plans/Plan_DB.xml.epp', { 'adapter_plan_dir' => $adapter_plan_dir }),
         }
       }
     }
@@ -121,13 +112,13 @@ define orawls::resourceadapter(
       if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
         file { "${adapter_plan_dir}/${adapter_plan}":
           ensure  => present,
-          mode    => '0744',
+          mode    => lookup('orawls::permissions_group_restricted'),
           replace => false,
           owner   => $os_user,
           group   => $os_group,
           backup  => false,
           path    => "${adapter_plan_dir}/${adapter_plan}",
-          content => template('orawls/adapter_plans/Plan_AQ.xml.erb'),
+          content => epp('orawls/adapter_plans/Plan_AQ.xml.epp', { 'adapter_plan_dir' => $adapter_plan_dir }),
         }
       }
     }
@@ -136,13 +127,13 @@ define orawls::resourceadapter(
       if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
         file { "${adapter_plan_dir}/${adapter_plan}":
           ensure  => present,
-          mode    => '0744',
+          mode    => lookup('orawls::permissions_group_restricted'),
           replace => false,
           owner   => $os_user,
           group   => $os_group,
           backup  => false,
           path    => "${adapter_plan_dir}/${adapter_plan}",
-          content => template('orawls/adapter_plans/Plan_FTP.xml.erb'),
+          content => epp('orawls/adapter_plans/Plan_FTP.xml.epp', { 'adapter_plan_dir' => $adapter_plan_dir }),
         }
       }
     }
@@ -151,13 +142,13 @@ define orawls::resourceadapter(
       if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
         file { "${adapter_plan_dir}/${adapter_plan}":
           ensure  => present,
-          mode    => '0744',
+          mode    => lookup('orawls::permissions_group_restricted'),
           replace => false,
           owner   => $os_user,
           group   => $os_group,
           backup  => false,
           path    => "${adapter_plan_dir}/${adapter_plan}",
-          content => template('orawls/adapter_plans/Plan_File.xml.erb'),
+          content => epp('orawls/adapter_plans/Plan_File.xml.epp', { 'adapter_plan_dir' => $adapter_plan_dir }),
         }
       }
     }
@@ -166,13 +157,13 @@ define orawls::resourceadapter(
       if !defined(File["${adapter_plan_dir}/${adapter_plan}"]) {
         file { "${adapter_plan_dir}/${adapter_plan}":
           ensure  => present,
-          mode    => '0744',
+          mode    => lookup('orawls::permissions_group_restricted'),
           replace => false,
           owner   => $os_user,
           group   => $os_group,
           backup  => false,
           path    => "${adapter_plan_dir}/${adapter_plan}",
-          content => template('orawls/adapter_plans/Plan_MQSeries.xml.erb'),
+          content => epp('orawls/adapter_plans/Plan_MQSeries.xml.epp', { 'adapter_plan_dir' => $adapter_plan_dir }),
         }
       }
     }
@@ -184,16 +175,9 @@ define orawls::resourceadapter(
   # lets make the a new plan for this adapter
   if ( $continuePlan ) {
 
-    case $::kernel {
-      'Linux': {
-        $java_statement = 'java weblogic.Deployer'
-      }
-      'SunOS': {
-        $java_statement = 'java -d64 weblogic.Deployer'
-      }
-    }
+    $java_statement = "${lookup('orawls::java')} weblogic.Deployer"
 
-    case $::kernel {
+    case $facts['kernel'] {
       'Linux','SunOS': {
         # deploy the plan and update the adapter
         exec { "exec deployer adapter plan ${title}":
@@ -214,39 +198,56 @@ define orawls::resourceadapter(
 
   # after deployment of the plan we can add a new entry to the adapter
   if ( $continueEntry ) {
-    case $::kernel {
-      'Linux': {
-        $javaCommandPlan = 'java -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
-      }
-      'SunOS': {
-        $javaCommandPlan = 'java -d64 -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
-      }
-    }
+    # $javaCommandPlan = "${lookup('orawls::java')} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+    $javaCommandPlan = "${middleware_home_dir}/oracle_common/common/bin/wlst.sh "
 
     file { "${download_dir}/${title}redeployResourceAdapter.py":
       ensure  => present,
-      mode    => '0744',
+      mode    => lookup('orawls::permissions_group_restricted'),
       owner   => $os_user,
       group   => $os_group,
       backup  => false,
       path    => "${download_dir}/${title}redeployResourceAdapter.py",
-      content => template('orawls/adapter_plans/redeployResourceAdapter.py.erb'),
+      content => epp('orawls/adapter_plans/redeployResourceAdapter.py.epp',
+                     { 'weblogic_user' => $weblogic_user,
+                       'adminserver_address' => $adminserver_address,
+                       'adminserver_port' => $adminserver_port,
+                       'userConfigFile' => $userConfigFile,
+                       'userKeyFile' => $userKeyFile,
+                       'useStoreConfig' => $useStoreConfig,
+                       'adapter_name' => $adapter_name,
+                       'adapter_plan_dir' => $adapter_plan_dir,
+                       'adapter_plan' => $adapter_plan }),
       before  => Exec["exec redeploy adapter plan ${title}"],
     }
 
     file { "${download_dir}/${title}createResourceAdapterEntry.py":
       ensure  => present,
-      mode    => '0744',
+      mode    => lookup('orawls::permissions_group_restricted'),
       owner   => $os_user,
       group   => $os_group,
       backup  => false,
       path    => "${download_dir}/${title}createResourceAdapterEntry.py",
-      content => template('orawls/adapter_plans/createResourceAdapterEntry.py.erb'),
+      content => epp('orawls/adapter_plans/createResourceAdapterEntry.py.epp',
+                     { 'weblogic_user' => $weblogic_user,
+                       'adminserver_address' => $adminserver_address,
+                       'adminserver_port' => $adminserver_port,
+                       'userConfigFile' => $userConfigFile,
+                       'userKeyFile' => $userKeyFile,
+                       'useStoreConfig' => $useStoreConfig,
+                       'adapter_entry' => $adapter_entry,
+                       'adapter_entry_value' => $adapter_entry_value,
+                       'adapter_entry_property' => $adapter_entry_property,
+                       'connectionFactoryInterface' => $connectionFactoryInterface,
+                       'adapter_name' => $adapter_name,
+                       'adapter_path' => $adapter_path,
+                       'adapter_plan_dir' => $adapter_plan_dir,
+                       'adapter_plan' => $adapter_plan }),
       before  => Exec["exec create resource adapter entry ${title}"],
     }
 
 
-    case $::kernel {
+    case $facts['kernel'] {
       'Linux','SunOS': {
         # deploy the plan and update the adapter
         exec { "exec create resource adapter entry ${title}":

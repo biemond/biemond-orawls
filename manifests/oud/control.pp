@@ -3,22 +3,22 @@
 # start or stop an Oracle Unified Directory LDAP instance
 ##
 define orawls::oud::control(
-  $oud_instances_home_dir = undef,
-  $oud_instance_name      = undef,
-  $action                 = 'start', # start|stop
-  $os_user                = hiera('wls_os_user'), # oracle
-  $os_group               = hiera('wls_os_group'), # dba
-  $log_output             = false, # true|false
+  String $oud_instances_home_dir               = undef,
+  String $oud_instance_name                    = undef,
+  Enum['start','stop'] $action                 = 'start',
+  String $os_user                              = $::orawls::weblogic::os_user,
+  String $os_group                             = $::orawls::weblogic::os_group,
+  Boolean $log_output                          = $::orawls::weblogic::log_output,
 ){
 
-  $exec_path   = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
+  $exec_path = lookup('orawls::exec_path')
 
-  case $::kernel {
+  case $facts['kernel'] {
     'Linux': {
       $checkCommand = "/bin/ps -ef | grep -v grep | /bin/grep '${oud_instances_home_dir}/${oud_instance_name}/OUD'"
     }
     'SunOS': {
-      case $::kernelrelease {
+      case $facts['kernelrelease'] {
         '5.11': {
           $checkCommand = "/bin/ps wwxa | /bin/grep -v grep | /bin/grep '${oud_instances_home_dir}/${oud_instance_name}/OUD'"
         }

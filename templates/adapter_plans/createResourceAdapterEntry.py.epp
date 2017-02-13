@@ -1,22 +1,36 @@
+<%- |  String $weblogic_user = 'weblogic',
+       String $adminserver_address = 'localhost',
+       Integer $adminserver_port = 7001,
+       Optional[String] $userConfigFile = undef,
+       Optional[String] $userKeyFile = undef,
+       Boolean $useStoreConfig = false,       
+       String $adapter_entry,
+       String $adapter_entry_value,
+       String $adapter_entry_property,
+       String $connectionFactoryInterface,
+       String $adapter_name,
+       String $adapter_path,
+       String $adapter_plan_dir,
+       String $adapter_plan | -%>
 import random
 import sys
 import traceback
 
-wlsUser    = '<%= @weblogic_user %>'  
+wlsUser    = '<%= $weblogic_user %>'  
 password   = sys.argv[1] 
-machine    = '<%= @adminserver_address %>'
-portNumber = '<%= @adminserver_port %>'
+machine    = '<%= $adminserver_address %>'
+portNumber = '<%= $adminserver_port %>'
                                 
-eisName                     = '<%= @adapter_entry %>'
-cfName                      = '<%= @adapter_entry_value %>'
-propertyName                = '<%= @adapter_entry_property %>'
-connectionFactoryInterface  = '<%= @connectionFactoryInterface %>'
+eisName                     = '<%= $adapter_entry %>'
+cfName                      = '<%= $adapter_entry_value %>'
+propertyName                = '<%= $adapter_entry_property %>'
+connectionFactoryInterface  = '<%= $connectionFactoryInterface %>'
 
-appName                     = '<%= @adapter_name %>'
-appPath                     = '<%= @adapter_path %>'
-planPath                    = '<%= @adapter_plan_dir %>/<%= @adapter_plan %>'
+appName                     = '<%= $adapter_name %>'
+appPath                     = '<%= $adapter_path %>'
+planPath                    = '<%= $adapter_plan_dir %>/<%= $adapter_plan %>'
 
-useStoreConfig = '<%= @useStoreConfig %>'
+useStoreConfig = '<%= $useStoreConfig %>'
  
 moduleOverrideName=appName + '.rar'
 moduleDescriptorName='META-INF/weblogic-ra.xml'
@@ -76,6 +90,6 @@ def main():
 if useStoreConfig != "true":
     connect(wlsUser,password,'t3://'+machine+':'+portNumber)
 else:
-    connect(userConfigFile='<%= @userConfigFile %>', userKeyFile='<%= @userKeyFile %>', url='t3://'+machine+':'+portNumber)    
+    connect(userConfigFile='<%= $userConfigFile %>', userKeyFile='<%= $userKeyFile %>', url='t3://'+machine+':'+portNumber)    
 
 main()

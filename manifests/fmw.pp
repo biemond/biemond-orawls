@@ -6,11 +6,11 @@
 define orawls::fmw(
   Integer $version                                        = $::orawls::weblogic::version,
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   String $oracle_base_home_dir                            = undef, # /opt/oracle
   Optional[String] $oracle_home_dir                       = undef, # /opt/oracle/middleware/Oracle_SOA
-  Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms'] $fmw_product = undef, 
+  Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms'] $fmw_product = undef,
   String $fmw_file1                                       = undef,
   Optional[String] $fmw_file2                             = undef,
   Optional[String] $fmw_file3                             = undef,
@@ -378,34 +378,34 @@ define orawls::fmw(
       $install_type = 'dummy'
     }
 
- } elsif ( $fmw_product == 'wcs' ) {
- 
-     if ($wcs_mode == 'sites') {
-       $install_type = 'WebCenter Sites'
-     } elsif ($wcs_mode == 'examples') {
-       $install_type = 'WebCenter Sites - With Examples'
-     } elsif ($wcs_mode == 'satelite') {
-       $install_type = 'WebCenter Sites - Satellite Server'
-     } else {
-       fail("Unrecognized parameter wcs_mode: ${wcs_mode}, please use sites|examples|satellite")
-     }
- 
-     if $version >= 1221 {
-       $fmw_silent_response_file = 'orawls/fmw_silent_wcs_1221.rsp.epp'
-       if $version == 1221 {
-         $binFile1                 = 'fmw_12.2.1.0.0_wcsites_generic.jar'
-       } elsif $version == 12211 {
-         $binFile1                 = 'fmw_12.2.1.1.0_wcsites.jar'
-       } elsif $version == 12212 {
-         $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
-       } else {
-         $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
-       }
-       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
-       $type                     = 'java'
-       $total_files              = 1
-       $oracleHome               = "${middleware_home_dir}/wcsites"
-     }
+} elsif ( $fmw_product == 'wcs' ) {
+
+    if ($wcs_mode == 'sites') {
+      $install_type = 'WebCenter Sites'
+    } elsif ($wcs_mode == 'examples') {
+      $install_type = 'WebCenter Sites - With Examples'
+    } elsif ($wcs_mode == 'satelite') {
+      $install_type = 'WebCenter Sites - Satellite Server'
+    } else {
+      fail("Unrecognized parameter wcs_mode: ${wcs_mode}, please use sites|examples|satellite")
+    }
+
+    if $version >= 1221 {
+      $fmw_silent_response_file = 'orawls/fmw_silent_wcs_1221.rsp.epp'
+      if $version == 1221 {
+        $binFile1                 = 'fmw_12.2.1.0.0_wcsites_generic.jar'
+      } elsif $version == 12211 {
+        $binFile1                 = 'fmw_12.2.1.1.0_wcsites.jar'
+      } elsif $version == 12212 {
+        $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
+      }
+      $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
+      $type                     = 'java'
+      $total_files              = 1
+      $oracleHome               = "${middleware_home_dir}/wcsites"
+    }
 
   } elsif ( $fmw_product == 'web') {
 
@@ -522,11 +522,11 @@ define orawls::fmw(
 
     file { "${download_dir}/${sanitised_title}_silent.rsp":
       ensure  => present,
-      content => epp($fmw_silent_response_file, 
-                     { 'middleware_home_dir' => $middleware_home_dir,
-                       'oracleHome' => $oracleHome,
-                       'install_type' => $install_type,
-                       'weblogic_home_dir' => $weblogic_home_dir }),
+      content => epp($fmw_silent_response_file, {
+                      'middleware_home_dir' => $middleware_home_dir,
+                      'oracleHome'          => $oracleHome,
+                      'install_type'        => $install_type,
+                      'weblogic_home_dir'   => $weblogic_home_dir }),
       mode    => lookup('orawls::permissions'),
       owner   => $os_user,
       group   => $os_group,

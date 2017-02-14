@@ -5,7 +5,7 @@
 define orawls::packdomain (
   Integer $version            = $::orawls::weblogic::version,
   String $weblogic_home_dir   = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir        = $::orawls::weblogic::jdk_home_dir,
   String $wls_domains_dir     = $::orawls::weblogic::wls_domains_dir,
   String $domain_name         = undef,

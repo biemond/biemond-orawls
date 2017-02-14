@@ -21,7 +21,7 @@ class orawls::weblogic (
   Boolean $validation                 = true,
   Boolean $force                      = false,
   String $orainstpath_dir             = lookup('orawls::orainst_dir'),
-) 
+)
 {
 
   orawls::weblogic_type{'base':

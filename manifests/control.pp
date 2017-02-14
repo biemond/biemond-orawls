@@ -8,7 +8,7 @@
 #
 define orawls::control (
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
   String $domain_name                                     = undef,
@@ -24,7 +24,7 @@ define orawls::control (
   Boolean $adminserver_secure_listener                    = false,
   Integer $nodemanager_port                               = 5556,
   Boolean $nodemanager_secure_listener                    = true,
-  Enum['start','stop','running','abort'] $action          = 'start', 
+  Enum['start','stop','running','abort'] $action          = 'start',
   String $weblogic_user                                   = 'weblogic',
   String $weblogic_password                               = undef,
   Boolean $jsse_enabled                                   = false,

@@ -6,7 +6,7 @@ define orawls::utils::fmwcluster (
   Integer $version                                        = $::orawls::weblogic::version,
   Integer $ofm_version                                    = 1117,   # 1116|1117
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   String $domain_name                                     = undef,
   Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,

@@ -4,8 +4,8 @@
 ##
 define orawls::oud::instance (
   Integer $version                                        = $::orawls::weblogic::version,
-  String $oracle_base_home_dir                            = $::orawls::weblogic::oracle_base_home_dir, 
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $oracle_base_home_dir                            = $::orawls::weblogic::oracle_base_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   String $oud_home                                        = undef,
   String $oud_instance_name                               = undef,
   String $oud_root_user_password                          = undef,

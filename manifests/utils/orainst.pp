@@ -24,9 +24,9 @@ define orawls::utils::orainst
   if !defined(File["${orainstpath_dir}/oraInst.loc"]) {
     file { "${orainstpath_dir}/oraInst.loc":
       ensure  => present,
-      content => epp('orawls/utils/oraInst.loc.epp',
-                     {'ora_inventory_dir'=> $ora_inventory_dir,
-                      'os_group'         => $os_group }),
+      content => epp('orawls/utils/oraInst.loc.epp', {
+                      'ora_inventory_dir' => $ora_inventory_dir,
+                      'os_group'          => $os_group }),
       mode    => lookup('orawls::permissions_restricted'),
     }
   }

@@ -31,7 +31,7 @@ define orawls::ohs::forwarder (
   String $os_group                  = $::orawls::weblogic::os_group,
   Array $servers                    = undef,
   String $domain_dir                = undef,
-) 
+)
 {
   $size = size($servers)
   $servers_string = join($servers, ',')
@@ -42,11 +42,11 @@ define orawls::ohs::forwarder (
 
   file { "${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.d/${sanitised_title}.conf":
     ensure  => $ensure,
-    content => epp('orawls/ohs/forwarder.conf.epp',
-                   { 'location' => $title,
-                     'size' => $size,
-                     'servers' => $servers,
-                     'servers_string' => $servers_string}),
+    content => epp('orawls/ohs/forwarder.conf.epp', {
+                    'location'       => $title,
+                    'size'           => $size,
+                    'servers'        => $servers,
+                    'servers_string' => $servers_string}),
     owner   => $os_user,
     group   => $os_user,
     mode    => '0640',

@@ -10,7 +10,7 @@
 #
 #
 define orawls::fmwlogdir (
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   Optional[String] $adminserver_address                   = 'localhost',
   Integer $adminserver_port                               = 7001,
   String $weblogic_user                                   = 'weblogic',
@@ -44,15 +44,15 @@ define orawls::fmwlogdir (
   file { "${download_dir}/${title}changeFMWLogFolder.py":
     ensure  => present,
     path    => "${download_dir}/${title}changeFMWLogFolder.py",
-    content => epp('orawls/wlst/changeFMWLogFolder.py.epp', 
-                   { 'weblogic_user' => $weblogic_user,
-                     'adminserver_address' => $adminserver_address,
-                     'adminserver_port' => $adminserver_port,
-                     'userConfigFile' => $userConfigFile,
-                     'userKeyFile' => $userKeyFile,
-                     'useStoreConfig' => $useStoreConfig,       
-                     'server' => $server,
-                     'log_dir' => $log_dir }),
+    content => epp('orawls/wlst/changeFMWLogFolder.py.epp', {
+                    'weblogic_user'       => $weblogic_user,
+                    'adminserver_address' => $adminserver_address,
+                    'adminserver_port'    => $adminserver_port,
+                    'userConfigFile'      => $userConfigFile,
+                    'userKeyFile'         => $userKeyFile,
+                    'useStoreConfig'      => $useStoreConfig,
+                    'server'              => $server,
+                    'log_dir'             => $log_dir }),
     replace => true,
     mode    => lookup('orawls::permissions_group_restricted'),
     owner   => $os_user,

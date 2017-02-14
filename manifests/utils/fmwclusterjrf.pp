@@ -5,7 +5,7 @@
 define orawls::utils::fmwclusterjrf (
   Integer $version                                        = $::orawls::weblogic::version,
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   String $domain_name                                     = undef,
   Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
@@ -69,11 +69,11 @@ define orawls::utils::fmwclusterjrf (
 
     file { "${download_dir}/${title}_assignJrfToCluster.py":
       ensure  => present,
-      content => epp('orawls/wlst/wlstexec/fmw/assignJrfToCluster.py.epp',
-                     { 'weblogic_home_dir' => $weblogic_home_dir,
-                       'domain_dir' => $domain_dir,
-                       'jrf_target_name' => $jrf_target_name,
-                       'opss_datasource_name' => $opss_datasource_name }),
+      content => epp('orawls/wlst/wlstexec/fmw/assignJrfToCluster.py.epp', {
+                      'weblogic_home_dir'    => $weblogic_home_dir,
+                      'domain_dir'           => $domain_dir,
+                      'jrf_target_name'      => $jrf_target_name,
+                      'opss_datasource_name' => $opss_datasource_name }),
       backup  => false,
       replace => true,
       mode    => lookup('orawls::permissions_group_restricted'),

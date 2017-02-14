@@ -5,7 +5,7 @@
 define orawls::copydomain (
   Integer $version                            = $::orawls::weblogic::version,
   String $weblogic_home_dir                   = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir                 = $::orawls::weblogic::middleware_home_dir, 
+  String $middleware_home_dir                 = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir                        = $::orawls::weblogic::jdk_home_dir,
   String $wls_domains_dir                     = $::orawls::weblogic::wls_domains_dir,
   String $wls_apps_dir                        = $::orawls::weblogic::wls_apps_dir,
@@ -199,14 +199,13 @@ define orawls::copydomain (
     file { "enroll.py ${domain_name} ${title}":
       ensure  => present,
       path    => "${download_dir}/enroll_domain_${domain_name}.py",
-      content => epp('orawls/wlst/enrollDomain.py.epp',
-                     { 'weblogic_user' => $weblogic_user,
-                       'adminserver_address' => $adminserver_address,
-                       'adminserver_port' => $adminserver_port,
-                       'domains_dir' => $domains_dir,
-                       'domain_name' => $domain_name,
-                       'nodeMgrHome' => $nodeMgrHome,       
-                       'use_t3s' => $use_t3s }),
+      content => epp('orawls/wlst/enrollDomain.py.epp',{
+                      'adminserver_address' => $adminserver_address,
+                      'adminserver_port'    => $adminserver_port,
+                      'domains_dir'         => $domains_dir,
+                      'domain_name'         => $domain_name,
+                      'nodeMgrHome'         => $nodeMgrHome,
+                      'use_t3s'             => $use_t3s }),
       replace => true,
       mode    => lookup('orawls::permissions'),
       owner   => $os_user,
@@ -216,7 +215,7 @@ define orawls::copydomain (
 
     if $custom_trust == true {
       $config = "-Dweblogic.ssl.JSSEEnabled=${jsse_enabled} -Dweblogic.security.SSL.enableJSSE=${jsse_enabled} -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase} ${extra_arguments}"
-      if ($version == 1212 or $version == 1213 or $version >= 1221) { 
+      if ($version == 1212 or $version == 1213 or $version >= 1221) {
         # remove nodemanager.properties, else it won't be updated by nodemanager
         exec { "rm ${domains_dir}/${domain_name}/nodemanager/nodemanager.properties":
           path      => $exec_path,

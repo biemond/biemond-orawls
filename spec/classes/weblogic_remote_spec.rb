@@ -14,8 +14,9 @@ describe 'orawls::weblogic', :type => :class do
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => true,
-                  :source               => 'puppet:///middleware',
-                  :temp_directory       => '/data',
+                  :puppet_download_mnt_point               => 'puppet:///middleware',
+                  :temp_dir             => '/data',
+                  :log_output           => true,
                 }}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
@@ -82,8 +83,9 @@ describe 'orawls::weblogic', :type => :class do
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => true,
-                  :source               => 'puppet:///middleware',
-                  :temp_directory       => '/data',
+                  :puppet_download_mnt_point               => 'puppet:///middleware',
+                  :temp_dir             => '/data',
+                  :log_output           => true,
                   :wls_domains_dir      => '/opt/oracle/wlsdomains/domains',
                   :wls_apps_dir         => '/opt/oracle/wlsdomains/applications',
                 }}
@@ -120,7 +122,8 @@ describe 'orawls::weblogic', :type => :class do
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => false,
-                  :source               => '/software',
+                  :puppet_download_mnt_point               => '/software',
+                  :log_output           => true,
                 }}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',
@@ -180,7 +183,9 @@ describe 'orawls::weblogic', :type => :class do
                   :oracle_base_home_dir => '/opt/oracle',
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :remote_file          => false,
-                  :source               => '/software',
+                  :puppet_download_mnt_point               => '/software',
+                  :log_output           => true,
+
                 }}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
                    :kernel          => 'Linux',

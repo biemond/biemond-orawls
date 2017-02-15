@@ -13,6 +13,7 @@ describe 'orawls::nodemanager', :type => :define do
                   :nodemanager_port     => 5556,
                   :nodemanager_address  => '10.10.10.100',
                   :jsse_enabled         => true,
+                  :log_output           => true,
                 }}
     let(:title) {'nodemanager11g'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
@@ -56,6 +57,7 @@ describe 'orawls::nodemanager', :type => :define do
                   :nodemanager_address  => '10.10.10.100',
                   :jsse_enabled         => false,
                   :log_dir              => '/var/log/weblogic',
+                  :log_output           => true,
                 }}
     let(:title) {'nodemanager11g'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
@@ -120,6 +122,7 @@ describe 'orawls::nodemanager', :type => :define do
                   :jsse_enabled         => false,
                   :wls_domains_dir      => '/opt/oracle/wlsdomains/domains',
                   :domain_name          => 'wls1212',
+                  :log_output           => true,
                 }}
     let(:title) {'nodemanager12c'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,

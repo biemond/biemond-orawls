@@ -15,8 +15,9 @@ describe 'orawls::fmw', :type => :define do
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :fmw_file1            => 'file1',
                   :fmw_file2            => 'file2',
-                  :source               => '/mnt',
-                  :temp_directory       => '/tmp',
+                  :puppet_download_mnt_point               => '/mnt',
+                  :temp_dir             => '/tmp',
+                  :log_output           => true,
                 }}
     let(:title) {'soaPS6'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,
@@ -118,8 +119,9 @@ describe 'orawls::fmw', :type => :define do
                   :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
                   :fmw_file1            => 'file1',
                   :fmw_file2            => 'file2',
-                  :source               => '/mnt',
-                  :temp_directory       => '/tmp1',
+                  :puppet_download_mnt_point               => '/mnt',
+                  :temp_dir             => '/tmp1',
+                  :log_output           => true,
                 }}
     let(:title) {'osbPS6'}
     let(:facts) {{ :operatingsystem => 'CentOS' ,

@@ -159,17 +159,19 @@ define orawls::weblogic_type (
   # for performance reasons, download and install or just install it
   if $remote_file == true {
     # put weblogic generic jar
-    file { "${download_dir}/${filename}":
-      ensure  => file,
-      source  => "${mountPoint}/${filename}",
-      replace => false,
-      backup  => false,
-      mode    => '0775',
-      owner   => $os_user,
-      group   => $os_group,
-      before  => Exec["install weblogic ${title}"],
-      require => Wls_directory_structure["weblogic structure ${title}"],
+    if !defined(File["${download_dir}/${filename}"]) {
+      file { "${download_dir}/${filename}":
+        ensure  => file,
+        source  => "${mountPoint}/${filename}",
+        replace => false,
+        backup  => false,
+        mode    => '0775',
+        owner   => $os_user,
+        group   => $os_group,
+      }
     }
+    # we need to make proper dependency even when File["${download_dir}/${filename}"] is already defined
+    Wls_directory_structure["weblogic structure ${title}"] -> File["${download_dir}/${filename}"] -> Exec["install weblogic ${title}"]
   }
 
   # de xml used by the wls installer

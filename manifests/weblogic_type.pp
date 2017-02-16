@@ -146,6 +146,7 @@ define orawls::weblogic_type (
     wls_apps_dir      => $apps_dir,
     os_user           => $os_user,
     os_group          => $os_group,
+    require           => Orawls::Utils::Orainst["weblogic orainst ${title}"],
   }
 
   # if !defined(File[$download_dir]) {

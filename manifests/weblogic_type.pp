@@ -142,7 +142,7 @@ define orawls::weblogic_type (
       }
     }
     # we need to make proper dependency even when File["${download_dir}/${filename}"] is already defined
-    Wls_directory_structure["weblogic structure ${title}"] -> File["${download_dir}/${filename}"] -> Exec["install weblogic ${title}"]  
+    Wls_directory_structure["weblogic structure ${title}"] -> File["${download_dir}/${filename}"] -> Exec["install weblogic ${title}"]
   }
 
   # de xml used by the wls installer

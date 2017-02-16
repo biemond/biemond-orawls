@@ -3,35 +3,28 @@
 # installs WebLogic BSU patch
 ##
 define orawls::bsu (
-  $ensure              = 'present',  #present|absent
-  $version             = hiera('wls_version', 1036),  # 1036|1111|1211
-  $middleware_home_dir = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $weblogic_home_dir   = hiera('wls_weblogic_home_dir'),
-  $jdk_home_dir        = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $patch_id            = undef,
-  $patch_file          = undef,
-  $os_user             = hiera('wls_os_user'), # oracle
-  $os_group            = hiera('wls_os_group'), # dba
-  $download_dir        = hiera('wls_download_dir'), # /data/install
-  $source              = hiera('wls_source', undef), # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file         = true,  # true|false
-  $log_output          = false, # true|false
+  Enum['present','absent'] $ensure  = 'present',
+  Integer $version                  = $::orawls::weblogic::version,
+  String $weblogic_home_dir         = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir       = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir              = $::orawls::weblogic::jdk_home_dir,
+  String $patch_id                  = undef,
+  String $patch_file                = undef,
+  String $os_user                   = $::orawls::weblogic::os_user,
+  String $os_group                  = $::orawls::weblogic::os_group,
+  String $download_dir              = $::orawls::weblogic::download_dir,
+  String $puppet_download_mnt_point = $::orawls::weblogic::puppet_download_mnt_point,
+  Boolean $remote_file              = $::orawls::weblogic::remote_file,
+  Boolean $log_output               = $::orawls::weblogic::log_output,
 )
 {
-  $exec_path = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:${jdk_home_dir}/bin"
-
-  if $source == undef {
-    $mountPoint = 'puppet:///modules/orawls/'
-  }
-  else {
-    $mountPoint = $source
-  }
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   if !defined(File["${middleware_home_dir}/utils/bsu/cache_dir"]) {
     file { "${middleware_home_dir}/utils/bsu/cache_dir":
       ensure  => directory,
       recurse => false,
-      mode    => '0775',
+      mode    => lookup('orawls::permissions'),
       owner   => $os_user,
       group   => $os_group,
     }
@@ -42,17 +35,17 @@ define orawls::bsu (
     if $remote_file == true {
       file { "${download_dir}/${patch_file}":
         ensure  => file,
-        source  => "${mountPoint}/${patch_file}",
+        source  => "${puppet_download_mnt_point}/${patch_file}",
         require => File["${middleware_home_dir}/utils/bsu/cache_dir"],
         backup  => false,
-        mode    => '0775',
+        mode    => lookup('orawls::permissions'),
         owner   => $os_user,
         group   => $os_group,
         before  => Exec["extract ${patch_file}"],
       }
       $disk1_file = "${download_dir}/${patch_file}"
     } else {
-      $disk1_file = "${source}/${patch_file}"
+      $disk1_file = "${puppet_download_mnt_point}/${patch_file}"
     }
 
     exec { "extract ${patch_file}":

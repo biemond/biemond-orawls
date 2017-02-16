@@ -106,6 +106,9 @@ define orawls::domain (
       $templateBPM          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bpm_template_11.1.1.jar"
       $templateBAM          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bam_template_11.1.1.jar"
 
+      $templateOHS          = 'dummy'
+      $templateCoherence    = 'dummy'
+
     } elsif $version == 1112 {
       $template          = "${weblogic_home_dir}/common/templates/domains/wls.jar"
       $templateWS        = "${weblogic_home_dir}/common/templates/applications/wls_webservice.jar"
@@ -125,6 +128,9 @@ define orawls::domain (
       $templateSOA          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.soa_template_11.1.1.jar"
       $templateBPM          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bpm_template_11.1.1.jar"
       $templateBAM          = "${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bam_template_11.1.1.jar"
+
+      $templateOHS          = 'dummy'
+      $templateCoherence    = 'dummy'
 
     } elsif $version == 1212 {
       $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"

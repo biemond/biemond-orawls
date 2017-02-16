@@ -47,13 +47,14 @@ define orawls::weblogic_type (
 
   if ($version == 1036 or $version == 1111 or $version == 1211) {
     $silent_template = 'orawls/weblogic_silent_install.xml.epp'
+    $install_type = 'dummy'
   } elsif ( $version == 1212 or $version == 1213 or $version >= 1221 ) {
 
     #The oracle home location. This can be an existing Oracle Home or a new Oracle Home
     if ( $fmw_infra == true ) {
-      $install_type='Fusion Middleware Infrastructure'
+      $install_type = 'Fusion Middleware Infrastructure'
     } else {
-      $install_type='WebLogic Server'
+      $install_type = 'WebLogic Server'
     }
     if $version >= 1221 {
       $new_version = 1221

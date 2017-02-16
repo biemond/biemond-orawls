@@ -2,111 +2,145 @@ require 'spec_helper'
 
 describe 'orawls::nodemanager', :type => :define do
 
-  describe "CentOS 11g" do
-    let(:params){{:version              => 1111,
-                  :download_dir         => '/install',
-                  :os_user              => 'oracle',
-                  :os_group             => 'dba',
-                  :middleware_home_dir  => '/opt/oracle/middleware11gR1',
-                  :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_103',
-                  :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
-                  :nodemanager_port     => 5556,
-                  :nodemanager_address  => '10.10.10.100',
-                  :jsse_enabled         => true,
-                  :log_output           => true,
-                }}
-    let(:title) {'nodemanager11g'}
-    let(:facts) {{ :operatingsystem => 'CentOS' ,
-                   :kernel          => 'Linux',
-                   :osfamily        => 'RedHat' }}
-
-    describe "nodemanager.properties" do
-      it {
-           should contain_file("nodemanager.properties ux nodemanager11g").with({
-             'ensure'  => 'present',
-             'path'    => "/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager.properties",
-             'owner'   => 'oracle',
-             'group'   => 'dba',
-           }).that_comes_before('Exec[startNodemanager nodemanager11g]')
-         }
+  describe 'unix' do 
+    let :pre_condition do
+      'class { "orawls::weblogic":
+         version                   => 1111,
+         filename                  => "wls1036_generic.jar",
+         oracle_base_home_dir      => "opt/oracle",
+         middleware_home_dir       => "opt/oracle/middleware11gR1",
+         weblogic_home_dir         => "/opt/oracle/middleware11gR1/wlserver_103",
+         jdk_home_dir              => "/usr/java/jdk1.7.0_45",
+         download_dir              => "/install",
+         puppet_download_mnt_point => "/software",
+         remote_file               => false,
+       }'
     end
 
-    describe "start nodemanager 1" do
-      it {
-           should contain_exec("startNodemanager nodemanager11g").with({
-             'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
-             'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
-             'user'        => 'oracle',
-             'group'       => 'dba',
-             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
-           })
-         }
-    end
 
+    describe "CentOS 11g" do
+      let(:params){{:version              => 1111,
+                    :download_dir         => '/install',
+                    :os_user              => 'oracle',
+                    :os_group             => 'dba',
+                    :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+                    :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_103',
+                    :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
+                    :nodemanager_port     => 5556,
+                    :nodemanager_address  => '10.10.10.100',
+                    :jsse_enabled         => true,
+                    :log_output           => true,
+                  }}
+      let(:title) {'nodemanager11g'}
+      let(:facts) {{ :operatingsystem => 'CentOS' ,
+                     :kernel          => 'Linux',
+                     :osfamily        => 'RedHat' }}
+
+      describe "nodemanager.properties" do
+        it {
+             should contain_file("nodemanager.properties ux nodemanager11g").with({
+               'ensure'  => 'present',
+               'path'    => "/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager.properties",
+               'owner'   => 'oracle',
+               'group'   => 'dba',
+             }).that_comes_before('Exec[startNodemanager nodemanager11g]')
+           }
+      end
+
+      describe "start nodemanager 1" do
+        it {
+             should contain_exec("startNodemanager nodemanager11g").with({
+               'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
+               'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
+               'user'        => 'oracle',
+               'group'       => 'dba',
+               'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
+             })
+           }
+      end
+
+    end
   end
 
-  describe "CentOS 11g log dir" do
-    let(:params){{:version              => 1111,
-                  :download_dir         => '/install',
-                  :os_user              => 'oracle',
-                  :os_group             => 'dba',
-                  :middleware_home_dir  => '/opt/oracle/middleware11gR1',
-                  :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_103',
-                  :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
-                  :nodemanager_port     => 5556,
-                  :nodemanager_address  => '10.10.10.100',
-                  :jsse_enabled         => false,
-                  :log_dir              => '/var/log/weblogic',
-                  :log_output           => true,
-                }}
-    let(:title) {'nodemanager11g'}
-    let(:facts) {{ :operatingsystem => 'CentOS' ,
-                   :kernel          => 'Linux',
-                   :osfamily        => 'RedHat' }}
-
-
-    describe "create logdir" do
-      it {
-           should contain_exec("create /var/log/weblogic directory").with({
-             'command'  => 'mkdir -p /var/log/weblogic',
-             'cwd'      => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
-           })
-         }
+  describe 'unix' do 
+    let :pre_condition do
+      'class { "orawls::weblogic":
+         version                   => 1111,
+         filename                  => "wls1036_generic.jar",
+         oracle_base_home_dir      => "opt/oracle",
+         middleware_home_dir       => "opt/oracle/middleware11gR1",
+         weblogic_home_dir         => "/opt/oracle/middleware11gR1/wlserver_103",
+         jdk_home_dir              => "/usr/java/jdk1.7.0_45",
+         download_dir              => "/install",
+         puppet_download_mnt_point => "/software",
+         remote_file               => false,
+       }'
     end
 
-    describe "change logdir" do
-      it {
-           should contain_file("/var/log/weblogic").with({
-             'ensure'  => 'directory',
-             'owner'   => 'oracle',
-             'group'   => 'dba',
-           }).that_requires('Exec[create /var/log/weblogic directory]')
-         }
-    end
 
-    describe "nodemanager.properties" do
-      it {
-           should contain_file("nodemanager.properties ux nodemanager11g").with({
-             'ensure'  => 'present',
-             'path'    => "/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager.properties",
-             'owner'   => 'oracle',
-             'group'   => 'dba',
-           }).that_comes_before('Exec[startNodemanager nodemanager11g]')
-         }
-    end
+    describe "CentOS 11g log dir" do
+      let(:params){{:version              => 1111,
+                    :download_dir         => '/install',
+                    :os_user              => 'oracle',
+                    :os_group             => 'dba',
+                    :middleware_home_dir  => '/opt/oracle/middleware11gR1',
+                    :weblogic_home_dir    => '/opt/oracle/middleware11gR1/wlserver_103',
+                    :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
+                    :nodemanager_port     => 5556,
+                    :nodemanager_address  => '10.10.10.100',
+                    :jsse_enabled         => false,
+                    :log_dir              => '/var/log/weblogic',
+                    :log_output           => true,
+                  }}
+      let(:title) {'nodemanager11g'}
+      let(:facts) {{ :operatingsystem => 'CentOS' ,
+                     :kernel          => 'Linux',
+                     :osfamily        => 'RedHat' }}
 
-    describe "start nodemanager 2" do
-      it {
-           should contain_exec("startNodemanager nodemanager11g").with({
-             'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
-             'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
-             'user'        => 'oracle',
-             'group'       => 'dba',
-             'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
-           })
-         }
-    end
 
+      describe "create logdir" do
+        it {
+             should contain_exec("create /var/log/weblogic directory").with({
+               'command'  => 'mkdir -p /var/log/weblogic',
+               'cwd'      => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
+             })
+           }
+      end
+
+      describe "change logdir" do
+        it {
+             should contain_file("/var/log/weblogic").with({
+               'ensure'  => 'directory',
+               'owner'   => 'oracle',
+               'group'   => 'dba',
+             }).that_requires('Exec[create /var/log/weblogic directory]')
+           }
+      end
+
+      describe "nodemanager.properties" do
+        it {
+             should contain_file("nodemanager.properties ux nodemanager11g").with({
+               'ensure'  => 'present',
+               'path'    => "/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager.properties",
+               'owner'   => 'oracle',
+               'group'   => 'dba',
+             }).that_comes_before('Exec[startNodemanager nodemanager11g]')
+           }
+      end
+
+      describe "start nodemanager 2" do
+        it {
+             should contain_exec("startNodemanager nodemanager11g").with({
+               'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
+               'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
+               'user'        => 'oracle',
+               'group'       => 'dba',
+               'environment' => ["JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false  ", "JAVA_HOME=/usr/java/jdk1.7.0_45", "JAVA_VENDOR=Oracle"],
+             })
+           }
+      end
+
+    end
   end
 
   describe "CentOS 12.1.2 log dir" do

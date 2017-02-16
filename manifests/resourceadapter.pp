@@ -214,7 +214,7 @@ define orawls::resourceadapter(
                       'adminserver_port'    => $adminserver_port,
                       'userConfigFile'      => $userConfigFile,
                       'userKeyFile'         => $userKeyFile,
-                      'useStoreConfig'.     => $useStoreConfig,
+                      'useStoreConfig'      => $useStoreConfig,
                       'adapter_name'        => $adapter_name,
                       'adapter_plan_dir'    => $adapter_plan_dir,
                       'adapter_plan'        => $adapter_plan }),

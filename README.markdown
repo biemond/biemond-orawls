@@ -512,19 +512,35 @@ or with a bin file located on a share
 ### weblogic_type
 __orawls::weblogic_type__ same as weblogic manifest/class but now as define which supports multiple middleware home on same VM
 
-    orawls::weblogic{'1221':
-      version                   => 12211,                       # 1036|1211|1212|1213|1221|12212
-      filename                  => 'fmw_12.2.1.0.0_wls.jar',   # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar
-      jdk_home_dir              => '/usr/java/jdk1.8.0_45',
-      oracle_base_home_dir      => "/opt/oracle",
-      middleware_home_dir       => "/opt/oracle/middleware12c",
-      weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
-      os_user                   => "oracle",
-      os_group                  => "dba",
-      download_dir              => "/data/install",
-      puppet_download_mnt_point => "/vagrant",                 # puppet:///modules/orawls/ | /mnt |
-      log_output                => true,
-    }
+    $default_params = {}
+    $weblogic_instances = hiera('weblogic_instances', {})
+    create_resources('orawls::weblogic_type',$weblogic_instances, $default_params)
+
+    weblogic_instances:
+      'home1':
+        version:                     *wls_version
+        filename:                    'fmw_12.2.1.2.0_wls.jar'
+        middleware_home_dir:         *wls_middleware_home_dir
+        log_output:                  true
+        jdk_home_dir:                *wls_jdk_home_dir
+        oracle_base_home_dir:        *wls_oracle_base_home_dir
+        puppet_download_mnt_point:   '/vagrant'
+        remote_file:                 true
+        wls_domains_dir:             *wls_domains_dir
+        wls_apps_dir:                *wls_apps_dir
+        require:                     Jdk7::Install7[jdk-8u72-linux-x64]
+      'home2':
+        version:                      *wls_version
+        filename:                     'fmw_12.2.1.2.0_wls.jar'
+        middleware_home_dir:          '/opt/oracle/middleware12c_2'
+        log_output:                   true
+        jdk_home_dir:                 *wls_jdk_home_dir
+        oracle_base_home_dir:         *wls_oracle_base_home_dir
+        puppet_download_mnt_point:    '/vagrant'
+        remote_file:                  true
+        wls_domains_dir:              *wls_domains_dir
+        wls_apps_dir:                 *wls_apps_dir
+        require:                      Jdk7::Install7[jdk-8u72-linux-x64]
 
 
 ### opatch

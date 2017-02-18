@@ -53,7 +53,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs-puppet4](https://github.com/biemond/biemond-orawls-vagrant-ohs-puppet4)
 - Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.3 example [biemond-orawls-vagrant-oim_oam](https://github.com/biemond/biemond-orawls-vagrant-oim_oam)
 - Reference OIM / OAM Cluster, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.3 cluster example [biemond-orawls-vagrant-oim_oam_cluster](https://github.com/biemond/biemond-orawls-vagrant-oim_oam_cluster)
-- Oracle Forms, Reports 11.1.1.7 & 11.1.2 Reference implementation, the vagrant test case [biemond-orawls-vagrant-11g-forms](https://github.com/biemond/biemond-orawls-vagrant-11g-forms)
+- Oracle Forms, Reports 11.1.1.7 & 11.1.2 Reference implementation, the vagrant test case [biemond-orawls-vagrant-11g-forms-puppet4](https://github.com/biemond/biemond-orawls-vagrant-11g-forms-puppet4)
 
 
 ## Orawls WebLogic Features
@@ -707,6 +707,26 @@ Most general parameters are derived from weblogic.pp, you don't need to specify 
 	    download_dir:              *wls_download_dir
 	    puppet_download_mnt_point: *wls_source
 
+    fmw_installations:
+      'webTierPS8':
+        version:                 1111
+        fmw_product:             "web"
+        fmw_file1:               "ofm_webtier_linux_11.1.1.9.0_64_disk1_1of1.zip"
+        oracle_base_home_dir:    *wls_oracle_base_home_dir
+      'forms11112':
+        version:                 11112
+        fmw_product:             "forms"
+        fmw_file1:               "V18772-01_1of4.zip"
+        fmw_file2:               "V18772-01_2of4.zip"
+        fmw_file3:               "V18772-01_3of4.zip"
+        fmw_file4:               "V18772-01_4of4.zip"
+        oracle_base_home_dir:    *wls_oracle_base_home_dir
+      'forms1112':
+        version:                 1112
+        fmw_product:             "forms"
+        fmw_file1:               "ofm_frmrpts_linux_11.1.2.2.0_64_disk1_1of2.zip"
+        fmw_file2:               "ofm_frmrpts_linux_11.1.2.2.0_64_disk1_2of2.zip"
+        oracle_base_home_dir:    *wls_oracle_base_home_dir
 
 
 

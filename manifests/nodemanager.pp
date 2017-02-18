@@ -52,7 +52,7 @@ define orawls::nodemanager (
     $startHome   = "${weblogic_home_dir}/server/bin"
   }
 
-  $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   if $log_dir == undef {
     $nodeMgrLogDir = "${nodeMgrHome}/${log_file}"

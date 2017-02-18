@@ -1473,21 +1473,10 @@ __orawls::oud::instance__ Configure OUD (Oracle Unified Directory) ldap instance
         oud_home:                   '/opt/oracle/middleware11g/Oracle_OUD1'
         oud_instance_name:          'instance1'
         oud_root_user_password:     'Welcome01'
-        oud_baseDN:                 'dc=example,dc=com'
-        oud_ldapPort:               1389
-        oud_adminConnectorPort:     4444
-        oud_ldapsPort:              1636
-        log_output:                 *logoutput
-      'instance2':
-        version:                    1112
-        oud_home:                   '/opt/oracle/middleware11g/Oracle_OUD1'
-        oud_instance_name:          'instance2'
-        oud_root_user_password:     'Welcome01'
-        oud_baseDN:                 'dc=example,dc=com'
-        oud_ldapPort:               2389
-        oud_adminConnectorPort:     5555
-        oud_ldapsPort:              2636
-        log_output:                 *logoutput
+        oud_base_dn:                 'dc=example,dc=com'
+        oud_ldap_port:               1389
+        oud_admin_connector_port:    4444
+        oud_ldaps_port:              1636
 
 ### oud_control
 __orawls::oud::control__ Stop or start an OUD (Oracle Unified Directory) ldap instance

@@ -3,38 +3,39 @@
 # does all the Oracle Identity Management configuration
 #
 define orawls::utils::oimconfig(
-  $version                    = undef,
-  $oim_home                   = undef,
-  $server_config              = false,
-  $oim_password               = undef,
-  $remote_config              = false,
-  $keystore_password          = undef,
-  $design_config              = false,
-  $oimserver_hostname         = undef,
-  $oimserver_port             = 14000,
-  $soaserver_name             = 'soa_server1',
-  $oimserver_name             = 'oim_server1',
-  $bi_enabled                 = false, # only when you got a BI cluster
-  $bi_cluster_name            = undef,
-  $repository_database_url    = hiera('repository_database_url'   , undef), #jdbc:oracle:thin:@192.168.50.5:1521:XE
-  $repository_prefix          = hiera('repository_prefix'         , 'DEV'),
-  $repository_password        = hiera('repository_password'       , 'Welcome01'),
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $domain_name                = hiera('domain_name'),
-  $adminserver_name           = hiera('domain_adminserver'        , 'AdminServer'),
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $nodemanager_port           = hiera('domain_nodemanager_port'   , 5556),
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
-) {
+  Integer $version                                        = undef,
+  String $oim_home                                        = undef,
+  Boolean $server_config                                  = false,
+  String $oim_password                                    = undef,
+  Boolean $remote_config                                  = false,
+  String $keystore_password                               = undef,
+  Boolean $design_config                                  = false,
+  String $oimserver_hostname                              = undef,
+  Integer $oimserver_port                                 = 14000,
+  String $soaserver_name                                  = 'soa_server1',
+  String $oimserver_name                                  = 'oim_server1',
+  Boolean $bi_enabled                                     = false, # only when you got a BI cluster
+  String $bi_cluster_name                                 = undef,
+  String $repository_database_url                         = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  String $repository_prefix                               = 'DEV',
+  String $repository_password                             = undef,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  String $domain_name                                     = undef,
+  String $adminserver_name                                = 'AdminServer',
+  String $adminserver_address                             = 'localhost',
+  Integer $adminserver_port                               = 7001,
+  Integer $nodemanager_port                               = 5556,
+  String $weblogic_user                                   = 'weblogic',
+  String $weblogic_password                               = undef,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+)
+{
 
   if ( $wls_domains_dir == undef or $wls_domains_dir == '') {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
@@ -43,8 +44,7 @@ define orawls::utils::oimconfig(
   }
 
   $domain_dir = "${domains_dir}/${domain_name}"
-
-  $execPath = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   if ( $remote_config == true ) {
     file { "${download_dir}/${title}config_oim_remote.rsp":
@@ -130,19 +130,7 @@ define orawls::utils::oimconfig(
           group   => $os_group,
         }
 
-        case $::kernel {
-          'Linux': {
-            $java_statement = 'java'
-          }
-          'SunOS': {
-            $java_statement = 'java -d64'
-          }
-          default: {
-            fail("Unrecognized operating system ${::kernel}")
-          }
-        }
-
-        $javaCommand = "${java_statement} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
+        $javaCommand = "${lookup('orawls::java')} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
         # execute WLST script
         exec { "execwlst bi-createUDD.py ${title}":
           command     => "${javaCommand} ${download_dir}/bi-createUDD${title}.py ${weblogic_password}",

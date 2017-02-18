@@ -4,31 +4,30 @@
 #
 ##
 define orawls::utils::forms11gpatch (
-  $version              = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212|1213
-  $weblogic_home_dir    = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir  = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $oracle_base_home_dir = hiera('wls_oracle_base_home_dir'), # /opt/oracle
-  $oracle_home_dir      = undef,                                      # /opt/oracle/middleware/Oracle_FRM1
-  $jdk_home_dir         = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $fmw_file1            = undef,
-  $os_user              = hiera('wls_os_user'), # oracle
-  $os_group             = hiera('wls_os_group'), # dba
-  $download_dir         = hiera('wls_download_dir'), # /data/install
-  $source               = hiera('wls_source'                , undef), # puppet:///modules/orawls/ | /mnt | /vagrant
-  $remote_file          = true,                                       # true|false
-  $log_output           = false,                                      # true|false
-  $temp_directory       = hiera('wls_temp_dir'              ,'/tmp'), # /tmp directory
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $oracle_base_home_dir                            = undef,
+  Optional[String] $oracle_home_dir                       = undef, # /opt/oracle/middleware/Oracle_FRM1
+  String $fmw_file1                                       = undef,
+  String $puppet_download_mnt_point                       = $::orawls::weblogic::puppet_download_mnt_point,
+  Boolean $remote_file                                    = $::orawls::weblogic::remote_file,
+  String $temp_dir                                        = lookup('orawls::tmp_dir'),
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
 )
 {
   $fmw_product  = 'forms_patch'
-
-  $exec_path    = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
   $oraInventory = "${oracle_base_home_dir}/oraInventory"
 
-  case $::kernel {
+  case $facts['kernel'] {
     'Linux': {
       $oraInstPath = '/etc'
-      case $::architecture {
+      case $facts['architecture'] {
         'i386': {
           $installDir = 'linux'
         }
@@ -39,7 +38,7 @@ define orawls::utils::forms11gpatch (
     }
     'SunOS': {
       $oraInstPath = '/var/opt/oracle'
-      case $::architecture {
+      case $facts['architecture'] {
         'i86pc': {
           $installDir = 'intelsolaris'
         }
@@ -49,7 +48,7 @@ define orawls::utils::forms11gpatch (
       }
     }
     default: {
-      fail("Unrecognized operating system ${::kernel}, please use it on a Linux host")
+      fail("Unrecognized operating system ${facts['kernel']}, please use it on a Linux host")
     }
 
   }
@@ -68,12 +67,6 @@ define orawls::utils::forms11gpatch (
 
   if (1 == 1 ) {
 
-    if $source == undef {
-      $mountPoint = 'puppet:///modules/orawls/'
-    } else {
-      $mountPoint = $source
-    }
-
     file { "${download_dir}/${title}_silent_${fmw_product}.rsp":
       ensure  => present,
       content => template($fmw_silent_response_file),
@@ -87,7 +80,7 @@ define orawls::utils::forms11gpatch (
     if $remote_file == true {
       file { "${download_dir}/${fmw_file1}":
         ensure => file,
-        source => "${mountPoint}/${fmw_file1}",
+        source => "${puppet_download_mnt_point}/${fmw_file1}",
         mode   => '0775',
         owner  => $os_user,
         group  => $os_group,
@@ -96,7 +89,7 @@ define orawls::utils::forms11gpatch (
       }
       $disk1_file = "${download_dir}/${fmw_file1}"
     } else {
-      $disk1_file = "${source}/${fmw_file1}"
+      $disk1_file = "${puppet_download_mnt_point}/${fmw_file1}"
     }
 
     exec { "extract ${fmw_file1}":
@@ -112,7 +105,7 @@ define orawls::utils::forms11gpatch (
 
     exec { "install ${fmw_product} ${title}":
       command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}'",
-      environment => "TEMP=${temp_directory}",
+      environment => "TEMP=${temp_dir}",
       timeout     => 0,
       # creates     => "${oracleHome}/OPatch",
       path        => $exec_path,

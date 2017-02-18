@@ -94,7 +94,7 @@ define orawls::utils::fmwcluster (
 
   if $convert_soa or $convert_osb or $convert_bam {
 
-    $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
+    $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
     if ( $version == 1213 or $version >= 1221 ) {
       #shutdown adminserver for offline WLST scripts

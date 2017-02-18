@@ -3,29 +3,29 @@
 # Add a Webtier to the Enterprise manager
 ##
 define orawls::utils::webtier(
-  $version                    = hiera('wls_version'               , 1111),  # 1036|1111|1211|1212
-  $weblogic_home_dir          = hiera('wls_weblogic_home_dir'), # /opt/oracle/middleware11gR1/wlserver_103
-  $middleware_home_dir        = hiera('wls_middleware_home_dir'), # /opt/oracle/middleware11gR1
-  $jdk_home_dir               = hiera('wls_jdk_home_dir'), # /usr/java/jdk1.7.0_45
-  $wls_domains_dir            = hiera('wls_domains_dir'           , undef),
-  $domain_name                = hiera('domain_name'),
-  $adminserver_address        = hiera('domain_adminserver_address', 'localhost'),
-  $adminserver_port           = hiera('domain_adminserver_port'   , 7001),
-  $action_name                = 'create', #create|delete
-  $webgate_configure          = false,
-  $webgate_agentname          = hiera('webgate_agentname'         , undef),
-  $webgate_hostidentifier     = hiera('webgate_hostidentifier'    , undef),
-  $oamadminserverhostname     = hiera('oamadminserverhostname'    , localhost),
-  $oamadminserverport         = hiera('oamadminserverport'        , 7001),
-  $domain_configure           = true, # 11g register ohs instance with a domain
-  $instance_name              = undef,
-  $machine_name               = undef,
-  $weblogic_user              = hiera('wls_weblogic_user'         , 'weblogic'),
-  $weblogic_password          = hiera('domain_wls_password'),
-  $os_user                    = hiera('wls_os_user'), # oracle
-  $os_group                   = hiera('wls_os_group'), # dba
-  $download_dir               = hiera('wls_download_dir'), # /data/install
-  $log_output                 = false, # true|false
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $domain_name                                     = undef,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  String $adminserver_address                             = 'localhost',
+  Integer $adminserver_port                               = 7001,
+  Enum['create','delete'] $action_name                    = 'create',
+  Boolean $webgate_configure                              = false,
+  String $webgate_agentname                               = undef,
+  String $webgate_hostidentifier                          = undef,
+  String $oamadminserverhostname                          = 'localhost',
+  Integer $oamadminserverport                             = 7001,
+  Boolean $domain_configure                               = true, # 11g register ohs instance with a domain
+  String $instance_name                                   = undef,
+  String $machine_name                                    = undef,
+  String $weblogic_user                                   = 'weblogic',
+  String $weblogic_password                               = undef,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
 ){
   if ( $wls_domains_dir == undef ) {
     $domains_dir = "${middleware_home_dir}/user_projects/domains"
@@ -34,8 +34,7 @@ define orawls::utils::webtier(
   }
   $domain_dir = "${domains_dir}/${domain_name}"
 
-
-  $exec_path = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
     file { "${download_dir}/${title}_createWebtier.py":

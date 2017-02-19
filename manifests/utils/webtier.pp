@@ -19,7 +19,7 @@ define orawls::utils::webtier(
   Integer $oamadminserverport                             = 7001,
   Boolean $domain_configure                               = true, # 11g register ohs instance with a domain
   String $instance_name                                   = undef,
-  String $machine_name                                    = undef,
+  Optional[String] $machine_name                          = undef,
   String $weblogic_user                                   = 'weblogic',
   String $weblogic_password                               = undef,
   String $os_user                                         = $::orawls::weblogic::os_user,

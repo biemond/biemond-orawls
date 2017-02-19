@@ -30,6 +30,7 @@ define orawls::fmw(
   Optional[String] $orainstpath_dir                       = lookup('orawls::orainst_dir'),
 )
 {
+
   $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   if $oracle_inventory_dir == undef {
@@ -312,7 +313,9 @@ define orawls::fmw(
       $oracleHome = $oracle_home_dir
     }
     $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
-    $createFile2 = "${download_dir}/${sanitised_title}/Disk4"
+    $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
+    $createFile3 = "${download_dir}/${sanitised_title}/Disk3"
+
     $total_files = 3
     $install_type = 'dummy'
 
@@ -704,7 +707,7 @@ define orawls::fmw(
       $command = "-silent -response ${download_dir}/${sanitised_title}_silent.rsp -waitforcompletion"
     }
 
-    if $version == 1212 or $version == 1213 or $version >= 1221 {
+    if ($version == 1212 or $version == 1213 or $version >= 1221) {
       if $type == 'java' {
         $install = "java -Djava.io.tmpdir=${temp_dir} -jar "
       }
@@ -749,48 +752,6 @@ define orawls::fmw(
         require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
                         Orawls::Utils::Orainst["create oraInst for ${name}"],
                         Exec["extract ${fmw_file1} for ${name}"],],
-      }
-
-      ## fix EditHttpConf in OHS Webgate
-      if ( $version == 1112 and $fmw_product == 'webgate' ) {
-        exec { "install ${sanitised_title} EditHttpConf1":
-          command   => "unzip -o -j '${download_dir}/${sanitised_title}/Disk1/stage/Components/oracle.as.oam.webgate.ohs_linux64/11.1.2.2.0/1/DataFiles/filegroup1.jar' 'webgate/ohs/lib/libxmlengine.so' -d '${oracleHome}/webgate/ohs/lib/'",
-          timeout   => 0,
-          path      => $exec_path,
-          user      => $os_user,
-          group     => $os_group,
-          logoutput => $log_output,
-          cwd       => $temp_dir,
-          require   => Exec["install ${sanitised_title}"],
-        }
-        exec { "install ${sanitised_title} EditHttpConf2":
-          command   => "unzip -o -j '${download_dir}/${sanitised_title}/Disk1/stage/Components/oracle.as.oam.webgate.ohs_linux64/11.1.2.2.0/1/DataFiles/filegroup1.jar' 'webgate/ohs/lib/webgate.so' -d '${oracleHome}/webgate/ohs/lib/'",
-          timeout   => 0,
-          path      => $exec_path,
-          user      => $os_user,
-          group     => $os_group,
-          logoutput => $log_output,
-          cwd       => $temp_dir,
-          require   => Exec["install ${sanitised_title}"],
-        }
-        exec { "install ${sanitised_title} EditHttpConf3":
-          command   => "unzip -o -j '${download_dir}/${sanitised_title}/Disk1/stage/Components/oracle.as.oam.webgate.ohs_linux64/11.1.2.2.0/1/DataFiles/filegroup1.jar' 'webgate/ohs/tools/setup/InstallTools/EditHttpConf' -d '${oracleHome}/webgate/ohs/tools/setup/InstallTools/'",
-          timeout   => 0,
-          path      => $exec_path,
-          user      => $os_user,
-          group     => $os_group,
-          logoutput => $log_output,
-          cwd       => $temp_dir,
-          require   => Exec["install ${sanitised_title}"],
-        }
-        file { "${oracleHome}/webgate/ohs/tools/setup/InstallTools/EditHttpConf":
-          ensure  => file,
-          mode    => lookup('orawls::permissions'),
-          owner   => $os_user,
-          group   => $os_group,
-          backup  => false,
-          require => Exec["install ${sanitised_title} EditHttpConf3"],
-        }
       }
     }
   }

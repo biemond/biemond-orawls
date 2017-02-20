@@ -113,7 +113,7 @@ EOF"
     Puppet.debug output
     output.each_line do |li|
       unless li.nil?
-        if li.include? 'RUNNING'
+        if li.include? 'RUNNING' or li.include? 'STARTING'
           Puppet.debug 'found target'
           return 'Found'
         end

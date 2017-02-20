@@ -1,5 +1,11 @@
 # History
 
+## 1.0.58
+- Option to ignore the defaultCoherenceCluster on a domain
+- restrictive permissions for orainst & nodemanager.properties
+- FMW webcenter sites support
+- allow multiple remote middleware installations on the same host
+
 ## 1.0.57
 - Added support for Wls/FMW 12.2.1.2
 - Changing indentation from "2" to "4" in wls_exec statements

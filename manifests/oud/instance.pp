@@ -1,7 +1,14 @@
-# == Define: orawls::oud::instance
+#
+# oud::instance
 #
 # create an Oracle Unified Directory LDAP instance
-##
+#
+# @param middleware_home_dir directory of the Oracle software inside the oracle base directory, will be default derived from the weblogic class
+# @param os_user the user name with oracle as default, will be default derived from the weblogic class
+# @param os_group the group name with dba as default, will be default derived from the weblogic class
+# @param log_output show all the output of the the exec actions, will be default derived from the weblogic class
+# @param download_dir the directory for temporary created files by this class, will be default derived from the weblogic class
+#
 define orawls::oud::instance (
   Integer $version                                        = $::orawls::weblogic::version,
   String $oracle_base_home_dir                            = $::orawls::weblogic::oracle_base_home_dir,

@@ -1,6 +1,27 @@
-# == Define: orawls::storeuserconfig
+# 
+# storeuserconfig define
 #
-# generic storeuserconfig wlst script
+# Will store the weblogic credentials on the VM so it can be used by others operations without providing the credentials
+#
+# @example Declaring the class
+#   orawls::storeuserconfig{'domainA':
+#     domain_name               => 'domainA',
+#     user_config_dir           => '/home/oracle',
+#     weblogic_password         => 'weblogic1',
+#   }
+# 
+# @param domain_name the domain name which to connect to
+# @param adminserver_address the adminserver network name or ip
+# @param adminserver_port the adminserver port number
+# @param user_config_dir the full path to write the userconfig credentials
+# @param weblogic_user the weblogic administrator username
+# @param weblogic_password the weblogic domain password
+# @param weblogic_home_dir directory of the WebLogic software inside the middleware directory
+# @param jdk_home_dir full path to the java home directory like /usr/java/default
+# @param os_user the user name with oracle as default
+# @param os_group the group name with dba as default
+# @param download_dir the directory for temporary created by this class
+# @param log_output show all the output of the the exec actions
 #
 define orawls::storeuserconfig (
   String $domain_name         = undef,

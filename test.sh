@@ -22,6 +22,7 @@ bundle install --without development
 bundle --version
 gem update --system 2.1.11
 
+bundle exec puppet strings generate ./**/*.pp
 bundle exec rake syntax
 bundle exec rake lint
 bundle exec rake ci:setup:rspec spec

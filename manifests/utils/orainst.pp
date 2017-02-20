@@ -1,9 +1,10 @@
-# == define: orawls::utils::orainst
 #
-#  creates oraInst.loc for oracle products
+# utils::orainst define
+#
+# creates oraInst.loc for oracle products
 #
 #
-##
+#
 define orawls::utils::orainst
 (
   String $ora_inventory_dir = undef,

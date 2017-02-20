@@ -1,4 +1,42 @@
-# rewrite of Class: orawls::weblogic as defined type so multiple installation of product will be possible on single host
+# 
+# weblogic installation define
+#
+# Will allow to install multiple WebLogic Middleware homes on a VM
+#
+# @example Declaring the define
+#   orawls::weblogic_type{'12212':
+#     version                   => 12212,
+#     filename                  => 'fmw_12.2.1.2.0_wls.jar',
+#     jdk_home_dir              => '/usr/java/latest',
+#     oracle_base_home_dir      => "/opt/oracle",
+#     middleware_home_dir       => "/opt/oracle/middleware12c",
+#     weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
+#     download_dir              => "/var/tmp/install",
+#     puppet_download_mnt_point => "/software",
+#     log_output                => true,
+#     remote_file               => false
+#   }
+# 
+# @param version Weblogic version like 1036, 1111, 1213 or 12212
+# @param filename the weblogic jar file like wls1036_generic.jar or fmw_12.2.1.2.0_wls.jar
+# @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
+# @param middleware_home_dir directory of the Oracle software inside the oracle base directory
+# @param weblogic_home_dir directory of the WebLogic software inside the middleware directory
+# @param wls_domains_dir root directory for all the WebLogic domains
+# @param wls_apps_dir root directory for all the domain apps
+# @param fmw_infra should install the WebLogic 12c infrastructure edition, you cannot use the normal wls install jar
+# @param jdk_home_dir full path to the java home directory like /usr/java/default
+# @param os_user the user name with oracle as default
+# @param os_group the group name with dba as default
+# @param download_dir the directory for temporary created by this class
+# @param puppet_download_mnt_point the location of the filename like puppet:///modules/orawls/ or /software
+# @param remote_file to control if the filename is already accessiable on the VM 
+# @param java_parameters provide additional parameters to the WebLogic Installation
+# @param log_output show all the output of the the exec actions
+# @param temp_dir override the default temp directory /tmp
+# @param validation ignore validation all the errrors
+# @param force force the installation of WebLogic
+# @param orainstpath_dir the location of orainst.loc, default it will the default directory for Linux or Solaris
 #
 define orawls::weblogic_type (
   Integer $version                    = lookup('orawls::default_version'),

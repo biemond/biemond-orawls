@@ -1,5 +1,9 @@
 #
-# Usage:
+# ohs::forwarder define
+#
+# Add a webtier forwarder entry
+#
+# @example Declaring the class
 #  orawls::ohs::forwarder { '/console':
 #    servers     => ['192.168.1.1:7000'],
 #    os_user     => 'oracle',
@@ -22,9 +26,10 @@
 # notify option is needed to OHS restart and load changes.
 # require is needed because without it, notify option may attempt to reload server before it's running.
 #
-# puppet epp render forwarder.conf.epp --values "{location => 'aaa' , size => 1, servers => ['192.168.1.1:7000'] }"
-# puppet epp render forwarder.conf.epp --values "{location => 'aaa' , size => 3, servers => ['192.168.1.2:7000', '192.168.1.3:7000', '192.168.1.4:7002'], servers_string => '192.168.1.2:7000,192.168.1.3:7000,192.168.1.4:7002' }"
 # 
+# @param os_user the user name with oracle as default, will be default derived from the weblogic class
+# @param os_group the group name with dba as default, will be default derived from the weblogic class
+#
 define orawls::ohs::forwarder (
   Enum['present','absent'] $ensure  = 'present',
   String $os_user                   = $::orawls::weblogic::os_user,
@@ -39,6 +44,9 @@ define orawls::ohs::forwarder (
   # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
   $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
   $sanitised_title = regsubst($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')
+
+  # puppet epp render forwarder.conf.epp --values "{location => 'aaa' , size => 1, servers => ['192.168.1.1:7000'] }"
+  # puppet epp render forwarder.conf.epp --values "{location => 'aaa' , size => 3, servers => ['192.168.1.2:7000', '192.168.1.3:7000', '192.168.1.4:7002'], servers_string => '192.168.1.2:7000,192.168.1.3:7000,192.168.1.4:7002' }"
 
   file { "${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.d/${sanitised_title}.conf":
     ensure  => $ensure,

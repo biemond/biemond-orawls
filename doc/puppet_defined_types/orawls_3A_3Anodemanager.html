@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: orawls::nodemanager
+  
+    &mdash; Documentation by YARD 0.9.8
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::orawls::nodemanager";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (o)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">orawls::nodemanager</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: orawls::nodemanager</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/nodemanager.pp
+    </dd>
+  </dl>
+</div>
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>nodemanager define</p>
+
+<p>install and configures the nodemanager</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>wls_domains_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::wls_domains_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>root directory for all the WebLogic domains, will be default derived from
+the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>middleware_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::middleware_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>directory of the Oracle software inside the oracle base directory, will be
+default derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>domain_name</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the domain name which to connect to</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::weblogic_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>directory of the WebLogic software inside the middleware directory, will be
+default derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jdk_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::jdk_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>full path to the java home directory like /usr/java/default, will be
+default derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_user</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the user name with oracle as default, will be default derived from the
+weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_group</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the group name with dba as default, will be default derived from the
+weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_output</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::log_output</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>show all the output of the the exec actions, will be default derived from
+the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::download_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the directory for temporary created files by this class, will be default
+derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::version</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>5556</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_address</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_secure_listener</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jsse_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_trust</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>trust_keystore_file</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>trust_keystore_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_keystore_filename</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_keystore_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_alias</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_privatekey_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>extra_arguments</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;nodemanager.log&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sleep</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>20</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>properties</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ohs_standalone</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>puppet_os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;root&#39;</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/nodemanager.pp', line 16</span>
+
+define orawls::nodemanager (
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  Integer $nodemanager_port                               = 5556,
+  String $nodemanager_address                             = undef,
+  Boolean $nodemanager_secure_listener                    = true,
+  Boolean $jsse_enabled                                   = false,
+  Boolean $custom_trust                                   = false,
+  Optional[String] $trust_keystore_file                   = undef,
+  Optional[String] $trust_keystore_passphrase             = undef,
+  Boolean $custom_identity                                = false,
+  Optional[String] $custom_identity_keystore_filename     = undef,
+  Optional[String] $custom_identity_keystore_passphrase   = undef,
+  Optional[String] $custom_identity_alias                 = undef,
+  Optional[String] $custom_identity_privatekey_passphrase = undef,
+  String $extra_arguments                                 = &#39;&#39;, # &#39;-Dweblogic.security.SSL.minimumProtocolVersion=TLSv1&#39;
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  Optional[String] $domain_name                           = undef,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Optional[String] $log_dir                               = undef, # /data/logs
+  String $log_file                                        = &#39;nodemanager.log&#39;,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+  Integer $sleep                                          = 20, # default sleep time
+  Hash $properties                                        = {},
+  Boolean $ohs_standalone                                 = false,
+  String $puppet_os_user                                  = &#39;root&#39;,
+)
+{
+
+  if ( $wls_domains_dir == undef or $wls_domains_dir == &#39;&#39; ) {
+    $domains_dir = &quot;${middleware_home_dir}/user_projects/domains&quot;
+  } else {
+    $domains_dir =  $wls_domains_dir
+  }
+
+  if ( $version == 1111 or $version == 1036 or $version == 1211 ) {
+    $nodeMgrHome = &quot;${weblogic_home_dir}/common/nodemanager&quot;
+    $startHome   = &quot;${weblogic_home_dir}/server/bin&quot;
+  } elsif $version == 1212 or $version == 1213 or $version &gt;= 1221 {
+    $nodeMgrHome = &quot;${domains_dir}/${domain_name}/nodemanager&quot;
+    $startHome   = &quot;${domains_dir}/${domain_name}/bin&quot;
+  } else {
+    $nodeMgrHome = &quot;${weblogic_home_dir}/common/nodemanager&quot;
+    $startHome   = &quot;${weblogic_home_dir}/server/bin&quot;
+  }
+
+  $exec_path = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
+
+  if $log_dir == undef {
+    $nodeMgrLogDir = &quot;${nodeMgrHome}/${log_file}&quot;
+  } else {
+      # create all folders
+      if !defined(Exec[&quot;create ${log_dir} directory&quot;]) {
+        exec { &quot;create ${log_dir} directory&quot;:
+          command =&gt; &quot;mkdir -p ${log_dir}&quot;,
+          unless  =&gt; &quot;test -d ${log_dir}&quot;,
+          user    =&gt; $puppet_os_user,
+          path    =&gt; $exec_path,
+          group   =&gt; $os_group,
+          cwd     =&gt; $nodeMgrHome,
+        }
+      }
+      if !defined(File[$log_dir]) {
+        file { $log_dir:
+          ensure  =&gt; directory,
+          recurse =&gt; false,
+          replace =&gt; false,
+          owner   =&gt; $os_user,
+          group   =&gt; $os_group,
+          require =&gt; Exec[&quot;create ${log_dir} directory&quot;],
+          before  =&gt; Exec[&quot;startNodemanager ${title}&quot;],
+        }
+      }
+      $nodeMgrLogDir = &quot;${log_dir}/${log_file}&quot;
+  }
+
+  $java_statement    = lookup(&#39;orawls::java&#39;)
+  $nativeLib         = lookup(&#39;orawls::native_lib&#39;)
+
+  case $facts[&#39;kernel&#39;] {
+    &#39;Linux&#39;: {
+      if ( $version == 1212 or $version == 1213 or $version &gt;= 1221 ){
+        $checkCommand = &quot;/bin/ps -eo pid,cmd | grep -v grep | /bin/grep &#39;weblogic.NodeManager&#39; | /bin/grep ${domain_name}&quot;
+      } else {
+        $checkCommand = &#39;/bin/ps -eo pid,cmd | grep -v grep | /bin/grep \&#39;weblogic.NodeManager\&#39;&#39;
+      }
+      $suCommand         = &quot;su -l ${os_user}&quot;
+      $netstat_statement = &quot;/bin/netstat -lnt | /bin/grep &#39;:${nodemanager_port}&#39;&quot;
+    }
+    &#39;SunOS&#39;: {
+      case $facts[&#39;kernelrelease&#39;] {
+        &#39;5.11&#39;: {
+          if ( $version == 1212 or $version == 1213 or $version &gt;= 1221 ){
+            $checkCommand = &quot;/bin/ps wwxa | /bin/grep -v grep | /bin/grep &#39;weblogic.NodeManager&#39; | /bin/grep ${domain_name}&quot;
+          } else {
+            $checkCommand = &#39;/bin/ps wwxa | /bin/grep -v grep | /bin/grep \&#39;weblogic.NodeManager\&#39;&#39;
+          }
+        }
+        default: {
+          if ( $version == 1212 or $version == 1213 or $version &gt;= 1221 ){
+            $checkCommand = &quot;/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep &#39;weblogic.NodeManager&#39; | /bin/grep ${domain_name}&quot;
+          } else {
+            $checkCommand = &#39;/usr/ucb/ps wwxa | /bin/grep -v grep | /bin/grep \&#39;weblogic.NodeManager\&#39;&#39;
+          }
+        }
+      }
+      $suCommand         = &quot;su - ${os_user}&quot;
+      $netstat_statement = &quot;/bin/netstat -an -P tcp | /bin/grep LISTEN | /bin/grep &#39;.${nodemanager_port}&#39;&quot;
+    }
+    default: {
+      fail(&quot;Unrecognized operating system ${::kernel}, please use it on a Linux or Solaris host&quot;)
+    }
+  }
+
+  Exec {
+    logoutput =&gt; $log_output,
+  }
+
+  # do it once but don&#39;t replace it because of encrypted trust passwords
+  if $custom_identity == true {
+    $replaceNodemanagerProperties = false
+  } else {
+    $replaceNodemanagerProperties = true
+  }
+
+  if ( $version == 1111 or $version == 1036 or $version == 1211 ){
+    $nodemanager_property_version = &#39;10.3&#39;
+  } elsif $version == 1212 {
+    $nodemanager_property_version = &#39;12.1.2&#39;
+  } elsif $version == 1213 {
+    $nodemanager_property_version = &#39;12.1.3&#39;
+  } elsif $version == 1221 {
+    $nodemanager_property_version = &#39;12.2.1&#39;
+  } elsif $version == 12211 {
+    $nodemanager_property_version = &#39;12.2.1.1.0&#39;
+  } elsif $version == 12212 {
+    $nodemanager_property_version = &#39;12.2.1.2.0&#39;
+  }
+
+  $property_defaults = {
+    &#39;properties_version&#39;                 =&gt; $nodemanager_property_version,
+    &#39;log_limit&#39;                          =&gt; 0,
+    &#39;domains_dir_remote_sharing_enabled&#39; =&gt; false,
+    &#39;authentication_enabled&#39;             =&gt; true,
+    &#39;log_level&#39;                          =&gt; &#39;INFO&#39;,
+    &#39;domains_file_enabled&#39;               =&gt; true,
+    &#39;start_script_name&#39;                  =&gt; &#39;startWebLogic.sh&#39;,
+    &#39;native_version_enabled&#39;             =&gt; true,
+    &#39;log_to_stderr&#39;                      =&gt; true,
+    &#39;log_count&#39;                          =&gt; &#39;1&#39;,
+    &#39;domain_registration_enabled&#39;        =&gt; false,
+    &#39;stop_script_enabled&#39;                =&gt; true,
+    &#39;quit_enabled&#39;                       =&gt; false,
+    &#39;log_append&#39;                         =&gt; true,
+    &#39;state_check_interval&#39;               =&gt; 500,
+    &#39;crash_recovery_enabled&#39;             =&gt; true,
+    &#39;start_script_enabled&#39;               =&gt; true,
+    &#39;log_formatter&#39;                      =&gt; &#39;weblogic.nodemanager.server.LogFormatter&#39;,
+    &#39;listen_backlog&#39;                     =&gt; 50,
+  }
+
+  $properties_merged = merge($property_defaults, $properties)
+
+  # nodemanager is part of the domain creation
+  if ( $version == 1111 or $version == 1036 or $version == 1211 ){
+    $propertiesFileTitle = &quot;nodemanager.properties ux ${title}&quot;
+    file { $propertiesFileTitle:
+      ensure  =&gt; present,
+      path    =&gt; &quot;${nodeMgrHome}/nodemanager.properties&quot;,
+      replace =&gt; $replaceNodemanagerProperties,
+      content =&gt; epp(&#39;orawls/nodemgr/nodemanager.properties.epp&#39;, {
+                      &#39;weblogic_home_dir&#39;                     =&gt; $weblogic_home_dir,
+                      &#39;jdk_home_dir&#39;                          =&gt; $jdk_home_dir,
+                      &#39;nodemanager_address&#39;                   =&gt; $nodemanager_address,
+                      &#39;nodemanager_port&#39;                      =&gt; $nodemanager_port,
+                      &#39;nodemanager_secure_listener&#39;           =&gt; $nodemanager_secure_listener,
+                      &#39;properties_merged&#39;                     =&gt; $properties_merged,
+                      &#39;nodeMgrLogDir&#39;                         =&gt; $nodeMgrLogDir,
+                      &#39;custom_identity&#39;                       =&gt; $custom_identity,
+                      &#39;custom_identity_keystore_filename&#39;     =&gt; $custom_identity_keystore_filename,
+                      &#39;custom_identity_keystore_passphrase&#39;   =&gt; $custom_identity_keystore_passphrase,
+                      &#39;custom_identity_alias&#39;                 =&gt; $custom_identity_alias,
+                      &#39;custom_identity_privatekey_passphrase&#39; =&gt; $custom_identity_privatekey_passphrase }),
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+      mode    =&gt; lookup(&#39;orawls::permissions_group_restricted&#39;),
+      before  =&gt; Exec[&quot;startNodemanager ${title}&quot;],
+    }
+  } else {
+    if $version &gt;= 1221 {
+      $new_version = 1221
+    } else {
+      $new_version = $version
+    }
+
+    # do not replace when it contains encrypted custom trust field like CustomIdentityKeyStorePassPhrase
+    $propertiesFileTitle = &quot;nodemanager.properties ux ${version} ${title}&quot;
+    file { $propertiesFileTitle:
+      ensure  =&gt; present,
+      path    =&gt; &quot;${nodeMgrHome}/nodemanager.properties&quot;,
+      replace =&gt; $replaceNodemanagerProperties,
+      content =&gt; epp(&quot;orawls/nodemgr/nodemanager.properties_${new_version}.epp&quot;, {
+                      &#39;domains_dir&#39;                           =&gt; $domains_dir,
+                      &#39;domain_name&#39;                           =&gt; $domain_name,
+                      &#39;jdk_home_dir&#39;                          =&gt; $jdk_home_dir,
+                      &#39;nodemanager_address&#39;                   =&gt; $nodemanager_address,
+                      &#39;nodemanager_port&#39;                      =&gt; $nodemanager_port,
+                      &#39;nodemanager_secure_listener&#39;           =&gt; $nodemanager_secure_listener,
+                      &#39;properties_merged&#39;                     =&gt; $properties_merged,
+                      &#39;nodeMgrLogDir&#39;                         =&gt; $nodeMgrLogDir,
+                      &#39;custom_identity&#39;                       =&gt; $custom_identity,
+                      &#39;custom_identity_keystore_filename&#39;     =&gt; $custom_identity_keystore_filename,
+                      &#39;custom_identity_keystore_passphrase&#39;   =&gt; $custom_identity_keystore_passphrase,
+                      &#39;custom_identity_alias&#39;                 =&gt; $custom_identity_alias,
+                      &#39;custom_identity_privatekey_passphrase&#39; =&gt; $custom_identity_privatekey_passphrase }),
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+      mode    =&gt; lookup(&#39;orawls::permissions_group_restricted&#39;),
+      before  =&gt; Exec[&quot;startNodemanager ${title}&quot;],
+    }
+  }
+
+  if ( $custom_trust == true ) {
+    $trust_env = &quot;-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trust_keystore_passphrase}&quot;
+  } else {
+    $trust_env = &#39;&#39;
+  }
+
+  if $jsse_enabled == true {
+    $env = &quot;JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=true -Dweblogic.security.SSL.enableJSSE=true ${trust_env} ${extra_arguments}&quot;
+  } else {
+    $env = &quot;JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env} ${extra_arguments}&quot;
+  }
+
+  $startCommand      = &quot;nohup ${startHome}/startNodeManager.sh &amp;&quot;
+  $restartCommand    = &quot;kill $(${checkCommand} | awk &#39;{print \$1}&#39;); sleep 1; ${startCommand}&quot;
+
+  exec { &quot;startNodemanager ${title}&quot;:
+    command     =&gt; $startCommand,
+    environment =&gt; [ $env, &quot;JAVA_HOME=${jdk_home_dir}&quot;, &#39;JAVA_VENDOR=Oracle&#39; ],
+    unless      =&gt; $checkCommand,
+    path        =&gt; $exec_path,
+    user        =&gt; $os_user,
+    group       =&gt; $os_group,
+    cwd         =&gt; $nodeMgrHome,
+  }
+
+  exec {&quot;restart NodeManager ${title}&quot;:
+    command     =&gt; $restartCommand,
+    environment =&gt; [ $env, &quot;JAVA_HOME=${jdk_home_dir}&quot;, &#39;JAVA_VENDOR=Oracle&#39; ],
+    onlyif      =&gt; $checkCommand,
+    path        =&gt; $exec_path,
+    user        =&gt; $os_user,
+    group       =&gt; $os_group,
+    cwd         =&gt; $nodeMgrHome,
+    refreshonly =&gt; true,
+    subscribe   =&gt; File[$propertiesFileTitle],
+  }
+
+  # using fiddyspence/sleep module
+  sleep { &quot;wake up ${title}&quot;:
+    bedtime       =&gt; $sleep,
+    wakeupfor     =&gt; $netstat_statement,
+    dozetime      =&gt; 2,
+    failontimeout =&gt; true,
+    subscribe     =&gt; [Exec[&quot;startNodemanager ${title}&quot;], Exec[&quot;restart NodeManager ${title}&quot;]],
+    refreshonly   =&gt; true,
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Mon Feb 20 17:19:03 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.8 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

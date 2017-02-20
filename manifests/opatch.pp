@@ -1,8 +1,14 @@
-# == Define: orawls::opatch
+#
+# opatch define
 #
 # installs oracle patches for Oracle products
 #
-##
+# @param jdk_home_dir full path to the java home directory like /usr/java/default, will be default derived from the weblogic class
+# @param os_user the user name with oracle as default, will be default derived from the weblogic class
+# @param os_group the group name with dba as default, will be default derived from the weblogic class
+# @param log_output show all the output of the the exec actions, will be default derived from the weblogic class
+# @param download_dir the directory for temporary created files by this class, will be default derived from the weblogic class
+#
 define orawls::opatch(
   Enum['present','absent'] $ensure  = 'present',
   String $oracle_product_home_dir   = undef, # /opt/oracle/middleware11gR1

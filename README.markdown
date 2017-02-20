@@ -33,7 +33,7 @@ More: https://github.com/biemond/biemond-orawls/graphs/contributors
 ## Support
 
 If you need support, checkout the [wls_install](https://www.enterprisemodules.com/shop/products/puppet-wls_install-module) and [wls_config](https://www.enterprisemodules.com/shop/products/puppet-wls_config-module) modules from [Enterprise Modules](https://www.enterprisemodules.com/)
-[![Enterprise Modules](https://raw.githubusercontent.com/enterprisemodules/public_images/master/banner1.jpg)](https://www.enterprisemodules.com)
+[![Enterprise Modules](https://www.enterprisemodules.com/images/puppet-logo.png)](https://www.enterprisemodules.com)
 
 ## Dependencies
 
@@ -1179,7 +1179,7 @@ You can configure OHS locations using __orawls::ohs::forwarder__ resource:
 
 Notify option is needed to OHS restart and load changes. Require is needed because, without it, notify option may attempt to reload server before it's running.
 
-OHS will include all __.conf__ files at ${domain_path}/config/fmwconfig/components/OHS/${server_name}/mod_wl_ohs.d folder.
+OHS will include all __.conf__ files at domain_path/config/fmwconfig/components/OHS/ server_name /mod_wl_ohs.d folder.
 
 
 ### fmwlogdir

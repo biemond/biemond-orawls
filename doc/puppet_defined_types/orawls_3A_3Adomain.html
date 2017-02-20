@@ -1,0 +1,2575 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: orawls::domain
+  
+    &mdash; Documentation by YARD 0.9.8
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::orawls::domain";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (o)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">orawls::domain</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: orawls::domain</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/domain.pp
+    </dd>
+  </dl>
+</div>
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>domain define</p>
+
+<p>setup a new weblogic domain</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>wls_domains_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::wls_domains_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>root directory for all the WebLogic domains, will be default derived from
+the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>middleware_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::middleware_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>directory of the Oracle software inside the oracle base directory, will be
+default derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>domain_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the domain name which to connect to</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_address</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;localhost&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the adminserver network name or ip, default = localhost</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>7001</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the adminserver port number, default = 7001</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;weblogic&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the weblogic administrator username</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the weblogic domain password</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::weblogic_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>directory of the WebLogic software inside the middleware directory, will be
+default derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jdk_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::jdk_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>full path to the java home directory like /usr/java/default, will be
+default derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_user</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the user name with oracle as default, will be default derived from the
+weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_group</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the group name with dba as default, will be default derived from the
+weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_output</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::log_output</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>show all the output of the the exec actions, will be default derived from
+the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::download_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the directory for temporary created files by this class, will be default
+derived from the weblogic class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::version</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>wls_apps_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::wls_apps_dir</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>domain_template</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;standard&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>bam_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>b2b_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ess_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>owsm_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>development_mode</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;AdminServer&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_machine_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;LocalMachine&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_ssl_port</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_listen_on_all_interfaces</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_arguments</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>5556</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_secure_listener</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_username</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>nodemanager_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>domain_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jsse_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>webtier_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repository_database_url</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rcu_database_url</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repository_prefix</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;DEV&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repository_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repository_sys_user</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;sys&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repository_sys_password</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_trust</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>trust_keystore_file</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>trust_keystore_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_keystore_filename</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_keystore_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_alias</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_identity_privatekey_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>create_rcu</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ohs_standalone_listen_address</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ohs_standalone_listen_port</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ohs_standalone_ssl_listen_port</span>
+      
+      
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>wls_domains_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/etc/wls_domains.yaml&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>puppet_os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;root&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>create_default_coherence_cluster</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/domain.pp', line 20</span>
+
+define orawls::domain (
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  Optional[String] $wls_apps_dir                          = $::orawls::weblogic::wls_apps_dir,
+  String $domain_template                                 = &#39;standard&#39;, # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone
+  Boolean $bam_enabled                                    = true,  #only for SOA Suite
+  Boolean $b2b_enabled                                    = false, #only for SOA Suite 12.1.3 with b2b
+  Boolean $ess_enabled                                    = false, #only for SOA Suite 12.1.3
+  Boolean $owsm_enabled                                   = false, #only for OSB domain_template on 10.3.6
+  String $domain_name                                     = undef,
+  Boolean $development_mode                               = true,
+  String $adminserver_name                                = &#39;AdminServer&#39;,
+  String $adminserver_machine_name                        = &#39;LocalMachine&#39;,
+  Optional[String] $adminserver_address                   = &#39;localhost&#39;,
+  Integer $adminserver_port                               = 7001,
+  Optional[Integer] $adminserver_ssl_port                 = undef,
+  Boolean $adminserver_listen_on_all_interfaces           = false,
+  Hash $java_arguments                                    = {}, # java_arguments = { &quot;ADM&quot; =&gt; &quot;...&quot;, &quot;OSB&quot; =&gt; &quot;...&quot;, &quot;SOA&quot; =&gt; &quot;...&quot;, &quot;BAM&quot; =&gt; &quot;...&quot;}
+  Integer $nodemanager_port                               = 5556,
+  Boolean $nodemanager_secure_listener                    = true,
+  String $weblogic_user                                   = &#39;weblogic&#39;,
+  String $weblogic_password                               = undef,
+  Optional[String] $nodemanager_username                  = undef, # When not specified, it&#39;ll use the weblogic_user
+  Optional[String] $nodemanager_password                  = undef, # When not specified, it&#39;ll use the weblogic_password
+  Optional[String] $domain_password                       = undef, # When not specified, it&#39;ll use the weblogic_password
+  Boolean $jsse_enabled                                   = false,
+  Boolean $webtier_enabled                                = false,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Optional[String] $log_dir                               = undef, # /data/logs
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+  Optional[String] $repository_database_url               = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  Optional[String] $rcu_database_url                      = undef, #localhost:1521:XE&quot;
+  Optional[String] $repository_prefix                     = &#39;DEV&#39;,
+  Optional[String] $repository_password                   = undef,
+  Optional[String] $repository_sys_user                   = &#39;sys&#39;,
+  Optional[String] $repository_sys_password               = undef,
+  Boolean $custom_trust                                   = false,
+  Optional[String] $trust_keystore_file                   = undef,
+  Optional[String] $trust_keystore_passphrase             = undef,
+  Boolean $custom_identity                                = false,
+  Optional[String] $custom_identity_keystore_filename     = undef,
+  Optional[String] $custom_identity_keystore_passphrase   = undef,
+  Optional[String] $custom_identity_alias                 = undef,
+  Optional[String] $custom_identity_privatekey_passphrase = undef,
+  Boolean $create_rcu                                     = true,
+  Optional[String] $ohs_standalone_listen_address         = undef,
+  Optional[Integer] $ohs_standalone_listen_port           = undef,
+  Optional[Integer] $ohs_standalone_ssl_listen_port       = undef,
+  String $wls_domains_file                                = &#39;/etc/wls_domains.yaml&#39;,
+  String $puppet_os_user                                  = &#39;root&#39;,
+  Boolean $create_default_coherence_cluster               = true,
+)
+{
+  if ( $wls_domains_dir == undef or $wls_domains_dir == &#39;&#39; ) {
+    $domains_dir = &quot;${middleware_home_dir}/user_projects/domains&quot;
+  } else {
+    $domains_dir =  $wls_domains_dir
+  }
+
+  if ( $wls_apps_dir == undef or $wls_apps_dir == &#39;&#39;) {
+    $apps_dir = &quot;${middleware_home_dir}/user_projects/applications&quot;
+  } else {
+    $apps_dir =  $wls_apps_dir
+  }
+
+  $domain_dir = &quot;${domains_dir}/${domain_name}&quot;
+
+  # check if the domain already exists
+  $found = domain_exists($domain_dir)
+
+  if $found == undef {
+    $continue = true
+  } else {
+    if ($found) {
+      $continue = false
+    } else {
+      notify { &quot;orawls::domain ${title} ${domain_dir} ${version} does not exists&quot;: }
+      $continue = true
+    }
+  }
+
+  if ($continue) {
+    if ( $version == 1036 or $version == 1111 ) {
+      $template          = &quot;${weblogic_home_dir}/common/templates/domains/wls.jar&quot;
+      $templateWS        = &quot;${weblogic_home_dir}/common/templates/applications/wls_webservice.jar&quot;
+      $templateJaxWS     = &quot;${weblogic_home_dir}/common/templates/applications/wls_webservice_jaxws.jar&quot;
+
+      $templateEM        = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.em_11_1_1_0_0_template.jar&quot;
+      $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/jrf_template_11.1.1.jar&quot;
+      $templateApplCore  = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.11.1.1_template.jar&quot;
+      $templateWSMPM     = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.wsmpm_template_11.1.1.jar&quot;
+
+      $templateOSB          = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/wlsb.jar&quot;
+      $templateOWSM         = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/wlsb_owsm.jar&quot;
+      $templateSOAAdapters  = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/oracle.soa.common.adapters_template_11.1.1.jar&quot;
+      $templateSOA          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.soa_template_11.1.1.jar&quot;
+      $templateBPM          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bpm_template_11.1.1.jar&quot;
+      $templateBAM          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bam_template_11.1.1.jar&quot;
+
+      $templateOHS          = &#39;dummy&#39;
+      $templateCoherence    = &#39;dummy&#39;
+
+    } elsif $version == 1112 {
+      $template          = &quot;${weblogic_home_dir}/common/templates/domains/wls.jar&quot;
+      $templateWS        = &quot;${weblogic_home_dir}/common/templates/applications/wls_webservice.jar&quot;
+
+      $templateEM        = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.em_11_1_1_0_0_template.jar&quot;
+      $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/jrf_template_11.1.1.jar&quot;
+      $templateApplCore  = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.11.1.1_template.jar&quot;
+      $templateWSMPM     = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.wsmpm_template_11.1.1.jar&quot;
+
+      $templateOIM       = &quot;${middleware_home_dir}/Oracle_IDM1/common/templates/applications/oracle.oim_11.1.2.0.0_template.jar&quot;
+      $templateOAM       = &quot;${middleware_home_dir}/Oracle_IDM1/common/templates/applications/oracle.oam_ds_11.1.2.0.0_template.jar&quot;
+
+      $templateOUD       = &quot;${middleware_home_dir}/Oracle_OUD1/common/templates/applications/oracle.odsm_11.1.1.5.0_template.jar&quot;
+
+      $templateOSB          = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/wlsb.jar&quot;
+      $templateSOAAdapters  = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/oracle.soa.common.adapters_template_11.1.1.jar&quot;
+      $templateSOA          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.soa_template_11.1.1.jar&quot;
+      $templateBPM          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bpm_template_11.1.1.jar&quot;
+      $templateBAM          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bam_template_11.1.1.jar&quot;
+
+      $templateOHS          = &#39;dummy&#39;
+      $templateCoherence    = &#39;dummy&#39;
+
+    } elsif $version == 1212 {
+      $template          = &quot;${weblogic_home_dir}/common/templates/wls/wls.jar&quot;
+      $templateWS        = &quot;${weblogic_home_dir}/common/templates/wls/wls_webservice.jar&quot;
+      $templateJaxWS     = &quot;${weblogic_home_dir}/common/templates/wls/wls_webservice_jaxws.jar&quot;
+      $templateSoapJms   = &quot;${weblogic_home_dir}/common/templates/wls/wls_webservice_soapjms.jar&quot;
+      $templateCoherence = &quot;${weblogic_home_dir}/common/templates/wls/wls_coherence.jar&quot;
+
+      $templateEM        = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template_12.1.2.jar&quot;
+      $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template_12.1.2.jar&quot;
+      $templateApplCore  = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.12.1.3_template.jar&quot;
+      $templateWSMPM     = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.2.jar&quot;
+
+      if $domain_template == &#39;ohs_standalone&#39; {
+        $templateOHS     = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template_12.1.2.jar&quot;
+      }
+      else {
+        $templateOHS     = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.2.jar&quot;
+      }
+      $templateEMWebTier = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.2.jar&quot;
+
+    } elsif $version == 1213 {
+      $template          = &quot;${weblogic_home_dir}/common/templates/wls/wls.jar&quot;
+      $templateWS        = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template_12.1.3.jar&quot;
+      $templateJaxWS     = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template_12.1.3.jar&quot;
+      $templateSoapJms   = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template_12.1.3.jar&quot;
+      $templateCoherence = &quot;${weblogic_home_dir}/common/templates/wls/wls_coherence_template_12.1.3.jar&quot;
+
+      $templateEM        = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template_12.1.3.jar&quot;
+      $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template_12.1.3.jar&quot;
+      $templateApplCore  = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub.1.0.0_template.jar&quot;
+      $templateWSMPM     = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template_12.1.3.jar&quot;
+
+      if $domain_template == &#39;ohs_standalone&#39; {
+        $templateOHS     = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template_12.1.3.jar&quot;
+      }
+      else {
+        $templateOHS     = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template_12.1.3.jar&quot;
+      }
+      $templateEMWebTier = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template_12.1.3.jar&quot;
+      $templateESS_EM    = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_ess_template_12.1.3.jar&quot;
+      $templateESS       = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.ess.basic_template_12.1.3.jar&quot;
+
+      $templateOSB          = &quot;${middleware_home_dir}/osb/common/templates/wls/oracle.osb_template_12.1.3.jar&quot;
+      $templateSOA          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.soa_template_12.1.3.jar&quot;
+      $templateBPM          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.bpm_template_12.1.3.jar&quot;
+      $templateBAM          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.bam.server_template_12.1.3.jar&quot;
+      $templateB2B          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.soa.b2b_template_12.1.3.jar&quot;
+      $templateHEALTH       = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.soa.healthcare_template_12.1.3.jar&quot;
+
+    } elsif $version &gt;= 1221 {
+      $template          = &quot;${weblogic_home_dir}/common/templates/wls/wls.jar&quot;
+      $templateWS        = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template.jar&quot;
+      $templateJaxWS     = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template.jar&quot;
+      $templateSoapJms   = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template.jar&quot;
+      $templateCoherence = &quot;${weblogic_home_dir}/common/templates/wls/wls_coherence_template.jar&quot;
+
+      if $domain_template == &#39;adf_restricted&#39; {
+        $templateEM        = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_restricted_template.jar&quot;
+        $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_restricted_template.jar&quot;
+        $templateOHS       = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_jrf_restricted_template.jar&quot;
+        $restricted        = true
+      } else {
+        $templateEM        = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_template.jar&quot;
+        $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.jrf_template.jar&quot;
+        if $domain_template == &#39;ohs_standalone&#39; {
+          $templateOHS     = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_standalone_template.jar&quot;
+        }
+        else {
+          $templateOHS     = &quot;${middleware_home_dir}/ohs/common/templates/wls/ohs_managed_template.jar&quot;
+        }
+      }
+
+      $templateApplCore  = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.applcore.model.stub_template.jar&quot;
+      $templateWSMPM     = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wsmpm_template.jar&quot;
+
+      $templateEMWebTier = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_webtier_template.jar&quot;
+      $templateESS_EM    = &quot;${middleware_home_dir}/em/common/templates/wls/oracle.em_ess_template.jar&quot;
+      $templateESS       = &quot;${middleware_home_dir}/oracle_common/common/templates/wls/oracle.ess.basic_template.jar&quot;
+
+      $templateOSB          = &quot;${middleware_home_dir}/osb/common/templates/wls/oracle.osb_template.jar&quot;
+      $templateSOA          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.soa_template.jar&quot;
+      $templateBPM          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.bpm_template.jar&quot;
+      $templateBAM          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.bam.server_template.jar&quot;
+      $templateB2B          = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.soa.b2b_template.jar&quot;
+      $templateHEALTH       = &quot;${middleware_home_dir}/soa/common/templates/wls/oracle.soa.healthcare_template.jar&quot;
+
+    } else {
+      $template          = &quot;${weblogic_home_dir}/common/templates/domains/wls.jar&quot;
+      $templateWS        = &quot;${weblogic_home_dir}/common/templates/applications/wls_webservice.jar&quot;
+
+      $templateEM        = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.em_11_1_1_0_0_template.jar&quot;
+      $templateJRF       = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/jrf_template_11.1.1.jar&quot;
+      $templateJaxWS     = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/wls_webservice_jaxws.jar&quot;
+      $templateApplCore  = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.applcore.model.stub.11.1.1_template.jar&quot;
+      $templateWSMPM     = &quot;${middleware_home_dir}/oracle_common/common/templates/applications/oracle.wsmpm_template_11.1.1.jar&quot;
+
+      $templateOSB          = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/wlsb.jar&quot;
+      $templateSOAAdapters  = &quot;${middleware_home_dir}/Oracle_OSB1/common/templates/applications/oracle.soa.common.adapters_template_11.1.1.jar&quot;
+      $templateSOA          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.soa_template_11.1.1.jar&quot;
+      $templateBPM          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bpm_template_11.1.1.jar&quot;
+      $templateBAM          = &quot;${middleware_home_dir}/Oracle_SOA1/common/templates/applications/oracle.bam_template_11.1.1.jar&quot;
+    }
+
+
+    $templateSpaces       = &quot;${middleware_home_dir}/Oracle_WC1/common/templates/applications/oracle.wc_spaces_template_11.1.1.jar&quot;
+    $templateBPMSpaces    = &quot;${middleware_home_dir}/Oracle_WC1/common/templates/applications/oracle.bpm.spaces_template_11.1.1.jar&quot;
+    $templatePortlets     = &quot;${middleware_home_dir}/Oracle_WC1/common/templates/applications/oracle.producer_apps_template_11.1.1.jar&quot;
+    $templatePagelet      = &quot;${middleware_home_dir}/Oracle_WC1/common/templates/applications/oracle.pagelet-producer_template_11.1.1.jar&quot;
+    $templateDiscussion   = &quot;${middleware_home_dir}/Oracle_WC1/common/templates/applications/oracle.owc_discussions_template_11.1.1.jar&quot;
+
+    $templateUCM          = &quot;${middleware_home_dir}/Oracle_WCC1/common/templates/applications/oracle.ucm.cs_template_11.1.1.jar&quot;
+
+    if $domain_template != &#39;ohs_standalone&#39; {
+      $templateFile = &#39;orawls/domains/domain.py.epp&#39;
+    }
+
+    if $domain_template == &#39;ohs_standalone&#39; {
+      if ( $version == 1212 or $version == 1213 or $version &gt;= 1221) {
+        $extensionsTemplateFile = undef
+        $wlstPath       = &quot;${middleware_home_dir}/ohs/common/bin&quot;
+        $templateFile = &#39;orawls/ohs/domain.py.epp&#39;
+      }
+      else {
+        fail(&quot;OHS Standalone domain configuration currently works only with version 12.1.2, 12.1.3 or 12.1.2. Version ${version} not supported.&quot;)
+      }
+    }
+    elsif $domain_template == &#39;standard&#39; {
+      $extensionsTemplateFile = undef
+      $wlstPath       = &quot;${weblogic_home_dir}/common/bin&quot;
+
+    } elsif $domain_template == &#39;osb&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/osb_template.py.erb&#39;
+
+      if ( $version &gt;= 1221 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+      }
+      elsif ( $version == 1213 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/osb/common/bin&quot;
+      }
+      else {
+        $wlstPath      = &quot;${middleware_home_dir}/Oracle_OSB1/common/bin&quot;
+      }
+
+    } elsif $domain_template == &#39;osb_soa&#39; or $domain_template == &#39;osb_soa_bpm&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/soa_osb_template.py.erb&#39;
+
+      if ( $version &gt;= 1221 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+      }
+      elsif ( $version == 1213 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/soa/common/bin&quot;
+      }
+      else {
+        $wlstPath      = &quot;${middleware_home_dir}/Oracle_SOA1/common/bin&quot;
+      }
+      if $domain_template == &#39;osb_soa&#39; {
+        $bpm           = false
+      } elsif $domain_template == &#39;osb_soa_bpm&#39;  {
+        $bpm           = true
+      }
+
+    } elsif $domain_template == &#39;soa&#39; or $domain_template == &#39;soa_bpm&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/soa_template.py.erb&#39;
+
+      if ( $version &gt;= 1221) {
+        $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+      }
+      elsif ( $version == 1213 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/soa/common/bin&quot;
+      }
+      else {
+        $wlstPath      = &quot;${middleware_home_dir}/Oracle_SOA1/common/bin&quot;
+      }
+      if $domain_template == &#39;soa&#39; {
+        $bpm           = false
+      } elsif $domain_template == &#39;soa_bpm&#39;  {
+        $bpm           = true
+      }
+
+    } elsif $domain_template == &#39;bam&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/bam_template.py.erb&#39;
+
+      if ( $version &gt;= 1221) {
+        $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+      }
+      elsif ( $version == 1213 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/soa/common/bin&quot;
+      }
+      else {
+        $wlstPath      = &quot;${middleware_home_dir}/Oracle_SOA1/common/bin&quot;
+      }
+
+    } elsif ( $domain_template == &#39;adf&#39; or $domain_template == &#39;adf_restricted&#39; ) {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/jrf_template.py.erb&#39;
+
+      $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+
+    } elsif $domain_template == &#39;oim&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/oim_oam_template.py.erb&#39;
+
+      $wlstPath      = &quot;${middleware_home_dir}/Oracle_IDM1/common/bin&quot;
+
+    } elsif $domain_template == &#39;oud&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/oud_template.py.erb&#39;
+
+      $wlstPath      = &quot;${weblogic_home_dir}/common/bin&quot;
+
+    } elsif $domain_template == &#39;wc&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/wc_template.py.erb&#39;
+
+      if ( $version &gt;= 1221) {
+        $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+      }
+      else {
+        $wlstPath      = &quot;${middleware_home_dir}/Oracle_WC1/common/bin&quot;
+      }
+    } elsif $domain_template == &#39;wc_wcc_bpm&#39; {
+      $extensionsTemplateFile = &#39;orawls/domains/extensions/wc_wcc_template.py.erb&#39;
+
+      if ( $version &gt;= 1221 ) {
+        $wlstPath      = &quot;${middleware_home_dir}/oracle_common/common/bin&quot;
+      }
+      else {
+        $wlstPath      = &quot;${middleware_home_dir}/Oracle_WCC1/common/bin&quot;
+      }
+    } else {
+      $extensionsTemplateFile = undef
+
+      $wlstPath       = &quot;${weblogic_home_dir}/common/bin&quot;
+    }
+
+    $exec_path         = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
+
+    Exec {
+      logoutput =&gt; $log_output,
+    }
+
+    if $log_dir == undef {
+      $admin_nodemanager_log_dir = &quot;${domain_dir}/servers/${adminserver_name}/logs&quot;
+      $nodeMgrLogDir             = &quot;${domain_dir}/nodemanager/nodemanager.log&quot;
+
+
+      $osb_nodemanager_log_dir   = &quot;${domain_dir}/servers/osb_server1/logs&quot;
+      $soa_nodemanager_log_dir   = &quot;${domain_dir}/servers/soa_server1/logs&quot;
+      $bam_nodemanager_log_dir   = &quot;${domain_dir}/servers/bam_server1/logs&quot;
+      $ess_nodemanager_log_dir   = &quot;${domain_dir}/servers/ess_server1/logs&quot;
+
+      $oim_nodemanager_log_dir   = &quot;${domain_dir}/servers/oim_server1/logs&quot;
+      $oam_nodemanager_log_dir   = &quot;${domain_dir}/servers/oam_server1/logs&quot;
+      $bi_nodemanager_log_dir    = &quot;${domain_dir}/servers/bi_server1/logs&quot;
+
+      $wcCollaboration_nodemanager_log_dir   = &quot;${domain_dir}/servers/WC_Collaboration/logs&quot;
+      $wcPortlet_nodemanager_log_dir         = &quot;${domain_dir}/servers/WC_Portlet/logs&quot;
+      $wcSpaces_nodemanager_log_dir          = &quot;${domain_dir}/servers/WC_Spaces/logs&quot;
+      $umc_nodemanager_log_dir               = &quot;${domain_dir}/servers/UCM_server1/logs&quot;
+
+
+    } else {
+      $admin_nodemanager_log_dir = $log_dir
+      $nodeMgrLogDir             = &quot;${log_dir}/nodemanager_${domain_name}.log&quot;
+
+      $osb_nodemanager_log_dir   = $log_dir
+      $soa_nodemanager_log_dir   = $log_dir
+      $bam_nodemanager_log_dir   = $log_dir
+      $ess_nodemanager_log_dir   = $log_dir
+
+      $oim_nodemanager_log_dir   = $log_dir
+      $oam_nodemanager_log_dir   = $log_dir
+      $bi_nodemanager_log_dir    = $log_dir
+
+      $wcCollaboration_nodemanager_log_dir   = $log_dir
+      $wcPortlet_nodemanager_log_dir         = $log_dir
+      $wcSpaces_nodemanager_log_dir          = $log_dir
+      $umc_nodemanager_log_dir               = $log_dir
+
+
+      # create all log folders
+      if !defined(Exec[&quot;create ${log_dir} directory&quot;]) {
+        exec { &quot;create ${log_dir} directory&quot;:
+          command =&gt; &quot;mkdir -p ${log_dir}&quot;,
+          unless  =&gt; &quot;test -d ${log_dir}&quot;,
+          user    =&gt; $puppet_os_user,
+          path    =&gt; $exec_path,
+        }
+      }
+
+      if !defined(File[$log_dir]) {
+        file { $log_dir:
+          ensure  =&gt; directory,
+          recurse =&gt; true,
+          replace =&gt; false,
+          require =&gt; Exec[&quot;create ${log_dir} directory&quot;],
+          mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+          owner   =&gt; $os_user,
+          group   =&gt; $os_group,
+        }
+      }
+    }
+
+    # the utils.py used by the wlst
+    if !defined(File[&quot;${download_dir}/utils.py&quot;]) {
+      file { &quot;${download_dir}/utils.py&quot;:
+        ensure  =&gt; present,
+        path    =&gt; &quot;${download_dir}/utils.py&quot;,
+        source  =&gt; &#39;puppet:///modules/orawls/wlst/utils.py&#39;,
+        replace =&gt; true,
+        backup  =&gt; false,
+        mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+      }
+    }
+
+    if($extensionsTemplateFile) {
+      file { &quot;domain_extension.py ${domain_name} ${title}&quot;:
+        ensure  =&gt; present,
+        path    =&gt; &quot;${download_dir}/domain_extension_${domain_name}.py&quot;,
+        content =&gt; template($extensionsTemplateFile),
+        replace =&gt; true,
+        backup  =&gt; false,
+        mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+        # require =&gt; File[$download_dir],
+        before  =&gt; File[&quot;domain.py ${domain_name} ${title}&quot;],
+      }
+    }
+
+    # the domain.py used by the wlst
+    file { &quot;domain.py ${domain_name} ${title}&quot;:
+      ensure  =&gt; present,
+      path    =&gt; &quot;${download_dir}/domain_${domain_name}.py&quot;,
+      content =&gt; epp($templateFile, {
+                    &#39;domain_name&#39;                           =&gt; $domain_name,
+                    &#39;domain_dir&#39;                            =&gt; $domain_dir,
+                    &#39;version&#39;                               =&gt; $version,
+                    &#39;templateOHS&#39;                           =&gt; $templateOHS,
+                    &#39;template&#39;                              =&gt; $template,
+                    &#39;templateCoherence&#39;                     =&gt; $templateCoherence,
+                    &#39;nodemanager_username&#39;                  =&gt; $nodemanager_username,
+                    &#39;nodemanager_password&#39;                  =&gt; $nodemanager_password,
+                    &#39;adminserver_address&#39;                   =&gt; $adminserver_address,
+                    &#39;adminserver_port&#39;                      =&gt; $adminserver_port,
+                    &#39;ohs_standalone_listen_address&#39;         =&gt; $ohs_standalone_listen_address,
+                    &#39;ohs_standalone_listen_port&#39;            =&gt; $ohs_standalone_listen_port,
+                    &#39;ohs_standalone_ssl_listen_port&#39;        =&gt; $ohs_standalone_ssl_listen_port,
+                    &#39;download_dir&#39;                          =&gt; $download_dir,
+                    &#39;weblogic_home_dir&#39;                     =&gt; $weblogic_home_dir,
+                    &#39;apps_dir&#39;                              =&gt; $apps_dir,
+                    &#39;jsse_enabled&#39;                          =&gt; $jsse_enabled,
+                    &#39;development_mode&#39;                      =&gt; $development_mode,
+                    &#39;adminserver_name&#39;                      =&gt; $adminserver_name,
+                    &#39;weblogic_user&#39;                         =&gt; $weblogic_user,
+                    &#39;weblogic_password&#39;                     =&gt; $weblogic_password,
+                    &#39;jdk_home_dir&#39;                          =&gt; $jdk_home_dir,
+                    &#39;domain_password&#39;                       =&gt; $domain_password,
+                    &#39;adminserver_listen_on_all_interfaces&#39;  =&gt; $adminserver_listen_on_all_interfaces,
+                    &#39;nodemanager_secure_listener&#39;           =&gt; $nodemanager_secure_listener,
+                    &#39;create_default_coherence_cluster&#39;      =&gt; $create_default_coherence_cluster,
+                    &#39;java_arguments&#39;                        =&gt; $java_arguments,
+                    &#39;admin_nodemanager_log_dir&#39;             =&gt; $admin_nodemanager_log_dir,
+                    &#39;adminserver_machine_name&#39;              =&gt; $adminserver_machine_name,
+                    &#39;adminserver_ssl_port&#39;                  =&gt; $adminserver_ssl_port,
+                    &#39;custom_identity&#39;                       =&gt; $custom_identity,
+                    &#39;custom_identity_keystore_filename&#39;     =&gt; $custom_identity_keystore_filename,
+                    &#39;custom_identity_keystore_passphrase&#39;   =&gt; $custom_identity_keystore_passphrase,
+                    &#39;trust_keystore_file&#39;                   =&gt; $trust_keystore_file,
+                    &#39;trust_keystore_passphrase&#39;             =&gt; $trust_keystore_passphrase,
+                    &#39;custom_identity_alias&#39;                 =&gt; $custom_identity_alias,
+                    &#39;custom_identity_privatekey_passphrase&#39; =&gt; $custom_identity_privatekey_passphrase }),
+      replace =&gt; true,
+      backup  =&gt; false,
+      mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+      require =&gt; File[&quot;${download_dir}/utils.py&quot;],
+    }
+
+    if ( $domains_dir == &quot;${middleware_home_dir}/user_projects/domains&quot;){
+      if !defined(File[&#39;weblogic_domain_folder&#39;]) {
+          # check oracle install folder
+          file { &#39;weblogic_domain_folder&#39;:
+            ensure  =&gt; directory,
+            path    =&gt; &quot;${middleware_home_dir}/user_projects&quot;,
+            recurse =&gt; false,
+            replace =&gt; false,
+            mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+            owner   =&gt; $os_user,
+            group   =&gt; $os_group,
+          }
+        File[&#39;weblogic_domain_folder&#39;] -&gt; File[$domains_dir]
+      }
+    }
+
+    if !defined(File[$domains_dir]) {
+      # check oracle install folder
+      file { $domains_dir:
+        ensure  =&gt; directory,
+        recurse =&gt; true,
+        replace =&gt; false,
+        mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+      }
+    }
+
+    if $apps_dir != undef {
+      if !defined(File[$apps_dir]) {
+        # check oracle install folder
+        file { $apps_dir:
+          ensure  =&gt; directory,
+          recurse =&gt; true,
+          replace =&gt; false,
+          mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+          owner   =&gt; $os_user,
+          group   =&gt; $os_group,
+        }
+      }
+      # File[$apps_dir] -&gt; Exec[&quot;execwlst ${domain_name} ${title}&quot;]
+    }
+
+    # FMW RCU only for wls 12.1.2 or higher and when template is not standard
+    if ( $version &gt;= 1212 and $domain_template != &#39;standard&#39; and $domain_template != &#39;adf_restricted&#39; and $domain_template != &#39;ohs_standalone&#39; ) {
+
+      if ( $domain_template == &#39;adf&#39; ) {
+        $rcu_domain_template = &#39;adf&#39;
+
+      } elsif ( $domain_template in [&#39;soa&#39;, &#39;osb&#39;, &#39;osb_soa_bpm&#39;, &#39;osb_soa&#39;, &#39;soa_bpm&#39;, &#39;bam&#39;] ){
+        $rcu_domain_template = &#39;soa&#39;
+
+      } elsif ($create_rcu == undef or $create_rcu == true) {
+        fail(&#39;unkown domain_template for rcu with version 1212 or 1213&#39;)
+      }
+
+      if ( $create_rcu == undef or $create_rcu == true)
+      {
+
+        # only works for a 12c middleware home
+        # creates RCU for ADF
+        if ( $rcu_database_url == undefined or $repository_sys_password == undefined or $repository_password == undefined or $repository_prefix == undefined ){
+          fail(&#39;Not all RCU parameters are provided&#39;)
+        }
+
+        orawls::utils::rcu{ &quot;RCU_12c ${title}&quot;:
+          version                     =&gt; $version,
+          fmw_product                 =&gt; $rcu_domain_template,
+          oracle_fmw_product_home_dir =&gt; &quot;${middleware_home_dir}/oracle_common&quot;,
+          jdk_home_dir                =&gt; $jdk_home_dir,
+          os_user                     =&gt; $os_user,
+          os_group                    =&gt; $os_group,
+          download_dir                =&gt; $download_dir,
+          rcu_action                  =&gt; &#39;create&#39;,
+          rcu_jdbc_url                =&gt; $repository_database_url,
+          rcu_database_url            =&gt; $rcu_database_url,
+          rcu_sys_user                =&gt; $repository_sys_user,
+          rcu_sys_password            =&gt; $repository_sys_password,
+          rcu_prefix                  =&gt; $repository_prefix,
+          rcu_password                =&gt; $repository_password,
+          log_output                  =&gt; $log_output,
+          before                      =&gt; Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+        }
+      }
+    }
+
+    # create domain
+    exec { &quot;execwlst ${domain_name} ${title}&quot;:
+      command     =&gt; &quot;${wlstPath}/wlst.sh domain_${domain_name}.py&quot;,
+      environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+      unless      =&gt; &quot;/usr/bin/test -e ${domain_dir}&quot;,
+      creates     =&gt; $domain_dir,
+      cwd         =&gt; $download_dir,
+      require     =&gt; [File[&quot;domain.py ${domain_name} ${title}&quot;],
+                      File[&quot;${download_dir}/utils.py&quot;],
+                      File[$domains_dir],],
+      timeout     =&gt; 0,
+      path        =&gt; $exec_path,
+      user        =&gt; $os_user,
+      group       =&gt; $os_group,
+    }
+
+    if ($domain_template == &#39;ohs_standalone&#39;) {
+      ## Create OHS standalone config directory
+      file { &quot;${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.d&quot;:
+        ensure  =&gt; directory,
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+        mode    =&gt; &#39;0640&#39;,
+        require =&gt; Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+      }
+
+      if ( $version &lt;= 1212 ){
+        $source_mod = &#39;puppet:///modules/orawls/mod_wl_ohs.conf&#39;
+      } else {
+        $source_mod = &#39;puppet:///modules/orawls/mod_wl_ohs_12c.conf&#39;
+      }
+
+      file { &quot;${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.conf&quot;:
+        ensure  =&gt; present,
+        source  =&gt; $source_mod,
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+        mode    =&gt; &#39;0640&#39;,
+        require =&gt; Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+      }
+    }
+
+    if($extensionsTemplateFile) {
+      exec { &quot;execwlst ${domain_name} extension ${title}&quot;:
+        command     =&gt; &quot;${wlstPath}/wlst.sh domain_extension_${domain_name}.py&quot;,
+        environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+        cwd         =&gt; $download_dir,
+        timeout     =&gt; 0,
+        path        =&gt; $exec_path,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+        require     =&gt; [Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+                        File[&quot;domain_extension.py ${domain_name} ${title}&quot;],],
+      }
+    }
+
+    # remove nodemanager properties so we can later add custom trust parameters in nodemanager.p
+    if ( $custom_trust == true and ($version == 1212 or $version == 1213 or $version &gt;= 1211 )) {
+      exec { &quot;rm ${domain_name} nodemanager.properties&quot;:
+        command =&gt; &quot;rm -rf ${$domain_dir}/nodemanager/nodemanager.properties&quot;,
+        cwd     =&gt; $download_dir,
+        timeout =&gt; 0,
+        path    =&gt; $exec_path,
+        user    =&gt; $os_user,
+        group   =&gt; $os_group,
+        require =&gt; Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+      }
+      if $extensionsTemplateFile {
+        Exec[&quot;execwlst ${domain_name} extension ${title}&quot;] -&gt; Exec[&quot;rm ${domain_name} nodemanager.properties&quot;]
+      }
+    }
+
+    yaml_setting { &quot;domain ${title}&quot;:
+      target  =&gt;  $wls_domains_file,
+      key     =&gt;  &quot;domains/${domain_name}&quot;,
+      value   =&gt;  $domain_dir,
+      require =&gt;  Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+    }
+
+    if ($domain_template == &#39;oim&#39;) {
+
+      file { &quot;${download_dir}/${title}psa_opss_upgrade.rsp&quot;:
+        ensure  =&gt; present,
+        content =&gt; template(&#39;orawls/oim/psa_opss_upgrade.rsp.erb&#39;),
+        mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+        backup  =&gt; false,
+      }
+
+      exec { &quot;exec PSA OPSS store upgrade ${domain_name} ${title}&quot;:
+        command =&gt; &quot;${middleware_home_dir}/oracle_common/bin/psa -response ${download_dir}/${title}psa_opss_upgrade.rsp&quot;,
+        require =&gt; [Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+                    Exec[&quot;execwlst ${domain_name} extension ${title}&quot;],
+                    File[&quot;${download_dir}/${title}psa_opss_upgrade.rsp&quot;],],
+        timeout =&gt; 0,
+        cwd     =&gt; $download_dir, # Added since psa binary saves and changes to current dir
+        path    =&gt; $exec_path,
+        user    =&gt; $os_user,
+        group   =&gt; $os_group,
+      }
+
+      exec { &quot;execwlst create OPSS store ${domain_name} ${title}&quot;:
+        command     =&gt; &quot;${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m create -c IAM -p ${repository_password}&quot;,
+        environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+        require     =&gt; [Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+                        Exec[&quot;execwlst ${domain_name} extension ${title}&quot;],
+                        Exec[&quot;exec PSA OPSS store upgrade ${domain_name} ${title}&quot;],],
+        timeout     =&gt; 0,
+        path        =&gt; $exec_path,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+      }
+
+      exec { &quot;execwlst validate OPSS store ${domain_name} ${title}&quot;:
+        command     =&gt; &quot;${wlstPath}/wlst.sh ${middleware_home_dir}/Oracle_IDM1/common/tools/configureSecurityStore.py -d ${domain_dir} -m validate&quot;,
+        environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+        require     =&gt; [Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+                        Exec[&quot;execwlst ${domain_name} extension ${title}&quot;],
+                        Exec[&quot;execwlst create OPSS store ${domain_name} ${title}&quot;]],
+        timeout     =&gt; 0,
+        path        =&gt; $exec_path,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+      }
+
+    }
+
+    if $facts[&#39;kernel&#39;] == &#39;SunOS&#39; {
+
+      if ($domain_template == &#39;osb&#39; or
+          $domain_template == &#39;osb_soa&#39; or
+          $domain_template == &#39;osb_soa_bpm&#39;){
+
+        exec { &quot;setDebugFlagOnFalse ${domain_name} ${title}&quot;:
+          command =&gt; &quot;sed -e&#39;s/debugFlag=\&quot;true\&quot;/debugFlag=\&quot;false\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh &gt; /tmp/domain.tmp &amp;&amp; mv /tmp/domain.tmp ${domain_dir}/bin/setDomainEnv.sh&quot;,
+          onlyif  =&gt; &quot;/bin/grep debugFlag=\&quot;true\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+          require =&gt; [Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+                      Exec[&quot;execwlst ${domain_name} extension ${title}&quot;],],
+          path    =&gt; $exec_path,
+          user    =&gt; $os_user,
+          group   =&gt; $os_group,
+        }
+
+        exec { &quot;setOSBDebugFlagOnFalse ${domain_name} ${title}&quot;:
+          command =&gt; &quot;sed -e&#39;s/ALSB_DEBUG_FLAG=\&quot;true\&quot;/ALSB_DEBUG_FLAG=\&quot;false\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh &gt; /tmp/domain2.tmp &amp;&amp; mv /tmp/domain2.tmp ${domain_dir}/bin/setDomainEnv.sh&quot;,
+          onlyif  =&gt; &quot;/bin/grep ALSB_DEBUG_FLAG=\&quot;true\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+          require =&gt; Exec[&quot;setDebugFlagOnFalse ${domain_name} ${title}&quot;],
+          path    =&gt; $exec_path,
+          user    =&gt; $os_user,
+          group   =&gt; $os_group,
+        }
+
+        if ( $owsm_enabled == true ) {
+          exec { &quot;setDERBY_FLAGOnFalse ${domain_name} ${title}&quot;:
+            command =&gt; &quot;sed -e&#39;s/DERBY_FLAG=\&quot;true\&quot;/DERBY_FLAG=\&quot;false\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh &gt; /tmp/domain3.tmp &amp;&amp; mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh&quot;,
+            onlyif  =&gt; &quot;/bin/grep DERBY_FLAG=\&quot;true\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+            require =&gt; Exec[&quot;setOSBDebugFlagOnFalse ${domain_name} ${title}&quot;],
+            path    =&gt; $exec_path,
+            user    =&gt; $os_user,
+            group   =&gt; $os_group,
+          }
+        } else {
+          exec { &quot;setDERBY_FLAGOnTrue ${domain_name} ${title}&quot;:
+            command =&gt; &quot;sed -e&#39;s/DERBY_FLAG=\&quot;false\&quot;/DERBY_FLAG=\&quot;true\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh &gt; /tmp/domain3.tmp &amp;&amp; mv /tmp/domain3.tmp ${domain_dir}/bin/setDomainEnv.sh&quot;,
+            onlyif  =&gt; &quot;/bin/grep DERBY_FLAG=\&quot;false\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+            require =&gt; Exec[&quot;setOSBDebugFlagOnFalse ${domain_name} ${title}&quot;],
+            path    =&gt; $exec_path,
+            user    =&gt; $os_user,
+            group   =&gt; $os_group,
+          }
+        }
+
+      }
+
+    } else {
+
+
+      if ($domain_template == &#39;osb&#39; or
+          $domain_template == &#39;osb_soa&#39; or
+          $domain_template == &#39;osb_soa_bpm&#39;){
+
+        exec { &quot;setDebugFlagOnFalse ${domain_name} ${title}&quot;:
+          command =&gt; &quot;sed -i -e&#39;s/debugFlag=\&quot;true\&quot;/debugFlag=\&quot;false\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh&quot;,
+          onlyif  =&gt; &quot;/bin/grep debugFlag=\&quot;true\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+          require =&gt; [Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+                      Exec[&quot;execwlst ${domain_name} extension ${title}&quot;],],
+          path    =&gt; $exec_path,
+          user    =&gt; $os_user,
+          group   =&gt; $os_group,
+        }
+
+        exec { &quot;setOSBDebugFlagOnFalse ${domain_name} ${title}&quot;:
+          command =&gt; &quot;sed -i -e&#39;s/ALSB_DEBUG_FLAG=\&quot;true\&quot;/ALSB_DEBUG_FLAG=\&quot;false\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh&quot;,
+          onlyif  =&gt; &quot;/bin/grep ALSB_DEBUG_FLAG=\&quot;true\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+          require =&gt; Exec[&quot;setDebugFlagOnFalse ${domain_name} ${title}&quot;],
+          path    =&gt; $exec_path,
+          user    =&gt; $os_user,
+          group   =&gt; $os_group,
+        }
+
+        if ( $owsm_enabled == true ) {
+          exec { &quot;setDERBY_FLAGOnFalse ${domain_name} ${title}&quot;:
+            command =&gt; &quot;sed -i -e&#39;s/DERBY_FLAG=\&quot;true\&quot;/DERBY_FLAG=\&quot;false\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh&quot;,
+            onlyif  =&gt; &quot;/bin/grep DERBY_FLAG=\&quot;true\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+            require =&gt; Exec[&quot;setOSBDebugFlagOnFalse ${domain_name} ${title}&quot;],
+            path    =&gt; $exec_path,
+            user    =&gt; $os_user,
+            group   =&gt; $os_group,
+          }
+        } else {
+          exec { &quot;setDERBY_FLAGOnTrue ${domain_name} ${title}&quot;:
+            command =&gt; &quot;sed -i -e&#39;s/DERBY_FLAG=\&quot;false\&quot;/DERBY_FLAG=\&quot;true\&quot;/g&#39; ${domain_dir}/bin/setDomainEnv.sh&quot;,
+            onlyif  =&gt; &quot;/bin/grep DERBY_FLAG=\&quot;false\&quot; ${domain_dir}/bin/setDomainEnv.sh | /usr/bin/wc -l&quot;,
+            require =&gt; Exec[&quot;setOSBDebugFlagOnFalse ${domain_name} ${title}&quot;],
+            path    =&gt; $exec_path,
+            user    =&gt; $os_user,
+            group   =&gt; $os_group,
+          }
+        }
+
+      }
+    }
+
+    exec { &quot;domain.py ${domain_name} ${title}&quot;:
+      command =&gt; &quot;rm ${download_dir}/domain_${domain_name}.py&quot;,
+      require =&gt; Exec[&quot;execwlst ${domain_name} ${title}&quot;],
+      path    =&gt; $exec_path,
+      user    =&gt; $os_user,
+      group   =&gt; $os_group,
+    }
+
+    if($extensionsTemplateFile) {
+      exec { &quot;domain.py ${domain_name} extension ${title}&quot;:
+        command =&gt; &quot;rm ${download_dir}/domain_extension_${domain_name}.py&quot;,
+        require =&gt; Exec[&quot;execwlst ${domain_name} extension ${title}&quot;],
+        path    =&gt; $exec_path,
+        user    =&gt; $os_user,
+        group   =&gt; $os_group,
+      }
+    }
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Mon Feb 20 17:19:03 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.8 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

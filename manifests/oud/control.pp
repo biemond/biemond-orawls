@@ -1,7 +1,12 @@
-# == Define: orawls::oud::control
+#
+# oud::control define
 #
 # start or stop an Oracle Unified Directory LDAP instance
-##
+#
+# @param os_user the user name with oracle as default, will be default derived from the weblogic class
+# @param os_group the group name with dba as default, will be default derived from the weblogic class
+# @param log_output show all the output of the the exec actions, will be default derived from the weblogic class
+#
 define orawls::oud::control(
   String $oud_instances_home_dir               = undef,
   String $oud_instance_name                    = undef,

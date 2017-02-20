@@ -1,15 +1,7 @@
-# Class: orawls
 #
-# This module manages orawls
+# orawls module init class
 #
-# Parameters: none
-#
-# Actions:
-#
-# Requires: see Modulefile
-#
-# Sample Usage:
+# Is not used for now
 #
 class orawls {
-
 }

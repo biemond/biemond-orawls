@@ -1,11 +1,11 @@
 # Oracle WebLogic / Fusion Middleware puppet module V2
 [![Build Status](https://travis-ci.org/biemond/biemond-orawls.svg?branch=master)](https://travis-ci.org/biemond/biemond-orawls) ![Puppet Forge Version](https://img.shields.io/puppetforge/v/biemond/orawls.svg) ![Puppet Forge Score](https://img.shields.io/puppetforge/f/biemond/orawls.svg) ![Puppet Forge Downloads](http://img.shields.io/puppetforge/dt/biemond/orawls.svg) [![Code Climate](https://codeclimate.com/github/biemond/biemond-orawls/badges/gpa.svg)](https://codeclimate.com/github/biemond/biemond-orawls) [![Coverage Status](https://coveralls.io/repos/biemond/biemond-orawls/badge.svg?branch=master&service=github)](https://coveralls.io/github/biemond/biemond-orawls?branch=master)
 
-Install, configures and manages WebLogic version 10.3 - 12.2.1.1
+Install, configures and manages WebLogic version 10.3 - 12.2.1
 
 This module should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86
 
-Only for Puppet >= 4.3 and uses the latest puppet 4 features like
+Only for Puppet >= 4.3 and this module uses the latest puppet 4 features like
 - Strong data typing
 - Internal hiera module data
 - uses Facts array

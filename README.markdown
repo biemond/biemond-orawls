@@ -33,6 +33,7 @@ More: https://github.com/biemond/biemond-orawls/graphs/contributors
 ## Support
 
 If you need support, checkout the [wls_install](https://www.enterprisemodules.com/shop/products/puppet-wls_install-module) and [wls_config](https://www.enterprisemodules.com/shop/products/puppet-wls_config-module) modules from [Enterprise Modules](https://www.enterprisemodules.com/)
+
 [![Enterprise Modules](https://www.enterprisemodules.com/images/puppet-logo.png)](https://www.enterprisemodules.com)
 
 ## Dependencies

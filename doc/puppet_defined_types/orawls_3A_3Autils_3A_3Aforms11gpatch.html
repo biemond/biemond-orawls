@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Defined Type: orawls::bsu
+  Defined Type: orawls::utils::forms11gpatch
   
     &mdash; Documentation by YARD 0.9.8
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_defined_types::orawls::bsu";
+  pathId = "puppet_defined_types::orawls::utils::forms11gpatch";
   relpath = '../';
 </script>
 
@@ -39,14 +39,14 @@
     <a href="../_index.html">Index (o)</a> &raquo;
     <span class='title'><span class='object_link'>Defined Types</span></span>
      &raquo; 
-    <span class="title">orawls::bsu</span>
+    <span class="title">orawls::utils::forms11gpatch</span>
   
 </div>
 
         <div id="search">
   
-    <a class="full_list_link" id="puppet_class_list_link"
-        href="../puppet_class_list.html">
+    <a class="full_list_link" id="puppet_defined_type_list_link"
+        href="../puppet_defined_type_list.html">
 
         <svg width="24" height="24">
           <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
@@ -59,12 +59,12 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Defined Type: orawls::bsu</h1>
+      <div id="content"><h1>Defined Type: orawls::utils::forms11gpatch</h1>
 <div class="box_info">
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      manifests/bsu.pp
+      manifests/utils/forms11gpatch.pp
     </dd>
   </dl>
 </div>
@@ -72,9 +72,9 @@
 <div class="docstring">
   <div class="discussion">
     
-<p>bsu define</p>
+<p>utils::forms11gpatch define</p>
 
-<p>installs WebLogic 11g BSU patch</p>
+<p>installs FMW 11g forms patch</p>
 
   </div>
 </div>
@@ -217,19 +217,6 @@ derived from the weblogic class</p>
   
     <li>
       
-        <span class='name'>ensure</span>
-      
-      
-        <span class='type'>(<tt>Enum['present','absent']</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
-      
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>version</span>
       
       
@@ -243,7 +230,7 @@ derived from the weblogic class</p>
   
     <li>
       
-        <span class='name'>patch_id</span>
+        <span class='name'>oracle_base_home_dir</span>
       
       
         <span class='type'>(<tt>String</tt>)</span>
@@ -256,7 +243,20 @@ derived from the weblogic class</p>
   
     <li>
       
-        <span class='name'>patch_file</span>
+        <span class='name'>oracle_home_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fmw_file1</span>
       
       
         <span class='type'>(<tt>String</tt>)</span>
@@ -289,6 +289,19 @@ derived from the weblogic class</p>
       
       
         <em class="default">(defaults to: <tt>$::orawls::weblogic::remote_file</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>temp_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>lookup(&#39;orawls::tmp_dir&#39;)</tt>)</em>
       
       
     </li>
@@ -395,103 +408,145 @@ derived from the weblogic class</p>
 103
 104
 105
-106</pre>
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/bsu.pp', line 14</span>
+        <pre class="code"><span class="info file"># File 'manifests/utils/forms11gpatch.pp', line 14</span>
 
-define orawls::bsu (
-  Enum[&#39;present&#39;,&#39;absent&#39;] $ensure  = &#39;present&#39;,
-  Integer $version                  = $::orawls::weblogic::version,
-  String $weblogic_home_dir         = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir       = $::orawls::weblogic::middleware_home_dir,
-  String $jdk_home_dir              = $::orawls::weblogic::jdk_home_dir,
-  String $patch_id                  = undef,
-  String $patch_file                = undef,
-  String $os_user                   = $::orawls::weblogic::os_user,
-  String $os_group                  = $::orawls::weblogic::os_group,
-  String $download_dir              = $::orawls::weblogic::download_dir,
-  String $puppet_download_mnt_point = $::orawls::weblogic::puppet_download_mnt_point,
-  Boolean $remote_file              = $::orawls::weblogic::remote_file,
-  Boolean $log_output               = $::orawls::weblogic::log_output,
+define orawls::utils::forms11gpatch (
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $oracle_base_home_dir                            = undef,
+  Optional[String] $oracle_home_dir                       = undef, # /opt/oracle/middleware/Oracle_FRM1
+  String $fmw_file1                                       = undef,
+  String $puppet_download_mnt_point                       = $::orawls::weblogic::puppet_download_mnt_point,
+  Boolean $remote_file                                    = $::orawls::weblogic::remote_file,
+  String $temp_dir                                        = lookup(&#39;orawls::tmp_dir&#39;),
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
 )
 {
+  $fmw_product  = &#39;forms_patch&#39;
   $exec_path = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
+  $oraInventory = &quot;${oracle_base_home_dir}/oraInventory&quot;
 
-  if !defined(File[&quot;${middleware_home_dir}/utils/bsu/cache_dir&quot;]) {
-    file { &quot;${middleware_home_dir}/utils/bsu/cache_dir&quot;:
-      ensure  =&gt; directory,
-      recurse =&gt; false,
-      mode    =&gt; lookup(&#39;orawls::permissions&#39;),
-      owner   =&gt; $os_user,
-      group   =&gt; $os_group,
+  case $facts[&#39;kernel&#39;] {
+    &#39;Linux&#39;: {
+      $oraInstPath = &#39;/etc&#39;
+      case $facts[&#39;architecture&#39;] {
+        &#39;i386&#39;: {
+          $installDir = &#39;linux&#39;
+        }
+        default: {
+          $installDir = &#39;linux64&#39;
+        }
+      }
     }
+    &#39;SunOS&#39;: {
+      $oraInstPath = &#39;/var/opt/oracle&#39;
+      case $facts[&#39;architecture&#39;] {
+        &#39;i86pc&#39;: {
+          $installDir = &#39;intelsolaris&#39;
+        }
+        default: {
+          $installDir = &#39;solaris&#39;
+        }
+      }
+    }
+    default: {
+      fail(&quot;Unrecognized operating system ${facts[&#39;kernel&#39;]}, please use it on a Linux host&quot;)
+    }
+
   }
 
-  if $ensure == &#39;present&#39; {
-    # the patch used by the bsu
-    if $remote_file == true {
-      file { &quot;${download_dir}/${patch_file}&quot;:
-        ensure  =&gt; file,
-        source  =&gt; &quot;${puppet_download_mnt_point}/${patch_file}&quot;,
-        require =&gt; File[&quot;${middleware_home_dir}/utils/bsu/cache_dir&quot;],
-        backup  =&gt; false,
-        mode    =&gt; lookup(&#39;orawls::permissions&#39;),
-        owner   =&gt; $os_user,
-        group   =&gt; $os_group,
-        before  =&gt; Exec[&quot;extract ${patch_file}&quot;],
-      }
-      $disk1_file = &quot;${download_dir}/${patch_file}&quot;
-    } else {
-      $disk1_file = &quot;${puppet_download_mnt_point}/${patch_file}&quot;
+  $fmw_silent_response_file = &#39;orawls/fmw_silent_forms_patch.rsp.erb&#39;
+  if ($oracle_home_dir == undef) {
+    $oracleHome = &quot;${middleware_home_dir}/Oracle_FRM1&quot;
+  }
+  else {
+    $oracleHome = $oracle_home_dir
+  }
+
+  $createFile1 = &quot;${download_dir}/${fmw_product}/Disk1&quot;
+  $total_files = 1
+
+
+  if (1 == 1 ) {
+
+    file { &quot;${download_dir}/${title}_silent_${fmw_product}.rsp&quot;:
+      ensure  =&gt; present,
+      content =&gt; template($fmw_silent_response_file),
+      mode    =&gt; &#39;0775&#39;,
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+      backup  =&gt; false,
     }
 
-    exec { &quot;extract ${patch_file}&quot;:
-      command   =&gt; &quot;unzip -o ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir&quot;,
-      creates   =&gt; &quot;${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar&quot;,
+    # for performance reasons, download and extract or just extract it
+    if $remote_file == true {
+      file { &quot;${download_dir}/${fmw_file1}&quot;:
+        ensure =&gt; file,
+        source =&gt; &quot;${puppet_download_mnt_point}/${fmw_file1}&quot;,
+        mode   =&gt; &#39;0775&#39;,
+        owner  =&gt; $os_user,
+        group  =&gt; $os_group,
+        backup =&gt; false,
+        before =&gt; Exec[&quot;extract ${fmw_file1}&quot;],
+      }
+      $disk1_file = &quot;${download_dir}/${fmw_file1}&quot;
+    } else {
+      $disk1_file = &quot;${puppet_download_mnt_point}/${fmw_file1}&quot;
+    }
+
+    exec { &quot;extract ${fmw_file1}&quot;:
+      command   =&gt; &quot;unzip -o ${disk1_file} -d ${download_dir}/${fmw_product}&quot;,
+      creates   =&gt; $createFile1,
       path      =&gt; $exec_path,
       user      =&gt; $os_user,
       group     =&gt; $os_group,
       logoutput =&gt; false,
-      before    =&gt; Bsu_patch[&quot;${middleware_home_dir}:${patch_id}&quot;],
     }
 
-    if ( $version == 1111 ) {
-      $patch_version = 1036
-    } else {
-      $patch_version = $version
-    }
+    $command = &quot;-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion&quot;
 
-    exec { &quot;change memory params for ${patch_file}&quot;:
-      command   =&gt; &quot;sed -e&#39;s/MEM_ARGS=\&quot;-Xms256m -Xmx512m\&quot;/MEM_ARGS=\&quot;-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\&quot;/g&#39; ${middleware_home_dir}/utils/bsu/bsu.sh &gt; ${download_dir}/bsu.sh &amp;&amp; mv ${download_dir}/bsu.sh ${middleware_home_dir}/utils/bsu/bsu.sh;chmod +x ${middleware_home_dir}/utils/bsu/bsu.sh&quot;,
-      unless    =&gt; &quot;grep &#39;MEM_ARGS=\&quot;-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\&quot;&#39; ${middleware_home_dir}/utils/bsu/bsu.sh&quot;,
-      before    =&gt; Bsu_patch[&quot;${middleware_home_dir}:${patch_id}&quot;],
-      path      =&gt; $exec_path,
-      user      =&gt; $os_user,
-      group     =&gt; $os_group,
-      cwd       =&gt; $download_dir,
-      logoutput =&gt; $log_output,
-    }
-
-    exec { &quot;patch policy for ${patch_file}&quot;:
-      command   =&gt; &quot;bash -c \&quot;{ echo &#39;grant codeBase \\\&quot;file:${middleware_home_dir}/patch_wls1036/patch_jars/-\\\&quot; {&#39;; echo &#39;      permission java.security.AllPermission;&#39;; echo &#39;};&#39;; } &gt;&gt; ${weblogic_home_dir}/server/lib/weblogic.policy\&quot;&quot;,
-      unless    =&gt; &quot;grep &#39;file:${middleware_home_dir}/patch_wls1036/patch_jars/-&#39; ${weblogic_home_dir}/server/lib/weblogic.policy&quot;,
-      path      =&gt; $exec_path,
-      user      =&gt; $os_user,
-      group     =&gt; $os_group,
-      logoutput =&gt; $log_output,
-      require   =&gt; Bsu_patch[&quot;${middleware_home_dir}:${patch_id}&quot;],
+    exec { &quot;install ${fmw_product} ${title}&quot;:
+      command     =&gt; &quot;/bin/sh -c &#39;unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_directory}&#39;&quot;,
+      environment =&gt; &quot;TEMP=${temp_dir}&quot;,
+      timeout     =&gt; 0,
+      # creates     =&gt; &quot;${oracleHome}/OPatch&quot;,
+      path        =&gt; $exec_path,
+      user        =&gt; $os_user,
+      group       =&gt; $os_group,
+      logoutput   =&gt; $log_output,
+      require     =&gt; [File[&quot;${download_dir}/${title}_silent_${fmw_product}.rsp&quot;],
+                      Exec[&quot;extract ${fmw_file1}&quot;],],
     }
   }
-
-  bsu_patch{ &quot;${middleware_home_dir}:${patch_id}&quot;:
-    ensure              =&gt; $ensure,
-    os_user             =&gt; $os_user,
-    middleware_home_dir =&gt; $middleware_home_dir,
-    weblogic_home_dir   =&gt; $weblogic_home_dir,
-    jdk_home_dir        =&gt; $jdk_home_dir,
-  }
-
 }</pre>
       </td>
     </tr>
@@ -500,7 +555,7 @@ define orawls::bsu (
 </div>
 
       <div id="footer">
-  Generated on Mon Feb 20 17:32:57 2017 by
+  Generated on Mon Feb 20 17:27:44 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

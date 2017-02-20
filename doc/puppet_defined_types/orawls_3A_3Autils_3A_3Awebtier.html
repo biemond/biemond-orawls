@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: orawls::utils::webtier
+  
+    &mdash; Documentation by YARD 0.9.8
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::orawls::utils::webtier";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (o)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">orawls::utils::webtier</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_defined_type_list_link"
+        href="../puppet_defined_type_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: orawls::utils::webtier</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/utils/webtier.pp
+    </dd>
+  </dl>
+</div>
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::version</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::weblogic_home_dir</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>middleware_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::middleware_home_dir</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jdk_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::jdk_home_dir</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>domain_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>wls_domains_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::wls_domains_dir</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_address</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;localhost&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>adminserver_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>7001</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>action_name</span>
+      
+      
+        <span class='type'>(<tt>Enum['create','delete']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;create&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>webgate_configure</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>webgate_agentname</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>webgate_hostidentifier</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oamadminserverhostname</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;localhost&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oamadminserverport</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>7001</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>domain_configure</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>instance_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>machine_name</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;weblogic&#39;</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>weblogic_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_user</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_group</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::download_dir</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_output</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::log_output</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/utils/webtier.pp', line 21</span>
+
+define orawls::utils::webtier(
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
+  String $domain_name                                     = undef,
+  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
+  String $adminserver_address                             = &#39;localhost&#39;,
+  Integer $adminserver_port                               = 7001,
+  Enum[&#39;create&#39;,&#39;delete&#39;] $action_name                    = &#39;create&#39;,
+  Boolean $webgate_configure                              = false,
+  String $webgate_agentname                               = undef,
+  String $webgate_hostidentifier                          = undef,
+  String $oamadminserverhostname                          = &#39;localhost&#39;,
+  Integer $oamadminserverport                             = 7001,
+  Boolean $domain_configure                               = true, # 11g register ohs instance with a domain
+  String $instance_name                                   = undef,
+  Optional[String] $machine_name                          = undef,
+  String $weblogic_user                                   = &#39;weblogic&#39;,
+  String $weblogic_password                               = undef,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+){
+  if ( $wls_domains_dir == undef ) {
+    $domains_dir = &quot;${middleware_home_dir}/user_projects/domains&quot;
+  } else {
+    $domains_dir =  $wls_domains_dir
+  }
+  $domain_dir = &quot;${domains_dir}/${domain_name}&quot;
+
+  $exec_path = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
+
+  if ( $version == 1212 or $version == 1213 or $version &gt;= 1221 ){
+    file { &quot;${download_dir}/${title}_createWebtier.py&quot;:
+      ensure  =&gt; present,
+      content =&gt; template(&#39;orawls/wlst/wlstexec/fmw/createWebtier.py.erb&#39;),
+      backup  =&gt; false,
+      replace =&gt; true,
+      mode    =&gt; &#39;0775&#39;,
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+    }
+
+    if $action_name == &#39;create&#39; {
+      exec { &quot;execwlst webtier ${title}&quot;:
+        command     =&gt; &quot;${middleware_home_dir}/ohs/common/bin/wlst.sh ${download_dir}/${title}_createWebtier.py ${weblogic_password}&quot;,
+        environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+        path        =&gt; $exec_path,
+        creates     =&gt; &quot;${domain_dir}/system_components/OHS/${instance_name}&quot;,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+        logoutput   =&gt; $log_output,
+        require     =&gt; File[&quot;${download_dir}/${title}_createWebtier.py&quot;],
+      }
+    } else {
+      exec { &quot;execwlst webtier ${title}&quot;:
+        command     =&gt; &quot;${middleware_home_dir}/ohs/common/bin/wlst.sh ${download_dir}/${title}_createWebtier.py ${weblogic_password}&quot;,
+        environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+        path        =&gt; $exec_path,
+        onlyif      =&gt; &quot;test -d ${domain_dir}/system_components/OHS/${instance_name}&quot;,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+        logoutput   =&gt; $log_output,
+        require     =&gt; File[&quot;${download_dir}/${title}_createWebtier.py&quot;],
+      }
+    }
+  } else {
+
+    $instance_home = &quot;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}&quot;
+    $instance_id   = &quot;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}/config/OHS/${instance_name}&quot;
+
+    file { &quot;${download_dir}/${title}_configureWebtier.rsp&quot;:
+      ensure  =&gt; present,
+      content =&gt; template(&#39;orawls/wlst/wlstexec/fmw/configureWebtier.rsp.erb&#39;),
+      backup  =&gt; false,
+      replace =&gt; true,
+      mode    =&gt; &#39;0775&#39;,
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+    }
+
+    exec { &quot;config webtier ${title}&quot;:
+      command     =&gt; &quot;/bin/sh -c &#39;unset DISPLAY;${middleware_home_dir}/Oracle_WT1/bin/config.sh -silent -response ${download_dir}/${title}_configureWebtier.rsp -waitforcompletion&#39;&quot;,
+      environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+      path        =&gt; $exec_path,
+      creates     =&gt; &quot;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}&quot;,
+      user        =&gt; $os_user,
+      group       =&gt; $os_group,
+      logoutput   =&gt; $log_output,
+      require     =&gt; File[&quot;${download_dir}/${title}_configureWebtier.rsp&quot;],
+    }
+
+    if ( $webgate_configure == true ) {
+
+      # Note: rreg really should NOT be run from the &quot;WebGate&quot; machine
+      # instead it should be run on the OAM server, the output artifacts stored in a secure place,
+      # and then copied from there upon installation of the WebGate
+      # for now this is an OK start
+
+      # first create the input file:
+      file { &quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/input/${webgate_agentname}.xml&quot;:
+        ensure  =&gt; present,
+        content =&gt; template(&#39;orawls/oam/rreg_input.xml.erb&#39;),
+        backup  =&gt; false,
+        replace =&gt; true,
+        mode    =&gt; &#39;0440&#39;,
+        owner   =&gt; $os_user,
+        group   =&gt; $os_group,
+      }
+
+      file { &quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh&quot;:
+        ensure =&gt; file,
+        mode   =&gt; &#39;0700&#39;,
+      }
+
+      # in the real world rreg wouldn&#39;t be run on the host running the WebTier bits
+      exec { &quot;Run rreg for WebGate instance ${webgate_agentname}&quot;:
+        #command     =&gt; &quot;/bin/echo -e ${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml&quot;,
+        command     =&gt; &quot;/bin/echo -e ${weblogic_user}\\\\n${weblogic_password}\\\\n|${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml -noprompt&quot;,
+        environment =&gt; [&quot;JAVA_HOME=${jdk_home_dir}&quot;],
+        cwd         =&gt; &quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg&quot;,
+        creates     =&gt; &quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/output/${webgate_agentname}&quot;,
+        path        =&gt; $exec_path,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+        logoutput   =&gt; $log_output,
+        require     =&gt; [File[&quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/input/${webgate_agentname}.xml&quot;],File[&quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh&quot;]]
+      }
+
+      exec { &quot;Deploy webgate to ${instance_id}&quot;:
+        command     =&gt; &quot;${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/deployWebGate/deployWebGateInstance.sh -w ${instance_id} -oh ${middleware_home_dir}/Oracle_OAMWebGate1&quot;,
+        environment =&gt; &quot;LD_LIBRARY_PATH=&#39;${middleware_home_dir}/Oracle_WT1/lib&#39;&quot;,
+        cwd         =&gt; &quot;${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/deployWebGate&quot;,
+        creates     =&gt; &quot;${instance_id}/webgate&quot;,
+        path        =&gt; $exec_path,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+        logoutput   =&gt; $log_output,
+        require     =&gt; [Exec[&quot;config webtier ${title}&quot;],Exec[&quot;Run rreg for WebGate instance ${webgate_agentname}&quot;],],
+      }
+
+      # copy the output from rreg to the WebGate
+      # in the real world the rreg artifacts would:
+      # * be copied to this host during host provisioning
+      #   OR
+      # * would be stored on a fileserver accessible from this host
+      #   e.g. from puppet:
+      file { &quot;Copy rreg artifacts for ${instance_id}&quot;:
+        path    =&gt; &quot;${instance_id}/webgate/config&quot;,
+        source  =&gt; &quot;${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/output/${webgate_agentname}&quot;,
+        recurse =&gt; true,
+        require =&gt; [Exec[&quot;Deploy webgate to ${instance_id}&quot;],Exec[&quot;Run rreg for WebGate instance ${webgate_agentname}&quot;],],
+      }
+
+      exec { &quot;EditHttpConf to enable webgate ${title}&quot;:
+        command     =&gt; &quot;${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/setup/InstallTools/EditHttpConf -w ${instance_id} -oh ${middleware_home_dir}/Oracle_OAMWebGate1&quot;,
+        environment =&gt; [&quot;LD_LIBRARY_PATH=${middleware_home_dir}/Oracle_WT1/lib&quot;,
+                        &quot;ORACLE_HOME=${middleware_home_dir}/Oracle_OAMWebGate1&quot;],
+        cwd         =&gt; &quot;${middleware_home_dir}/Oracle_OAMWebGate1/webgate/ohs/tools/setup/InstallTools&quot;,
+        path        =&gt; $exec_path,
+        unless      =&gt; &quot;grep -c &#39;${instance_id}/webgate.conf&#39; ${instance_id}/httpd.conf&quot;,
+        user        =&gt; $os_user,
+        group       =&gt; $os_group,
+        logoutput   =&gt; $log_output,
+        require     =&gt; [Exec[&quot;Deploy webgate to ${instance_id}&quot;],File[&quot;Copy rreg artifacts for ${instance_id}&quot;],],
+      }
+
+      # after enabling a WebGate you need to bounce OHS
+      exec { &quot;Stop OHS instance ${title}&quot;:
+        command   =&gt; &quot;/bin/sh -c &#39;unset DISPLAY;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}/bin/opmnctl stopall&#39;&quot;,
+        path      =&gt; $exec_path,
+        user      =&gt; $os_user,
+        group     =&gt; $os_group,
+        logoutput =&gt; $log_output,
+        require   =&gt; Exec[&quot;EditHttpConf to enable webgate ${title}&quot;],
+      }
+
+      exec { &quot;Start OHS instance ${title}&quot;:
+        command   =&gt; &quot;/bin/sh -c &#39;unset DISPLAY;${middleware_home_dir}/Oracle_WT1/instances/${instance_name}/bin/opmnctl startall&#39;&quot;,
+        path      =&gt; $exec_path,
+        user      =&gt; $os_user,
+        group     =&gt; $os_group,
+        logoutput =&gt; $log_output,
+        require   =&gt; Exec[&quot;Stop OHS instance ${title}&quot;],
+      }
+    }
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Mon Feb 20 17:27:44 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.8 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

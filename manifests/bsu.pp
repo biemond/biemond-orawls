@@ -3,13 +3,15 @@
 #
 # installs WebLogic 11g BSU patch
 #
-# @param middleware_home_dir directory of the Oracle software inside the oracle base directory, will be default derived from the weblogic class
-# @param weblogic_home_dir directory of the WebLogic software inside the middleware directory, will be default derived from the weblogic class
-# @param jdk_home_dir full path to the java home directory like /usr/java/default, will be default derived from the weblogic class
-# @param os_user the user name with oracle as default, will be default derived from the weblogic class
-# @param os_group the group name with dba as default, will be default derived from the weblogic class
-# @param log_output show all the output of the the exec actions, will be default derived from the weblogic class
-# @param download_dir the directory for temporary created files by this class, will be default derived from the weblogic class
+# @param ensure should exist or not
+# @param version used weblogic software like 1036
+# @param middleware_home_dir directory of the Oracle software inside the oracle base directory
+# @param weblogic_home_dir directory of the WebLogic software inside the middleware directory
+# @param jdk_home_dir full path to the java home directory like /usr/java/default
+# @param os_user the user name with oracle as default
+# @param os_group the group name with dba as default
+# @param log_output show all the output of the the exec actions
+# @param download_dir the directory for temporary created files by this class
 #
 define orawls::bsu (
   Enum['present','absent'] $ensure  = 'present',

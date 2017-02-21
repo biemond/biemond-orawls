@@ -22,7 +22,7 @@ Puppet::Functions.create_function(:'orawls::domain_exists') do
     scope = closure_scope
     domain_count = scope['facts'][prefix + '_cnt']
     log "total domains #{domain_count}"
-    if domain_count == 'NotFound'
+    if domain_count == 'NotFound' or domain_count.nil?
       return art_exists
     else
       n = 0

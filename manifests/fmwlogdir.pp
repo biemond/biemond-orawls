@@ -3,15 +3,15 @@
 #
 # Moves the fmw log files like  AdminServer-diagnostic.log or AdminServer-owsm.log to a different location outside your domain
 #
-# @param middleware_home_dir directory of the Oracle software inside the oracle base directory, will be default derived from the weblogic class
+# @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param adminserver_address the adminserver network name or ip, default = localhost
 # @param adminserver_port the adminserver port number, default = 7001
 # @param weblogic_user the weblogic administrator username
 # @param weblogic_password the weblogic domain password
-# @param os_user the user name with oracle as default, will be default derived from the weblogic class
-# @param os_group the group name with dba as default, will be default derived from the weblogic class
-# @param log_output show all the output of the the exec actions, will be default derived from the weblogic class
-# @param download_dir the directory for temporary created files by this class, will be default derived from the weblogic class
+# @param os_user the user name with oracle as default
+# @param os_group the group name with dba as default
+# @param log_output show all the output of the the exec actions
+# @param download_dir the directory for temporary created files by this class
 #
 define orawls::fmwlogdir (
   String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,

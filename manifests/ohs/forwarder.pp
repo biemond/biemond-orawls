@@ -27,8 +27,9 @@
 # require is needed because without it, notify option may attempt to reload server before it's running.
 #
 # 
-# @param os_user the user name with oracle as default, will be default derived from the weblogic class
-# @param os_group the group name with dba as default, will be default derived from the weblogic class
+# @param ensure should exist or not
+# @param os_user the user name with oracle as default
+# @param os_group the group name with dba as default
 #
 define orawls::ohs::forwarder (
   Enum['present','absent'] $ensure  = 'present',

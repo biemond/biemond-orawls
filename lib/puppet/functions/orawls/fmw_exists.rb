@@ -16,7 +16,7 @@ Puppet::Functions.create_function(:'orawls::fmw_exists') do
     scope = closure_scope
     ora = scope['facts']['ora_inst_products']
     log "#{oracle_home} #{ora}"
-    if ora == 'NotFound'
+    if ora == 'NotFound' or ora.nil?
       log 'return false because ora_inst_products fact is not found'
       return false
     else

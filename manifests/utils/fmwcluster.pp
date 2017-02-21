@@ -70,7 +70,7 @@ define orawls::utils::fmwcluster (
 
   if ( $soa_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $soa_found = soa_cluster_configured($domain_dir, $soa_cluster_name)
+    $soa_found = orawls::product_configured($domain_dir, $soa_cluster_name, 'soa')
 
     if $soa_found == undef or $soa_found == true {
       $convert_soa = false
@@ -83,7 +83,7 @@ define orawls::utils::fmwcluster (
 
   if ( $osb_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $osb_found = osb_cluster_configured($domain_dir, $osb_cluster_name)
+    $osb_found = orawls::product_configured($domain_dir, $osb_cluster_name, 'osb')
 
     if $osb_found == undef or $osb_found == true {
       $convert_osb = false
@@ -96,7 +96,7 @@ define orawls::utils::fmwcluster (
 
   if ( $bam_enabled ) {
     # check if the soa is already targeted to the cluster on this weblogic domain
-    $bam_found = bam_cluster_configured($domain_dir, $bam_cluster_name)
+    $bam_found = orawls::product_configured($domain_dir, $bam_cluster_name, 'bam')
 
     if $bam_found == undef or $bam_found == true {
       $convert_bam = false

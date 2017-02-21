@@ -46,7 +46,7 @@ define orawls::utils::fmwclusterjrf (
   $domain_dir = "${domains_dir}/${domain_name}"
 
   # check if the adf is already targeted to the cluster on this weblogic domain
-  $found = jrf_cluster_configured($domain_dir, $jrf_target_name)
+  $found = orawls::product_configured($domain_dir, $jrf_target_name, 'jrf')
 
   if $found == undef {
     $continue = false

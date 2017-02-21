@@ -1794,7 +1794,7 @@ define orawls::domain (
   $domain_dir = &quot;${domains_dir}/${domain_name}&quot;
 
   # check if the domain already exists
-  $found = domain_exists($domain_dir)
+  $found = orawls::domain_exists($domain_dir)
 
   if $found == undef {
     $continue = true
@@ -2565,7 +2565,7 @@ define orawls::domain (
 </div>
 
       <div id="footer">
-  Generated on Mon Feb 20 17:32:58 2017 by
+  Generated on Tue Feb 21 14:01:01 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

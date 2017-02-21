@@ -1699,11 +1699,11 @@ define orawls::fmw(
     fail(&#39;unknown fmw_product value choose adf|soa|soaqs|osb|oim|oam|wc|wcc|web|webgate|oud&#39;)
   }
 
-  # check if the oracle home already exists, only for &lt; 12.1.2, this is for performance reasons
+  # check if the oracle product already exists, only for &lt; 12.1.2, this is for performance reasons
   if $version == 1212 or $version == 1213 or $version &gt;= 1221 {
     $continue = true
   } else {
-    $found = orawls_oracle_exists($oracleHome)
+    $found = orawls::fmw_exists($oracleHome)
 
     if $found == undef {
       $continue = true
@@ -1964,7 +1964,7 @@ define orawls::fmw(
 </div>
 
       <div id="footer">
-  Generated on Mon Feb 20 17:32:58 2017 by
+  Generated on Tue Feb 21 14:01:01 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

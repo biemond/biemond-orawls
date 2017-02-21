@@ -1,7 +1,17 @@
 # History
 
+## 2.0.1
+- Puppet 4 ruby functions
+- Generated Puppet documentation inside the doc folder
+
 ## 2.0.0
 - Puppet 4 new features, removed support for Puppet 3, please use latest version 1.X of oradb
+
+## 1.0.58
+- Option to ignore the defaultCoherenceCluster on a domain
+- restrictive permissions for orainst & nodemanager.properties
+- FMW webcenter sites support
+- allow multiple remote middleware installations on the same host
 
 ## 1.0.57
 - Added support for Wls/FMW 12.2.1.2

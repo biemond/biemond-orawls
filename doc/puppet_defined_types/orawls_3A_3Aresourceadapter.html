@@ -767,7 +767,7 @@ define orawls::resourceadapter(
   $domain_dir = &quot;${domains_dir}/${domain_name}&quot;
 
   # check if the object already exists on the weblogic domain
-  $found = artifact_exists($domain_dir,&#39;resource&#39;,$adapter_name,&quot;${adapter_plan_dir}/${adapter_plan}&quot; )
+  $found = orawls::resource_adapter_exists($domain_dir,&#39;resource&#39;,$adapter_name,&quot;${adapter_plan_dir}/${adapter_plan}&quot; )
   if $found == undef {
     $continuePlan = true
     notify {&quot;wls::resourceadapter ${title} continue cause nill&quot;:}
@@ -782,7 +782,7 @@ define orawls::resourceadapter(
 
 
   # check if the object already exists on the weblogic domain
-  $foundEntry = artifact_exists($domain_dir ,&#39;resource_entry&#39;,$adapter_name,$adapter_entry )
+  $foundEntry = orawls::resource_adapter_exists($domain_dir ,&#39;resource_entry&#39;,$adapter_name,$adapter_entry )
   if $foundEntry == undef {
     $continueEntry = true
     notify {&quot;wls::resourceadapter entry ${adapter_entry} ${title} continue cause nill&quot;:}
@@ -1016,7 +1016,7 @@ define orawls::resourceadapter(
 </div>
 
       <div id="footer">
-  Generated on Mon Feb 20 17:32:58 2017 by
+  Generated on Tue Feb 21 14:01:01 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

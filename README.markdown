@@ -6,10 +6,12 @@ Install, configures and manages WebLogic version 10.3 - 12.2.1
 This module should work for all Linux & Solaris versions like RedHat, CentOS, Ubuntu, Debian, Suse SLES, OracleLinux, Solaris 10,11 sparc / x86
 
 Only for Puppet >= 4.3 and this module uses the latest puppet 4 features like
+
 - Strong data typing
-- Internal hiera module data
+- Internal hiera/lookup module data
 - uses Facts array
 - epp templating instead of erb
+- puppet 4 ruby functions
 
 For Puppet 3, 4 you have to use the latest 1.x version of this orawls module
 

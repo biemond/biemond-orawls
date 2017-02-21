@@ -52,7 +52,7 @@ define orawls::resourceadapter(
   $domain_dir = "${domains_dir}/${domain_name}"
 
   # check if the object already exists on the weblogic domain
-  $found = artifact_exists($domain_dir,'resource',$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
+  $found = orawls::resource_adapter_exists($domain_dir,'resource',$adapter_name,"${adapter_plan_dir}/${adapter_plan}" )
   if $found == undef {
     $continuePlan = true
     notify {"wls::resourceadapter ${title} continue cause nill":}
@@ -67,7 +67,7 @@ define orawls::resourceadapter(
 
 
   # check if the object already exists on the weblogic domain
-  $foundEntry = artifact_exists($domain_dir ,'resource_entry',$adapter_name,$adapter_entry )
+  $foundEntry = orawls::resource_adapter_exists($domain_dir ,'resource_entry',$adapter_name,$adapter_entry )
   if $foundEntry == undef {
     $continueEntry = true
     notify {"wls::resourceadapter entry ${adapter_entry} ${title} continue cause nill":}

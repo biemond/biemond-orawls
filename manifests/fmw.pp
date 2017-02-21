@@ -506,11 +506,11 @@ define orawls::fmw(
     fail('unknown fmw_product value choose adf|soa|soaqs|osb|oim|oam|wc|wcc|web|webgate|oud')
   }
 
-  # check if the oracle home already exists, only for < 12.1.2, this is for performance reasons
+  # check if the oracle product already exists, only for < 12.1.2, this is for performance reasons
   if $version == 1212 or $version == 1213 or $version >= 1221 {
     $continue = true
   } else {
-    $found = orawls_oracle_exists($oracleHome)
+    $found = orawls::fmw_exists($oracleHome)
 
     if $found == undef {
       $continue = true

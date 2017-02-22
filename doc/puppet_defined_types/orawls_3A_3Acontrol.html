@@ -95,8 +95,7 @@
       
         &mdash;
         <div class='inline'>
-<p>root directory for all the WebLogic domains, will be default derived from
-the weblogic class</p>
+<p>root directory for all the WebLogic domains</p>
 </div>
       
     </li>
@@ -114,8 +113,7 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>directory of the Oracle software inside the oracle base directory, will be
-default derived from the weblogic class</p>
+<p>directory of the Oracle software inside the oracle base directory</p>
 </div>
       
     </li>
@@ -223,8 +221,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>directory of the WebLogic software inside the middleware directory, will be
-default derived from the weblogic class</p>
+<p>directory of the WebLogic software inside the middleware directory</p>
 </div>
       
     </li>
@@ -242,8 +239,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>full path to the java home directory like /usr/java/default, will be
-default derived from the weblogic class</p>
+<p>full path to the java home directory like /usr/java/default</p>
 </div>
       
     </li>
@@ -261,8 +257,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the user name with oracle as default, will be default derived from the
-weblogic class</p>
+<p>the user name with oracle as default</p>
 </div>
       
     </li>
@@ -280,8 +275,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the group name with dba as default, will be default derived from the
-weblogic class</p>
+<p>the group name with dba as default</p>
 </div>
       
     </li>
@@ -299,8 +293,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>show all the output of the the exec actions, will be default derived from
-the weblogic class</p>
+<p>show all the output of the the exec actions</p>
 </div>
       
     </li>
@@ -318,8 +311,79 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the directory for temporary created files by this class, will be default
-derived from the weblogic class</p>
+<p>the directory for temporary created files by this class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jsse_enabled</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>enable JSSE on the JVM</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>custom_trust</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>have your own trustore JKS or using the default</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>trust_keystore_file</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the full path to the trust keystore</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>trust_keystore_passphrase</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the password of the trust keystore</p>
 </div>
       
     </li>
@@ -335,6 +399,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>&#39;admin&#39;</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>admin, ohs or a managed server</p>
+</div>
+      
     </li>
   
     <li>
@@ -347,6 +416,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>&#39;Server&#39;</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>Server or Cluster</p>
+</div>
       
     </li>
   
@@ -361,6 +435,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>&#39;AdminServer&#39;</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>name of the WebLogic object</p>
+</div>
+      
     </li>
   
     <li>
@@ -373,6 +452,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>false</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>use t3s or not</p>
+</div>
       
     </li>
   
@@ -387,6 +471,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>5556</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>the nodemanager port number</p>
+</div>
+      
     </li>
   
     <li>
@@ -399,6 +488,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>true</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>use secure nodemenager</p>
+</div>
       
     </li>
   
@@ -413,57 +507,10 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>&#39;start&#39;</tt>)</em>
       
       
-    </li>
-  
-    <li>
-      
-        <span class='name'>jsse_enabled</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>custom_trust</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>trust_keystore_file</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>trust_keystore_passphrase</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
+        &mdash;
+        <div class='inline'>
+<p>start or stop the server</p>
+</div>
       
     </li>
   
@@ -478,6 +525,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>&#39;&#39;</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>extra.java arguments for the startup</p>
+</div>
+      
     </li>
   
 </ul>
@@ -490,18 +542,6 @@ derived from the weblogic class</p>
         <pre class="lines">
 
 
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
 32
 33
 34
@@ -584,10 +624,22 @@ derived from the weblogic class</p>
 111
 112
 113
-114</pre>
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/control.pp', line 20</span>
+        <pre class="code"><span class="info file"># File 'manifests/control.pp', line 32</span>
 
 define orawls::control (
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
@@ -691,7 +743,7 @@ define orawls::control (
 </div>
 
       <div id="footer">
-  Generated on Tue Feb 21 14:01:01 2017 by
+  Generated on Wed Feb 22 15:23:32 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

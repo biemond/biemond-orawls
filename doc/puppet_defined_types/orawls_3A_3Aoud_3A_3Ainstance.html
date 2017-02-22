@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: orawls::oud::instance
+  
+    &mdash; Documentation by YARD 0.9.8
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::orawls::oud::instance";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (o)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">orawls::oud::instance</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: orawls::oud::instance</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/oud/instance.pp
+    </dd>
+  </dl>
+</div>
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>oud::instance</p>
+
+<p>create an Oracle Unified Directory LDAP instance</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::version</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>used weblogic software like 1036</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>middleware_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::middleware_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>directory of the Oracle software inside the oracle base directory</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_user</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the user name with oracle as default</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_group</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the group name with dba as default</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_output</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::log_output</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>show all the output of the the exec actions</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::download_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the directory for temporary created files by this class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_home</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>OUD Home directory</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_instance_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>OUD instance name</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_root_user_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>OUD LDAP root password</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_base_dn</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;dc=example,dc=com&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>LDAP base dn name</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_ldap_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1389</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>ldap port</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_admin_connector_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>4444</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>admin port</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oud_ldaps_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1636</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>secure LDAP port</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oracle_base_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::oracle_base_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>base directory of the oracle installation, it will contain the default
+Oracle inventory and the middleware home</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/oud/instance.pp', line 21</span>
+
+define orawls::oud::instance (
+  Integer $version                                        = $::orawls::weblogic::version,
+  String $oracle_base_home_dir                            = $::orawls::weblogic::oracle_base_home_dir,
+  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
+  String $oud_home                                        = undef,
+  String $oud_instance_name                               = undef,
+  String $oud_root_user_password                          = undef,
+  String $oud_base_dn                                     = &#39;dc=example,dc=com&#39;,
+  Integer $oud_ldap_port                                  = 1389,
+  Integer $oud_admin_connector_port                       = 4444,
+  Integer $oud_ldaps_port                                 = 1636,
+  String $os_user                                         = $::orawls::weblogic::os_user,
+  String $os_group                                        = $::orawls::weblogic::os_group,
+  String $download_dir                                    = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                     = $::orawls::weblogic::log_output,
+){
+
+  $instances_home = &quot;${oracle_base_home_dir}/oud_instances&quot;
+
+  if !defined(File[$instances_home]) {
+    file { $instances_home:
+      ensure  =&gt; directory,
+      recurse =&gt; false,
+      replace =&gt; false,
+      mode    =&gt; lookup(&#39;orawls::permissions&#39;),
+      owner   =&gt; $os_user,
+      group   =&gt; $os_group,
+    }
+  }
+
+  $exec_path = lookup(&#39;orawls::exec_path&#39;)
+
+  exec { &quot;rootUserPasswordFile ${title}&quot;:
+    command   =&gt; &quot;echo ${oud_root_user_password} &gt; ${instances_home}/${oud_instance_name}pass.txt&quot;,
+    timeout   =&gt; 0,
+    unless    =&gt; &quot;test -d ${instances_home}/${oud_instance_name}&quot;,
+    require   =&gt; File[$instances_home],
+    path      =&gt; $exec_path,
+    user      =&gt; $os_user,
+    group     =&gt; $os_group,
+    logoutput =&gt; true,
+  }
+
+  exec { &quot;create ldap ${title}&quot;:
+    command     =&gt; &quot;${oud_home}/oud-setup --cli --baseDN ${oud_base_dn} --addBaseEntry --netsvc --ldapPort ${oud_ldap_port} --adminConnectorPort ${oud_admin_connector_port} --skipPortCheck --rootUserDN cn=Directory\\ Manager --rootUserPasswordFile ${instances_home}/${oud_instance_name}pass.txt --doNotStart --serverTuning autotune --importTuning autotune --enableStartTLS --ldapsPort ${oud_ldaps_port} --generateSelfSignedCertificate --hostName ${facts[&#39;fqdn&#39;]} --no-prompt --noPropertiesFile&quot;,
+    timeout     =&gt; 0,
+    environment =&gt; [&quot;INSTANCE_NAME=../oud_instances/${oud_instance_name}&quot;],
+    unless      =&gt; &quot;test -d ${instances_home}/${oud_instance_name}&quot;,
+    require     =&gt; [File[$instances_home],Exec[&quot;rootUserPasswordFile ${title}&quot;],],
+    path        =&gt; $exec_path,
+    user        =&gt; $os_user,
+    group       =&gt; $os_group,
+    logoutput   =&gt; true,
+  }
+
+  exec { &quot;absent rootUserPasswordFile ${title}&quot;:
+    command   =&gt; &quot;rm ${instances_home}/${oud_instance_name}pass.txt&quot;,
+    timeout   =&gt; 0,
+    onlyif    =&gt; &quot;test -f ${instances_home}/${oud_instance_name}pass.txt&quot;,
+    require   =&gt; [Exec[&quot;create ldap ${title}&quot;],Exec[&quot;rootUserPasswordFile ${title}&quot;],],
+    path      =&gt; $exec_path,
+    user      =&gt; $os_user,
+    group     =&gt; $os_group,
+    logoutput =&gt; true,
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Wed Feb 22 15:23:33 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.8 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

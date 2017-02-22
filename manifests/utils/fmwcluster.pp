@@ -4,6 +4,7 @@
 # transform a domain to a soa, osb, bam, ess, oim, oam cluster
 #
 # @param version used weblogic software like 1036
+# @param ofm_version used FMW software
 # @param wls_domains_dir root directory for all the WebLogic domains
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param domain_name the domain name which to connect to
@@ -17,6 +18,31 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param jsse_enabled enable JSSE on the JVM
+# @param custom_trust have your own trustore JKS or using the default
+# @param trust_keystore_file the full path to the trust keystore
+# @param trust_keystore_passphrase the password of the trust keystore
+# @param adminserver_name WebLogic AdminServer name
+# @param nodemanager_port the port number of the used NodeManager
+# @param soa_cluster_name the SOA Suite cluster name
+# @param bam_cluster_name the SOA Suite BAM cluster name
+# @param osb_cluster_name the Service Bus cluster name
+# @param oam_cluster_name the OAM cluster name
+# @param oim_cluster_name the OIM cluster name
+# @param ess_cluster_name the SOA Suite ESS cluster name
+# @param bi_cluster_name the BI Cluster name
+# @param bpm_enabled BPM enabled on SOA SUITE
+# @param bam_enabled BAM enabled on SOA SUITE
+# @param osb_enabled OSB enabled
+# @param soa_enabled SOA SUITE enabled
+# @param oam_enabled OAM enabled
+# @param oim_enabled OIM enabled
+# @param b2b_enabled B2B enabled
+# @param ess_enabled ESS enabled on SOA SUITE
+# @param bi_enabled BI enabled
+# @param repository_prefix the used RCU prefix
+# @param nodemanager_secure_listener use the secure nodemanager port
+# @param retain_file_store
 #
 define orawls::utils::fmwcluster (
   Integer $version                                        = $::orawls::weblogic::version,

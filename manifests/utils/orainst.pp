@@ -3,7 +3,9 @@
 #
 # creates oraInst.loc for oracle products
 #
-#
+# @param ora_inventory_dir define your own location of the Oracle inventory
+# @param orainstpath_dir the location of orainst.loc, default it will the default directory for Linux or Solaris
+# @param os_group the group name with dba as default
 #
 define orawls::utils::orainst
 (

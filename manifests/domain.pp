@@ -17,6 +17,47 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param jsse_enabled enable JSSE on the JVM
+# @param custom_trust have your own trustore JKS or using the default
+# @param trust_keystore_file the full path to the trust keystore
+# @param trust_keystore_passphrase the password of the trust keystore
+# @param custom_identity have your own custom identity keystore
+# @param custom_identity_keystore_filename full path to the custom identity keystore
+# @param custom_identity_keystore_passphrase password of the custom identity keystore
+# @param custom_identity_alias private key alias inside the custom identity keystore
+# @param custom_identity_privatekey_passphrase private key password inside the custom identity keystore
+# @param repository_prefix the used RCU prefix
+# @param repository_database_url the JDBC url of the RCU database
+# @param repository_password the password of the RCU schemas
+# @param adminserver_name WebLogic AdminServer name
+# @param nodemanager_port the port number of the used NodeManager
+# @param bam_enabled BAM enabled on SOA SUITE
+# @param owsm_enabled OWSM enabled
+# @param b2b_enabled B2B enabled
+# @param ess_enabled ESS enabled on SOA SUITE
+# @param wls_apps_dir root directory for all the domain apps
+# @param domain_template which domain extension to use
+# @param development_mode WebLogic domain created in development
+# @param adminserver_machine_name the localmachine name of the adminserver
+# @param adminserver_ssl_port the ssl port of the adminserver
+# @param adminserver_listen_on_all_interfaces adminserver listen on all VM interfaces
+# @param java_arguments override the server argument of the managed servers created by the domain creation
+# @param nodemanager_secure_listener use nodemanager in secure mode 
+# @param nodemanager_username the username of the nodemanager
+# @param nodemanager_password the password of the nodemanager
+# @param domain_password the domain password
+# @param webtier_enabled webtier template extension add to the domain
+# @param rcu_database_url the rcu database url
+# @param repository_sys_user the rcu sys username
+# @param repository_sys_password the rcu sys passoword
+# @param log_dir the full path to the log directory
+# @param create_rcu do a RCU repository creation when it is necessary
+# @param ohs_standalone_listen_address
+# @param ohs_standalone_listen_port
+# @param ohs_standalone_ssl_listen_port
+# @param wls_domains_file the localtion where local domains are stored
+# @param puppet_os_user the username under puppet should be executed
+# @param create_default_coherence_cluster option to skip the coherence cluster template be added to the domain
 #
 define orawls::domain (
   Integer $version                                        = $::orawls::weblogic::version,

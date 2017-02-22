@@ -13,6 +13,25 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param jsse_enabled enable JSSE on the JVM
+# @param custom_trust have your own trustore JKS or using the default
+# @param trust_keystore_file the full path to the trust keystore
+# @param trust_keystore_passphrase the password of the trust keystore
+# @param custom_identity have your own custom identity keystore
+# @param custom_identity_keystore_filename full path to the custom identity keystore
+# @param custom_identity_keystore_passphrase password of the custom identity keystore
+# @param custom_identity_alias private key alias inside the custom identity keystore
+# @param custom_identity_privatekey_passphrase private key password inside the custom identity keystore
+# @param nodemanager_port
+# @param nodemanager_address
+# @param nodemanager_secure_listener
+# @param extra_arguments
+# @param log_dir the full path to the log directory
+# @param log_file
+# @param sleep wait x seconds to check if the nodemanager is active
+# @param properties
+# @param ohs_standalone
+# @param puppet_os_user the username under puppet should be executed
 #
 define orawls::nodemanager (
   Integer $version                                        = $::orawls::weblogic::version,

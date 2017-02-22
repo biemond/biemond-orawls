@@ -84,6 +84,24 @@
   
     <li>
       
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>Enum['present','absent']</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>should exist or not</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>jdk_home_dir</span>
       
       
@@ -95,8 +113,7 @@
       
         &mdash;
         <div class='inline'>
-<p>full path to the java home directory like /usr/java/default, will be
-default derived from the weblogic class</p>
+<p>full path to the java home directory like /usr/java/default</p>
 </div>
       
     </li>
@@ -114,8 +131,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the user name with oracle as default, will be default derived from the
-weblogic class</p>
+<p>the user name with oracle as default</p>
 </div>
       
     </li>
@@ -133,8 +149,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the group name with dba as default, will be default derived from the
-weblogic class</p>
+<p>the group name with dba as default</p>
 </div>
       
     </li>
@@ -152,8 +167,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>show all the output of the the exec actions, will be default derived from
-the weblogic class</p>
+<p>show all the output of the the exec actions</p>
 </div>
       
     </li>
@@ -171,22 +185,8 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the directory for temporary created files by this class, will be default
-derived from the weblogic class</p>
+<p>the directory for temporary created files by this class</p>
 </div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>ensure</span>
-      
-      
-        <span class='type'>(<tt>Enum['present','absent']</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
-      
       
     </li>
   
@@ -201,6 +201,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>on what Oracle home to patch should be applied</p>
+</div>
+      
     </li>
   
     <li>
@@ -213,6 +218,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>id of the patch</p>
+</div>
       
     </li>
   
@@ -227,6 +237,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>only the full name of the patch</p>
+</div>
+      
     </li>
   
     <li>
@@ -240,18 +255,10 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>$::orawls::weblogic::puppet_download_mnt_point</tt>)</em>
       
       
-    </li>
-  
-    <li>
-      
-        <span class='name'>remote_file</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>$::orawls::weblogic::remote_file</tt>)</em>
-      
+        &mdash;
+        <div class='inline'>
+<p>the source of the installation files</p>
+</div>
       
     </li>
   
@@ -266,6 +273,30 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>$::orawls::weblogic::orainstpath_dir</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>the location of orainst.loc, default it will the default directory for
+Linux or Solaris</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>remote_file</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::remote_file</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>to control if the filename is already accessiable on the VM</p>
+</div>
+      
     </li>
   
 </ul>
@@ -278,13 +309,6 @@ derived from the weblogic class</p>
         <pre class="lines">
 
 
-12
-13
-14
-15
-16
-17
-18
 19
 20
 21
@@ -322,10 +346,17 @@ derived from the weblogic class</p>
 53
 54
 55
-56</pre>
+56
+57
+58
+59
+60
+61
+62
+63</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/opatch.pp', line 12</span>
+        <pre class="code"><span class="info file"># File 'manifests/opatch.pp', line 19</span>
 
 define orawls::opatch(
   Enum[&#39;present&#39;,&#39;absent&#39;] $ensure  = &#39;present&#39;,
@@ -379,7 +410,7 @@ define orawls::opatch(
 </div>
 
       <div id="footer">
-  Generated on Tue Feb 21 14:01:01 2017 by
+  Generated on Wed Feb 22 15:23:32 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

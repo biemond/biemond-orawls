@@ -16,6 +16,18 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param jsse_enabled enable JSSE on the JVM
+# @param custom_trust have your own trustore JKS or using the default
+# @param trust_keystore_file the full path to the trust keystore
+# @param trust_keystore_passphrase the password of the trust keystore
+# @param server_type admin, ohs or a managed server
+# @param target Server or Cluster
+# @param server name of the WebLogic object
+# @param adminserver_secure_listener use t3s or not
+# @param nodemanager_port the nodemanager port number
+# @param nodemanager_secure_listener use secure nodemenager
+# @param action start or stop the server
+# @param extra_arguments extra.java arguments for the startup
 #
 define orawls::control (
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,

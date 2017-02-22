@@ -11,6 +11,12 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param temp_dir override the default temp directory /tmp
+# @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
+# @param oracle_home_dir on what Oracle home to patch should be applied
+# @param fmw_file1 the fmw install file 1
+# @param puppet_download_mnt_point the location of the filename like puppet:///modules/orawls/ or /software
+# @param remote_file to control if the filename is already accessiable on the VM 
 #
 define orawls::utils::forms11gpatch (
   Integer $version                                        = $::orawls::weblogic::version,

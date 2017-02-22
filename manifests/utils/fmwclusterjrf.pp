@@ -17,6 +17,10 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param adminserver_name WebLogic AdminServer name
+# @param nodemanager_port the port number of the used NodeManager
+# @param jrf_target_name the WebLogic Cluster name
+# @param opss_datasource_name the datasource name when there is a RCU
 #
 define orawls::utils::fmwclusterjrf (
   Integer $version                                        = $::orawls::weblogic::version,

@@ -17,8 +17,16 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param action_name create or delete
+# @param webgate_configure congigure webgate
+# @param webgate_agentname webgate agent name
+# @param webgate_hostidentifier webgate hostidentifier
+# @param oamadminserverhostname oam adminserver hostname
+# @param oamadminserverport oam adminserver port number
+# @param domain_configure 11g register ohs instance with a domain
+# @param instance_name
+# @param machine_name
 #
-
 define orawls::utils::webtier(
   Integer $version                                        = $::orawls::weblogic::version,
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,

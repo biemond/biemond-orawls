@@ -12,6 +12,10 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param userConfigFile
+# @param userKeyFile
+# @param log_dir full path to the log directory
+# @param server the managed server name target
 #
 define orawls::fmwlogdir (
   String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,

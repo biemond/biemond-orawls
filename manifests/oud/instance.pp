@@ -9,6 +9,14 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param oud_home OUD Home directory
+# @param oud_instance_name OUD instance name
+# @param oud_root_user_password OUD LDAP root password
+# @param oud_base_dn LDAP base dn name
+# @param oud_ldap_port ldap port
+# @param oud_admin_connector_port admin port
+# @param oud_ldaps_port secure LDAP port
+# @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
 #
 define orawls::oud::instance (
   Integer $version                                        = $::orawls::weblogic::version,

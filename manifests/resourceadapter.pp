@@ -16,6 +16,15 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param adapter_name adapter name
+# @param adapter_path adapter path
+# @param adapter_plan_dir adapter plan directory
+# @param adapter_plan adapter plan name
+# @param adapter_entry adapter entry
+# @param adapter_entry_property entry properties
+# @param adapter_entry_value entry properties values
+# @param userConfigFile user config file path
+# @param userKeyFile user key file path
 #
 define orawls::resourceadapter(
   String $weblogic_home_dir                   = $::orawls::weblogic::weblogic_home_dir,

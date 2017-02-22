@@ -95,8 +95,7 @@
       
         &mdash;
         <div class='inline'>
-<p>root directory for all the WebLogic domains, will be default derived from
-the weblogic class</p>
+<p>root directory for all the WebLogic domains</p>
 </div>
       
     </li>
@@ -114,8 +113,7 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>directory of the Oracle software inside the oracle base directory, will be
-default derived from the weblogic class</p>
+<p>directory of the Oracle software inside the oracle base directory</p>
 </div>
       
     </li>
@@ -223,8 +221,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>directory of the WebLogic software inside the middleware directory, will be
-default derived from the weblogic class</p>
+<p>directory of the WebLogic software inside the middleware directory</p>
 </div>
       
     </li>
@@ -242,8 +239,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>full path to the java home directory like /usr/java/default, will be
-default derived from the weblogic class</p>
+<p>full path to the java home directory like /usr/java/default</p>
 </div>
       
     </li>
@@ -261,8 +257,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the user name with oracle as default, will be default derived from the
-weblogic class</p>
+<p>the user name with oracle as default</p>
 </div>
       
     </li>
@@ -280,8 +275,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the group name with dba as default, will be default derived from the
-weblogic class</p>
+<p>the group name with dba as default</p>
 </div>
       
     </li>
@@ -299,8 +293,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>show all the output of the the exec actions, will be default derived from
-the weblogic class</p>
+<p>show all the output of the the exec actions</p>
 </div>
       
     </li>
@@ -318,8 +311,7 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the directory for temporary created files by this class, will be default
-derived from the weblogic class</p>
+<p>the directory for temporary created files by this class</p>
 </div>
       
     </li>
@@ -335,6 +327,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>adapter name</p>
+</div>
+      
     </li>
   
     <li>
@@ -347,6 +344,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>adapter path</p>
+</div>
       
     </li>
   
@@ -361,6 +363,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>adapter plan directory</p>
+</div>
+      
     </li>
   
     <li>
@@ -373,6 +380,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>adapter plan name</p>
+</div>
       
     </li>
   
@@ -387,6 +399,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>adapter entry</p>
+</div>
+      
     </li>
   
     <li>
@@ -399,6 +416,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>entry properties</p>
+</div>
       
     </li>
   
@@ -413,6 +435,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>entry properties values</p>
+</div>
+      
     </li>
   
     <li>
@@ -425,6 +452,11 @@ derived from the weblogic class</p>
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
+      
+        &mdash;
+        <div class='inline'>
+<p>user config file path</p>
+</div>
       
     </li>
   
@@ -439,6 +471,11 @@ derived from the weblogic class</p>
         <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
+        &mdash;
+        <div class='inline'>
+<p>user key file path</p>
+</div>
+      
     </li>
   
 </ul>
@@ -451,15 +488,6 @@ derived from the weblogic class</p>
         <pre class="lines">
 
 
-20
-21
-22
-23
-24
-25
-26
-27
-28
 29
 30
 31
@@ -727,10 +755,19 @@ derived from the weblogic class</p>
 293
 294
 295
-296</pre>
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/resourceadapter.pp', line 20</span>
+        <pre class="code"><span class="info file"># File 'manifests/resourceadapter.pp', line 29</span>
 
 define orawls::resourceadapter(
   String $weblogic_home_dir                   = $::orawls::weblogic::weblogic_home_dir,
@@ -1016,7 +1053,7 @@ define orawls::resourceadapter(
 </div>
 
       <div id="footer">
-  Generated on Tue Feb 21 14:01:01 2017 by
+  Generated on Wed Feb 22 15:23:33 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

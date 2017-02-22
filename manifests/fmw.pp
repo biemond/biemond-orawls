@@ -11,6 +11,22 @@
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
 # @param download_dir the directory for temporary created files by this class
+# @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
+# @param fmw_product what to install
+# @param fmw_file1 the fmw install file 1
+# @param fmw_file2 the fmw install file 2
+# @param fmw_file3 the fmw install file 3
+# @param fmw_file4 the fmw install file 4
+# @param bpm enable bpm on the soa suite install
+# @param healthcare enable healthcare on the b2b install
+# @param puppet_download_mnt_point the source of the installation files
+# @param temp_dir override the default temp directory /tmp
+# @param ohs_mode the install type of webtier
+# @param wcs_mode the install type of webcenter sites
+# @param oracle_inventory_dir define your own location of the Oracle inventory
+# @param orainstpath_dir the location of orainst.loc, default it will the default directory for Linux or Solaris
+# @param oracle_home_dir override what Oracle home should be inside the middleware home
+# @param remote_file to control if the filename is already accessiable on the VM 
 #
 define orawls::fmw(
   Integer $version                                        = $::orawls::weblogic::version,

@@ -6,6 +6,9 @@
 # @param os_user the user name with oracle as default
 # @param os_group the group name with dba as default
 # @param log_output show all the output of the the exec actions
+# @param oud_instances_home_dir base location of the OUD instances
+# @param oud_instance_name name of the OUD instance
+# @param action stop or start the OUD instance
 #
 define orawls::oud::control(
   String $oud_instances_home_dir               = undef,

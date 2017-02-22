@@ -30,6 +30,8 @@
 # @param ensure should exist or not
 # @param os_user the user name with oracle as default
 # @param os_group the group name with dba as default
+# @param servers array of weblogic hosts and port numbers
+# @param domain_dir full path to the domain directory
 #
 define orawls::ohs::forwarder (
   Enum['present','absent'] $ensure  = 'present',

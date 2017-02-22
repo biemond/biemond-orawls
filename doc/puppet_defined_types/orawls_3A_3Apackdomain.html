@@ -82,6 +82,24 @@
   
     <li>
       
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::version</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>used weblogic software like 1036</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>wls_domains_dir</span>
       
       
@@ -93,8 +111,7 @@
       
         &mdash;
         <div class='inline'>
-<p>root directory for all the WebLogic domains, will be default derived from
-the weblogic class</p>
+<p>root directory for all the WebLogic domains</p>
 </div>
       
     </li>
@@ -112,8 +129,7 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>directory of the Oracle software inside the oracle base directory, will be
-default derived from the weblogic class</p>
+<p>directory of the Oracle software inside the oracle base directory</p>
 </div>
       
     </li>
@@ -149,8 +165,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>directory of the WebLogic software inside the middleware directory, will be
-default derived from the weblogic class</p>
+<p>directory of the WebLogic software inside the middleware directory</p>
 </div>
       
     </li>
@@ -168,8 +183,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>full path to the java home directory like /usr/java/default, will be
-default derived from the weblogic class</p>
+<p>full path to the java home directory like /usr/java/default</p>
 </div>
       
     </li>
@@ -187,8 +201,7 @@ default derived from the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the user name with oracle as default, will be default derived from the
-weblogic class</p>
+<p>the user name with oracle as default</p>
 </div>
       
     </li>
@@ -206,8 +219,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the group name with dba as default, will be default derived from the
-weblogic class</p>
+<p>the group name with dba as default</p>
 </div>
       
     </li>
@@ -225,8 +237,7 @@ weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>show all the output of the the exec actions, will be default derived from
-the weblogic class</p>
+<p>show all the output of the the exec actions</p>
 </div>
       
     </li>
@@ -244,22 +255,8 @@ the weblogic class</p>
       
         &mdash;
         <div class='inline'>
-<p>the directory for temporary created files by this class, will be default
-derived from the weblogic class</p>
+<p>the directory for temporary created files by this class</p>
 </div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>version</span>
-      
-      
-        <span class='type'>(<tt>Integer</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>$::orawls::weblogic::version</tt>)</em>
-      
       
     </li>
   
@@ -273,7 +270,6 @@ derived from the weblogic class</p>
         <pre class="lines">
 
 
-14
 15
 16
 17
@@ -311,10 +307,11 @@ derived from the weblogic class</p>
 49
 50
 51
-52</pre>
+52
+53</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/packdomain.pp', line 14</span>
+        <pre class="code"><span class="info file"># File 'manifests/packdomain.pp', line 15</span>
 
 define orawls::packdomain (
   Integer $version            = $::orawls::weblogic::version,
@@ -362,7 +359,7 @@ define orawls::packdomain (
 </div>
 
       <div id="footer">
-  Generated on Tue Feb 21 14:01:01 2017 by
+  Generated on Wed Feb 22 15:23:32 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

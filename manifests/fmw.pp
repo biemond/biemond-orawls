@@ -3,6 +3,41 @@
 #
 # installs FMW software like ADF, FORMS, OIM, WC, WCC, OSB, SOA Suite, B2B, MFT
 #
+# @example installing FMW
+#   orawls::fmw{'webtier1221':
+#     fmw_product          => 'web',
+#     fmw_file1            => "fmw_12.2.1.2.0_ohs_linux64_Disk1_1of1.zip",
+#     oracle_base_home_dir => '/opt/oracle',
+#   }
+#
+#   orawls::fmw{'soa1221':
+#     fmw_product          => 'soa',
+#     fmw_file1            => "fmw_12.2.1.2.0_soa_Disk1_1of1.zip",
+#     oracle_base_home_dir => '/opt/oracle',
+#   }
+#
+#   orawls::fmw{'osb1221':
+#     fmw_product          => 'osb',
+#     fmw_file1            => "fmw_12.2.1.2.0_osb_Disk1_1of1.zip",
+#     oracle_base_home_dir => '/opt/oracle',
+#   }
+#
+#   orawls::fmw{'webtier12212':
+#     version                   => 12212,
+#     fmw_product               => 'web',
+#     fmw_file1                 => "fmw_12.2.1.2.0_ohs_linux64_Disk1_1of1.zip",
+#     oracle_base_home_dir      => '/opt/oracle',
+#     ohs_mode:                 =>  "standalone",
+#     jdk_home_dir              => '/usr/java/latest',
+#     oracle_base_home_dir      => "/opt/oracle",
+#     middleware_home_dir       => "/opt/oracle/middleware12c",
+#     weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
+#     download_dir              => "/var/tmp/install",
+#     puppet_download_mnt_point => "/software",
+#     log_output                => true,
+#     remote_file               => false
+#   }
+#
 # @param version used weblogic software like 1036
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param weblogic_home_dir directory of the WebLogic software inside the middleware directory

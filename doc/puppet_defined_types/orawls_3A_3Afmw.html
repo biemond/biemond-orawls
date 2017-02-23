@@ -80,7 +80,51 @@ MFT</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>installing FMW</p>
+</div></p>
+      
+      <pre class="example code"><code>orawls::fmw{&#39;webtier1221&#39;:
+  fmw_product          =&gt; &#39;web&#39;,
+  fmw_file1            =&gt; &quot;fmw_12.2.1.2.0_ohs_linux64_Disk1_1of1.zip&quot;,
+  oracle_base_home_dir =&gt; &#39;/opt/oracle&#39;,
+}
+
+orawls::fmw{&#39;soa1221&#39;:
+  fmw_product          =&gt; &#39;soa&#39;,
+  fmw_file1            =&gt; &quot;fmw_12.2.1.2.0_soa_Disk1_1of1.zip&quot;,
+  oracle_base_home_dir =&gt; &#39;/opt/oracle&#39;,
+}
+
+orawls::fmw{&#39;osb1221&#39;:
+  fmw_product          =&gt; &#39;osb&#39;,
+  fmw_file1            =&gt; &quot;fmw_12.2.1.2.0_osb_Disk1_1of1.zip&quot;,
+  oracle_base_home_dir =&gt; &#39;/opt/oracle&#39;,
+}
+
+orawls::fmw{&#39;webtier12212&#39;:
+  version                   =&gt; 12212,
+  fmw_product               =&gt; &#39;web&#39;,
+  fmw_file1                 =&gt; &quot;fmw_12.2.1.2.0_ohs_linux64_Disk1_1of1.zip&quot;,
+  oracle_base_home_dir      =&gt; &#39;/opt/oracle&#39;,
+  ohs_mode:                 =&gt;  &quot;standalone&quot;,
+  jdk_home_dir              =&gt; &#39;/usr/java/latest&#39;,
+  oracle_base_home_dir      =&gt; &quot;/opt/oracle&quot;,
+  middleware_home_dir       =&gt; &quot;/opt/oracle/middleware12c&quot;,
+  weblogic_home_dir         =&gt; &quot;/opt/oracle/middleware12c/wlserver&quot;,
+  download_dir              =&gt; &quot;/var/tmp/install&quot;,
+  puppet_download_mnt_point =&gt; &quot;/software&quot;,
+  log_output                =&gt; true,
+  remote_file               =&gt; false
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -527,41 +571,6 @@ Linux or Solaris</p>
         <pre class="lines">
 
 
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
 66
 67
 68
@@ -1279,10 +1288,45 @@ Linux or Solaris</p>
 780
 781
 782
-783</pre>
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/fmw.pp', line 31</span>
+        <pre class="code"><span class="info file"># File 'manifests/fmw.pp', line 66</span>
 
 define orawls::fmw(
   Integer $version                                        = $::orawls::weblogic::version,
@@ -2044,7 +2088,7 @@ define orawls::fmw(
 </div>
 
       <div id="footer">
-  Generated on Thu Feb 23 10:38:45 2017 by
+  Generated on Thu Feb 23 10:50:35 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

@@ -6,7 +6,8 @@ gem 'coveralls', :require => false
 gem 'simplecov', :require => false
 gem 'simplecov-console'
 
-gem 'puppet-lint'
+# gem 'puppet-lint'
+gem 'puppet-lint', :git => 'https://github.com/rodjek/puppet-lint'
 gem 'puppet', puppetversion
 gem 'rspec-puppet'
 gem 'puppetlabs_spec_helper'

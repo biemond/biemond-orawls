@@ -1,5 +1,8 @@
 # History
 
+## 2.0.2
+- copydomain uses new domain function fixed the issue introduced with 2.0.1
+
 ## 2.0.1
 - Puppet 4 ruby functions
 - Generated Puppet documentation inside the doc folder

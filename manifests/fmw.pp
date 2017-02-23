@@ -92,7 +92,7 @@ define orawls::fmw(
       }
     }
     default: {
-      fail("Unrecognized operating system ${acts['kernel']}, please use it on a Linux, Solaris host")
+      fail("Unrecognized operating system ${facts['kernel']}, please use it on a Linux, Solaris host")
     }
 
   }

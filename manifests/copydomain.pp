@@ -69,7 +69,7 @@ define orawls::copydomain (
   }
 
   # check if the domain already exists
-  $found = domain_exists("${domains_dir}/${domain_name}", $version, $domains_dir)
+  $found = domain_exists("${domains_dir}/${domain_name}")
 
   if $found == undef {
     $continue = true

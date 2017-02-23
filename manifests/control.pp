@@ -3,6 +3,44 @@
 #
 # Weblogic Server control, starts or stops a managed server
 #
+# installs WebLogic 11g BSU patch
+#
+# @example Starting an AdminServer,Cluster or OHS
+#   orawls::control{'startAdmin':
+#     domain_name       => 'domainX',
+#     weblogic_password => 'weblogic1',
+#   }
+#
+#   orawls::control{'startCluster':
+#     domain_name         => 'domainX',
+#     weblogic_user       => 'weblogic',
+#     weblogic_password   => 'weblogic1',
+#     server_type         => 'managed',
+#     target              => 'Cluster',
+#     server              => 'MyCluster',
+#     adminserver_address => '10.10.10.10',
+#     action              => 'start',
+#     jsse_enabled        =>  true,
+#   }
+#
+#   orawls::control{'startOHS1server':
+#     domain_name         => 'domainX',
+#     weblogic_user       => 'weblogic',
+#     weblogic_password   => 'weblogic1',
+#     server_type         => 'ohs_standalone',
+#     target              => 'Server',
+#     server              => 'ohs1',
+#     adminserver_address => '10.10.10.10',
+#     action              => 'start',
+#     wls_domains_dir     =>  '',
+#     os_user             => 'oracle',
+#     os_group            => 'dba'
+#     download_dir        => '/var/tmp/install',
+#     weblogic_home_dir   => '/opt/oracle/middleware12c/wlserver',
+#     middleware_home_dir => '/opt/oracle/middleware12c',
+#     jdk_home_dir        => '/usr/java/latest',
+#   }
+#
 # @param wls_domains_dir root directory for all the WebLogic domains
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param domain_name the domain name which to connect to

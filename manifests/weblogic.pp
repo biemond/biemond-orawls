@@ -15,6 +15,8 @@
 #     puppet_download_mnt_point => "/software",
 #     log_output                => true,
 #     remote_file               => false
+#     wls_domains_dir           => '/opt/oracle/wlsdomains//domains',
+#     wls_apps_dir              => '/opt/oracle/wlsdomains/applications',
 #   }
 # 
 # @param version Weblogic version like 1036, 1111, 1213 or 12212

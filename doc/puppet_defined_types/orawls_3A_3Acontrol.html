@@ -76,10 +76,57 @@
 
 <p>Weblogic Server control, starts or stops a managed server</p>
 
+<p>installs WebLogic 11g BSU patch</p>
+
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>Starting an AdminServer,Cluster or OHS</p>
+</div></p>
+      
+      <pre class="example code"><code>orawls::control{&#39;startAdmin&#39;:
+  domain_name       =&gt; &#39;domainX&#39;,
+  weblogic_password =&gt; &#39;weblogic1&#39;,
+}
+
+orawls::control{&#39;startCluster&#39;:
+  domain_name         =&gt; &#39;domainX&#39;,
+  weblogic_user       =&gt; &#39;weblogic&#39;,
+  weblogic_password   =&gt; &#39;weblogic1&#39;,
+  server_type         =&gt; &#39;managed&#39;,
+  target              =&gt; &#39;Cluster&#39;,
+  server              =&gt; &#39;MyCluster&#39;,
+  adminserver_address =&gt; &#39;10.10.10.10&#39;,
+  action              =&gt; &#39;start&#39;,
+  jsse_enabled        =&gt;  true,
+}
+
+orawls::control{&#39;startOHS1server&#39;:
+  domain_name         =&gt; &#39;domainX&#39;,
+  weblogic_user       =&gt; &#39;weblogic&#39;,
+  weblogic_password   =&gt; &#39;weblogic1&#39;,
+  server_type         =&gt; &#39;ohs_standalone&#39;,
+  target              =&gt; &#39;Server&#39;,
+  server              =&gt; &#39;ohs1&#39;,
+  adminserver_address =&gt; &#39;10.10.10.10&#39;,
+  action              =&gt; &#39;start&#39;,
+  wls_domains_dir     =&gt;  &#39;&#39;,
+  os_user             =&gt; &#39;oracle&#39;,
+  os_group            =&gt; &#39;dba&#39;
+  download_dir        =&gt; &#39;/var/tmp/install&#39;,
+  weblogic_home_dir   =&gt; &#39;/opt/oracle/middleware12c/wlserver&#39;,
+  middleware_home_dir =&gt; &#39;/opt/oracle/middleware12c&#39;,
+  jdk_home_dir        =&gt; &#39;/usr/java/latest&#39;,
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -542,44 +589,6 @@
         <pre class="lines">
 
 
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
 70
 71
 72
@@ -636,10 +645,48 @@
 123
 124
 125
-126</pre>
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/control.pp', line 32</span>
+        <pre class="code"><span class="info file"># File 'manifests/control.pp', line 70</span>
 
 define orawls::control (
   String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
@@ -743,7 +790,7 @@ define orawls::control (
 </div>
 
       <div id="footer">
-  Generated on Wed Feb 22 15:23:32 2017 by
+  Generated on Thu Feb 23 10:38:46 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

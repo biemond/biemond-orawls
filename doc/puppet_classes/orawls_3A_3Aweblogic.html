@@ -102,6 +102,8 @@ home use the weblogic_type define</p>
   puppet_download_mnt_point =&gt; &quot;/software&quot;,
   log_output                =&gt; true,
   remote_file               =&gt; false
+  wls_domains_dir           =&gt; &#39;/opt/oracle/wlsdomains//domains&#39;,
+  wls_apps_dir              =&gt; &#39;/opt/oracle/wlsdomains/applications&#39;,
 }</code></pre>
     
   </div>
@@ -481,8 +483,6 @@ Linux or Solaris</p>
         <pre class="lines">
 
 
-41
-42
 43
 44
 45
@@ -528,10 +528,12 @@ Linux or Solaris</p>
 85
 86
 87
-88</pre>
+88
+89
+90</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/weblogic.pp', line 41</span>
+        <pre class="code"><span class="info file"># File 'manifests/weblogic.pp', line 43</span>
 
 class orawls::weblogic (
   Integer $version                    = lookup(&#39;orawls::default_version&#39;),
@@ -588,7 +590,7 @@ class orawls::weblogic (
 </div>
 
       <div id="footer">
-  Generated on Wed Feb 22 15:23:32 2017 by
+  Generated on Thu Feb 23 10:38:45 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

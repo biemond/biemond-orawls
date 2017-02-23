@@ -79,7 +79,53 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>standard domain example</p>
+</div></p>
+      
+      <pre class="example code"><code>orawls::domain{&#39;Wls1221&#39;:
+  domain_template                      =&gt; &quot;standard&quot;,
+  domain_name                          =&gt; &quot;Wls1221&quot;,
+  development_mode                     =&gt; false,
+  adminserver_address                  =&gt; &#39;10.10.10.10&#39;,
+  adminserver_listen_on_all_interfaces =&gt; true,
+  adminserver_port                     =&gt; 7101,
+  nodemanager_port                     =&gt; 5557,
+  nodemanager_secure_listener          =&gt; false,
+  weblogic_password                    =&gt; weblogic1&#39;,
+  jsse_enabled                         =&gt; true,
+  log_dir                              =&gt; &#39;/var/log/weblogic&#39;,
+  java_arguments                       =&gt; { &#39;ADM&#39; =&gt;  &quot;-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m&quot;},
+}
+
+orawls::domain{&#39;Wls1221&#39;:
+  domain_template                       =&gt; &quot;standard&quot;,
+  domain_name                           =&gt; &quot;Wls1221&quot;,
+  development_mode                      =&gt; false,
+  adminserver_address                   =&gt; &#39;10.10.10.10&#39;,
+  adminserver_ssl_port                  =&gt; 7002,
+  adminserver_port                      =&gt; 7001,
+  nodemanager_port                      =&gt; 5555,
+  weblogic_password                     =&gt; weblogic1&#39;,
+  jsse_enabled                          =&gt; true,
+  log_dir                               =&gt; &#39;/var/log/weblogic&#39;,
+  custom_trust                          =&gt; true,
+  trust_keystore_file                   =&gt; &#39;/vagrant/trust.jks&#39;,
+  trust_keystore_passphrase             =&gt; &#39;welcome&#39;,
+  custom_identity                       =&gt; true,
+  custom_identity_keystore_filename     =&gt; &#39;/vagrant/identity_admin.jks&#39;,
+  custom_identity_keystore_passphrase   =&gt; &#39;welcome&#39;,
+  custom_identity_alias                 =&gt; &#39;admin&#39;,
+  custom_identity_privatekey_passphrase =&gt; &#39;welcome&#39;,
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -1068,43 +1114,6 @@ creation</p>
         <pre class="lines">
 
 
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
 99
 100
 101
@@ -1904,10 +1913,47 @@ creation</p>
 895
 896
 897
-898</pre>
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/domain.pp', line 62</span>
+        <pre class="code"><span class="info file"># File 'manifests/domain.pp', line 99</span>
 
 define orawls::domain (
   Integer $version                                        = $::orawls::weblogic::version,
@@ -2753,7 +2799,7 @@ define orawls::domain (
 </div>
 
       <div id="footer">
-  Generated on Wed Feb 22 15:23:32 2017 by
+  Generated on Thu Feb 23 10:38:45 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

@@ -79,7 +79,28 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>copy Domain to vm</p>
+</div></p>
+      
+      <pre class="example code"><code>orawls::copydomain{&#39;copyDomainX&#39;:
+  domain_name         =&gt; &#39;domainX&#39;,
+  use_ssh             =&gt; true,
+  weblogic_password   =&gt; &#39;weblogic1&#39;,
+  log_dir             =&gt; &#39;/var/log/weblogic&#39;,
+  server_start_mode   =&gt; &#39;prod&#39;,
+  jsse_enabled        =&gt; true,
+  wls_domains_dir     =&gt; &#39;/opt/oracle/wlsdomains//domains&#39;,
+  wls_apps_dir        =&gt; &#39;/opt/oracle/wlsdomains/applications&#39;,
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -578,18 +599,6 @@
         <pre class="lines">
 
 
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
 46
 47
 48
@@ -827,10 +836,22 @@
 280
 281
 282
-283</pre>
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/copydomain.pp', line 34</span>
+        <pre class="code"><span class="info file"># File 'manifests/copydomain.pp', line 46</span>
 
 define orawls::copydomain (
   Integer $version                            = $::orawls::weblogic::version,
@@ -891,7 +912,7 @@ define orawls::copydomain (
   }
 
   # check if the domain already exists
-  $found = domain_exists(&quot;${domains_dir}/${domain_name}&quot;, $version, $domains_dir)
+  $found = orawls::domain_exists(&quot;${domains_dir}/${domain_name}&quot;)
 
   if $found == undef {
     $continue = true
@@ -1089,7 +1110,7 @@ define orawls::copydomain (
 </div>
 
       <div id="footer">
-  Generated on Wed Feb 22 15:23:32 2017 by
+  Generated on Thu Feb 23 10:38:46 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

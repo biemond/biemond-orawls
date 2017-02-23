@@ -3,6 +3,18 @@
 #
 # copydomain to an other nodes
 #
+# @example copy Domain to vm
+#   orawls::copydomain{'copyDomainX':
+#     domain_name         => 'domainX',
+#     use_ssh             => true,
+#     weblogic_password   => 'weblogic1',
+#     log_dir             => '/var/log/weblogic',
+#     server_start_mode   => 'prod',
+#     jsse_enabled        => true,
+#     wls_domains_dir     => '/opt/oracle/wlsdomains//domains',
+#     wls_apps_dir        => '/opt/oracle/wlsdomains/applications',
+#   }
+#  
 # @param version used weblogic software like 1036
 # @param wls_domains_dir root directory for all the WebLogic domains
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory

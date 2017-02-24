@@ -43,8 +43,8 @@ PuppetLint.configuration.send("disable_case_without_default")
 # PuppetLint.configuration.send("disable_unquoted_resource_title")
 # PuppetLint.configuration.send("disable_ensure_first_param")
 # PuppetLint.configuration.send("disable_duplicate_params")
-PuppetLint.configuration.send("disable_unquoted_file_mode")
-PuppetLint.configuration.send("disable_file_mode")
+# PuppetLint.configuration.send("disable_unquoted_file_mode")
+# PuppetLint.configuration.send("disable_file_mode")
 # PuppetLint.configuration.send("disable_ensure_not_symlink_target")
 #--no-unquoted_node_name
 

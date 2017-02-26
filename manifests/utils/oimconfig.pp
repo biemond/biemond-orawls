@@ -127,7 +127,7 @@ define orawls::utils::oimconfig(
     ##if these params are empty always continue
     if $domain_dir != undef  {
       # check if oim is already configured in this weblogic domain
-      $oimValue = oim_configured( $domain_dir )
+      $oimValue = orawls::oim_configured($domain_dir)
     } else {
       fail('domain parameters are empty ')
     }

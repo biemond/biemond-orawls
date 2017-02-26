@@ -982,7 +982,7 @@ define orawls::utils::oimconfig(
     ##if these params are empty always continue
     if $domain_dir != undef  {
       # check if oim is already configured in this weblogic domain
-      $oimValue = oim_configured( $domain_dir )
+      $oimValue = orawls::oim_configured($domain_dir)
     } else {
       fail(&#39;domain parameters are empty &#39;)
     }
@@ -1133,7 +1133,7 @@ define orawls::utils::oimconfig(
 </div>
 
       <div id="footer">
-  Generated on Thu Feb 23 10:50:36 2017 by
+  Generated on Sun Feb 26 17:48:09 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.8 (ruby-2.3.1).
 </div>

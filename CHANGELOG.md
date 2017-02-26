@@ -1,5 +1,8 @@
 # History
 
+## 2.0.3
+- added oim_configured function check to oimconfig.pp
+
 ## 2.0.2
 - copydomain uses new domain function fixed the issue introduced with 2.0.1
 

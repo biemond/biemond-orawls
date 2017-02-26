@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Puppet Function: orawls::domain_exists (Ruby 4.x API)
+  Puppet Function: orawls::oim_configured (Ruby 4.x API)
   
     &mdash; Documentation by YARD 0.9.8
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_functions_ruby4x::orawls::domain_exists";
+  pathId = "puppet_functions_ruby4x::orawls::oim_configured";
   relpath = '../';
 </script>
 
@@ -39,7 +39,7 @@
     <a href="../_index.html">Index (o)</a> &raquo;
     <span class='title'><span class='object_link'>Puppet Functions</span></span>
      &raquo; 
-    <span class="title">orawls::domain_exists</span>
+    <span class="title">orawls::oim_configured</span>
   
 </div>
 
@@ -59,12 +59,12 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Puppet Function: orawls::domain_exists</h1>
+      <div id="content"><h1>Puppet Function: orawls::oim_configured</h1>
 <div class="box_info">
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      lib/puppet/functions/orawls/domain_exists.rb
+      lib/puppet/functions/orawls/oim_configured.rb
     </dd>
   </dl>
   <dl>
@@ -78,7 +78,7 @@
   <div class="tags overload overload_item">
     <span class="overload">
       <span class="overload_item">
-        <span class="signature first" style="margin-left: 0px;"><strong>orawls::domain_exists(String $full_domain_path)</strong> &#x21d2; <tt>Boolean</tt> </span>
+        <span class="signature first" style="margin-left: 0px;"><strong>orawls::oim_configured(String $full_domain_path)</strong> &#x21d2; <tt>Boolean</tt> </span>
       </span>
     </span>
   </div>
@@ -86,7 +86,7 @@
   <div class="docstring">
     <div class="discussion">
       
-<p>Check if the WebLogic domain already exists</p>
+<p>Check if OIM is already configured</p>
 
     </div>
   </div>
@@ -97,10 +97,10 @@
     
       
         <p class="example_title"><div class='inline'>
-<p>Finding a WebLogic oracle domain</p>
+<p>Finding a FMW product</p>
 </div></p>
       
-      <pre class="example code"><code>orawls::domain_exists(&#39;/opt/oracle/wlsdomains&#39;) =&gt; true</code></pre>
+      <pre class="example code"><code>orawls::oim_configured(&#39;/opt/oracle/wlsdomains&#39;) =&gt; true</code></pre>
     
   </div>
 
@@ -203,18 +203,33 @@
 52
 53
 54
-55</pre>
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'lib/puppet/functions/orawls/domain_exists.rb', line 3</span>
+        <pre class="code"><span class="info file"># File 'lib/puppet/functions/orawls/oim_configured.rb', line 3</span>
 
-<span class='const'>Puppet</span><span class='op'>::</span><span class='const'>Functions</span><span class='period'>.</span><span class='id identifier rubyid_create_function'>create_function</span><span class='lparen'>(</span><span class='symbol'>:orawls::domain_exists</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
+<span class='const'>Puppet</span><span class='op'>::</span><span class='const'>Functions</span><span class='period'>.</span><span class='id identifier rubyid_create_function'>create_function</span><span class='lparen'>(</span><span class='symbol'>:orawls::oim_configured</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
 
-  <span class='comment'># Check if the WebLogic domain already exists
+  <span class='comment'># Check if oim is already configured
 </span>  <span class='comment'># @param full_domain_path the full path to the domain
 </span>  <span class='comment'># @return [Boolean] Return if it is found or not
-</span>  <span class='comment'># @example Finding a WebLogic oracle domain
-</span>  <span class='comment'>#   orawls::domain_exists(&#39;/opt/oracle/wlsdomains&#39;) =&gt; true
+</span>  <span class='comment'># @example Finding a FMW product
+</span>  <span class='comment'>#   orawls::oim_configured(&#39;/opt/oracle/wlsdomains&#39;) =&gt; true
 </span>  <span class='id identifier rubyid_dispatch'>dispatch</span> <span class='symbol'>:exists</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_param'>param</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>String</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='symbol'>:full_domain_path</span>
     <span class='comment'># return_type &#39;Boolean&#39;
@@ -223,6 +238,7 @@
   <span class='kw'>def</span> <span class='id identifier rubyid_exists'>exists</span><span class='lparen'>(</span><span class='id identifier rubyid_full_domain_path'>full_domain_path</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_art_exists'>art_exists</span> <span class='op'>=</span> <span class='kw'>false</span>
     <span class='id identifier rubyid_full_domain_path'>full_domain_path</span> <span class='op'>=</span> <span class='id identifier rubyid_full_domain_path'>full_domain_path</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
+
     <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>full domain path </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_full_domain_path'>full_domain_path</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='id identifier rubyid_prefix'>prefix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ora_mdw_domain</span><span class='tstring_end'>&#39;</span></span>
 
@@ -231,6 +247,7 @@
     <span class='id identifier rubyid_domain_count'>domain_count</span> <span class='op'>=</span> <span class='id identifier rubyid_scope'>scope</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>facts</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_prefix'>prefix</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>_cnt</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
     <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>total domains </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_domain_count'>domain_count</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>if</span> <span class='id identifier rubyid_domain_count'>domain_count</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NotFound</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>or</span> <span class='id identifier rubyid_domain_count'>domain_count</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>no domains found return false</span><span class='tstring_end'>&quot;</span></span>
       <span class='kw'>return</span> <span class='id identifier rubyid_art_exists'>art_exists</span>
     <span class='kw'>else</span>
       <span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='int'>0</span>
@@ -242,12 +259,25 @@
           <span class='id identifier rubyid_domain'>domain</span> <span class='op'>=</span> <span class='id identifier rubyid_domain'>domain</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
           <span class='comment'># do we found the right domain
 </span>          <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>compare </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_full_domain_path'>full_domain_path</span><span class='embexpr_end'>}</span><span class='tstring_content'> with </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_domain'>domain</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-          <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_domain'>domain</span> <span class='op'>==</span> <span class='id identifier rubyid_full_domain_path'>full_domain_path</span>
+
+          <span class='kw'>if</span> <span class='id identifier rubyid_domain'>domain</span> <span class='op'>==</span> <span class='id identifier rubyid_full_domain_path'>full_domain_path</span>
+            <span class='id identifier rubyid_oim'>oim</span> <span class='op'>=</span>  <span class='id identifier rubyid_scope'>scope</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>facts</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='id identifier rubyid_prefix'>prefix</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>_</span><span class='tstring_end'>&#39;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_n'>n</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>_oim_configured</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+            <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>has value </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_oim'>oim</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+            <span class='kw'>unless</span> <span class='id identifier rubyid_oim'>oim</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NotFound</span><span class='tstring_end'>&#39;</span></span>
+              <span class='kw'>if</span> <span class='id identifier rubyid_oim'>oim</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>true</span><span class='tstring_end'>&#39;</span></span>
+                <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return true</span><span class='tstring_end'>&#39;</span></span>
+                <span class='kw'>return</span> <span class='kw'>true</span>
+              <span class='kw'>else</span>
+                <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return false</span><span class='tstring_end'>&#39;</span></span>
+                <span class='kw'>return</span> <span class='kw'>true</span>               
+              <span class='kw'>end</span>
+            <span class='kw'>end</span>
+          <span class='kw'>end</span>
         <span class='kw'>end</span>
         <span class='id identifier rubyid_n'>n</span> <span class='op'>+=</span> <span class='int'>1</span>
       <span class='kw'>end</span>
     <span class='kw'>end</span>
-
+    <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>end of function return false</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>return</span> <span class='id identifier rubyid_art_exists'>art_exists</span>
 
   <span class='kw'>end</span>
@@ -256,7 +286,7 @@
     <span class='const'>Puppet</span><span class='op'>::</span><span class='const'>Util</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span>
       <span class='symbol'>:level</span>   <span class='op'>=&gt;</span> <span class='symbol'>:info</span><span class='comma'>,</span>
       <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_msg'>msg</span><span class='comma'>,</span>
-      <span class='symbol'>:source</span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>orawls::domain_exists</span><span class='tstring_end'>&#39;</span></span>
+      <span class='symbol'>:source</span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>orawls::oim_configured</span><span class='tstring_end'>&#39;</span></span>
     <span class='rparen'>)</span>
   <span class='kw'>end</span>
 

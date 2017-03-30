@@ -46,7 +46,7 @@ module Puppet
     property :description
 
     add_title_attributes(:user_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

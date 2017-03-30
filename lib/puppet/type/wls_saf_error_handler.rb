@@ -46,7 +46,7 @@ module Puppet
     property :policy
 
     add_title_attributes(:jmsmodule, :error_handler_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
   end
 end

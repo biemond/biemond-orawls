@@ -48,7 +48,7 @@ module Puppet
     property :capacity
 
     add_title_attributes(:workmanager_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

@@ -47,7 +47,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:jdbc_persistence_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

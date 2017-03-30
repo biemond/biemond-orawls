@@ -51,7 +51,7 @@ module Puppet
     property :stagingmode
 
     add_title_attributes(:domain_partition_name, :resource_group_name, :deployment_name) do
-      /^((.*\/)?(.*):(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*):(.*)?)$/
     end
 
   end

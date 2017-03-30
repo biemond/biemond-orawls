@@ -1,5 +1,8 @@
 # History
 
+## 2.0.4
+- Allow forward slash in the wls type title name, old title regex for detecting the wls_setting name was too eager but the use of slash in the wls_setting name is now not allowed anymore.
+
 ## 2.0.3
 - added oim_configured function check to oimconfig.pp
 

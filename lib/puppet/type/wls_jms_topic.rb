@@ -64,7 +64,7 @@ module Puppet
     property :productionpaused
 
     add_title_attributes(:jmsmodule, :topic_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

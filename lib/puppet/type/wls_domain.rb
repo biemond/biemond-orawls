@@ -62,7 +62,7 @@ module Puppet
     property :credential
 
     add_title_attributes(:weblogic_domain_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

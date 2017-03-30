@@ -47,7 +47,7 @@ module Puppet
     property :redeliverylimit
 
     add_title_attributes(:jmsmodule, :template_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

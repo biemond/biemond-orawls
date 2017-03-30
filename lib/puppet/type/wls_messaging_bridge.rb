@@ -62,7 +62,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:bridge_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
   end
 end

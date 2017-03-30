@@ -47,7 +47,7 @@ module Puppet
     property :calculated_listen_port
 
     add_title_attributes(:cluster_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

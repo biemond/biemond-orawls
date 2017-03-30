@@ -48,7 +48,7 @@ module Puppet
     property :uriprefix
 
     add_title_attributes(:virtual_target_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

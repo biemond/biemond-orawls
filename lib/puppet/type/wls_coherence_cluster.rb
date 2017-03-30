@@ -50,7 +50,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:coherence_cluster_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

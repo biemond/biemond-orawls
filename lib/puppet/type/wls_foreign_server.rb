@@ -50,7 +50,7 @@ module Puppet
     property :connectionurl
 
     add_title_attributes(:jmsmodule, :foreign_server_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
   end
 end

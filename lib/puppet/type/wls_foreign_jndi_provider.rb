@@ -50,7 +50,7 @@ module Puppet
     property  :provider_url
 
     add_title_attributes(:provider_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

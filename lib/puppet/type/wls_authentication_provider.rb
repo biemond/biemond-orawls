@@ -70,7 +70,7 @@ module Puppet
     property  :provider_specific
 
     add_title_attributes(:authentication_provider_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

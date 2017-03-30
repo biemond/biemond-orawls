@@ -45,7 +45,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:jms_module_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

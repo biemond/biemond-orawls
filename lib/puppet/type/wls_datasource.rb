@@ -74,7 +74,7 @@ module Puppet
     property :connectionreservetimeoutseconds
 
     add_title_attributes(:datasource_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

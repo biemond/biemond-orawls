@@ -52,7 +52,7 @@ module Puppet
     property :nonpersistentqos
 
     add_title_attributes(:jmsmodule, :imported_destination, :object_name) do
-      /^((.*\/)?(.*):(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*):(.*)?)$/
     end
 
   end

@@ -50,7 +50,7 @@ module Puppet
     property :mailproperty
 
     add_title_attributes(:mailsession_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

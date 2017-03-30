@@ -64,7 +64,7 @@ module Puppet
     property :productionpaused
 
     add_title_attributes(:jmsmodule, :queue_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
     autorequire(:wls_jms_template) { "#{jmsmodule}:#{templatename}" }

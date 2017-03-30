@@ -59,7 +59,7 @@ module Puppet
     property :channel_identity_customized
 
     add_title_attributes(:server, :channel_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

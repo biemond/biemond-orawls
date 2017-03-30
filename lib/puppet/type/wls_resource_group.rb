@@ -43,7 +43,7 @@ module Puppet
     property :virtual_target
 
     add_title_attributes(:resource_group_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

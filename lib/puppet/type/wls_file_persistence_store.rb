@@ -46,7 +46,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:file_persistence_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

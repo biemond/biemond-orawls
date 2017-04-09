@@ -46,7 +46,7 @@ module Puppet
     parameter :timeout
 
     add_title_attributes(:jmsmodule, :key_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

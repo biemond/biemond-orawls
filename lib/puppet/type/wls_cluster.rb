@@ -187,7 +187,7 @@ module Puppet
     property :securereplication
 
     add_title_attributes(:cluster_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
     #

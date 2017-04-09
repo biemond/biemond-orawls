@@ -47,7 +47,7 @@ module Puppet
     property :shared
 
     add_title_attributes(:jmsmodule, :quota_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

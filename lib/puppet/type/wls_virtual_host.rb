@@ -46,7 +46,7 @@ module Puppet
     property :virtual_host_names
 
     add_title_attributes(:virtual_host_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

@@ -50,7 +50,7 @@ module Puppet
     property :subdeployment
 
     add_title_attributes(:jmsmodule, :imported_destination_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

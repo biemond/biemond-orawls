@@ -49,7 +49,7 @@ module Puppet
     property :classpath
 
     add_title_attributes(:coherence_server_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

@@ -46,7 +46,7 @@ module Puppet
     property :targettype
 
     add_title_attributes(:safagent_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

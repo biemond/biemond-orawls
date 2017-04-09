@@ -1,5 +1,8 @@
 # History
 
+## 1.0.59
+- Allow forward slash in the wls type title name, old title regex for detecting the wls_setting name was too eager but the use of slash in the wls_setting name is now not allowed anymore.
+
 ## 1.0.58
 - Option to ignore the defaultCoherenceCluster on a domain
 - restrictive permissions for orainst & nodemanager.properties

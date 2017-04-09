@@ -46,7 +46,7 @@ module Puppet
     property :connect_url
 
     add_title_attributes(:jmsmodule, :remote_context_name) do
-      /^((.*\/)?(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*)?)$/
     end
 
   end

@@ -50,7 +50,7 @@ module Puppet
     property :testfrequency
 
     add_title_attributes(:multi_datasource_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
     autorequire(:wls_datasource) { datasources }

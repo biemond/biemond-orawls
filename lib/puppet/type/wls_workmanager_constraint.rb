@@ -46,7 +46,7 @@ module Puppet
     property :constraintvalue
 
     add_title_attributes(:workmanager_constraint_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

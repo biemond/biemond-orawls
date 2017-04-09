@@ -41,7 +41,7 @@ module Puppet
     parameter :timeout
 
     add_title_attributes(:resource_group_template_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

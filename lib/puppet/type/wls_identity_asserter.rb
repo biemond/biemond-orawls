@@ -49,7 +49,7 @@ module Puppet
     property :defaultmappertype
 
     add_title_attributes(:authentication_provider_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

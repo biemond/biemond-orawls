@@ -43,7 +43,7 @@ module Puppet
     property :root_file_system
 
     add_title_attributes(:domain_partition_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

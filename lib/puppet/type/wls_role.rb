@@ -44,7 +44,7 @@ module Puppet
     property :expression
 
     add_title_attributes(:role_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

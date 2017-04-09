@@ -53,7 +53,7 @@ module Puppet
 
 
     add_title_attributes(:jmsserver_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

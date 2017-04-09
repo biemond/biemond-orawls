@@ -48,7 +48,7 @@ module Puppet
     property :arguments
 
     add_title_attributes(:server_template) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

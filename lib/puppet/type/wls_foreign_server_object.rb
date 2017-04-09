@@ -48,7 +48,7 @@ module Puppet
     property :localjndiname
 
     add_title_attributes(:jmsmodule, :foreign_server, :object_name) do
-      /^((.*\/)?(.*):(.*):(.*)?)$/
+      /^((.*?\/)?(.*):(.*):(.*)?)$/
     end
 
   end

@@ -47,7 +47,7 @@ module Puppet
     property :description
 
     add_title_attributes(:group_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

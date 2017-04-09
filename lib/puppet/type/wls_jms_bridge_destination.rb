@@ -52,7 +52,7 @@ module Puppet
     property :password
 
     add_title_attributes(:bridge_destination_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
   end
 end

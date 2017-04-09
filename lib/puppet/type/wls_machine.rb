@@ -47,7 +47,7 @@ module Puppet
     property :listenport
 
     add_title_attributes(:machine_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

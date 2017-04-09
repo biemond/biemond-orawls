@@ -53,7 +53,7 @@ module Puppet
     property :stagingmode
 
     add_title_attributes(:deployment_name) do
-      /^((.*\/)?(.*)?)$/
+      /^((.*?\/)?(.*)?)$/
     end
 
   end

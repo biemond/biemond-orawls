@@ -716,7 +716,7 @@ define orawls::domain (
         require => Exec["execwlst ${domain_name} ${title}"],
       }
 
-      if ( $version <= 1212 ){
+      if ( $version <= 1213 ){
         $source_mod = 'puppet:///modules/orawls/mod_wl_ohs.conf'
       } else {
         $source_mod = 'puppet:///modules/orawls/mod_wl_ohs_12c.conf'

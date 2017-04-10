@@ -1,5 +1,8 @@
 # History
 
+## 2.0.5
+- Fix ohs domain for 12.1.3 webtier
+
 ## 2.0.4
 - Allow forward slash in the wls type title name, old title regex for detecting the wls_setting name was too eager but the use of slash in the wls_setting name is now not allowed anymore.
 

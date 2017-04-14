@@ -88,6 +88,7 @@ define orawls::fmw(
   Optional[String] $oracle_inventory_dir                  = undef,
   Boolean $remote_file                                    = $::orawls::weblogic::remote_file,
   Optional[String] $orainstpath_dir                       = lookup('orawls::orainst_dir'),
+  Boolean $cleanup_install_files                          = true,
 )
 {
 
@@ -812,6 +813,48 @@ define orawls::fmw(
         require     => [File["${download_dir}/${sanitised_title}_silent.rsp"],
                         Orawls::Utils::Orainst["create oraInst for ${name}"],
                         Exec["extract ${fmw_file1} for ${name}"],],
+      }
+    }
+
+    # cleanup
+    if ( $cleanup_install_files ) {
+      exec { "remove extract folder ${title}":
+        command => "rm -rf ${download_dir}/${sanitised_title}",
+        user    => 'root',
+        group   => 'root',
+        path    => $exec_path,
+        cwd     => $temp_dir,
+        require => Exec["install ${sanitised_title}"],
+        }
+      if ( $remote_file == true ){
+        exec { "remove ${fmw_file1} ${title}":
+          command => "rm -rf ${download_dir}/${fmw_file1}",
+          user    => 'root',
+          group   => 'root',
+          path    => $exec_path,
+          cwd     => $temp_dir,
+          require => Exec["install ${sanitised_title}"],
+        }
+        if ( $total_files > 1 ) {
+          exec { "remove ${fmw_file2} ${title}":
+            command => "rm -rf ${download_dir}/${fmw_file2}",
+            user    => 'root',
+            group   => 'root',
+            path    => $exec_path,
+            cwd     => $temp_dir,
+            require => Exec["install ${sanitised_title}"],
+          }
+        }
+        if ( $total_files > 2 ) {
+          exec { "remove ${fmw_file3} ${title}":
+            command => "rm -rf ${download_dir}/${fmw_file3}",
+            user    => 'root',
+            group   => 'root',
+            path    => $exec_path,
+            cwd     => $temp_dir,
+            require => Exec["install ${sanitised_title}"],
+          }
+        }
       }
     }
   }

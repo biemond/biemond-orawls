@@ -55,7 +55,11 @@ newproperty(:provider_specific) do
   #
   munge do | value_hash|
     value_hash.each do | key, value|
-      value_hash[key.to_s] = value.to_s
+      if (value==nil or value=='')
+        value_hash[key.to_s] = nil
+      else
+        value_hash[key.to_s] = value.to_s
+      end
     end
     value_hash
   end

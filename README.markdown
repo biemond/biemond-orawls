@@ -18,6 +18,9 @@ For Puppet 3, 4 you have to use the latest 1.x version of this orawls module
 source code is located at [puppet4 branch](https://github.com/biemond/biemond-orawls/tree/puppet4)
 
 
+Please check the manifests and vagrant examples because there are some breaking changes especially on the manifest part ( I don't do hiera lookups. Just use the weblogic class and I will use those parameters as reference for the other manifest parameters)
+
+
 ## Author
 
 Edwin Biemond email biemond at gmail dot com

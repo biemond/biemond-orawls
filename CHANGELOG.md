@@ -1,5 +1,8 @@
 # History
 
+## 1.0.60
+- fix nil or '' values on onprovider_specific of wls_authentication_provider
+
 ## 1.0.59
 - Allow forward slash in the wls type title name, old title regex for detecting the wls_setting name was too eager but the use of slash in the wls_setting name is now not allowed anymore.
 

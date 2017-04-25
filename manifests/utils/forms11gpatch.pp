@@ -33,6 +33,7 @@ define orawls::utils::forms11gpatch (
   String $os_group                                        = $::orawls::weblogic::os_group,
   String $download_dir                                    = $::orawls::weblogic::download_dir,
   Boolean $log_output                                     = $::orawls::weblogic::log_output,
+  Optional[String] $orainstpath_dir                       = lookup('orawls::orainst_dir'),
 )
 {
   $fmw_product  = 'forms_patch'
@@ -41,7 +42,6 @@ define orawls::utils::forms11gpatch (
 
   case $facts['kernel'] {
     'Linux': {
-      $oraInstPath = '/etc'
       case $facts['architecture'] {
         'i386': {
           $installDir = 'linux'
@@ -52,7 +52,6 @@ define orawls::utils::forms11gpatch (
       }
     }
     'SunOS': {
-      $oraInstPath = '/var/opt/oracle'
       case $facts['architecture'] {
         'i86pc': {
           $installDir = 'intelsolaris'
@@ -119,7 +118,7 @@ define orawls::utils::forms11gpatch (
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion"
 
     exec { "install ${fmw_product} ${title}":
-      command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
+      command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
       environment => "TEMP=${temp_dir}",
       timeout     => 0,
       # creates     => "${oracleHome}/OPatch",

@@ -2,6 +2,7 @@
 
 ## 2.0.6
 - fix nil or '' values on onprovider_specific of wls_authentication_provider
+- be able to set orainstpath_dir parameter on weblogic, weblogic_type and fmw
 
 ## 2.0.5
 - Fix ohs domain for 12.1.3 webtier

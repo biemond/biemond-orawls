@@ -102,11 +102,6 @@ define orawls::fmw(
 
   case $facts['kernel'] {
     'Linux': {
-      if ( $orainstpath_dir == undef or $orainstpath_dir == '' ){
-        $oraInstPath = '/etc'
-      } else {
-        $oraInstPath = $orainstpath_dir
-      }
       case $facts['architecture'] {
         'i386': {
           $installDir = 'linux'
@@ -117,7 +112,6 @@ define orawls::fmw(
       }
     }
     'SunOS': {
-      $oraInstPath = '/var/opt/oracle'
       case $facts['architecture'] {
         'i86pc': {
           $installDir = 'intelsolaris'
@@ -582,6 +576,7 @@ define orawls::fmw(
     orawls::utils::orainst { "create oraInst for ${name}":
       ora_inventory_dir => $oraInventory,
       os_group          => $os_group,
+      orainstpath_dir   => $orainstpath_dir
     }
 
     file { "${download_dir}/${sanitised_title}_silent.rsp":
@@ -777,7 +772,7 @@ define orawls::fmw(
       }
 
       exec { "install ${sanitised_title}":
-        command     => "${install}${download_dir}/${sanitised_title}/${binFile1} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
+        command     => "${install}${download_dir}/${sanitised_title}/${binFile1} ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}",
         environment => "TEMP=${temp_dir}",
         timeout     => 0,
         creates     => $oracleHome,
@@ -801,7 +796,7 @@ define orawls::fmw(
       }
 
       exec { "install ${sanitised_title}":
-        command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${sanitised_title}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
+        command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${sanitised_title}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
         environment => "TEMP=${temp_dir}",
         timeout     => 0,
         creates     => "${oracleHome}/OPatch",

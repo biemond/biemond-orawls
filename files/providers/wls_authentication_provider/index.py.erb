@@ -15,8 +15,8 @@ f = open_file("name;authentication_provider_name;control_flag;domain;order", tmp
 for token in m:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)
-    description       = get('Description')
-    providerclassname = get('ProviderClassName')
+    description       = get_attribute_value('Description')
+    providerclassname = get_attribute_value('ProviderClassName')
 
     control_flag      = ''
     try:

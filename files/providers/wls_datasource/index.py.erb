@@ -12,54 +12,36 @@ for token in m:
     if dataSourceList is None:
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token )
-        url      = get('Url')
-        driver   = get('DriverName')
-        usexa    = str(get('UseXaDataSourceInterface'))
+        url      = get_attribute_value('Url')
+        driver   = get_attribute_value('DriverName')
+        usexa    = get_attribute_value('UseXaDataSourceInterface')
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCConnectionPoolParams/' + token )
-        maxcapacity     = get('MaxCapacity')
-        initialcapacity = get('InitialCapacity')
-        if not (initialcapacity):
-           initialcapacity = '0'
-        mincapacity     = get('MinCapacity')
-        if not (mincapacity):
-           mincapacity  = '0'
-        statementcachesize  = get('StatementCacheSize')
-        if not (statementcachesize):
-           statementcachesize   = '0'
-        testconnectionsonreserve = str(get('TestConnectionsOnReserve'))
+        maxcapacity              = get_attribute_value('MaxCapacity')
+        initialcapacity          = get_attribute_value('InitialCapacity')
+        mincapacity              = get_attribute_value('MinCapacity')
+        statementcachesize       = get_attribute_value('StatementCacheSize')
+        testconnectionsonreserve = get_attribute_value('TestConnectionsOnReserve')
 
-        inactiveconnectiontimeoutseconds = get('InactiveConnectionTimeoutSeconds')
-        if not (inactiveconnectiontimeoutseconds):
-          inactiveconnectiontimeoutseconds = '0'
+        inactiveconnectiontimeoutseconds = get_attribute_value('InactiveConnectionTimeoutSeconds')
+        connectionreservetimeoutseconds  = get_attribute_value('ConnectionReserveTimeoutSeconds')
+        shrinkfrequencyseconds           = get_attribute_value('ShrinkFrequencySeconds')
+        secondstotrustidlepoolconnection = get_attribute_value('SecondsToTrustAnIdlePoolConnection')
+        testfrequency                    = get_attribute_value('TestFrequencySeconds')
+        connectioncreationretryfrequency = get_attribute_value('ConnectionCreationRetryFrequencySeconds')
+        initsql                          = get_attribute_value('InitSql')
 
-        connectionreservetimeoutseconds = get('ConnectionReserveTimeoutSeconds')
-        if not (connectionreservetimeoutseconds):
-          connectionreservetimeoutseconds = '0'
 
-        shrinkfrequencyseconds = str(get('ShrinkFrequencySeconds'))
-        secondstotrustidlepoolconnection = str(get('SecondsToTrustAnIdlePoolConnection'))
-        testfrequency = get('TestFrequencySeconds')
-        connectioncreationretryfrequency = str(get('ConnectionCreationRetryFrequencySeconds'))
-        initsql = str(get('InitSql'))
-
-        if get('WrapTypes'):
-          wrapdatatypes = '1'
-        else:
-          wrapdatatypes = '0'
-
-        if get('RemoveInfectedConnections'):
-          removeinfectedconnections = '1'
-        else:
-          removeinfectedconnections = '0'
+        wrapdatatypes             = get_attribute_value('WrapTypes')
+        removeinfectedconnections = get_attribute_value('RemoveInfectedConnections')
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
-        jndinames = get('JNDINames')
-        rowprefetchenabled = str(get('RowPrefetch'))
-        rowprefetchsize = str(get('RowPrefetchSize'))
+        jndinames          = get('JNDINames')
+        rowprefetchenabled = get_attribute_value('RowPrefetch')
+        rowprefetchsize    = get_attribute_value('RowPrefetchSize')
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCConnectionPoolParams/' + token )
-        testTableName = get('TestTableName')
+        testTableName = get_attribute_value('TestTableName')
 
         try:
           cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDriverParams/' + token + '/Properties/' + token + '/Properties/user')
@@ -68,13 +50,13 @@ for token in m:
           user = ''
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token)
-        globalTransactionsProtocol = get('GlobalTransactionsProtocol')
+        globalTransactionsProtocol = get_attribute_value('GlobalTransactionsProtocol')
 
 
         try:
             cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCOracleParams/' + token )
-            fanenabled = str(get('FanEnabled'))
-            onsnodelist = get('OnsNodeList')
+            fanenabled = get_attribute_value('FanEnabled')
+            onsnodelist = get_attribute_value('OnsNodeList')
         except:
             # In Case any Datasource Type does not include JDBCOracleParams
             fanenabled = '0'

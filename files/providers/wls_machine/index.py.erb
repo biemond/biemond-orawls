@@ -5,14 +5,12 @@ f = open_file("name;machinetype;nmtype;listenaddress;listenport;domain", tmp_scr
 for token in m:
     print '___'+token+'___'
     cd('/Machines/'+token)
-    type = get('Type')
+    type = get_attribute_value('Type')
     cd('NodeManager/'+token)
 
-    listenAddress = get('ListenAddress')
-    if not (listenAddress):
-       listenAddress = ''
+    listenAddress = get_attribute_value('ListenAddress')
 
-    add_index_entry(f, [domain+'/'+token,type,get('NMType'),listenAddress,str(get('ListenPort')),domain])
+    add_index_entry(f, [domain+'/'+token,type,get_attribute_value('NMType'),listenAddress,str(get_attribute_value('ListenPort')),domain])
 
 f.close()
 report_back_success()

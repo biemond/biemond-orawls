@@ -6,23 +6,23 @@ for token in m:
   print '___'+token+'___'
   cd('/Clusters/'+token)
 
-  clusteraddress = get('ClusterAddress')
+  clusteraddress = get_attribute_value('ClusterAddress')
 
-  datasourceforMigrationMbean = get('DataSourceForAutomaticMigration')
+  datasourceforMigrationMbean = get_attribute_value('DataSourceForAutomaticMigration')
   if datasourceforMigrationMbean:
      path = getPath(datasourceforMigrationMbean)
      cd("/"+path)
-     datasourceMigration = get('Name')
+     datasourceMigration = get_attribute_value('Name')
      cd('/Clusters/'+token)
   else:
      datasourceMigration = ''
 
 
-  datasourceforjobschedulerMbean = cmo.getDataSourceForJobScheduler()
+  datasourceforjobschedulerMbean = get_attribute_value('DataSourceForJobScheduler')
   if datasourceforjobschedulerMbean:
      path = getPath(datasourceforjobschedulerMbean)
      cd("/"+path)
-     datasourceforjobscheduler = get('Name')
+     datasourceforjobscheduler = get_attribute_value('Name')
      cd('/Clusters/'+token)
   else:
      datasourceforjobscheduler = ''
@@ -60,9 +60,9 @@ for token in m:
 
   cd('/Clusters/'+token)
   if not clustered:
-    add_index_entry(f,[domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+    add_index_entry(f,[domain+'/'+token,clusteraddress,','.join(servers),get_attribute_value('ClusterMessagingMode'),get_attribute_value('MigrationBasis'),datasourceforjobscheduler,get_attribute_value('ClusterBroadcastChannel'),get_attribute_value('MulticastAddress'),get_attribute_value('MulticastPort'),domain,datasourceMigration,get_attribute_value('AutoMigrationTableName'),get_attribute_value('FrontendHost'),get_attribute_value('FrontendHTTPPort'),get_attribute_value('FrontendHTTPSPort'),get_attribute_value('SecureReplicationEnabled')])
   else:
-    add_index_entry(f,[domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+    add_index_entry(f,[domain+'/'+token,clusteraddress,cluster_result,get_attribute_value('ClusterMessagingMode'),get_attribute_value('MigrationBasis'),datasourceforjobscheduler,get_attribute_value('ClusterBroadcastChannel'),get_attribute_value('MulticastAddress'),get_attribute_value('MulticastPort'),domain,datasourceMigration,get_attribute_value('AutoMigrationTableName'),get_attribute_value('FrontendHost'),get_attribute_value('FrontendHTTPPort'),get_attribute_value('FrontendHTTPSPort'),get_attribute_value('SecureReplicationEnabled')])
 
 f.close()
 report_back_success()

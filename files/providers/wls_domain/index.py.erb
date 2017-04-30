@@ -3,45 +3,40 @@
 f = open_file("name;domain;jta_transaction_timeout;jta_max_transactions;jpa_default_provider;security_crossdomain;log_file_min_size;log_filecount;log_rotate_logon_startup;log_filename;log_rotationtype;log_number_of_files_limited;jmx_platform_mbean_server_enabled;jmx_platform_mbean_server_used;web_app_container_show_archived_real_path_enabled;setinternalappdeploymentondemandenable;setarchiveconfigurationcount;setconfigbackupenabled;setconfigurationaudittype;exalogicoptimizationsenabled;log_date_pattern;log_domain_log_broadcast_severity", tmp_script)
 
 cd('/')
-domain_name = get('Name')
+domain_name = get_attribute_value('Name')
 
-
-setinternalappdeploymentondemandenable = str(get('InternalAppsDeployOnDemandEnabled'))
-setarchiveconfigurationcount = cmo.getArchiveConfigurationCount()
-setconfigbackupenabled = get('ConfigBackupEnabled')
-setconfigurationaudittype = cmo.getConfigurationAuditType()
-exalogicoptimizationsenabled = str(get('ExalogicOptimizationsEnabled'))
+setinternalappdeploymentondemandenable = get_attribute_value('InternalAppsDeployOnDemandEnabled')
+setarchiveconfigurationcount           = get_attribute_value('ArchiveConfigurationCount')
+setconfigbackupenabled                 = get_attribute_value('ConfigBackupEnabled')
+setconfigurationaudittype              = get_attribute_value('ConfigurationAuditType')
+exalogicoptimizationsenabled           = get_attribute_value('ExalogicOptimizationsEnabled')
 
 cd('/Log/'+domain_name)
-log_rotationtype                  = get('RotationType')
-log_rotate_logon_startup          = str(get('RotateLogOnStartup'))
-log_number_of_files_limited       = str(get('NumberOfFilesLimited'))
-log_filename                      = str(get('FileName'))
-log_filecount                     = str(get('FileCount'))
-log_file_min_size                 = str(get('FileMinSize'))
-log_date_pattern                  = get('DateFormatPattern')
-log_domain_log_broadcast_severity = get('DomainLogBroadcastSeverity')
+log_rotationtype                  = get_attribute_value('RotationType')
+log_rotate_logon_startup          = get_attribute_value('RotateLogOnStartup')
+log_number_of_files_limited       = get_attribute_value('NumberOfFilesLimited')
+log_filename                      = get_attribute_value('FileName')
+log_filecount                     = get_attribute_value('FileCount')
+log_file_min_size                 = get_attribute_value('FileMinSize')
+log_date_pattern                  = get_attribute_value('DateFormatPattern')
+log_domain_log_broadcast_severity = get_attribute_value('DomainLogBroadcastSeverity')
 
 cd('/JTA/'+domain_name)
-jta_max_transactions    = str(cmo.getMaxTransactions())
-jta_transaction_timeout = str(cmo.getTimeoutSeconds())
+jta_max_transactions    = get_attribute_value('MaxTransactions')
+jta_transaction_timeout = get_attribute_value('TimeoutSeconds')
 
 cd('/JPA/'+domain_name)
-jpa_default_provider = cmo.getDefaultJPAProvider()
+jpa_default_provider = get_attribute_value('DefaultJPAProvider')
 
 cd('/SecurityConfiguration/'+domain_name)
-try:
-  security_crossdomain = str(get('CrossDomainSecurityEnabled'))
-except:
-  print "exception security_crossdomain", sys.exc_info()[0]
-  security_crossdomain = '0'
+security_crossdomain = get_attribute_value('CrossDomainSecurityEnabled')
 
 cd('/JMX/'+domain_name)
-jmx_platform_mbean_server_enabled = str(get('PlatformMBeanServerEnabled'))
-jmx_platform_mbean_server_used = str(get('PlatformMBeanServerUsed'))
+jmx_platform_mbean_server_enabled = get_attribute_value('PlatformMBeanServerEnabled')
+jmx_platform_mbean_server_used = get_attribute_value('PlatformMBeanServerUsed')
 
 cd('/WebAppContainer/'+domain_name)
-web_app_container_show_archived_real_path_enabled = str(get('ShowArchivedRealPathEnabled'))
+web_app_container_show_archived_real_path_enabled = get_attribute_value('ShowArchivedRealPathEnabled')
 
 add_index_entry(f, [domain+'/'+domain_name,domain,jta_transaction_timeout,jta_max_transactions,jpa_default_provider,security_crossdomain,log_file_min_size,log_filecount,log_rotate_logon_startup,log_filename,log_rotationtype,log_number_of_files_limited,jmx_platform_mbean_server_enabled,jmx_platform_mbean_server_used,web_app_container_show_archived_real_path_enabled,setinternalappdeploymentondemandenable,setarchiveconfigurationcount,setconfigbackupenabled,setconfigurationaudittype,exalogicoptimizationsenabled,log_date_pattern,log_domain_log_broadcast_severity])
 

@@ -6,90 +6,74 @@ f = open_file("name;listenaddress;listenport;logintimeout;ssllistenport;sslenabl
 for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token)
-  listenAddress     = get('ListenAddress')
-  listenPort        = str(get('ListenPort'))
-  listenPortEnabled = str(get('ListenPortEnabled'))
-  max_message_size  = str(get('MaxMessageSize'))
-  tunnelingenabled  = str(get('TunnelingEnabled'))
-  logintimeout	    = str(get('LoginTimeoutMillis'))
-  restart_max       = str(get('RestartMax'))
+  listenAddress     = get_attribute_value('ListenAddress')
+  listenPort        = get_attribute_value('ListenPort')
+  listenPortEnabled = get_attribute_value('ListenPortEnabled')
+  max_message_size  = get_attribute_value('MaxMessageSize')
+  tunnelingenabled  = get_attribute_value('TunnelingEnabled')
+  logintimeout	    = get_attribute_value('LoginTimeoutMillis')
+  restart_max       = get_attribute_value('RestartMax')
 
-  auto_restart      = str(get('AutoRestart'))
-  autokillwfail     = str(get('AutoKillIfFailed'))
-  server_parameters = str(get('Notes'))
+  auto_restart      = get_attribute_value('AutoRestart')
+  autokillwfail     = get_attribute_value('AutoKillIfFailed')
+  server_parameters = get_attribute_value('Notes')
   if get("KeyStores") == "CustomIdentityAndCustomTrust":
     custom_identity = '1'
   else:
     custom_identity = '0'
 
-  custom_identity_keystore_filename = get("CustomIdentityKeyStoreFileName")
-  trust_keystore_file               = get("CustomTrustKeyStoreFileName")
-  weblogic_plugin_enabled           = str(get('WeblogicPluginEnabled'))
+  custom_identity_keystore_filename = get_attribute_value("CustomIdentityKeyStoreFileName")
+  trust_keystore_file               = get_attribute_value("CustomTrustKeyStoreFileName")
+  weblogic_plugin_enabled           = get_attribute_value('WeblogicPluginEnabled')
 
   cd('/Servers/'+token+'/SSL/'+token)
-  sslListenPort                     = str(get('ListenPort'))
-  sslEnabled                        = str(get('Enabled'))
-  sslHostnameVerificationIgnored    = str(get('HostnameVerificationIgnored'))
-  sslhostnameverifier               = str(get('HostnameVerifier'))
-  two_way_ssl                       = str(get('TwoWaySSLEnabled'))
-  client_certificate_enforced       = str(get('ClientCertificateEnforced'))
-  jsseEnabled                       = str(get('JSSEEnabled'))
-  useservercerts                    = str(get('UseServerCerts'))
-  custom_identity_alias             = get("ServerPrivateKeyAlias")
+  sslListenPort                     = get_attribute_value('ListenPort')
+  sslEnabled                        = get_attribute_value('Enabled')
+  sslHostnameVerificationIgnored    = get_attribute_value('HostnameVerificationIgnored')
+  sslhostnameverifier               = get_attribute_value('HostnameVerifier')
+  two_way_ssl                       = get_attribute_value('TwoWaySSLEnabled')
+  client_certificate_enforced       = get_attribute_value('ClientCertificateEnforced')
+  jsseEnabled                       = get_attribute_value('JSSEEnabled')
+
+  useservercerts                    = get_attribute_value('UseServerCerts')
+  custom_identity_alias             = get_attribute_value("ServerPrivateKeyAlias")
 
   cd('/Servers/'+token+'/ServerStart/'+token)
-  bea_home      = get('BeaHome')
-  classpath     = get('ClassPath')
-  if classpath == None:
-      classpath = ''
-
-  arguments     = get('Arguments')
-  if arguments == None:
-      arguments = ''
+  bea_home      = get_attribute_value('BeaHome')
+  classpath     = get_attribute_value('ClassPath')
+  arguments     = get_attribute_value('Arguments')
 
   cd('/Servers/'+token+'/WebServer/'+token)
-  if get('FrontendHost'):
-    frontendhost = get('FrontendHost')
-  else:
-    frontendhost = ''
-
-  if get('FrontendHTTPPort'):
-    frontendhttpport = get('FrontendHTTPPort')
-  else:
-    frontendhttpport = '0'
-
-  if get('FrontendHTTPSPort'):
-    frontendhttpsport = get('FrontendHTTPSPort')
-  else:
-    frontendhttpsport = '0'
-
+  frontendhost      = get_attribute_value('FrontendHost')
+  frontendhttpport  = get_attribute_value('FrontendHTTPPort')
+  frontendhttpsport = get_attribute_value('FrontendHTTPSPort')
 
   cd('/Servers/'+token+'/Log/'+token)
-  logfilename                   = get('FileName')
-  log_rotationtype              = get('RotationType')
-  log_rotate_logon_startup      = str(get('RotateLogOnStartup'))
-  log_number_of_files_limited   = str(get('NumberOfFilesLimited'))
-  log_filecount                 = str(get('FileCount'))
-  log_file_min_size             = str(get('FileMinSize'))
-  log_redirect_stderr_to_server = str(get('RedirectStderrToServerLogEnabled'))
-  log_redirect_stdout_to_server = str(get('RedirectStdoutToServerLogEnabled'))
-  log_date_pattern              = get('DateFormatPattern')
-  log_stdout_severity           = get('StdoutSeverity')
-  log_log_file_severity         = get('LogFileSeverity')
+  logfilename                   = get_attribute_value('FileName')
+  log_rotationtype              = get_attribute_value('RotationType')
+  log_rotate_logon_startup      = get_attribute_value('RotateLogOnStartup')
+  log_number_of_files_limited   = get_attribute_value('NumberOfFilesLimited')
+  log_filecount                 = get_attribute_value('FileCount')
+  log_file_min_size             = get_attribute_value('FileMinSize')
+  log_redirect_stderr_to_server = get_attribute_value('RedirectStderrToServerLogEnabled')
+  log_redirect_stdout_to_server = get_attribute_value('RedirectStdoutToServerLogEnabled')
+  log_date_pattern              = get_attribute_value('DateFormatPattern')
+  log_stdout_severity           = get_attribute_value('StdoutSeverity')
+  log_log_file_severity         = get_attribute_value('LogFileSeverity')
 
   cd('/Servers/'+token+'/WebServer/'+token+'/WebServerLog/'+token)
-  log_http_filename                = get('FileName')
-  log_http_format                  = get('ELFFields')
-  log_http_format_type             = get('LogFileFormat')
-  log_http_file_count              = get('FileCount')
-  log_http_number_of_files_limited = str(get('NumberOfFilesLimited'))
+  log_http_filename                = get_attribute_value('FileName')
+  log_http_format                  = get_attribute_value('ELFFields')
+  log_http_format_type             = get_attribute_value('LogFileFormat')
+  log_http_file_count              = get_attribute_value('FileCount')
+  log_http_number_of_files_limited = get_attribute_value('NumberOfFilesLimited')
   print log_http_number_of_files_limited
 
   cd('/Servers/'+token+'/DataSource/'+token+'/DataSourceLogFile/'+token)
-  log_datasource_filename          = get('FileName')
+  log_datasource_filename          = get_attribute_value('FileName')
 
   cd('/Servers/'+token+'/DefaultFileStore/'+token)
-  default_file_store = get('Directory')
+  default_file_store = get_attribute_value('Directory')
 
   n = ls('/Servers/'+token+'/Machine')
   machine = ''

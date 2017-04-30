@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;target;targettype;domain")
+f = open_file("name;target;targettype;domain", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/JMSSystemResources/'+token)

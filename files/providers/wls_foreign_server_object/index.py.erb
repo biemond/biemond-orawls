@@ -6,7 +6,7 @@ def object(token,token2,token3,location,type):
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;foreign_server;object_type;localjndiname;remotejndiname;domain")
+f = open_file("name;jmsmodule;foreign_server;object_type;localjndiname;remotejndiname;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

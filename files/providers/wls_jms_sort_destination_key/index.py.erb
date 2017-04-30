@@ -1,6 +1,6 @@
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;key_name;key_type;property_name;sort_order;domain")
+f = open_file("name;jmsmodule;key_name;key_type;property_name;sort_order;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

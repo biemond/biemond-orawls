@@ -1,7 +1,7 @@
 
 m = ls('/JMSServers',returnMap='true')
 
-f = open_file("name;target;targettype;persistentstore;persistentstoretype;bytes_maximum;allows_persistent_downgrade;store_enabled;domain;insertionpaused;consumptionpaused;productionpaused")
+f = open_file("name;target;targettype;persistentstore;persistentstoretype;bytes_maximum;allows_persistent_downgrade;store_enabled;domain;insertionpaused;consumptionpaused;productionpaused", tmp_script)
 for token in m:
   print '___'+token+'___'
   cd('/JMSServers/'+token)

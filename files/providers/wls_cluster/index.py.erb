@@ -1,7 +1,7 @@
 
 m = ls('/Clusters',returnMap='true')
 
-f = open_file("name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication")
+f = open_file("name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication", tmp_script)
 for token in m:
   print '___'+token+'___'
   cd('/Clusters/'+token)

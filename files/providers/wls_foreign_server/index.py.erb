@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain")
+f = open_file("name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain", tmp_script)
 
 for token in m:
     print '_jmsmodule_'+token+'___'

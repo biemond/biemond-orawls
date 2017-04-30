@@ -11,7 +11,7 @@ for ap in m:
   if 'identityasserter' in ap.lower():
     m2.append(ap)
 
-f = open_file("name;authentication_provider_name;domain;activetypes;defaultmappertype;order")
+f = open_file("name;authentication_provider_name;domain;activetypes;defaultmappertype;order", tmp_script)
 for token in m2:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)

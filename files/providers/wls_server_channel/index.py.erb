@@ -1,7 +1,7 @@
 
 m = ls('/Servers',returnMap='true')
 
-f = open_file("name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain;two_way_ssl;client_certificate_enforced;custom_identity_alias;channel_identity_customized")
+f = open_file("name;server;protocol;enabled;listenport;httpenabled;outboundenabled;tunnelingenabled;listenaddress;publicport;max_message_size;publicaddress;domain;two_way_ssl;client_certificate_enforced;custom_identity_alias;channel_identity_customized", tmp_script)
 for token in m:
         print '___'+token+'___'
         cd('/Servers/'+token)

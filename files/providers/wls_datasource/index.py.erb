@@ -1,7 +1,7 @@
 
 m = ls('/JDBCSystemResources',returnMap='true')
 
-f = open_file("name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds;wrapdatatypes;removeinfectedconnections;inactiveconnectiontimeoutseconds;connectionreservetimeoutseconds")
+f = open_file("name;target;targettype;drivername;jndinames;url;usexa;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds;wrapdatatypes;removeinfectedconnections;inactiveconnectiontimeoutseconds;connectionreservetimeoutseconds", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)

@@ -1,7 +1,7 @@
 
 m = ls('/Machines',returnMap='true')
 
-f = open_file("name;machinetype;nmtype;listenaddress;listenport;domain")
+f = open_file("name;machinetype;nmtype;listenaddress;listenport;domain", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/Machines/'+token)

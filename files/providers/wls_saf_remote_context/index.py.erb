@@ -3,7 +3,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;connect_url;weblogic_user;domain")
+f = open_file("name;jmsmodule;connect_url;weblogic_user;domain", tmp_script)
 for token in m:
         print '_jmsmodule_'+token+'___'
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

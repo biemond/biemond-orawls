@@ -1,7 +1,7 @@
 
 m = ls('/SelfTuning',returnMap='true')
 
-f = open_file("name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity;fairsharerequestclass")
+f = open_file("name;stuckthreads;target;targettype;domain;minthreadsconstraint;maxthreadsconstraint;capacity;fairsharerequestclass", tmp_script)
 for token in m:
         print '___'+token+'___'
         cd('/SelfTuning/'+token)

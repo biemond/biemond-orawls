@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;redeliverydelay;redeliverylimit")
+f = open_file("name;jmsmodule;redeliverydelay;redeliverylimit", tmp_script)
 for token in m:
   n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates',returnMap='true')
   for token2 in n:

@@ -35,6 +35,7 @@ module Puppet
     property :extra_arguments
     property :debug_module
     property :archive_path
+    property :tmp_path
 
     property :custom_trust
     property :trust_keystore_file

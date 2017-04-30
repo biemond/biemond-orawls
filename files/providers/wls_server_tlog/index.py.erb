@@ -2,7 +2,7 @@
 cd("/")
 m = ls('/Servers',returnMap='true')
 
-f = open_file("name;tlog_enabled;tlog_datasource;tlog_datasource_prefix")
+f = open_file("name;tlog_enabled;tlog_datasource;tlog_datasource_prefix", tmp_script)
 for token in m:
   print '___'+token+'___'
   cd('/Servers/'+token+'/TransactionLogJDBCStore/'+token)

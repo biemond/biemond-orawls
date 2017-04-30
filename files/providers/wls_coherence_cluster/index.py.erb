@@ -1,7 +1,7 @@
 
 m = ls('/CoherenceClusterSystemResources',returnMap='true')
 
-f = open_file("name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain")
+f = open_file("name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain", tmp_script)
 for token in m:
   print '___'+token+'___'
   cd('/CoherenceClusterSystemResources/'+token)

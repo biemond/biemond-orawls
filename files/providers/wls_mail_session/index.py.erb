@@ -1,7 +1,7 @@
 
 m = ls('/MailSessions',returnMap='true')
 
-f = open_file("name;target;targettype;jndiname;mailproperty")
+f = open_file("name;target;targettype;jndiname;mailproperty", tmp_script)
 for token in m:
         print '___'+token+'___'
         cd('/MailSessions/'+token)

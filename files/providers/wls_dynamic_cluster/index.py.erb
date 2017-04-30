@@ -2,7 +2,7 @@
 
 m = ls('/Clusters',returnMap='true')
 
-f = open_file("name;domain;nodemanager_match;maximum_server_count;server_name_prefix;server_template_name;calculated_listen_port")
+f = open_file("name;domain;nodemanager_match;maximum_server_count;server_name_prefix;server_template_name;calculated_listen_port", tmp_script)
 for token in m:
   print '___'+token+'___'
   d = ls('/Clusters/'+token+'/DynamicServers/'+token+'/ServerTemplate',returnMap='true')

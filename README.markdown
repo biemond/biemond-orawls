@@ -1543,9 +1543,12 @@ saving the WLST scripts of all the wls types to a temporary folder
 
 archive_path has /tmp/orawls-archive as default folder
 
+tmp_path has /tmp as default folder
+
     wls_setting { 'default':
       debug_module              => 'true',
       archive_path              => '/var/tmp/install/default_domain',
+      tmp_path                  => '/var/tmp/install',
       connect_url               => 't3s://10.10.10.10:7002',
       custom_trust              => 'true',
       trust_keystore_file       => '/vagrant/truststore.jks',
@@ -1604,6 +1607,7 @@ or in hiera
         require:                   Orawls::Domain[Wls1213]
         debug_module:              true
         archive_path:              '/var/tmp/install/default_domain'
+        tmp_path:                  '/var/tmp/install'
       'plain':
         user:                      *wls_os_user
         weblogic_home_dir:         *wls_weblogic_home_dir

@@ -4,7 +4,7 @@ wlst_name = '/ResourceGroups/'
 
 m = ls(wlst_name, returnMap='true')
 
-f = open_file("name;resource_group_template;virtual_target")
+f = open_file("name;resource_group_template;virtual_target", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd(wlst_name + token)

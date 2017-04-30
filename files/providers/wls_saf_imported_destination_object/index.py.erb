@@ -21,7 +21,7 @@ def object(token,token2,token3,location,type):
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain")
+f = open_file("name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

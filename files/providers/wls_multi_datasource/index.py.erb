@@ -1,7 +1,7 @@
 
 m = ls('/JDBCSystemResources',returnMap='true')
 
-f = open_file("name;datasources;target;targettype;jndinames;algorithmtype;testfrequency")
+f = open_file("name;datasources;target;targettype;jndinames;algorithmtype;testfrequency", tmp_script)
 for token in m:
     print '___'+token+'___'
 

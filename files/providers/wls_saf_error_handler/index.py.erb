@@ -1,7 +1,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;policy;logformat;errordestination;domain")
+f = open_file("name;jmsmodule;policy;logformat;errordestination;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

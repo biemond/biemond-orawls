@@ -3,7 +3,7 @@ wlst_name = '/ResourceGroupTemplates/'
 
 m = ls(wlst_name, returnMap='true')
 
-f = open_file("name;xxx")
+f = open_file("name;xxx", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd(wlst_name + token)

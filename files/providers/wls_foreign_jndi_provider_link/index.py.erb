@@ -1,7 +1,7 @@
 
 provider_list = ls('/ForeignJNDIProviders',returnMap='true')
 
-f = open_file("name;local_jndi_name;remote_jndi_name")
+f = open_file("name;local_jndi_name;remote_jndi_name", tmp_script)
 
 for provider in provider_list:
     print '___'+provider+'___'

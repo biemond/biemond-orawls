@@ -1,6 +1,6 @@
 from weblogic.security.service import JMSResource
 
-f = open_file("name;domain;authorizationprovider;jmsmodule;destinationtype;resourcename;action;policyexpression")
+f = open_file("name;domain;authorizationprovider;jmsmodule;destinationtype;resourcename;action;policyexpression", tmp_script)
 
 securityRealm = cmo.getSecurityConfiguration().getDefaultRealm()
 authorizer = securityRealm.lookupAuthorizer('XACMLAuthorizer')

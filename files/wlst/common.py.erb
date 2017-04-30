@@ -32,8 +32,8 @@ def quote(text):
         return ""
 
 
-def open_file(fields):
-    f = open("/tmp/wlstScript.out", "w")
+def open_file(fields, tmp_script):
+    f = open(tmp_script, "w")
     print >>f, fields
     return f
 

@@ -17,7 +17,7 @@ def constraint(token2,location,type,value='Count'):
 
 m = ls('/SelfTuning',returnMap='true')
 
-f = open_file("name;constrainttype;target;targettype;domain;constraintvalue")
+f = open_file("name;constrainttype;target;targettype;domain;constraintvalue", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/SelfTuning/'+token)

@@ -1,7 +1,7 @@
 
 m = ls('/SAFAgents',returnMap='true')
 
-f = open_file("name;target;targettype;persistentstore;persistentstoretype;servicetype;domain")
+f = open_file("name;target;targettype;persistentstore;persistentstoretype;servicetype;domain", tmp_script)
 for token in m:
         print '___'+token+'___'
         cd('/SAFAgents/'+token)

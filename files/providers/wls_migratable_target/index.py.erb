@@ -1,7 +1,7 @@
 
 migratableTargets = ls('/MigratableTargets',returnMap='true')
 
-f = open_file("name;domain;migratable_target_name;cluster;user_preferred_server;constrained_candidate_servers;number_of_restart_attempts;seconds_between_restarts;migration_policy")
+f = open_file("name;domain;migratable_target_name;cluster;user_preferred_server;constrained_candidate_servers;number_of_restart_attempts;seconds_between_restarts;migration_policy", tmp_script)
 
 print 'migrate2'
 for migratableTarget in migratableTargets:

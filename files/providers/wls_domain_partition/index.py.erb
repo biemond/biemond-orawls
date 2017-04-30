@@ -3,7 +3,7 @@ wlst_name = '/Partitions/'
 
 m = ls(wlst_name, returnMap='true')
 
-f = open_file("name;virtual_target;root_file_system")
+f = open_file("name;virtual_target;root_file_system", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd(wlst_name + token)

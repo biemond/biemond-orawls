@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;bytesmaximum;messagesmaximum;policy;shared;domain")
+f = open_file("name;jmsmodule;bytesmaximum;messagesmaximum;policy;shared;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

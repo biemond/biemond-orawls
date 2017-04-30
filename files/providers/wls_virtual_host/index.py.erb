@@ -1,7 +1,7 @@
 
 m = ls('/VirtualHosts',returnMap='true')
 
-f = open_file("name;channelname;target;targettype;domain;virtualhostnames")
+f = open_file("name;channelname;target;targettype;domain;virtualhostnames", tmp_script)
 for token in m:
         print '___'+token+'___'
         cd('/VirtualHosts/'+token)

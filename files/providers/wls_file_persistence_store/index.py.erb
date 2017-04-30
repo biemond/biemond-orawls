@@ -2,7 +2,7 @@
 
 m = ls('/FileStores',returnMap='true')
 
-f = open_file("name;directory;target;targettype;domain")
+f = open_file("name;directory;target;targettype;domain", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/FileStores/'+token)

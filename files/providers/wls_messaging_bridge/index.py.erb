@@ -1,7 +1,7 @@
 
 m = ls('/MessagingBridges',returnMap='true')
 
-f = open_file("name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination")
+f = open_file("name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/MessagingBridges/'+token)

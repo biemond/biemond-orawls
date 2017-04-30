@@ -14,14 +14,15 @@ class WlsDaemon < EasyType::Daemon
                custom_trust,
                trust_keystore_file,
                trust_keystore_passphrase,
-               use_default_value_when_empty)
+               use_default_value_when_empty,
+               tmp_path)
     daemon = super("wls-#{domain}")
     if daemon
       return daemon
     else
       new(user, domain, weblogicHomeDir, weblogicUser, weblogicPassword,
           weblogicConnectUrl, postClasspath, extraArguments, custom_trust, trust_keystore_file,
-          trust_keystore_passphrase, use_default_value_when_empty)
+          trust_keystore_passphrase, use_default_value_when_empty, tmp_path)
     end
   end
 
@@ -36,7 +37,8 @@ class WlsDaemon < EasyType::Daemon
                  custom_trust,
                  trust_keystore_file,
                  trust_keystore_passphrase,
-                 use_default_value_when_empty)
+                 use_default_value_when_empty,
+                 tmp_path)
     @user = user
     @domain = domain
     @weblogicHomeDir = weblogicHomeDir
@@ -49,6 +51,7 @@ class WlsDaemon < EasyType::Daemon
     @trust_keystore_file = trust_keystore_file
     @trust_keystore_passphrase = trust_keystore_passphrase
     @use_default_value_when_empty = use_default_value_when_empty
+    @tmp_path = tmp_path
 
     if @custom_trust.to_s == 'true'
       trust_parameters = "-Dweblogic.security.SSL.enableJSSE=true -Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=#{@trust_keystore_file} -Dweblogic.security.CustomTrustKeystorePassPhrase=#{@trust_keystore_passphrase}"
@@ -67,6 +70,7 @@ class WlsDaemon < EasyType::Daemon
   def execute_script(script, timeout = DEFAULT_TIMEOUT)
     Puppet.info "Executing wls-script #{script} with timeout = #{timeout}"
     pass_domain
+    pass_tmp_script
     pass_use_default_value_when_empty
     pass_credentials
     connect_to_wls
@@ -95,6 +99,11 @@ class WlsDaemon < EasyType::Daemon
   def pass_domain
     Puppet.debug "Passing domain #{@domain}"
     execute_command "domain = '#{@domain}'"
+  end
+
+  def pass_tmp_script
+    Puppet.debug "Passing tmp script location"
+    execute_command "tmp_script = '#{@tmp_path}/wlstScript#{@domain}.out'"
   end
 
   def pass_use_default_value_when_empty

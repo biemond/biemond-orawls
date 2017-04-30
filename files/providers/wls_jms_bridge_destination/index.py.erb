@@ -2,7 +2,7 @@
 
 m = ls('/JMSBridgeDestinations',returnMap='true')
 
-f = open_file("name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password")
+f = open_file("name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password", tmp_script)
 for token in m:
     print '___'+token+'___'
 

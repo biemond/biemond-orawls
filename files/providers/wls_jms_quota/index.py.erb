@@ -11,7 +11,7 @@ for token in m:
     for token2 in n:
         print 'cd(\''+'/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2+'\')'
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Quotas/'+token2)
-        add_index_entry(f, [domain+'/'+token+":"+token2,token,get('BytesMaximum'),get('MessagesMaximum'),get('Policy'),str(get('Shared')),domain])
+        add_index_entry(f, [domain+'/'+token+":"+token2,token,get_attribute_value('BytesMaximum'),get_attribute_value('MessagesMaximum'),get_attribute_value('Policy'),get_attribute_value('Shared'),domain])
 
 f.close()
 report_back_success()

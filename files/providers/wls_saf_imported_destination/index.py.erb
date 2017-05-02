@@ -14,7 +14,7 @@ for token in m:
                 if remoteContextMbean:
                    path = getPath(remoteContextMbean)
                    cd("/"+path)
-                   remoteContext  = get('Name')
+                   remoteContext  = get_attribute_value('Name')
                    cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
                 else:
                    remoteContext = ''
@@ -23,25 +23,25 @@ for token in m:
                 if errorHandlingMbean:
                    path = getPath(errorHandlingMbean)
                    cd("/"+path)
-                   errorHandling = get('Name')
+                   errorHandling = get_attribute_value('Name')
                    cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
                 else:
                    errorHandling = ''
 
-                timeToLiveDefault = cmo.getTimeToLiveDefault()
+                timeToLiveDefault = get_attribute_value('TimeToLiveDefault')
                 if not (timeToLiveDefault):
                   useSAFTimeToLiveDefault = '0'
                 else:
-                  useSAFTimeToLiveDefault = get('UseSAFTimeToLiveDefault')
+                  useSAFTimeToLiveDefault = get_attribute_value('UseSAFTimeToLiveDefault')
 
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFImportedDestinations/'+token2)
 
 
-                defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
+                defaultTargetingEnabled = get_attribute_value('DefaultTargetingEnabled')
                 if defaultTargetingEnabled == '1':
                   subDeploymentName = ''
                 else:
-                  subDeploymentName = cmo.getSubDeploymentName()
+                  subDeploymentName = get_attribute_value('SubDeploymentName')
 
                 add_index_entry(f, [domain+'/'+token+":"+token2,token,remoteContext,errorHandling,cmo.getJNDIPrefix(),timeToLiveDefault,useSAFTimeToLiveDefault,subDeploymentName,defaultTargetingEnabled,domain])
 

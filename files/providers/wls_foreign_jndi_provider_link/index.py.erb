@@ -11,8 +11,8 @@ for provider in provider_list:
     for link_object in links_folder:
         print '__' + link_object + '__'
         cd('/ForeignJNDIProviders/'+provider+'/ForeignJNDILinks/'+link_object)
-        local_jndi_name = cmo.getLocalJNDIName()
-        remote_jndi_name = cmo.getRemoteJNDIName()
+        local_jndi_name = get_attribute_value('LocalJNDIName')
+        remote_jndi_name = get_attribute_value('RemoteJNDIName')
 
         add_index_entry(f, [domain+'/'+provider+':'+link_object, local_jndi_name, remote_jndi_name])
 

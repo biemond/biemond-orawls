@@ -9,11 +9,11 @@ for token in m:
     print '___'+token+'___'
     cd(wlst_name + token)
 
-    channelname = get('PartitionChannel')
-    hosts = get('HostNames')
-    port = get('ExplicitPort')
-    portoffset = get('PortOffset')
-    uriprefix = get('UriPrefix')
+    channelname = get_attribute_value('PartitionChannel')
+    hosts = get_attribute_value('HostNames')
+    port = get_attribute_value('ExplicitPort')
+    portoffset = get_attribute_value('PortOffset')
+    uriprefix = get_attribute_value('UriPrefix')
 
     target, targetType = retrieve_target_list(wlst_name + token)
 

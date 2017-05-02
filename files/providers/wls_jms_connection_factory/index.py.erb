@@ -8,35 +8,34 @@ for token in m:
   n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories',returnMap='true')
   for token2 in n:
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2)
-         jndiname           = get('JNDIName')
-         localjndiname      = get('LocalJNDIName')
-         defaultTargeting   = str(get('DefaultTargetingEnabled'))
+         jndiname           = get_attribute_value('JNDIName')
+         localjndiname      = get_attribute_value('LocalJNDIName')
+         defaultTargeting   = get_attribute_value('DefaultTargetingEnabled')
          if defaultTargeting == '1':
             subdeployment = ''
          else:
-            subdeployment = cmo.getSubDeploymentName()
+            subdeployment = get_attribute_value('SubDeploymentName')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/TransactionParams/'+token2)
-         xaEnabled          = str(get('XAConnectionFactoryEnabled'))
-         transactionTimeout = get('TransactionTimeout')
+         xaEnabled          = get_attribute_value('XAConnectionFactoryEnabled')
+         transactionTimeout = get_attribute_value('TransactionTimeout')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/ClientParams/'+token2)
-         clientIdPolicy = str(get('ClientIdPolicy'))
-         subscriptionSharingPolicy = str(get('SubscriptionSharingPolicy'))
-         messagesMaximum = get('MessagesMaximum')
-         reconnectPolicy = str(get('ReconnectPolicy'))
+         clientIdPolicy = get_attribute_value('ClientIdPolicy')
+         subscriptionSharingPolicy = get_attribute_value('SubscriptionSharingPolicy')
+         messagesMaximum = get_attribute_value('MessagesMaximum')
+         reconnectPolicy = get_attribute_value('ReconnectPolicy')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/LoadBalancingParams/'+token2)
-         loadBalancingEnabled = str(get('LoadBalancingEnabled'))
-         serverAffinityEnabled = str(get('ServerAffinityEnabled'))
+         loadBalancingEnabled = get_attribute_value('LoadBalancingEnabled')
+         serverAffinityEnabled = get_attribute_value('ServerAffinityEnabled')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/SecurityParams/'+token2)
-         attachJmsXUserId = str(get('AttachJMSXUserId'))
-
+         attachJmsXUserId = get_attribute_value('AttachJMSXUserId')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/DefaultDeliveryParams/'+token2)
-         defaultDeliveryMode = get('DefaultDeliveryMode')
-         defaultRedeliveryDelay = get('DefaultRedeliveryDelay')
+         defaultDeliveryMode = get_attribute_value('DefaultDeliveryMode')
+         defaultRedeliveryDelay = get_attribute_value('DefaultRedeliveryDelay')
 
          add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay])
 

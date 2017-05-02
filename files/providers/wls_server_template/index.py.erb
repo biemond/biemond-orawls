@@ -6,26 +6,16 @@ f = open_file("name;listenaddress;listenport;ssllistenport;sslenabled;classpath;
 for serverTemplate in serverTemplates:
     print serverTemplate
     cd('/ServerTemplates/'+serverTemplate)
-    if get('ListenAddress') == None:
-      listenAddress = ''
-    else:
-      listenAddress = get('ListenAddress')
-
-    listenPort    = str(get('ListenPort'))
+    listenAddress = get_attribute_value('ListenAddress')
+    listenPort    = get_attribute_value('ListenPort')
 
     cd('/ServerTemplates/'+serverTemplate+'/SSL/'+serverTemplate)
-    sslListenPort  = str(get('ListenPort'))
-    sslEnabled     = str(get('Enabled'))
+    sslListenPort  = get_attribute_value('ListenPort')
+    sslEnabled     = get_attribute_value('Enabled')
 
     cd('/ServerTemplates/'+serverTemplate+'/ServerStart/'+serverTemplate)
-
-    classpath     = get('ClassPath')
-    if classpath == None:
-       classpath = ''
-
-    arguments     = get('Arguments')
-    if arguments == None:
-       arguments = ''
+    classpath     = get_attribute_value('ClassPath')
+    arguments     = get_attribute_value('Arguments')
 
     add_index_entry(f, [domain+'/'+serverTemplate, listenAddress, listenPort, sslListenPort, sslEnabled, classpath, arguments,domain])
 f.close()

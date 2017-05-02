@@ -6,7 +6,7 @@ for token in m:
         print '___'+token+'___'
         cd('/MailSessions/'+token)
 
-        jndiname = get('JNDIName')
+        jndiname = get_attribute_value('JNDIName')
         mailproperties = get('Properties').toString()[1:-1].split(", ")
         properties     = []
         for pair in mailproperties:

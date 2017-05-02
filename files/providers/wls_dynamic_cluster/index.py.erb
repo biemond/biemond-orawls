@@ -11,6 +11,6 @@ for token in m:
 
     cd('/Clusters/'+token+'/DynamicServers/'+token)
 
-    add_index_entry(f, [domain+'/'+token,domain,get('MachineNameMatchExpression'),str(get('MaximumDynamicServerCount')),get('ServerNamePrefix'),token2,str(get('CalculatedListenPorts'))])
+    add_index_entry(f, [domain+'/'+token,domain,get_attribute_value('MachineNameMatchExpression'),get_attribute_value('MaximumDynamicServerCount'),get_attribute_value('ServerNamePrefix'),token2,get_attribute_value('CalculatedListenPorts')])
 f.close()
 report_back_success()

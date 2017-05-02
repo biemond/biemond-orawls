@@ -5,9 +5,9 @@ f = open_file("name;channelname;target;targettype;domain;virtualhostnames", tmp_
 for token in m:
         print '___'+token+'___'
         cd('/VirtualHosts/'+token)
-        channelname = get('NetworkAccessPoint')
+        channelname = get_attribute_value('NetworkAccessPoint')
 
-        hosts = get('VirtualHostNames')
+        hosts = get_attribute_value('VirtualHostNames')
 
         target, targetType = retrieve_target_list('/VirtualHosts/'+token)
 

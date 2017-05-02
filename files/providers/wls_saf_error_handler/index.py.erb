@@ -9,7 +9,7 @@ for token in m:
     n = ls('SAFErrorHandlings',returnMap='true')
     for token2 in n:
         cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFErrorHandlings/'+token2)
-        add_index_entry(f, [domain+'/'+token+":"+token2,token,cmo.getPolicy(),cmo.getLogFormat(),cmo.getSAFErrorDestination(),domain])
+        add_index_entry(f, [domain+'/'+token+":"+token2,token,get_attribute_value('Policy'),get_attribute_value('LogFormat'),get_attribute_value('SAFErrorDestination'),domain])
 
 f.close()
 report_back_success()

@@ -6,7 +6,7 @@ for token in m:
         print '___'+token+'___'
         cd('/SAFAgents/'+token)
 
-        serviceType = get('ServiceType')
+        serviceType = get_attribute_value('ServiceType')
 
         n = ls('/SAFAgents/'+token+'/Targets',returnMap='true')
         target     = ''
@@ -15,7 +15,7 @@ for token in m:
         for token2 in n:
                 target     = token2
                 cd('/SAFAgents/'+token+'/Targets/'+token2)
-                targetType = get('Type')
+                targetType = get_attribute_value('Type')
 
         l = ls('/SAFAgents/'+token+'/Store',returnMap='true')
 
@@ -24,7 +24,7 @@ for token in m:
         for token3 in l:
                persistentStore = token3
                cd('/SAFAgents/'+token+'/Store/'+token3)
-               persistentStoreType = get('Type')
+               persistentStoreType = get_attribute_value('Type')
 
         add_index_entry(f, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,serviceType,domain])
 f.close()

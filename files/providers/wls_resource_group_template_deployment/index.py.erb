@@ -16,10 +16,10 @@ for resource_group_template_name in m:
     for appName in myapps:
         cd(wlst_name + resource_group_template_name + '/AppDeployments/' + appName.getName())
 
-        app               = get('ApplicationName')
-        deploymenttype    = get('Type')
-        versionidentifier = get('VersionIdentifier')
-        stagingmode       = get('StagingMode')
+        app               = get_attribute_value('ApplicationName')
+        deploymenttype    = get_attribute_value('Type')
+        versionidentifier = get_attribute_value('VersionIdentifier')
+        stagingmode       = get_attribute_value('StagingMode')
 
         add_index_entry(f, [domain + '/' + resource_group_template_name + ':' + app, resource_group_template_name, versionidentifier, deploymenttype, stagingmode, domain])
 
@@ -29,10 +29,10 @@ for resource_group_template_name in m:
     for libName in mylibs:
         cd(wlst_name + resource_group_template_name + '/Libraries/' + libName.getName())
 
-        lib               = get('ApplicationName')
-        deploymenttype    = get('Type')
-        versionidentifier = get('VersionIdentifier')
-        stagingmode       = get('StagingMode')
+        lib               = get_attribute_value('ApplicationName')
+        deploymenttype    = get_attribute_value('Type')
+        versionidentifier = get_attribute_value('VersionIdentifier')
+        stagingmode       = get_attribute_value('StagingMode')
 
         add_index_entry(f, [domain + '/' + resource_group_template_name + ':' + lib, resource_group_template_name, versionidentifier, deploymenttype, stagingmode, domain])
 

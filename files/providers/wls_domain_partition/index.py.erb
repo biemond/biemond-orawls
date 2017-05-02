@@ -11,7 +11,7 @@ for token in m:
     virtual_target = retrieve_virtual_target_list(wlst_name + token, 'AvailableTargets')
 
     cd(wlst_name + token + '/SystemFileSystem/' + token)
-    root_file_system = get('Root')
+    root_file_system = get_attribute_value('Root')
 
     add_index_entry(f, [domain+'/'+token,','.join(virtual_target),root_file_system])
 

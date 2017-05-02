@@ -16,7 +16,9 @@ for token in m:
 
   auto_restart      = get_attribute_value('AutoRestart')
   autokillwfail     = get_attribute_value('AutoKillIfFailed')
-  server_parameters = get_attribute_value('Notes')
+
+  # exception empty return None instead of ''
+  server_parameters = str(get('Notes'))
   if get("KeyStores") == "CustomIdentityAndCustomTrust":
     custom_identity = '1'
   else:

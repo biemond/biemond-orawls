@@ -15,8 +15,8 @@ f = open_file("name;authentication_provider_name;domain;activetypes;defaultmappe
 for token in m2:
     print '___'+token+'___'
     cd('AuthenticationProviders/'+token)
-    description       = get('Description')
-    providerclassname = get('ProviderClassName')
+    description       = get_attribute_value('Description')
+    providerclassname = get_attribute_value('ProviderClassName')
 
     activetypes      = ''
     try:
@@ -26,7 +26,7 @@ for token in m2:
 
     defaultmappertype = ''
     try:
-      defaultmappertype = get('DefaultUserNameMapperAttributeType')
+      defaultmappertype = get_attribute_value('DefaultUserNameMapperAttributeType')
     except:
       print "Failed to get DefaultUserNameMapperAttributeType"
 

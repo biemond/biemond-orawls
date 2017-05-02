@@ -13,7 +13,7 @@ for token in m:
     if resourceGroupTemplateMbean:
         path = getPath(resourceGroupTemplateMbean)
         cd('/' + path)
-        resource_group_template = get('Name')
+        resource_group_template = get_attribute_value('Name')
         cd(wlst_name + token)
     else:
         resource_group_template = ''

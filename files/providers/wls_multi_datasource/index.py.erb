@@ -13,11 +13,11 @@ for token in m:
         target, targetType = retrieve_target_list('/SystemResources/'+token)
 
         cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )
-        jndinames = get('JNDINames')
-        algorithmtype = get('AlgorithmType')
+        jndinames = get_attribute_value('JNDINames')
+        algorithmtype = get_attribute_value('AlgorithmType')
 
         cd('/JDBCSystemResources/'+token+'/JDBCResource/'+token+'/JDBCConnectionPoolParams/'+token)
-        testfrequency = get('TestFrequencySeconds')
+        testfrequency = get_attribute_value('TestFrequencySeconds')
 
         add_index_entry(f, [domain+'/'+token,datasources,','.join(target),','.join(targetType),','.join(jndinames),algorithmtype,testfrequency])
 f.close()

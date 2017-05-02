@@ -11,7 +11,7 @@ for token in m:
         n = ls('SAFRemoteContexts',returnMap='true')
         for token2 in n:
                 cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/SAFRemoteContexts/'+token2+'/SAFLoginContext/'+token2)
-                add_index_entry(f, [domain+'/'+token+":"+token2,token,cmo.getLoginURL(),cmo.getUsername(),domain])
+                add_index_entry(f, [domain+'/'+token+":"+token2,token,get_attribute_value('LoginURL'),get_attribute_value('Username'),domain])
 
 f.close()
 report_back_success()

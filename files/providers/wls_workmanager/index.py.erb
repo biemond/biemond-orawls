@@ -10,13 +10,13 @@ for token in m:
         for token2 in n:
                 cd('/SelfTuning/'+token+'/WorkManagers/'+token2)
 
-                stuckthreads = str(cmo.getIgnoreStuckThreads())
+                stuckthreads = get_attribute_value('IgnoreStuckThreads')
 
                 minThreadsConstraintsMbean = cmo.getMinThreadsConstraint()
                 if minThreadsConstraintsMbean:
                    path = getPath(minThreadsConstraintsMbean)
                    cd("/"+path)
-                   minThreadsConstraint = get('Name')
+                   minThreadsConstraint = get_attribute_value('Name')
                 else:
                    minThreadsConstraint = ''
 
@@ -25,7 +25,7 @@ for token in m:
                 if maxThreadsConstraintsMbean:
                    path = getPath(maxThreadsConstraintsMbean)
                    cd("/"+path)
-                   maxThreadsConstraint = get('Name')
+                   maxThreadsConstraint = get_attribute_value('Name')
                 else:
                    maxThreadsConstraint = ''
 
@@ -34,7 +34,7 @@ for token in m:
                 if capacitiesmBean:
                    path = getPath(capacitiesmBean)
                    cd("/"+path)
-                   capacity = get('Name')
+                   capacity = get_attribute_value('Name')
                 else:
                    capacity = ''
 
@@ -43,7 +43,7 @@ for token in m:
                 if fairsharemBean:
                    path = getPath(fairsharemBean)
                    cd("/"+path)
-                   fairshareRequestClass = get('Name')
+                   fairshareRequestClass = get_attribute_value('Name')
                 else:
                    fairshareRequestClass = ''
 
@@ -54,7 +54,7 @@ for token in m:
                 for token3 in t:
                         target.append(token3)
                         cd('/SelfTuning/'+token+'/WorkManagers/'+token2+'/Targets/'+token3)
-                        targetType.append(get('Type'))
+                        targetType.append(get_attribute_value('Type'))
 
                 add_index_entry(f, [domain+'/'+token2,stuckthreads,','.join(target),','.join(targetType),domain,minThreadsConstraint,maxThreadsConstraint,capacity,fairshareRequestClass])
 

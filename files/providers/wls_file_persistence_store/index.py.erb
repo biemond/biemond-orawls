@@ -7,7 +7,7 @@ for token in m:
     print '___'+token+'___'
     cd('/FileStores/'+token)
 
-    directory = get('Directory')
+    directory = get_attribute_value('Directory')
 
     target, targetType = retrieve_target_list('/FileStores/'+token)
 

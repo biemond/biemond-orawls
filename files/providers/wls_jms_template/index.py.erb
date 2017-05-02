@@ -9,10 +9,10 @@ for token in m:
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates/'+token2)
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates/'+token2+'/DeliveryParamsOverrides/'+token2)
-         redeliverydelay=get('RedeliveryDelay')
+         redeliverydelay=get_attribute_value('RedeliveryDelay')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/Templates/'+token2+'/DeliveryFailureParams/'+token2)
-         redeliverylimit=get('RedeliveryLimit')
+         redeliverylimit=get_attribute_value('RedeliveryLimit')
 
          add_index_entry(f, [domain+'/'+token+":"+token2,token,redeliverydelay,redeliverylimit])
 

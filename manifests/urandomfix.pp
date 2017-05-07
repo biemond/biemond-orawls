@@ -78,6 +78,9 @@ class orawls::urandomfix() {
             require => Package[$rng_package],
           }
         }
+        default: {
+          fail('unknown RHEL version')
+        }
       }
     }
     'Debian','Suse' : {

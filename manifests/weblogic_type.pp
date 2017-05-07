@@ -223,16 +223,14 @@ define orawls::weblogic_type (
                       File["${download_dir}/weblogic_silent_install_${title}.xml"]],
     }
     # OPatch native lib fix for 64 solaris
-    case $facts['kernel'] {
-      'SunOS': {
-        exec { "add -d64 oraparam.ini oracle_common ${title}":
-          command => "sed -e's/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\"-d64\"/g' ${middleware_home_dir}/oui/oraparam.ini > ${temp_dir}/wls.tmp && mv ${temp_dir}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini",
-          unless  => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${middleware_home_dir}/oui/oraparam.ini",
-          require => Exec["install weblogic ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
+    if ( $facts['kernel'] == 'SunOS' ) {
+      exec { "add -d64 oraparam.ini oracle_common ${title}":
+        command => "sed -e's/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\"-d64\"/g' ${middleware_home_dir}/oui/oraparam.ini > ${temp_dir}/wls.tmp && mv ${temp_dir}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini",
+        unless  => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${middleware_home_dir}/oui/oraparam.ini",
+        require => Exec["install weblogic ${title}"],
+        path    => $exec_path,
+        user    => $os_user,
+        group   => $os_group,
       }
     }
 

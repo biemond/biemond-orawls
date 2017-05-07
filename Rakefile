@@ -16,7 +16,7 @@ end
 PuppetLint.configuration.send("disable_140chars")
 PuppetLint.configuration.send("disable_80chars")
 PuppetLint.configuration.send('disable_variable_is_lowercase')
-PuppetLint.configuration.send("disable_case_without_default")
+# PuppetLint.configuration.send("disable_case_without_default")
 # PuppetLint.configuration.send("disable_right_to_left_relationship")
 # PuppetLint.configuration.send("disable_autoloader_layout")
 # PuppetLint.configuration.send("disable_names_containing_dash")

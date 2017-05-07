@@ -217,7 +217,9 @@ define orawls::resourceadapter(
           require     => File["${adapter_plan_dir}/${adapter_plan}"],
           before      => Exec["exec create resource adapter entry ${title}"],
         }
-
+      }
+      default: {
+        fail('unsupported OS')
       }
     }
   }
@@ -298,7 +300,9 @@ define orawls::resourceadapter(
           logoutput   => $log_output,
           require     => [Exec["exec create resource adapter entry ${title}"],File["${adapter_plan_dir}/${adapter_plan}"],],
         }
-
+      }
+      default: {
+        fail('unsupported OS')
       }
     }
   }

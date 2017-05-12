@@ -1,5 +1,8 @@
 # History
 
+## 2.0.8
+- wls_datasource new attributes datasourcetype, statementcachetype
+
 ## 2.0.7
 - wls_setting has tmp_path parameter for the wls types index output, wls types index output is now uinque for every value/domain of wls_setting
 - get_attribute_value for index files of the wls types to handle all data types on the right way, located in common.py.erb

@@ -6,6 +6,7 @@ password                                = '<%= password %>'
 target                                  = '<%= target %>'
 targettype                              = '<%= targettype %>'
 drivername                              = '<%= drivername %>'
+datasourcetype                          = '<%= datasourcetype %>'
 jndinames                               = '<%= jndinames %>'
 url                                     = '<%= url %>'
 usexa                                   = '<%= usexa %>'
@@ -19,6 +20,7 @@ fanenabled                              = '<%= fanenabled %>'
 onsnodelist                             = '<%= onsnodelist %>'
 xaproperties                            = '<%= xaproperties %>'
 mincapacity                             = '<%= mincapacity %>'
+statementcachetype                      = '<%= statementcachetype %>'
 statementcachesize                      = '<%= statementcachesize %>'
 testconnectionsonreserve                = '<%= testconnectionsonreserve %>'
 secondstotrustidlepoolconnection        = '<%= secondstotrustidlepoolconnection %>'
@@ -41,6 +43,8 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name)
     cmo.setName(name)
 
+    set_attribute_value('DatasourceType', datasourcetype, use_default_value_when_empty)
+
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
     if jndinames:
         jndis = String(jndinames).split(",")
@@ -62,6 +66,7 @@ try:
     set_attribute_value('InitialCapacity', initialcapacity, use_default_value_when_empty)
 
     set_attribute_value('MinCapacity', mincapacity, use_default_value_when_empty)
+    set_attribute_value('StatementCacheType', statementcachetype, use_default_value_when_empty)
     set_attribute_value('StatementCacheSize', statementcachesize, use_default_value_when_empty)
     set_attribute_value('TestConnectionsOnReserve', testconnectionsonreserve, use_default_value_when_empty)
     set_attribute_value('SecondsToTrustAnIdlePoolConnection', secondstotrustidlepoolconnection, use_default_value_when_empty)

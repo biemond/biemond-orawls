@@ -6,7 +6,10 @@ for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
 
-    datasourcetype = get_attribute_value('DatasourceType')
+    try:
+        datasourcetype = get_attribute_value('DatasourceType')
+    except:
+        datasourcetype = 'AGL'
 
     # check for MultiDatasource
     cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCDataSourceParams/' + token )

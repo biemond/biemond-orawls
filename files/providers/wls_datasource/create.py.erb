@@ -47,7 +47,10 @@ try:
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name)
     cmo.setName(name)
 
-    set_attribute_value('DatasourceType', datasourcetype, use_default_value_when_empty)
+    try:
+        set_attribute_value('DatasourceType', datasourcetype, use_default_value_when_empty)
+    except:
+        print "skip probably not 12.2 version"
 
     cd('/JDBCSystemResources/' + name + '/JDBCResource/' + name + '/JDBCDataSourceParams/' + name )
     if jndinames:

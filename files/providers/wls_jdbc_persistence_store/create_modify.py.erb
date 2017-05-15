@@ -9,6 +9,9 @@ prefix_name    = '<%= prefix_name %>'
 target         = '<%= target %>'
 targettype     = '<%= targettype %>'
 
+migration_policy = '<%= migration_policy %>'
+distribution_policy = '<%= distribution_policy %>'
+
 edit()
 startEdit()
 
@@ -21,6 +24,12 @@ try:
     cmo.setDataSource(getMBean('/SystemResources/'+datasource))
     set_attribute_value('PrefixName', prefix_name, use_default_value_when_empty)
     set('Targets', jarray.array([ObjectName('com.bea:Name='+target+',Type='+targettype)], ObjectName))
+
+    if migration_policy:
+        set_attribute_value('MigrationPolicy', migration_policy, use_default_value_when_empty)
+
+    if distribution_policy:
+        set_attribute_value('DistributionPolicy', distribution_policy, use_default_value_when_empty)
 
     save()
     activate()

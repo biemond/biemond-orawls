@@ -6,19 +6,40 @@ for token in m:
     print '___'+token+'___'
     cd('/MessagingBridges/'+token)
 
-    asyncenabled = get('AsyncEnabled')
+    if get('AsyncEnabled'):
+       asyncenabled = '1'
+    else:
+       asyncenabled = '0'
+
     batchinterval = get('BatchInterval')
     batchsize = get('BatchSize')
-    durabilityenabled = get('DurabilityEnabled')
+    
+    if get('DurabilityEnabled'):
+       durabilityenabled = '1'
+    else:
+       durabilityenabled = '0'
+    
     idletimemax = get('IdleTimeMaximum')
-    preservemsgproperty = get('PreserveMsgProperty')
-    qosdegradationallowed = get('QOSDegradationAllowed')
+    if get('PreserveMsgProperty'):
+       preservemsgproperty = '1'
+    else:
+       preservemsgproperty = '0'
+
+    if get('QOSDegradationAllowed'):
+       qosdegradationallowed = '1'
+    else:
+       qosdegradationallowed = '0'
+
     qos = get('QualityOfService')
     reconnectdelayincrease = get('ReconnectDelayIncrease')
     reconnectdelaymax = get('ReconnectDelayMaximum')
     reconnectdelaymin = get('ReconnectDelayMinimum')
     selector = get('Selector')
-    started = get('Started')
+    
+    if get('Started'):
+       started = '1'
+    else:
+       started = '0'
     transactiontimeout = get('TransactionTimeout')
 
     sourcedestinationMbean = cmo.getSourceDestination()

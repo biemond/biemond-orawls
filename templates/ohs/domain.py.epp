@@ -1,6 +1,6 @@
 <%- |  String $domain_name,
        String $domain_dir,
-       Integer $version, 
+       Integer $version,
        Optional[String] $templateOHS = undef,
        String $template,
        Optional[String] $templateCoherence = undef,
@@ -11,7 +11,7 @@
        String $ohs_standalone_listen_address,
        Integer $ohs_standalone_listen_port,
        Integer $ohs_standalone_ssl_listen_port,
-       String $download_dir, 
+       String $download_dir,
        String $weblogic_home_dir,
        Optional[String] $apps_dir,
        Optional[Boolean] $jsse_enabled = false,
@@ -21,17 +21,17 @@
        String $weblogic_password,
        String $jdk_home_dir,
        Optional[String] $domain_password = undef,
-       Optional[Boolean] $adminserver_listen_on_all_interfaces = false,   
-       Optional[Boolean] $nodemanager_secure_listener = true, 
+       Optional[Boolean] $adminserver_listen_on_all_interfaces = false,
+       Optional[Boolean] $nodemanager_secure_listener = true,
        Optional[Boolean] $create_default_coherence_cluster = true,
-       Hash $java_arguments = {}, 
+       Hash $java_arguments = {},
        String $admin_nodemanager_log_dir,
        String $adminserver_machine_name = 'LocalMachine',
        Optional[Integer] $adminserver_ssl_port = undef,
        Boolean $custom_identity = false,
        Optional[String] $custom_identity_keystore_filename = undef,
        Optional[String] $custom_identity_keystore_passphrase = undef,
-       Optional[String] $trust_keystore_file = undef, 
+       Optional[String] $trust_keystore_file = undef,
        Optional[String] $trust_keystore_passphrase = undef,
        Optional[String] $custom_identity_alias = undef,
        Optional[String] $custom_identity_privatekey_passphrase = undef | -%>
@@ -41,8 +41,24 @@ domainName = '<%= $domain_name %>'
 domainDir = '<%= $domain_dir %>'
 OHS_VERSION = <%= $version %>
 
-# Read OHS Standalone template
-readTemplate('<%= $templateOHS %>')
+# Starting in 12.2.1, readTemplate() and addTemplate() are deprecated and both
+# are scheduled to be removed in future releases. Use selectTemplate() and
+# loadTemplates() instead.
+#
+# loadTemplates() will load all the required templates for the selected
+# template.
+#
+# Here we select 'Oracle HTTP Server (Standalone)' and loadTemplates() which
+# configures the domain as a 'Basic Standalone System Component Domain' with an
+# extension of 'Oracle HTTP Server (Standalone)'
+if OHS_VERSION >= 1221:
+    selectTemplate('Oracle HTTP Server (Standalone)', '12.2.1.2')
+    loadTemplates()
+else:
+    # Read OHS Standalone template
+    readTemplate('<%= $templateOHS %>')
+
+setOption('JavaHome', '<%= $jdk_home_dir %>')
 
 # Configure Nodemanager
 

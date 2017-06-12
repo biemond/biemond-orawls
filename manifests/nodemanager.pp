@@ -123,7 +123,7 @@ define orawls::nodemanager (
       } else {
         $checkCommand = '/bin/ps -eo pid,cmd | grep -v grep | /bin/grep \'weblogic.NodeManager\''
       }
-      $suCommand         = "su -l ${os_user}"
+      $suCommand         = "su -s /bin/bash -l ${os_user}"
       $netstat_statement = "/bin/netstat -lnt | /bin/grep ':${nodemanager_port}'"
     }
     'SunOS': {

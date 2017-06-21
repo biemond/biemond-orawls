@@ -118,7 +118,7 @@ define orawls::utils::rcu(
 
   wls_rcu{ "${rcu_prefix}_${sanitised_title}":
     ensure       => $rcu_action,
-    statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt",
+    statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt",
     os_user      => $os_user,
     oracle_home  => $oracle_fmw_product_home_dir,
     sys_user     => $rcu_sys_user,

@@ -33,13 +33,13 @@
 #     custom_trust                          => true,
 #     trust_keystore_file                   => '/vagrant/trust.jks',
 #     trust_keystore_passphrase             => 'welcome',
-#     custom_identity                       => true, 
+#     custom_identity                       => true,
 #     custom_identity_keystore_filename     => '/vagrant/identity_admin.jks',
 #     custom_identity_keystore_passphrase   => 'welcome',
 #     custom_identity_alias                 => 'admin',
 #     custom_identity_privatekey_passphrase => 'welcome',
 #   }
-#  
+#
 # @param version used weblogic software like 1036
 # @param wls_domains_dir root directory for all the WebLogic domains
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
@@ -79,7 +79,7 @@
 # @param adminserver_ssl_port the ssl port of the adminserver
 # @param adminserver_listen_on_all_interfaces adminserver listen on all VM interfaces
 # @param java_arguments override the server argument of the managed servers created by the domain creation
-# @param nodemanager_secure_listener use nodemanager in secure mode 
+# @param nodemanager_secure_listener use nodemanager in secure mode
 # @param nodemanager_username the username of the nodemanager
 # @param nodemanager_password the password of the nodemanager
 # @param domain_password the domain password
@@ -95,63 +95,69 @@
 # @param wls_domains_file the localtion where local domains are stored
 # @param puppet_os_user the username under puppet should be executed
 # @param create_default_coherence_cluster option to skip the coherence cluster template be added to the domain
+# @param domain_template_hash Hash containing the name of the template along with the version
+# @param datasource_hash Hash containing the name of the datasource along with the name of the user without the prefix
+# @param rcu_components Array containing the list of RCU components
 #
 define orawls::domain (
-  Integer $version                                        = $::orawls::weblogic::version,
-  String $weblogic_home_dir                               = $::orawls::weblogic::weblogic_home_dir,
-  String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
-  String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
-  Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
-  Optional[String] $wls_apps_dir                          = $::orawls::weblogic::wls_apps_dir,
-  String $domain_template                                 = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone
-  Boolean $bam_enabled                                    = true,  #only for SOA Suite
-  Boolean $b2b_enabled                                    = false, #only for SOA Suite 12.1.3 with b2b
-  Boolean $ess_enabled                                    = false, #only for SOA Suite 12.1.3
-  Boolean $owsm_enabled                                   = false, #only for OSB domain_template on 10.3.6
-  String $domain_name                                     = undef,
-  Boolean $development_mode                               = true,
-  String $adminserver_name                                = 'AdminServer',
-  String $adminserver_machine_name                        = 'LocalMachine',
-  Optional[String] $adminserver_address                   = 'localhost',
-  Integer $adminserver_port                               = 7001,
-  Optional[Integer] $adminserver_ssl_port                 = undef,
-  Boolean $adminserver_listen_on_all_interfaces           = false,
-  Hash $java_arguments                                    = {}, # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
-  Integer $nodemanager_port                               = 5556,
-  Boolean $nodemanager_secure_listener                    = true,
-  String $weblogic_user                                   = 'weblogic',
-  String $weblogic_password                               = undef,
-  Optional[String] $nodemanager_username                  = undef, # When not specified, it'll use the weblogic_user
-  Optional[String] $nodemanager_password                  = undef, # When not specified, it'll use the weblogic_password
-  Optional[String] $domain_password                       = undef, # When not specified, it'll use the weblogic_password
-  Boolean $jsse_enabled                                   = false,
-  Boolean $webtier_enabled                                = false,
-  String $os_user                                         = $::orawls::weblogic::os_user,
-  String $os_group                                        = $::orawls::weblogic::os_group,
-  String $download_dir                                    = $::orawls::weblogic::download_dir,
-  Optional[String] $log_dir                               = undef, # /data/logs
-  Boolean $log_output                                     = $::orawls::weblogic::log_output,
-  Optional[String] $repository_database_url               = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
-  Optional[String] $rcu_database_url                      = undef, #localhost:1521:XE"
-  Optional[String] $repository_prefix                     = 'DEV',
-  Optional[String] $repository_password                   = undef,
-  Optional[String] $repository_sys_user                   = 'sys',
-  Optional[String] $repository_sys_password               = undef,
-  Boolean $custom_trust                                   = false,
-  Optional[String] $trust_keystore_file                   = undef,
-  Optional[String] $trust_keystore_passphrase             = undef,
-  Boolean $custom_identity                                = false,
-  Optional[String] $custom_identity_keystore_filename     = undef,
-  Optional[String] $custom_identity_keystore_passphrase   = undef,
-  Optional[String] $custom_identity_alias                 = undef,
-  Optional[String] $custom_identity_privatekey_passphrase = undef,
-  Boolean $create_rcu                                     = true,
-  Optional[String] $ohs_standalone_listen_address         = undef,
-  Optional[Integer] $ohs_standalone_listen_port           = undef,
-  Optional[Integer] $ohs_standalone_ssl_listen_port       = undef,
-  String $wls_domains_file                                = '/etc/wls_domains.yaml',
-  String $puppet_os_user                                  = 'root',
-  Boolean $create_default_coherence_cluster               = true,
+  Integer $version                                         = $::orawls::weblogic::version,
+  String $weblogic_home_dir                                = $::orawls::weblogic::weblogic_home_dir,
+  String $middleware_home_dir                              = $::orawls::weblogic::middleware_home_dir,
+  String $jdk_home_dir                                     = $::orawls::weblogic::jdk_home_dir,
+  Optional[String] $wls_domains_dir                        = $::orawls::weblogic::wls_domains_dir,
+  Optional[String] $wls_apps_dir                           = $::orawls::weblogic::wls_apps_dir,
+  String $domain_template                                  = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone|wcs
+  Boolean $bam_enabled                                     = true,  #only for SOA Suite
+  Boolean $b2b_enabled                                     = false, #only for SOA Suite 12.1.3 with b2b
+  Boolean $ess_enabled                                     = false, #only for SOA Suite 12.1.3
+  Boolean $owsm_enabled                                    = false, #only for OSB domain_template on 10.3.6
+  String $domain_name                                      = undef,
+  Boolean $development_mode                                = true,
+  String $adminserver_name                                 = 'AdminServer',
+  String $adminserver_machine_name                         = 'LocalMachine',
+  Optional[String] $adminserver_address                    = 'localhost',
+  Integer $adminserver_port                                = 7001,
+  Optional[Integer] $adminserver_ssl_port                  = undef,
+  Boolean $adminserver_listen_on_all_interfaces            = false,
+  Hash $java_arguments                                     = {}, # java_arguments = { "ADM" => "...", "OSB" => "...", "SOA" => "...", "BAM" => "..."}
+  Integer $nodemanager_port                                = 5556,
+  Boolean $nodemanager_secure_listener                     = true,
+  String $weblogic_user                                    = 'weblogic',
+  String $weblogic_password                                = undef,
+  Optional[String] $nodemanager_username                   = undef, # When not specified, it'll use the weblogic_user
+  Optional[String] $nodemanager_password                   = undef, # When not specified, it'll use the weblogic_password
+  Optional[String] $domain_password                        = undef, # When not specified, it'll use the weblogic_password
+  Boolean $jsse_enabled                                    = false,
+  Boolean $webtier_enabled                                 = false,
+  String $os_user                                          = $::orawls::weblogic::os_user,
+  String $os_group                                         = $::orawls::weblogic::os_group,
+  String $download_dir                                     = $::orawls::weblogic::download_dir,
+  Optional[String] $log_dir                                = undef, # /data/logs
+  Boolean $log_output                                      = $::orawls::weblogic::log_output,
+  Optional[String] $repository_database_url                = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
+  Optional[String] $rcu_database_url                       = undef, #localhost:1521:XE"
+  Optional[String] $repository_prefix                      = 'DEV',
+  Optional[String] $repository_password                    = undef,
+  Optional[String] $repository_sys_user                    = 'sys',
+  Optional[String] $repository_sys_password                = undef,
+  Boolean $custom_trust                                    = false,
+  Optional[String] $trust_keystore_file                    = undef,
+  Optional[String] $trust_keystore_passphrase              = undef,
+  Boolean $custom_identity                                 = false,
+  Optional[String] $custom_identity_keystore_filename      = undef,
+  Optional[String] $custom_identity_keystore_passphrase    = undef,
+  Optional[String] $custom_identity_alias                  = undef,
+  Optional[String] $custom_identity_privatekey_passphrase  = undef,
+  Boolean $create_rcu                                      = true,
+  Optional[String] $ohs_standalone_listen_address          = undef,
+  Optional[Integer] $ohs_standalone_listen_port            = undef,
+  Optional[Integer] $ohs_standalone_ssl_listen_port        = undef,
+  String $wls_domains_file                                 = '/etc/wls_domains.yaml',
+  String $puppet_os_user                                   = 'root',
+  Boolean $create_default_coherence_cluster                = true,
+  Optional[Hash[String, String]] $domain_template_hash     = undef, # Used for >= 12.2.1, just for wcs for now # domain_template_hash = {"Oracle WebCenter Sites" => "12.2.1.2","Oracle WebCenter Sites - Visitor Services" => "12.2.1.2", "Oracle WebCenter Sites - SiteCapture" => "12.2.1.2"}
+  Optional[Hash[String, String]] $datasource_hash          = undef, # datasource_hash = { "LocalSvcTblDataSource" => "STB", "opss-audit-DBDS" => "IAU_APPEND", "opss-audit-viewDS" => "IAU_VIEWER", "opss-data-source" => "OPSS", "wcsitesDS" => "WCSITES", "wcsitesVisitorsDS" => "WCSITES_VS"}
+  Optional[Array[String]] $rcu_components                  = undef, # rcu_components = [ "STB", "OPSS", "WCSITES", "WCSITESVS", "IAU", "IAU_APPEND", "IAU_VIEWER"]
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -339,7 +345,11 @@ define orawls::domain (
     $templateUCM          = "${middleware_home_dir}/Oracle_WCC1/common/templates/applications/oracle.ucm.cs_template_11.1.1.jar"
 
     if $domain_template != 'ohs_standalone' {
-      $templateFile = 'orawls/domains/domain.py.epp'
+      if $version >= 1221 and $domain_template == 'wcs' {
+        $templateFile = 'orawls/domains/domain_1221.py.epp'
+      } else {
+        $templateFile = 'orawls/domains/domain.py.epp'
+      }
     }
 
     if $domain_template == 'ohs_standalone' {
@@ -351,6 +361,9 @@ define orawls::domain (
       else {
         fail("OHS Standalone domain configuration currently works only with version 12.1.2, 12.1.3 or 12.1.2. Version ${version} not supported.")
       }
+    }
+    elsif $domain_template == 'wcs' {
+      $wlstPath       = "${middleware_home_dir}/oracle_common/common/bin"
     }
     elsif $domain_template == 'standard' {
       $extensionsTemplateFile = undef
@@ -595,7 +608,12 @@ define orawls::domain (
                     'trust_keystore_file'                   => $trust_keystore_file,
                     'trust_keystore_passphrase'             => $trust_keystore_passphrase,
                     'custom_identity_alias'                 => $custom_identity_alias,
-                    'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase }),
+                    'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase,
+                    'repository_database_url'               => $repository_database_url,
+                    'repository_prefix'                     => $repository_prefix,
+                    'repository_password'                   => $repository_password,
+                    'domain_template_hash'                  => $domain_template_hash,
+                    'datasource_hash'                       => $datasource_hash }),
       replace => true,
       backup  => false,
       mode    => lookup('orawls::permissions'),
@@ -656,6 +674,8 @@ define orawls::domain (
       } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
         $rcu_domain_template = 'soa'
 
+      } elsif ( $domain_template == 'wcs' ){
+        $rcu_domain_template = 'wcs'
       } elsif ($create_rcu == undef or $create_rcu == true) {
         fail('unkown domain_template for rcu with version 1212 or 1213')
       }
@@ -684,6 +704,7 @@ define orawls::domain (
           rcu_sys_password            => $repository_sys_password,
           rcu_prefix                  => $repository_prefix,
           rcu_password                => $repository_password,
+          rcu_components              => $rcu_components,
           log_output                  => $log_output,
           before                      => Exec["execwlst ${domain_name} ${title}"],
         }

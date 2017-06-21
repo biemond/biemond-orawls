@@ -39,6 +39,10 @@ define orawls::utils::rcu(
   Optional[Array[String]] $rcu_components    = undef,
 ){
 
+  # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
+  $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
+  $sanitised_title = regsubst($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')
+
   case $facts['kernel'] {
     'Linux','SunOS': {
       $execPath = '/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin'
@@ -83,7 +87,7 @@ define orawls::utils::rcu(
     fail('Unrecognized FMW fmw_product')
   }
 
-  file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt":
+  file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt":
     ensure  => present,
     content => template('orawls/utils/rcu_passwords.txt.erb'),
     mode    => lookup('orawls::permissions_secret'),
@@ -112,7 +116,7 @@ define orawls::utils::rcu(
     $action = '-dropRepository'
   }
 
-  wls_rcu{ $rcu_prefix:
+  wls_rcu{ "${rcu_prefix}_${sanitised_title}":
     ensure       => $rcu_action,
     statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt",
     os_user      => $os_user,

@@ -18,23 +18,25 @@
 # @param rcu_password rcu schema password
 # @param rcu_sys_user rcu sys schema username
 # @param rcu_sys_password rcu sys username password
+# @param rcu_components the array of components
 #
 define orawls::utils::rcu(
-  Integer $version                       = $::orawls::weblogic::version,
-  Enum['adf','soa','mft'] $fmw_product   = 'adf',
-  String $oracle_fmw_product_home_dir    = undef,
-  String $jdk_home_dir                   = $::orawls::weblogic::jdk_home_dir,
-  String $os_user                        = $::orawls::weblogic::os_user,
-  String $os_group                       = $::orawls::weblogic::os_group,
-  String $download_dir                   = $::orawls::weblogic::download_dir,
-  Boolean $log_output                    = $::orawls::weblogic::log_output,
-  Enum['create','delete'] $rcu_action    = 'create',
-  String $rcu_jdbc_url                   = undef,   #jdbc...
-  String $rcu_database_url               = undef,   #192.168.50.5:1521:XE
-  String $rcu_prefix                     = undef,
-  String $rcu_password                   = undef,
-  String $rcu_sys_user                   = 'sys',
-  String $rcu_sys_password               = undef,
+  Integer $version                           = $::orawls::weblogic::version,
+  Enum['adf','soa','mft','wcs'] $fmw_product = 'adf',
+  String $oracle_fmw_product_home_dir        = undef,
+  String $jdk_home_dir                       = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                            = $::orawls::weblogic::os_user,
+  String $os_group                           = $::orawls::weblogic::os_group,
+  String $download_dir                       = $::orawls::weblogic::download_dir,
+  Boolean $log_output                        = $::orawls::weblogic::log_output,
+  Enum['create','delete'] $rcu_action        = 'create',
+  String $rcu_jdbc_url                       = undef,   #jdbc...
+  String $rcu_database_url                   = undef,   #192.168.50.5:1521:XE
+  String $rcu_prefix                         = undef,
+  String $rcu_password                       = undef,
+  String $rcu_sys_user                       = 'sys',
+  String $rcu_sys_password                   = undef,
+  Optional[Array[String]] $rcu_components    = undef,
 ){
 
   case $facts['kernel'] {
@@ -69,7 +71,15 @@ define orawls::utils::rcu(
   elsif $fmw_product == 'mft' {
     $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component MFT -component UCSUMS -component ESS'
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
-  } else {
+  }
+  elsif $fmw_product == 'wcs' {
+    $components = join(prefix($rcu_components, "-component "), ' ')
+    # Creates an array with the same size as the $rcu_components. Every element is $rcu_password
+    $componentsPasswords = $rcu_components.map | $dummy_var | { $rcu_password }
+    # $components = '-component STB -component OPSS -component WCSITES -component WCSITESVS -component IAU -component IAU_APPEND -component IAU_VIEWER '
+    # $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password ]
+  }
+  else {
     fail('Unrecognized FMW fmw_product')
   }
 

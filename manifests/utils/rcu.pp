@@ -94,7 +94,7 @@ define orawls::utils::rcu(
     owner   => $os_user,
     group   => $os_group,
     backup  => false,
-    before  => Wls_rcu[$rcu_prefix],
+    before  => Wls_rcu["${rcu_prefix}_${sanitised_title}"],
   }
 
   if !defined(File["${download_dir}/checkrcu.py"]) {
@@ -105,7 +105,7 @@ define orawls::utils::rcu(
       owner  => $os_user,
       group  => $os_group,
       backup => false,
-      before => Wls_rcu[$rcu_prefix],
+      before => Wls_rcu["${rcu_prefix}_${sanitised_title}"],
     }
   }
 

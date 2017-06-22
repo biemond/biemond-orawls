@@ -73,7 +73,7 @@ define orawls::utils::rcu(
   elsif $fmw_product == 'mft' {
     $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component MFT -component UCSUMS -component ESS'
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
-  } 
+  }
   elsif $fmw_product == 'wcs' {
     $components = '-component STB -component OPSS -component WCSITES -component WCSITESVS -component IAU -component IAU_APPEND -component IAU_VIEWER'
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]

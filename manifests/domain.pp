@@ -153,7 +153,7 @@ define orawls::domain (
   String $wls_domains_file                                = '/etc/wls_domains.yaml',
   String $puppet_os_user                                  = 'root',
   Boolean $create_default_coherence_cluster               = true,
-  Boolean $wcs_satellite                                  = false,  
+  Boolean $wcs_satellite                                  = false,
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -287,7 +287,7 @@ define orawls::domain (
         $template = 'Basic WebLogic Server Domain'
       } else {
         $template = "${weblogic_home_dir}/common/templates/wls/wls.jar"
-      } 
+      }
 
       if $domain_template == 'adf_restricted' {
         $templateEM        = "${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_restricted_template.jar"
@@ -363,7 +363,7 @@ define orawls::domain (
       $extensionsTemplateFile = undef
       $wlstPath       = "${weblogic_home_dir}/common/bin"
 
-    } 
+    }
     elsif $domain_template == 'wcs' {
       if ($version >= 1221) {
         $extensionsTemplateFile = 'orawls/domains/extensions/wcs_template.py.erb'
@@ -373,7 +373,7 @@ define orawls::domain (
       else {
         fail("WebCenter Sites domain configuration currently works only with versions 12.2.1.#. Version ${version} not supported.")
       }
-    } 
+    }
     elsif $domain_template == 'osb' {
       $extensionsTemplateFile = 'orawls/domains/extensions/osb_template.py.erb'
 

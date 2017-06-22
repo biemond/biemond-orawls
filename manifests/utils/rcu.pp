@@ -20,22 +20,26 @@
 # @param rcu_sys_password rcu sys username password
 #
 define orawls::utils::rcu(
-  Integer $version                       = $::orawls::weblogic::version,
-  Enum['adf','soa','mft'] $fmw_product   = 'adf',
-  String $oracle_fmw_product_home_dir    = undef,
-  String $jdk_home_dir                   = $::orawls::weblogic::jdk_home_dir,
-  String $os_user                        = $::orawls::weblogic::os_user,
-  String $os_group                       = $::orawls::weblogic::os_group,
-  String $download_dir                   = $::orawls::weblogic::download_dir,
-  Boolean $log_output                    = $::orawls::weblogic::log_output,
-  Enum['create','delete'] $rcu_action    = 'create',
-  String $rcu_jdbc_url                   = undef,   #jdbc...
-  String $rcu_database_url               = undef,   #192.168.50.5:1521:XE
-  String $rcu_prefix                     = undef,
-  String $rcu_password                   = undef,
-  String $rcu_sys_user                   = 'sys',
-  String $rcu_sys_password               = undef,
+  Integer $version                              = $::orawls::weblogic::version,
+  Enum['adf','soa','mft', 'wcs'] $fmw_product   = 'adf',
+  String $oracle_fmw_product_home_dir           = undef,
+  String $jdk_home_dir                          = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                               = $::orawls::weblogic::os_user,
+  String $os_group                              = $::orawls::weblogic::os_group,
+  String $download_dir                          = $::orawls::weblogic::download_dir,
+  Boolean $log_output                           = $::orawls::weblogic::log_output,
+  Enum['create','delete'] $rcu_action           = 'create',
+  String $rcu_jdbc_url                          = undef,   #jdbc...
+  String $rcu_database_url                      = undef,   #192.168.50.5:1521:XE
+  String $rcu_prefix                            = undef,
+  String $rcu_password                          = undef,
+  String $rcu_sys_user                          = 'sys',
+  String $rcu_sys_password                      = undef,
 ){
+
+  # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
+  $convert_spaces_to_underscores = regsubst($title,'\s','_','G')
+  $sanitised_title = regsubst($convert_spaces_to_underscores,'[^a-zA-Z0-9_-]','','G')
 
   case $facts['kernel'] {
     'Linux','SunOS': {
@@ -69,18 +73,23 @@ define orawls::utils::rcu(
   elsif $fmw_product == 'mft' {
     $components = '-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component MFT -component UCSUMS -component ESS'
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
-  } else {
+  } 
+  elsif $fmw_product == 'wcs' {
+    $components = '-component STB -component OPSS -component WCSITES -component WCSITESVS -component IAU -component IAU_APPEND -component IAU_VIEWER'
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+  }
+  else {
     fail('Unrecognized FMW fmw_product')
   }
 
-  file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt":
+  file { "${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt":
     ensure  => present,
     content => template('orawls/utils/rcu_passwords.txt.erb'),
     mode    => lookup('orawls::permissions_secret'),
     owner   => $os_user,
     group   => $os_group,
     backup  => false,
-    before  => Wls_rcu[$rcu_prefix],
+    before  => Wls_rcu["${rcu_prefix}_${sanitised_title}"],
   }
 
   if !defined(File["${download_dir}/checkrcu.py"]) {
@@ -91,7 +100,7 @@ define orawls::utils::rcu(
       owner  => $os_user,
       group  => $os_group,
       backup => false,
-      before => Wls_rcu[$rcu_prefix],
+      before => Wls_rcu["${rcu_prefix}_${sanitised_title}"],
     }
   }
 
@@ -102,9 +111,9 @@ define orawls::utils::rcu(
     $action = '-dropRepository'
   }
 
-  wls_rcu{ $rcu_prefix:
+  wls_rcu{ "${rcu_prefix}_${sanitised_title}":
     ensure       => $rcu_action,
-    statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt",
+    statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt",
     os_user      => $os_user,
     oracle_home  => $oracle_fmw_product_home_dir,
     sys_user     => $rcu_sys_user,

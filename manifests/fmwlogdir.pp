@@ -69,7 +69,7 @@ define orawls::fmwlogdir (
   }
 
   exec { "execwlst ${title}changeFMWLogFolder.py":
-    command   => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/${title}changeFMWLogFolder.py ${weblogic_password}",
+    command   => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/${title}changeFMWLogFolder.py \'${weblogic_password}\'",
     unless    => "ls -l ${log_dir}/${server}-diagnostic.log",
     require   => File["${download_dir}/${title}changeFMWLogFolder.py"],
     path      => $exec_path,

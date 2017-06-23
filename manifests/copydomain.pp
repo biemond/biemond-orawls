@@ -273,7 +273,7 @@ define orawls::copydomain (
     }
 
     exec { "execwlst ${domain_name} ${title}":
-      command     => "${wlst_dir} ${download_dir}/enroll_domain_${domain_name}.py ${weblogic_password}",
+      command     => "${wlst_dir} ${download_dir}/enroll_domain_${domain_name}.py \'${weblogic_password}\'",
       environment => ["JAVA_HOME=${jdk_home_dir}", "CONFIG_JVM_ARGS=${config}"],
       path        => $exec_path,
       user        => $os_user,

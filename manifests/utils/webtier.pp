@@ -74,7 +74,7 @@ define orawls::utils::webtier(
 
     if $action_name == 'create' {
       exec { "execwlst webtier ${title}":
-        command     => "${middleware_home_dir}/ohs/common/bin/wlst.sh ${download_dir}/${title}_createWebtier.py ${weblogic_password}",
+        command     => "${middleware_home_dir}/ohs/common/bin/wlst.sh ${download_dir}/${title}_createWebtier.py \'${weblogic_password}\'",
         environment => ["JAVA_HOME=${jdk_home_dir}"],
         path        => $exec_path,
         creates     => "${domain_dir}/system_components/OHS/${instance_name}",
@@ -85,7 +85,7 @@ define orawls::utils::webtier(
       }
     } else {
       exec { "execwlst webtier ${title}":
-        command     => "${middleware_home_dir}/ohs/common/bin/wlst.sh ${download_dir}/${title}_createWebtier.py ${weblogic_password}",
+        command     => "${middleware_home_dir}/ohs/common/bin/wlst.sh ${download_dir}/${title}_createWebtier.py \'${weblogic_password}\'",
         environment => ["JAVA_HOME=${jdk_home_dir}"],
         path        => $exec_path,
         onlyif      => "test -d ${domain_dir}/system_components/OHS/${instance_name}",

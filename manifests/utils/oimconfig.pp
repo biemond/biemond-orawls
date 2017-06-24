@@ -166,7 +166,7 @@ define orawls::utils::oimconfig(
         $javaCommand = "${lookup('orawls::java')} -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning "
         # execute WLST script
         exec { "execwlst bi-createUDD.py ${title}":
-          command     => "${javaCommand} ${download_dir}/bi-createUDD${title}.py ${weblogic_password}",
+          command     => "${javaCommand} ${download_dir}/bi-createUDD${title}.py \'${weblogic_password}\'",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                           "JAVA_HOME=${jdk_home_dir}"],
           path        => $exec_path,

@@ -45,7 +45,7 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       nm_protocol = 'plain'
     end
 
-    command = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+    command = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-\"EOF\"
 nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 #{wls_action}
 nmDisconnect()

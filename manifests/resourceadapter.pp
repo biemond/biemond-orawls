@@ -279,7 +279,7 @@ define orawls::resourceadapter(
       'Linux','SunOS': {
         # deploy the plan and update the adapter
         exec { "exec create resource adapter entry ${title}":
-          command     => "${javaCommandPlan} ${download_dir}/${title}createResourceAdapterEntry.py ${weblogic_password}",
+          command     => "${javaCommandPlan} ${download_dir}/${title}createResourceAdapterEntry.py \'${weblogic_password}\'",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                           "JAVA_HOME=${jdk_home_dir}"],
           path        => $execPath,
@@ -291,7 +291,7 @@ define orawls::resourceadapter(
 
         # deploy the plan and update the adapter
         exec { "exec redeploy adapter plan ${title}":
-          command     => "${javaCommandPlan} ${download_dir}/${title}redeployResourceAdapter.py ${weblogic_password}",
+          command     => "${javaCommandPlan} ${download_dir}/${title}redeployResourceAdapter.py \'${weblogic_password}\'",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                           "JAVA_HOME=${jdk_home_dir}"],
           path        => $execPath,

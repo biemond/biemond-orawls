@@ -60,7 +60,7 @@ define orawls::storeuserconfig (
   $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   exec { "execwlst ${title}storeUserConfig.py":
-    command     => "${javaCommand} ${download_dir}/${title}storeUserConfig.py ${weblogic_password}",
+    command     => "${javaCommand} ${download_dir}/${title}storeUserConfig.py \'${weblogic_password}\'",
     environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar", "JAVA_HOME=${jdk_home_dir}"],
     unless      => "ls -l ${user_config_dir}/${os_user}-${domain_name}-WebLogicConfig.properties",
     path        => $exec_path,

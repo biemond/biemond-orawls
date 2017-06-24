@@ -278,15 +278,19 @@ define orawls::domain (
       $templateHEALTH       = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.healthcare_template_12.1.3.jar"
 
     } elsif $version >= 1221 {
-      $templateWS        = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template.jar"
-      $templateJaxWS     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template.jar"
-      $templateSoapJms   = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template.jar"
-      $templateCoherence = "${weblogic_home_dir}/common/templates/wls/wls_coherence_template.jar"
 
       if $domain_template == 'wcs'{
-        $template = 'Basic WebLogic Server Domain'
+        $template          = 'Basic WebLogic Server Domain'
+        $templateCoherence = 'WebLogic Coherence Cluster Extension'
+        $templateWS        = 'WebLogic Advanced Web Services for JAX-RPC Extension'
+        $templateJaxWS     = 'WebLogic Advanced Web Services for JAX-WS Extension'
+        $templateSoapJms   = 'WebLogic JAX-WS SOAP/JMS Extension'
       } else {
-        $template = "${weblogic_home_dir}/common/templates/wls/wls.jar"
+        $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
+        $templateCoherence = "${weblogic_home_dir}/common/templates/wls/wls_coherence_template.jar"
+        $templateWS        = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template.jar"
+        $templateJaxWS     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template.jar"
+        $templateSoapJms   = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template.jar"
       }
 
       if $domain_template == 'adf_restricted' {

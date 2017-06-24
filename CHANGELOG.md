@@ -1,5 +1,9 @@
 # History
 
+## 2.0.9
+- add webcenter sites, support for wcs domain
+- allow $ in the weblogic password
+
 ## 2.0.8
 - wls_datasource new attributes datasourcetype, statementcachetype
 - wls_jdbc_persistence_store new attributes distribution_policy, migration_policy

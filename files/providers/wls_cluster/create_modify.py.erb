@@ -28,6 +28,8 @@ frontendhttpport          = '<%= frontendhttpport %>'
 frontendhttpsport         = '<%= frontendhttpsport %>'
 
 securereplication         = '<%= securereplication %>'
+panicaction               = '<%= panicaction %>'
+failureaction             = '<%= failureaction %>'
 
 edit()
 startEdit()
@@ -81,6 +83,10 @@ try:
                 cd('/Servers/' + i)
                 cmo.setCluster(getMBean('/Clusters/' + name))
 
+    cd('/Clusters/'+token+'/OverloadProtection/'+token)
+    set_attribute_value('PanicAction'          , panicaction, use_default_value_when_empty)
+    set_attribute_value('FailureAction'        , failureaction, use_default_value_when_empty)
+  
     save()
     activate()
     report_back_success()

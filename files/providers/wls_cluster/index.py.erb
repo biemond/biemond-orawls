@@ -1,7 +1,7 @@
 
 m = ls('/Clusters',returnMap='true')
 
-f = open_file("name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication")
+f = open_file("name;clusteraddress;servers;messagingmode;migrationbasis;datasourceforjobscheduler;unicastbroadcastchannel;multicastaddress;multicastport;domain;migration_datasource;migration_table_name;frontendhost;frontendhttpport;frontendhttpsport;securereplication;panicaction;failureaction")
 for token in m:
   print '___'+token+'___'
   cd('/Clusters/'+token)
@@ -57,12 +57,19 @@ for token in m:
       cluster_result = 'not_inherited'
     else:
       cluster_result = 'inherited'
-
+  
+  cd('/Clusters/'+token+'/OverloadProtection/'+token)
+  panicaction = get('PanicAction')
+  failureaction = get('FailureAction')
+ 
+  print "panic" + panicaction
+  print "failure" + failureaction
+  
   cd('/Clusters/'+token)
   if not clustered:
-    add_index_entry(f,[domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+    add_index_entry(f,[domain+'/'+token,clusteraddress,','.join(servers),get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled'),panicaction,failureaction])
   else:
-    add_index_entry(f,[domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled')])
+    add_index_entry(f,[domain+'/'+token,clusteraddress,cluster_result,get('ClusterMessagingMode'),get('MigrationBasis'),datasourceforjobscheduler,get('ClusterBroadcastChannel'),get('MulticastAddress'),get('MulticastPort'),domain,datasourceMigration,get('AutoMigrationTableName'),get('FrontendHost'),get('FrontendHTTPPort'),get('FrontendHTTPSPort'),get('SecureReplicationEnabled'),panicaction,failureaction])
 
 f.close()
 report_back_success()

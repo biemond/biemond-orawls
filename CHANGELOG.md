@@ -3,6 +3,7 @@
 ## 2.0.9
 - add webcenter sites, support for wcs domain
 - allow $ in the weblogic password
+- hide trust_keystore_passphrase output in wls_settings
 
 ## 2.0.8
 - wls_datasource new attributes datasourcetype, statementcachetype

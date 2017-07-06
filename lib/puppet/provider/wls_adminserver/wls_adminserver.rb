@@ -84,14 +84,12 @@ EOF"
     Puppet.debug "adminserver_status #{command}"
     output = `#{command}`
 
-    output.each_line do |li|
-      unless li.nil?
-        Puppet.debug "line #{li}"
-        if li.include? name
-          Puppet.debug 'found server'
-          return 'Found'
-        end
-      end
+    if !output.to_s.empty?
+      Puppet.debug 'found server'
+      return 'Found'
+    else
+      Puppet.debug 'server not found'
+      return 'NotFound'      
     end
     'NotFound'
   end

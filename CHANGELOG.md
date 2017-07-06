@@ -1,5 +1,8 @@
 # History
 
+## 2.0.10
+- better adminserver control status check
+
 ## 2.0.9
 - add webcenter sites, support for wcs domain
 - allow $ in the weblogic password

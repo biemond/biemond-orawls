@@ -9,7 +9,7 @@ gem 'simplecov-console'
 # gem 'puppet-lint'
 gem 'puppet-lint', :git => 'https://github.com/rodjek/puppet-lint'
 gem 'puppet', puppetversion
-gem 'rspec-puppet'
+gem 'rspec-puppet', '~> 2.5.0'
 gem 'puppetlabs_spec_helper'
 gem 'metadata-json-lint'
 gem 'puppet-syntax'

@@ -147,7 +147,7 @@ define orawls::utils::webtier(
       # in the real world rreg wouldn't be run on the host running the WebTier bits
       exec { "Run rreg for WebGate instance ${webgate_agentname}":
         #command     => "/bin/echo -e ${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml",
-        command     => "/bin/echo -e ${weblogic_user}\\\\n${weblogic_password}\\\\n|${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml -noprompt",
+        command     => "/bin/echo -e ${weblogic_user}\\\\n\'${weblogic_password}\'\\\\n|${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/bin/oamreg.sh inband input/${webgate_agentname}.xml -noprompt",
         environment => ["JAVA_HOME=${jdk_home_dir}"],
         cwd         => "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg",
         creates     => "${middleware_home_dir}/Oracle_IDM1/oam/server/rreg/output/${webgate_agentname}",

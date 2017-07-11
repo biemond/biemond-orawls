@@ -96,7 +96,7 @@ define orawls::resourceadapter(
     $credentials    =   " -userconfigfile ${userConfigFile} -userkeyfile ${userKeyFile}"
     $useStoreConfig = true
   } elsif $weblogic_user != undef {
-    $credentials =   " -user ${weblogic_user} -password ${weblogic_password}"
+    $credentials =   " -user ${weblogic_user} -password \'${weblogic_password}\'"
     $useStoreConfig = false
   } else {
     fail('userConfigFile or wlsUser parameter is empty')

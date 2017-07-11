@@ -219,7 +219,7 @@ define orawls::copydomain (
     }
 
     exec { "unpack ${domain_name}":
-      command     => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
+      command     => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=\'${weblogic_password}\'",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
       path        => $exec_path,
       user        => $os_user,

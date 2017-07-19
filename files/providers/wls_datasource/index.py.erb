@@ -79,16 +79,16 @@ for token in m:
             xapropertiesCur = ''
 
             cd('/JDBCSystemResources/' + token + '/JDBCResource/' + token + '/JDBCXAParams/' + token)
-            xapropertiesarray = ls('', returnMap='true')
+            xapropertiesarray = ls(returnMap='true')
 
             for xaproperty in xapropertiesarray:
 
                 try:
-                    val = str(get(xaproperty))
-
-                    if xaproperty == 'isSet' or xaproperty == 'unSet':
-                        break
-                    elif len(xapropertiesCur) == len(xapropertiesarray) -1:
+                    if xaproperty != 'isSet' and  xaproperty != 'unSet': 
+                    	val = str(get(xaproperty))
+                    else:
+                        continue
+                    if len(xapropertiesCur) == len(xapropertiesarray) -1:
                         xapropertiesCur += xaproperty + '=' + val
                     else:
                         xapropertiesCur += xaproperty + '=' + val + ','

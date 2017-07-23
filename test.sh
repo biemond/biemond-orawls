@@ -9,8 +9,8 @@ rvm --version
 # rvm use ruby-1.8.7
 # rvm install ruby-1.9.3
 # rvm use ruby-1.9.3
-rvm install ruby-2.3.1
-rvm use ruby-2.3.1
+rvm install ruby-2.3.3
+rvm use ruby-2.3.3
 
 set -e
 

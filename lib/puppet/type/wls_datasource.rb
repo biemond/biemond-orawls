@@ -74,6 +74,8 @@ module Puppet
     property :removeinfectedconnections
     property :inactiveconnectiontimeoutseconds
     property :connectionreservetimeoutseconds
+    property :statementtimeout
+    property :logindelayseconds
 
     add_title_attributes(:datasource_name) do
       /^((.*?\/)?(.*)?)$/

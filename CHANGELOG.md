@@ -2,6 +2,9 @@
 
 ## 2.0.10
 - better adminserver control status check
+- more allow $ in the weblogic password
+- better datasource index check
+- datasource new attributes StatementTimeout, LoginDelaySeconds 
 
 ## 2.0.9
 - add webcenter sites, support for wcs domain

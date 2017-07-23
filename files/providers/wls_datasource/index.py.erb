@@ -1,7 +1,7 @@
 
 m = ls('/JDBCSystemResources',returnMap='true')
 
-f = open_file("name;target;targettype;drivername;jndinames;url;usexa;datasourcetype;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachetype;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds;wrapdatatypes;removeinfectedconnections;inactiveconnectiontimeoutseconds;connectionreservetimeoutseconds", tmp_script)
+f = open_file("name;target;targettype;drivername;jndinames;url;usexa;datasourcetype;xaproperties;user;testtablename;globaltransactionsprotocol;extraproperties;maxcapacity;initialcapacity;domain;fanenabled;onsnodelist;mincapacity;statementcachetype;statementcachesize;testconnectionsonreserve;secondstotrustidlepoolconnection;testfrequency;connectioncreationretryfrequency;rowprefetchenabled;rowprefetchsize;initsql;shrinkfrequencyseconds;wrapdatatypes;removeinfectedconnections;inactiveconnectiontimeoutseconds;connectionreservetimeoutseconds;statementtimeout;logindelayseconds", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/JDBCSystemResources/'+token + '/JDBCResource/' + token)
@@ -37,6 +37,8 @@ for token in m:
         connectioncreationretryfrequency = get_attribute_value('ConnectionCreationRetryFrequencySeconds')
         initsql                          = get_attribute_value('InitSql')
 
+        statementtimeout                 = get_attribute_value('StatementTimeout')
+        logindelayseconds                = get_attribute_value('LoginDelaySeconds')
 
         wrapdatatypes             = get_attribute_value('WrapTypes')
         removeinfectedconnections = get_attribute_value('RemoveInfectedConnections')
@@ -124,11 +126,11 @@ for token in m:
                 missing = 1
 
         if not tagged:
-            add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,datasourcetype,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachetype,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections, inactiveconnectiontimeoutseconds, connectionreservetimeoutseconds])
+            add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),driver,','.join(jndinames),url,usexa,datasourcetype,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachetype,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections, inactiveconnectiontimeoutseconds, connectionreservetimeoutseconds, statementtimeout, logindelayseconds])
         elif missing == 0:
-            add_index_entry(f, [domain+'/'+token,'inherited','inherited',driver,','.join(jndinames),url,usexa,datasourcetype,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachetype,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections, inactiveconnectiontimeoutseconds, connectionreservetimeoutseconds])
+            add_index_entry(f, [domain+'/'+token,'inherited','inherited',driver,','.join(jndinames),url,usexa,datasourcetype,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachetype,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections, inactiveconnectiontimeoutseconds, connectionreservetimeoutseconds, statementtimeout, logindelayseconds])
         else:
-            add_index_entry(f, [domain+'/'+token,'not_inherited','not_inherited',driver,','.join(jndinames),url,usexa,datasourcetype,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachetype,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections, inactiveconnectiontimeoutseconds, connectionreservetimeoutseconds])
+            add_index_entry(f, [domain+'/'+token,'not_inherited','not_inherited',driver,','.join(jndinames),url,usexa,datasourcetype,xapropertiesCur,user,testTableName,globalTransactionsProtocol,','.join(properties),maxcapacity,initialcapacity,domain,fanenabled,onsnodelist,mincapacity,statementcachetype,statementcachesize,testconnectionsonreserve,secondstotrustidlepoolconnection,testfrequency,connectioncreationretryfrequency,rowprefetchenabled,rowprefetchsize,initsql,shrinkfrequencyseconds, wrapdatatypes, removeinfectedconnections, inactiveconnectiontimeoutseconds, connectionreservetimeoutseconds, statementtimeout, logindelayseconds])
 
 f.close()
 report_back_success()

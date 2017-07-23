@@ -35,6 +35,8 @@ shrinkfrequencyseconds                  = '<%= shrinkfrequencyseconds %>'
 wrapdatatypes                           = '<%= wrapdatatypes %>'
 inactiveconnectiontimeoutseconds        = '<%= inactiveconnectiontimeoutseconds %>'
 connectionreservetimeoutseconds         = '<%= connectionreservetimeoutseconds %>'
+statementtimeout                        = '<%= statementtimeout %>'
+logindelayseconds                       = '<%= logindelayseconds %>'
 
 
 edit()
@@ -87,6 +89,9 @@ try:
 
     set_attribute_value('ShrinkFrequencySeconds', shrinkfrequencyseconds, use_default_value_when_empty)
     set_attribute_value('WrapTypes', wrapdatatypes, use_default_value_when_empty)
+
+    set_attribute_value('StatementTimeout', statementtimeout, use_default_value_when_empty)
+    set_attribute_value('LoginDelaySeconds', logindelayseconds, use_default_value_when_empty)
 
 <% unless removeinfectedconnections.nil? -%>
     set('RemoveInfectedConnections', <% if removeinfectedconnections == :true -%>True<% else %>False<% end %>)

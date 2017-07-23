@@ -5,7 +5,7 @@ cache:
   - vendor/bundle
 rvm:
   - 2.2.6
-  - 2.3.3
+  - 2.3.2
 bundler_args: --without development
 before_install:
   -  gem update --system 2.1.11

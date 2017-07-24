@@ -13,6 +13,7 @@ define orawls::packdomain (
   $os_group                   = hiera('wls_os_group'), # dba
   $download_dir               = hiera('wls_download_dir'), # /data/install
   $log_output                 = false, # true|false
+  $managed                    = false, # true|false
 )
 {
 
@@ -29,7 +30,7 @@ define orawls::packdomain (
   }
 
   $exec_path   = "${jdk_home_dir}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
-  $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+  $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -managed=${managed} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
   exec { "pack domain ${domain_name} ${title}":
     command     => $packCommand,

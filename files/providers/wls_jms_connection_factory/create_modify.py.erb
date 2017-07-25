@@ -11,6 +11,7 @@ subdeployment              = '<%= subdeployment %>'
 defaulttargeting           = '<%= defaulttargeting %>'
 xaenabled                  = '<%= xaenabled %>'
 transactiontimeout         = '<%= transactiontimeout %>'
+clientid                   = '<%= clientid %>'
 clientidpolicy             = '<%= clientidpolicy %>'
 subscriptionsharingpolicy  = '<%= subscriptionsharingpolicy %>'
 messagesmaximum            = '<%= messagesmaximum %>'
@@ -56,6 +57,7 @@ try:
     set_attribute_value('TransactionTimeout'        , transactiontimeout, use_default_value_when_empty)
 
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/ClientParams/'+name)    
+    set_attribute_value('ClientId'                 , clientid, use_default_value_when_empty)
     set_attribute_value('ClientIdPolicy'           , clientidpolicy, use_default_value_when_empty)
     set_attribute_value('SubscriptionSharingPolicy', subscriptionsharingpolicy, use_default_value_when_empty)
     set_attribute_value('MessagesMaximum'          , messagesmaximum, use_default_value_when_empty)

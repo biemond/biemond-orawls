@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay")
+f = open_file("name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientid;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay")
 
 for token in m:
   n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories',returnMap='true')
@@ -21,6 +21,7 @@ for token in m:
          transactionTimeout = get('TransactionTimeout')
 
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/ClientParams/'+token2)
+         clientId       = get_attribute_value('ClientId')
          clientIdPolicy = str(get('ClientIdPolicy'))
          subscriptionSharingPolicy = str(get('SubscriptionSharingPolicy'))
          messagesMaximum = get('MessagesMaximum')
@@ -38,7 +39,7 @@ for token in m:
          defaultDeliveryMode = get('DefaultDeliveryMode')
          defaultRedeliveryDelay = get('DefaultRedeliveryDelay')
 
-         add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay])
+         add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientId,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay])
 
 f.close()
 report_back_success()

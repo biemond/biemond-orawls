@@ -48,6 +48,7 @@ module Puppet
     property :defaulttargeting
     property :transactiontimeout
     property :xaenabled
+    property :clientid
     property :clientidpolicy
     property :subscriptionsharingpolicy
     property :messagesmaximum

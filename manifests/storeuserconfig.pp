@@ -24,18 +24,20 @@
 # @param log_output show all the output of the the exec actions
 #
 define orawls::storeuserconfig (
-  String $domain_name         = undef,
-  String $weblogic_home_dir   = $::orawls::weblogic::weblogic_home_dir,
-  String $jdk_home_dir        = $::orawls::weblogic::jdk_home_dir,
-  String $adminserver_address = 'localhost',
-  Integer $adminserver_port   = 7001,
-  String $user_config_dir     = undef,
-  String $weblogic_user       = 'weblogic',
-  String $weblogic_password   = undef,
-  String $os_user             = $::orawls::weblogic::os_user,
-  String $os_group            = $::orawls::weblogic::os_group,
-  String $download_dir        = $::orawls::weblogic::download_dir,
-  Boolean $log_output         = $::orawls::weblogic::log_output,
+  String $domain_name                  = undef,
+  String $weblogic_home_dir            = $::orawls::weblogic::weblogic_home_dir,
+  String $jdk_home_dir                 = $::orawls::weblogic::jdk_home_dir,
+  String $adminserver_address          = 'localhost',
+  Integer $adminserver_port            = 7001,
+  Integer $adminserver_ssl_port        = 7001,
+  Boolean $adminserver_secure_listener = false,
+  String $user_config_dir              = undef,
+  String $weblogic_user                = 'weblogic',
+  String $weblogic_password            = undef,
+  String $os_user                      = $::orawls::weblogic::os_user,
+  String $os_group                     = $::orawls::weblogic::os_group,
+  String $download_dir                 = $::orawls::weblogic::download_dir,
+  Boolean $log_output                  = $::orawls::weblogic::log_output,
 )
 {
   # the py script used by the wlst*-

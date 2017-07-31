@@ -29,7 +29,7 @@ define orawls::storeuserconfig (
   String $jdk_home_dir                 = $::orawls::weblogic::jdk_home_dir,
   String $adminserver_address          = 'localhost',
   Integer $adminserver_port            = 7001,
-  Integer $adminserver_ssl_port        = 7001,
+  Integer $adminserver_ssl_port        = 7002,
   Boolean $adminserver_secure_listener = false,
   String $user_config_dir              = undef,
   String $weblogic_user                = 'weblogic',

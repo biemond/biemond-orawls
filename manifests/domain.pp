@@ -33,13 +33,13 @@
 #     custom_trust                          => true,
 #     trust_keystore_file                   => '/vagrant/trust.jks',
 #     trust_keystore_passphrase             => 'welcome',
-#     custom_identity                       => true, 
+#     custom_identity                       => true,
 #     custom_identity_keystore_filename     => '/vagrant/identity_admin.jks',
 #     custom_identity_keystore_passphrase   => 'welcome',
 #     custom_identity_alias                 => 'admin',
 #     custom_identity_privatekey_passphrase => 'welcome',
 #   }
-#  
+#
 # @param version used weblogic software like 1036
 # @param wls_domains_dir root directory for all the WebLogic domains
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
@@ -79,7 +79,7 @@
 # @param adminserver_ssl_port the ssl port of the adminserver
 # @param adminserver_listen_on_all_interfaces adminserver listen on all VM interfaces
 # @param java_arguments override the server argument of the managed servers created by the domain creation
-# @param nodemanager_secure_listener use nodemanager in secure mode 
+# @param nodemanager_secure_listener use nodemanager in secure mode
 # @param nodemanager_username the username of the nodemanager
 # @param nodemanager_password the password of the nodemanager
 # @param domain_password the domain password
@@ -104,7 +104,7 @@ define orawls::domain (
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
   Optional[String] $wls_apps_dir                          = $::orawls::weblogic::wls_apps_dir,
-  String $domain_template                                 = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wcs|wc_wcc_bpm|oud|ohs_standalone
+  String $domain_template                                 = 'standard', # adf|adf_restricted|forms|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wcs|wc_wcc_bpm|oud|ohs_standalone
   Boolean $bam_enabled                                    = true,  #only for SOA Suite
   Boolean $b2b_enabled                                    = false, #only for SOA Suite 12.1.3 with b2b
   Boolean $ess_enabled                                    = false, #only for SOA Suite 12.1.3
@@ -367,6 +367,15 @@ define orawls::domain (
       $extensionsTemplateFile = undef
       $wlstPath       = "${weblogic_home_dir}/common/bin"
 
+    }
+    elsif $domain_template == 'forms' {
+      if ($version >= 1221) {
+        $extensionsTemplateFile = 'orawls/domains/extensions/forms_template.py.erb'
+        $wlstPath               = "${middleware_home_dir}/oracle_common/common/bin"
+      }
+      else {
+        fail("Oracle Forms and Reports domain configuration currently works only with versions 12.2.1.#. Version ${version} not supported.")
+      }
     }
     elsif $domain_template == 'wcs' {
       if ($version >= 1221) {
@@ -679,6 +688,8 @@ define orawls::domain (
         $rcu_domain_template = 'soa'
       } elsif ( $domain_template == 'wcs' ){
         $rcu_domain_template = 'wcs'
+      } elsif ( $domain_template == 'forms' ){
+        $rcu_domain_template = 'forms'
       } elsif ($create_rcu == undef or $create_rcu == true) {
         fail('unkown domain_template for rcu with version 1212 or 1213')
       }

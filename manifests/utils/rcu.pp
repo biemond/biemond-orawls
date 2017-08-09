@@ -20,21 +20,21 @@
 # @param rcu_sys_password rcu sys username password
 #
 define orawls::utils::rcu(
-  Integer $version                              = $::orawls::weblogic::version,
-  Enum['adf','soa','mft', 'wcs'] $fmw_product   = 'adf',
-  String $oracle_fmw_product_home_dir           = undef,
-  String $jdk_home_dir                          = $::orawls::weblogic::jdk_home_dir,
-  String $os_user                               = $::orawls::weblogic::os_user,
-  String $os_group                              = $::orawls::weblogic::os_group,
-  String $download_dir                          = $::orawls::weblogic::download_dir,
-  Boolean $log_output                           = $::orawls::weblogic::log_output,
-  Enum['create','delete'] $rcu_action           = 'create',
-  String $rcu_jdbc_url                          = undef,   #jdbc...
-  String $rcu_database_url                      = undef,   #192.168.50.5:1521:XE
-  String $rcu_prefix                            = undef,
-  String $rcu_password                          = undef,
-  String $rcu_sys_user                          = 'sys',
-  String $rcu_sys_password                      = undef,
+  Integer $version                                     = $::orawls::weblogic::version,
+  Enum['adf','soa','mft', 'wcs', 'forms'] $fmw_product = 'adf',
+  String $oracle_fmw_product_home_dir                  = undef,
+  String $jdk_home_dir                                 = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                                      = $::orawls::weblogic::os_user,
+  String $os_group                                     = $::orawls::weblogic::os_group,
+  String $download_dir                                 = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                  = $::orawls::weblogic::log_output,
+  Enum['create','delete'] $rcu_action                  = 'create',
+  String $rcu_jdbc_url                                 = undef,   #jdbc...
+  String $rcu_database_url                             = undef,   #192.168.50.5:1521:XE
+  String $rcu_prefix                                   = undef,
+  String $rcu_password                                 = undef,
+  String $rcu_sys_user                                 = 'sys',
+  String $rcu_sys_password                             = undef,
 ){
 
   # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
@@ -77,6 +77,10 @@ define orawls::utils::rcu(
   elsif $fmw_product == 'wcs' {
     $components = '-component STB -component OPSS -component WCSITES -component WCSITESVS -component IAU -component IAU_APPEND -component IAU_VIEWER'
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+  }
+  elsif $fmw_product == 'forms' {
+    $components = '-component STB -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS'
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
   }
   else {
     fail('Unrecognized FMW fmw_product')

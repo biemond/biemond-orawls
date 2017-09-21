@@ -150,8 +150,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_fr_linux64.bin'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_fr_linux64.bin'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_fr_linux64.bin'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_fr_linux64.bin'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'
@@ -194,8 +196,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_soa.jar'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_soa.jar'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_soa.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_soa.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/bin"
@@ -244,9 +248,12 @@ define orawls::fmw(
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_soa_quickstart.jar'
         $binFile2                 = 'fmw_12.2.1.1.0_soa_quickstart2.jar'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_soa_quickstart.jar'
         $binFile2                 = 'fmw_12.2.1.2.0_soa_quickstart2.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_soa_quickstart.jar'
+        $binFile2                 = 'fmw_12.2.1.3.0_soa_quickstart2.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $createFile2              = "${download_dir}/${sanitised_title}/${binFile2}"
@@ -284,8 +291,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_osb.jar'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_osb.jar'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_osb.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_osb.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/osb/bin"
@@ -334,8 +343,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_b2bhealthcare.jar'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_b2bhealthcare.jar'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_b2bhealthcare.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_b2bhealthcare.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $oracleHome               = "${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar"
@@ -383,8 +394,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_wcportal_generic.jar'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_wcportal_generic.jar'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_wcportal_generic.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_wcportal_generic.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
@@ -413,8 +426,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_wccontent_generic.jar'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_wccontent_generic.jar'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_wccontent_generic.jar'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_wccontent_generic.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
@@ -457,7 +472,7 @@ define orawls::fmw(
       } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
       } else {
-        $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
+        $binFile1                 = 'fmw_12.2.1.3.0_wcsites.jar'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'
@@ -497,8 +512,10 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.0.0_ohs_linux64.bin'
       } elsif $version == 12211 {
         $binFile1                 = 'fmw_12.2.1.1.0_ohs_linux64.bin'
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_ohs_linux64.bin'
+      } else {
+        $binFile1                 = 'fmw_12.2.1.3.0_ohs_linux64.bin'
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'bin'

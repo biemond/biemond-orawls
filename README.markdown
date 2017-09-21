@@ -65,7 +65,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 
 ## Orawls WebLogic Features
 
-- [Installs WebLogic](#weblogic), version 10g, 11g, 12c ( 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.1 + FMW infrastructure editions )
+- [Installs WebLogic](#weblogic), version 10g, 11g, 12c ( 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.X + FMW infrastructure editions )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
 - [Create a WebLogic domain](#domain)

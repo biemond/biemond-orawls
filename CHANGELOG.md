@@ -1,6 +1,7 @@
 # History
 
 ## 2.0.11
+- support welogic + FMW 12.2.1.2 & 12.2.1.3
 - packdomain managed option
 - Client ID on the JMS connection factory wls type
 - Store userconfig not supports t3 secure port 

@@ -1,5 +1,12 @@
 # History
 
+## 2.0.11
+- packdomain managed option
+- Client ID on the JMS connection factory wls type
+- Store userconfig not supports t3 secure port 
+- forms 12c domain creation + RCU
+- jms server wls type new attribute messages_maximum
+
 ## 2.0.10
 - better adminserver control status check
 - more allow $ in the weblogic password

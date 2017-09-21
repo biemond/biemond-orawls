@@ -7,6 +7,8 @@ gem 'simplecov', :require => false
 gem 'simplecov-console'
 
 # gem 'puppet-lint'
+
+gem 'semantic_puppet'
 gem 'puppet-lint', :git => 'https://github.com/rodjek/puppet-lint'
 gem 'puppet', puppetversion
 gem 'rspec-puppet', '~> 2.5.0'

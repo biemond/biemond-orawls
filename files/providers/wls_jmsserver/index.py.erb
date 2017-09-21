@@ -6,8 +6,8 @@ for token in m:
   print '___'+token+'___'
   cd('/JMSServers/'+token)
 
-  bytesMaximum = get('BytesMaximum')
-  messagesMaximum = get('messagesMaximum')
+  bytesMaximum       = get_attribute_value('BytesMaximum')
+  messagesMaximum    = get_attribute_value('MessagesMaximum')
   insertion_paused   = get_attribute_value('InsertionPausedAtStartup')
   consumption_paused = get_attribute_value('ConsumptionPausedAtStartup')
   production_paused  = get_attribute_value('ProductionPausedAtStartup')

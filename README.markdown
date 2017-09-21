@@ -179,6 +179,7 @@ For all WebLogic or FMW versions
 - domain 'bam'            -> BAM ( only with soa suite installation)
 - domain 'ohs_standalone' -> Standalone webtier (HTTP Server) 12.1.2, 12.1.3 and 12.1.4
 
+
 11g
 - domain 'wc_wcc_bpm'     -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
 - domain 'wc'             -> WC (webcenter) + JRF + EM + OWSM
@@ -189,6 +190,7 @@ For all WebLogic or FMW versions
 
 12.2.1.1
 - domain 'adf_restricted' -> only for 12.2.1 (no RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS
+- domain 'forms'
 
 
 ## Puppet master with orawls module key points

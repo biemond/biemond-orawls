@@ -67,7 +67,7 @@ define orawls::utils::forms11gpatch (
 
   }
 
-  $fmw_silent_response_file = 'orawls/fmw_silent_forms_patch.rsp.erb'
+  $fmw_silent_response_file = 'orawls/fmw_silent_forms_patch.rsp.epp'
   if ($oracle_home_dir == undef) {
     $oracleHome = "${middleware_home_dir}/Oracle_FRM1"
   }
@@ -83,7 +83,9 @@ define orawls::utils::forms11gpatch (
 
     file { "${download_dir}/${title}_silent_${fmw_product}.rsp":
       ensure  => present,
-      content => template($fmw_silent_response_file),
+      content => epp($fmw_silent_response_file, {
+                      'middleware_home_dir' => $middleware_home_dir,
+                      'oracleHome'          => $oracleHome }),
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,

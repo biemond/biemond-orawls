@@ -29,7 +29,7 @@
   "project_page": "https://github.com/biemond/biemond-orawls",
   "source": "https://github.com/biemond/biemond-orawls",
   "summary": "Oracle WebLogic puppet module v2 for Linux & Solaris with wls puppet types & providers",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "tags": [
     "weblogic",
     "11g",

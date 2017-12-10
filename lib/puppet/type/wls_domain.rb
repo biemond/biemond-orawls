@@ -60,6 +60,7 @@ module Puppet
     property :setarchiveconfigurationcount
     property :exalogicoptimizationsenabled
     property :credential
+    property :cdi_implicit_bean_discovery_enabled
 
     add_title_attributes(:weblogic_domain_name) do
       /^((.*?\/)?(.*)?)$/

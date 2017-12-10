@@ -37,6 +37,7 @@ define orawls::storeuserconfig (
   String $os_group                     = $::orawls::weblogic::os_group,
   String $download_dir                 = $::orawls::weblogic::download_dir,
   Boolean $log_output                  = $::orawls::weblogic::log_output,
+  Optional[String] $extra_arguments    = undef,
 )
 {
   # the py script used by the wlst*-
@@ -58,7 +59,12 @@ define orawls::storeuserconfig (
     group   => $os_group,
   }
 
-  $javaCommand = 'java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
+  if $extra_arguments{
+    $javaCommand = "java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true ${extra_arguments} weblogic.WLST -skipWLSModuleScanning "
+  } else {
+    $javaCommand = 'java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning '
+  }
+
   $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
   exec { "execwlst ${title}storeUserConfig.py":
@@ -73,4 +79,3 @@ define orawls::storeuserconfig (
   }
 
 }
-

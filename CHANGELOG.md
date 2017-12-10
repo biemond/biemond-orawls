@@ -1,5 +1,10 @@
 # History
 
+## 2.0.12
+- forms 11g patch fix
+- wls_domain new attribute cdi_implicit_bean_discovery_enabled
+- storeuserconfig new parameter extra_arguments
+
 ## 2.0.11
 - support welogic + FMW 12.2.1.2 & 12.2.1.3
 - packdomain managed option

@@ -71,6 +71,7 @@ module Puppet
     property :log_number_of_files_limited
     property :log_filecount
     property :log_rotationtype
+    property :log_rotationdir
     property :log_rotate_logon_startup
     property :log_datasource_filename
     property :log_redirect_stdout_to_server

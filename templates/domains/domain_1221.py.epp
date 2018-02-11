@@ -79,7 +79,7 @@ ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m
 # Todo: Add logic to turn version into this but 12.2.1.2 turns into 12.2.1.2.0
 TEMPLATE_VERSION = '12.2.1.2.0'
 
-if WEBLOGIC_VERSION in [1221, 12211, 12212]:
+if WEBLOGIC_VERSION in [1221, 12211, 12212, 12213]:
     if CREATE_DEFAULT_COHERENCE_CLUSTER == True:
         print 'Adding WLS Coherence Template'
         selectTemplate('<%= $templateCoherence %>', TEMPLATE_VERSION)

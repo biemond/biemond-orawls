@@ -1,5 +1,9 @@
 # History
 
+## 2.0.13
+- wls_server add log_rotationdir attribute
+- Domain support for 12.2.1.3
+
 ## 2.0.12
 - forms 11g patch fix
 - wls_domain new attribute cdi_implicit_bean_discovery_enabled

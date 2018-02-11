@@ -71,7 +71,7 @@ addTemplate('<%= @templateOSB %>')
 print 'Adding ApplCore Template'
 addTemplate('<%= @templateApplCore %>')
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
     # print 'Adding JRF Template'
     # addTemplate('<%= @templateJRF %>')
     print 'Adding WSM PM Template'
@@ -88,11 +88,11 @@ if BPM_ENABLED == True:
     print 'Adding BPM Template'
     addTemplate('<%= @templateBPM %>')
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
     print 'Adding EM Template'
     addTemplate('<%= @templateEM %>')
 
-if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212, 12213]:
 
     if WEBTIER_ENABLED == True:
         print 'Adding OHS Template'
@@ -110,7 +110,7 @@ if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
 dumpStack()
 
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
     cd('/')
     # destroy the normal one
     delete('LocalMachine', 'Machine')
@@ -143,7 +143,7 @@ change_managed_server('osb_server1', 'LocalMachine', '<%= @adminserver_address %
 # only for 11g
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
 
     print 'create opss datasource'
 
@@ -154,7 +154,7 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
     create_opss_datasource(target, REPOS_DBUSER_PREFIX, REPOS_DBPASSWORD, REPOS_DBURL)
 
-if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
 
     print 'Change datasources'
     change_datasource('EDNDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
@@ -173,7 +173,7 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212]:
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
 
-if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212, 12213]:
 
     print 'Change datasources'
 

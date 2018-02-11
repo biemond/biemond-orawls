@@ -93,7 +93,7 @@ print 'change osb_server1'
 cd('/')
 change_managed_server('osb_server1', 'LocalMachine', '<%= @adminserver_address %>', 8011, OSB_JAVA_ARGUMENTS, '<%= @osb_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
-if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212, 12213]:
 
     if WEBTIER_ENABLED == True:
         print 'Adding OHS Template'
@@ -147,7 +147,7 @@ closeDomain()
 
 create_boot_properties_file(DOMAIN_PATH + '/servers/osb_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
 
-if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212]:
+if WEBLOGIC_VERSION in [1213, 1221, 12211, 12212, 12213]:
 
     if ESS_ENABLED == True:
         create_boot_properties_file(DOMAIN_PATH + '/servers/ess_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)

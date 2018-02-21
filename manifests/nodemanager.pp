@@ -273,7 +273,7 @@ define orawls::nodemanager (
     $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env} ${extra_arguments}"
   }
 
-  $startCommand      = "nohup ${startHome}/startNodeManager.sh &"
+  $startCommand      = "nohup ${startHome}/startNodeManager.sh  > ${nodeMgrHome}/nodemanager_nohup.log 2>&1 &"
   $restartCommand    = "kill $(${checkCommand} | awk '{print \$1}'); sleep 1; ${startCommand}"
 
   exec { "startNodemanager ${title}":

@@ -167,7 +167,7 @@ describe 'orawls::nodemanager', :type => :define do
     describe "start nodemanager 3" do
       it {
            should contain_exec("startNodemanager nodemanager12c").with({
-             'command'     => 'nohup /opt/oracle/wlsdomains/domains/wls1212/bin/startNodeManager.sh &" but it is set to "nohup /opt/oracle/wlsdomains/domains/wls1212/bin/startNodeManager.sh  > /opt/oracle/wlsdomains/domains/wls1212/nodemanager/nodemanager_nohup.log 2>&1 &',
+             'command'     => 'nohup /opt/oracle/wlsdomains/domains/wls1212/bin/startNodeManager.sh  > /opt/oracle/wlsdomains/domains/wls1212/nodemanager/nodemanager_nohup.log 2>&1 &',
              'cwd'         => '/opt/oracle/wlsdomains/domains/wls1212/nodemanager',
              'user'        => 'oracle',
              'group'       => 'dba',

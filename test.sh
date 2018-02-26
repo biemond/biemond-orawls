@@ -12,6 +12,8 @@ rvm --version
 rvm install ruby-2.3.3
 rvm use ruby-2.3.3
 
+export PUPPET_VERSION=4.10.10
+
 set -e
 
 ruby -v

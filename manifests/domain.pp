@@ -85,6 +85,8 @@
 # @param domain_password the domain password
 # @param webtier_enabled webtier template extension add to the domain
 # @param rcu_database_url the rcu database url
+# @param rcu_tablespace the tablespace used for the rco
+# @param rcu_temp_tablespace the tablespace used for the rco
 # @param repository_sys_user the rcu sys username
 # @param repository_sys_password the rcu sys passoword
 # @param log_dir the full path to the log directory
@@ -134,6 +136,8 @@ define orawls::domain (
   Boolean $log_output                                     = $::orawls::weblogic::log_output,
   Optional[String] $repository_database_url               = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
   Optional[String] $rcu_database_url                      = undef, #localhost:1521:XE"
+  Optional[String] $rcu_temp_tablespace                   = undef, #TEMP
+  Optional[String] $rcu_tablespace                        = undef, #SOA_INFRA
   Optional[String] $repository_prefix                     = 'DEV',
   Optional[String] $repository_password                   = undef,
   Optional[String] $repository_sys_user                   = 'sys',
@@ -714,6 +718,8 @@ define orawls::domain (
           rcu_action                  => 'create',
           rcu_jdbc_url                => $repository_database_url,
           rcu_database_url            => $rcu_database_url,
+          rcu_temp_tablespace         => $rcu_temp_tablespace,
+          rcu_tablespace              => $rcu_tablespace,
           rcu_sys_user                => $repository_sys_user,
           rcu_sys_password            => $repository_sys_password,
           rcu_prefix                  => $repository_prefix,

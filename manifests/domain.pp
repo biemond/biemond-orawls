@@ -745,7 +745,7 @@ define orawls::domain (
       user        => $os_user,
       group       => $os_group,
     }
-  
+
     if ($domain_template == 'ohs_standalone') {
       ## Create OHS standalone config directory
       file { "${domain_dir}/config/fmwconfig/components/OHS/ohs1/mod_wl_ohs.d":
@@ -971,6 +971,5 @@ define orawls::domain (
         group   => $os_group,
       }
     }
-  
   }
 }

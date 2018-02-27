@@ -53,15 +53,15 @@ define orawls::utils::rcu(
   }
 
   if $rcu_temp_tablespace == undef {
-    $rcu_temp_tablespace_cmd  = ""
+    $rcu_temp_tablespace_cmd  = ''
   } else {
     $rcu_temp_tablespace_cmd  = "-tempTablespace ${rcu_temp_tablespace}"
-  }  
+  }
   if $rcu_tablespace == undef {
-    $rcu_tablespace_cmd  = ""
+    $rcu_tablespace_cmd  = ''
   } else {
     $rcu_tablespace_cmd  = "-tablespace ${rcu_tablespace}"
-  }  
+  }
 
   if $fmw_product == 'adf' {
     if $version >= 1221 {
@@ -127,7 +127,7 @@ define orawls::utils::rcu(
   elsif $rcu_action == 'delete' {
     $action = '-dropRepository'
   }
-  
+
   wls_rcu{ "${rcu_prefix}_${sanitised_title}":
     ensure       => $rcu_action,
     statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt",

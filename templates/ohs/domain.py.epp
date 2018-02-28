@@ -52,7 +52,14 @@ OHS_VERSION = <%= $version %>
 # configures the domain as a 'Basic Standalone System Component Domain' with an
 # extension of 'Oracle HTTP Server (Standalone)'
 if OHS_VERSION >= 1221:
-    selectTemplate('Oracle HTTP Server (Standalone)', '12.2.1.2')
+    if OHS_VERSION = 12211:
+        templateVersion = '12.2.1.1'
+    elif OHS_VERSION = 12212:
+        templateVersion = '12.2.1.2'
+    else:
+        templateVersion = '12.2.1.3'
+
+    selectTemplate('Oracle HTTP Server (Standalone)', templateVersion)
     loadTemplates()
 else:
     # Read OHS Standalone template

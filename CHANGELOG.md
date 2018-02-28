@@ -1,5 +1,10 @@
 # History
 
+## 2.0.14
+- domain + RCU now supports defining the tablespace of the rcu components
+- fix OHS domain template for versions 12.2.1.1 & 12.2.1.3
+- fix failure of nodemanager starting up in case of SOA
+
 ## 2.0.13
 - wls_server add log_rotationdir attribute
 - Domain support for 12.2.1.3

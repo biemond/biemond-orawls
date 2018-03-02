@@ -57,7 +57,7 @@ if OHS_VERSION >= 1221:
     elif OHS_VERSION == 12212:
         templateVersion = '12.2.1.2'
     else:
-        templateVersion == '12.2.1.3'
+        templateVersion = '12.2.1.3'
 
     selectTemplate('Oracle HTTP Server (Standalone)', templateVersion)
     loadTemplates()

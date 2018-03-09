@@ -71,8 +71,11 @@ try:
     set_attribute_value('ShowArchivedRealPathEnabled', web_app_container_show_archived_real_path_enabled, use_default_value_when_empty)
 
     print "change cdi container"
-    cd('/CdiContainer/' + name)
-    set_attribute_value('ImplicitBeanDiscoveryEnabled', cdi_implicit_bean_discovery_enabled, use_default_value_when_empty)
+    try:
+        cd('/CdiContainer/' + name)
+        set_attribute_value('ImplicitBeanDiscoveryEnabled', cdi_implicit_bean_discovery_enabled, use_default_value_when_empty)
+    except:
+        print "skip probably not 12.2 version"
 
     cd('/')
 

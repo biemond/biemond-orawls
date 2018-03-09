@@ -1,5 +1,8 @@
 # History
 
+## 2.0.15
+- fix CdiContainer on wls_domain when used on a < 12.2 domain
+
 ## 2.0.14
 - domain + RCU now supports defining the tablespace of the rcu components
 - fix OHS domain template for versions 12.2.1.1 & 12.2.1.3

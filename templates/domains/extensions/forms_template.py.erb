@@ -28,6 +28,19 @@ ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
 ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
 <% end %>
 
+<% if @java_arguments['FORMS'] %>
+FORMS_JAVA_ARGUMENTS = '<%= @java_arguments['FORMS'] %>'
+<% else %>
+FORMS_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/WLS_FORMS.out -Dweblogic.Stderr=<%= @adminserver_nodemanager_log_dir %>/WLS_FORMS_err.out'
+<% end %>
+
+<% if @java_arguments['REPORTS'] %>
+REPORTS_JAVA_ARGUMENTS = '<%= @java_arguments['REPORTS'] %>'
+<% else %>
+REPORTS_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1532m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/WLS_REPORTS.out -Dweblogic.Stderr=<%= @adminserver_nodemanager_log_dir %>/WLS_REPORTS_err.out'
+<% end %>
+
+
 REPOS_DBURL = '<%= @repository_database_url %>'
 REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
 REPOS_DBPASSWORD = '<%= @repository_password %>'
@@ -55,6 +68,18 @@ if APP_PATH:
   print('Set AppDir to ' + APP_PATH )
   setOption('AppDir', APP_PATH )
 
+print 'Change AdminServer'
+cd('/Servers/' + ADMIN_SERVER)
+set('Machine', '<%= @adminserver_machine_name %>')
+
+print 'change WLS_FORMS'
+cd('/')
+change_managed_server('WLS_FORMS', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 9001, FORMS_JAVA_ARGUMENTS, '<%= @admin_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+print 'change WLS_REPORTS'
+cd('/')
+change_managed_server('WLS_REPORTS', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 9002, REPORTS_JAVA_ARGUMENTS, '<%= @admin_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
 print 'Change datasources'
 change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 change_datasource('opss-audit-DBDS', REPOS_DBUSER_PREFIX + '_IAU_APPEND', REPOS_DBPASSWORD, REPOS_DBURL)
@@ -70,6 +95,28 @@ print 'Finished datasources'
 
 print 'Call getDatabaseDefaults which reads the service table'
 getDatabaseDefaults()
+
+<% if scope['orawls::domain::ohs_standalone_listen_address']  != '' and scope['orawls::domain::ohs_standalone_listen_port']  != '' and scope['orawls::domain::ohs_standalone_ssl_listen_port']  != '' -%>
+print 'Creating ohs1 component'
+# Can't use ohs_createInstance() because it requires online
+#ohs_createInstance(instanceName='ohs1', machine='<%= @adminserver_machine_name %>', listenPort='<%= @ohs_standalone_listen_port %>', sslPort='<%= @ohs_standalone_ssl_listen_port %>')
+create('ohs1', 'SystemComponent')
+cd('/SystemComponent/ohs1')
+cmo.setComponentType('OHS')
+set('Machine', '<%= @adminserver_machine_name %>')
+cd('/OHS/ohs1')
+cmo.setListenAddress('<%= @ohs_standalone_listen_address %>')
+cmo.setListenPort('<%= @ohs_standalone_listen_port %>')
+cmo.setSSLListenPort('<%= @ohs_standalone_ssl_listen_port %>')
+dumpStack()
+<% else -%> 
+print 'No ohs1 component'
+print 'If needed, please provide ohs_standalone_listen_address, ohs_standalone_listen_port, and ohs_standalone_ssl_listen_port.'
+<% end -%>
+
+print 'Setting forms1 component machine'
+cd('/SystemComponent/forms1')
+set('Machine', '<%= @adminserver_machine_name %>')
 
 updateDomain()
 closeDomain()

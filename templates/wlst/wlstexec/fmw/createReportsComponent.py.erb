@@ -1,0 +1,37 @@
+#$MW_HOME/oracle_common/common/bin/wlst.sh
+# https://docs.oracle.com/middleware/1221/formsandreports/use-reports/pbr_conf008.htm#RSPUB77254
+
+wlsUser    = '<%= @weblogic_user %>'
+password   = sys.argv[1] 
+machine    = '<%= @adminserver_address %>'
+portNumber = '<%= @adminserver_port %>'
+
+action_name   = '<%= @action_name %>'
+instance_name = '<%= @instance_name %>'
+machine_name  = '<%= @machine_name %>'
+
+component_type = '<%= @component_type %>'
+
+connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+
+if action_name == "create":
+  if component_type == "tools":
+    createReportsToolsInstance(instanceName='<%= @instance_name %>', machine='<%= @machine_name %>')
+  elif component_type == "bridge":
+    createReportsBridgeInstance(instanceName='<%= @instance_name %>', machine='<%= @machine_name %>')
+  elif component_type == "server":
+    createReportsServerInstance(instanceName='<%= @instance_name %>', machine='<%= @machine_name %>')
+  else:
+    print 'Invalid component type'
+    exit(1)
+else:
+  if component_type == "tools":
+    deleteReportsToolsInstance(instanceName='<%= @instance_name %>')
+  elif component_type == "bridge":
+    deleteReportsBridgeInstance(instanceName='<%= @instance_name %>')
+  elif component_type == "server":
+    deleteReportsServerInstance(instanceName='<%= @instance_name %>')
+  else:
+    print 'Invalid component type'
+    exit(1)
+

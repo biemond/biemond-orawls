@@ -53,7 +53,7 @@ define orawls::utils::reportscomponents(
 
   if $component_type == 'bridge' {
     $sys_component_dir = 'ReportsBridgeComponent'
-  } 
+  }
   elsif $component_type == 'server' {
     $sys_component_dir = 'ReportsServerComponent'
   }
@@ -62,7 +62,7 @@ define orawls::utils::reportscomponents(
   }
   else {
     fail("Invalid component_type: ${component_type}")
-  } 
+  }
 
   if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
 
@@ -87,7 +87,7 @@ define orawls::utils::reportscomponents(
         group       => $os_group,
         logoutput   => $log_output,
         require     => File["${download_dir}/${title}_reportsComponent.py"],
-      }    
+      }
 
     } else {
 

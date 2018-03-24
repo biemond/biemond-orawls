@@ -115,6 +115,7 @@ define orawls::utils::forms11gpatch (
       user      => $os_user,
       group     => $os_group,
       logoutput => false,
+      notify    => Exec["install ${fmw_product} ${title}"],
     }
 
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion"
@@ -123,11 +124,11 @@ define orawls::utils::forms11gpatch (
       command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
       environment => "TEMP=${temp_dir}",
       timeout     => 0,
-      # creates     => "${oracleHome}/OPatch",
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
       logoutput   => $log_output,
+      refreshonly => true,
       require     => [File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
                       Exec["extract ${fmw_file1}"],],
     }

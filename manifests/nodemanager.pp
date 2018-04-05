@@ -121,7 +121,7 @@ define orawls::nodemanager (
       if ( $version == 1212 or $version == 1213 or $version >= 1221 ){
         $checkCommand = "/bin/ps -eo pid,cmd | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${domain_name}"
       } else {
-        $checkCommand = '/bin/ps -eo pid,cmd | grep -v grep | /bin/grep \'weblogic.NodeManager\''
+        $checkCommand = "/bin/ps -eo pid,cmd | grep -v grep | /bin/grep 'weblogic.NodeManager' | /bin/grep ${middleware_home_dir}" 
       }
       $suCommand         = "su -s /bin/bash -l ${os_user}"
       $netstat_statement = "/bin/netstat -lnt | /bin/grep ':${nodemanager_port}'"

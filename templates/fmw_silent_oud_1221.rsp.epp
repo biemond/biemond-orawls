@@ -1,0 +1,17 @@
+<%- |  String $middleware_home_dir,
+       Optional[String] $oracleHome = undef,
+       Optional[String] $install_type = undef,
+       Optional[String] $weblogic_home_dir = undef | -%>
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#The oracle home location. This can be an existing Oracle Home or a new Oracle Home
+ORACLE_HOME=<%= $middleware_home_dir %>
+
+#Set this variable value to the Installation Type selected. Possible values:  Standalone Oracle Unified Directory Server (Managed independently of WebLogic server), Collocated Oracle Unified Directory Server (Managed through WebLogic server).
+INSTALL_TYPE=<%= $install_type %>
+

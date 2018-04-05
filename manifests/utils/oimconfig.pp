@@ -2,6 +2,7 @@
 # utils::oimconfig define
 #
 # does all the Oracle Identity Management configuration
+# @todo Make config execs idempotent.
 #
 # @param version used weblogic software like 1036
 # @param wls_domains_dir root directory for all the WebLogic domains
@@ -181,6 +182,7 @@ define orawls::utils::oimconfig(
 
       orawls::control{'stopOIMOimServer1AfterConfig':
         weblogic_home_dir   => $weblogic_home_dir,
+        middleware_home_dir => $middleware_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,
         domain_name         => $domain_name,
@@ -202,6 +204,7 @@ define orawls::utils::oimconfig(
 
       orawls::control{'stopOIMSoaServer1AfterConfig':
         weblogic_home_dir   => $weblogic_home_dir,
+        middleware_home_dir => $middleware_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,
         domain_name         => $domain_name,
@@ -224,6 +227,7 @@ define orawls::utils::oimconfig(
 
       orawls::control{'stopOIMAdminServerAfterConfig':
         weblogic_home_dir   => $weblogic_home_dir,
+        middleware_home_dir => $middleware_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,
         domain_name         => $domain_name,
@@ -247,6 +251,7 @@ define orawls::utils::oimconfig(
 
       orawls::control{'startOIMAdminServerAfterConfig':
         weblogic_home_dir   => $weblogic_home_dir,
+        middleware_home_dir => $middleware_home_dir,
         jdk_home_dir        => $jdk_home_dir,
         wls_domains_dir     => $domains_dir,
         domain_name         => $domain_name,

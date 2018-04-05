@@ -64,14 +64,14 @@ define orawls::bsu (
         mode    => lookup('orawls::permissions'),
         owner   => $os_user,
         group   => $os_group,
-        before  => Exec["extract ${patch_file}"],
+        before  => Exec["extract ${title}"],
       }
       $disk1_file = "${download_dir}/${patch_file}"
     } else {
       $disk1_file = "${puppet_download_mnt_point}/${patch_file}"
     }
 
-    exec { "extract ${patch_file}":
+    exec { "extract ${title}":
       command   => "unzip -o ${disk1_file} -d ${middleware_home_dir}/utils/bsu/cache_dir",
       creates   => "${middleware_home_dir}/utils/bsu/cache_dir/${patch_id}.jar",
       path      => $exec_path,
@@ -87,7 +87,7 @@ define orawls::bsu (
       $patch_version = $version
     }
 
-    exec { "change memory params for ${patch_file}":
+    exec { "change memory params for ${title}":
       command   => "sed -e's/MEM_ARGS=\"-Xms256m -Xmx512m\"/MEM_ARGS=\"-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\"/g' ${middleware_home_dir}/utils/bsu/bsu.sh > ${download_dir}/bsu.sh && mv ${download_dir}/bsu.sh ${middleware_home_dir}/utils/bsu/bsu.sh;chmod +x ${middleware_home_dir}/utils/bsu/bsu.sh",
       onlyif    => "grep 'MEM_ARGS=\"-Xms256m -Xmx512m\"' ${middleware_home_dir}/utils/bsu/bsu.sh",
       before    => Bsu_patch["${middleware_home_dir}:${patch_id}"],
@@ -98,7 +98,7 @@ define orawls::bsu (
       logoutput => $log_output,
     }
 
-    exec { "patch policy for ${patch_file}":
+    exec { "patch policy for ${title}":
       command   => "bash -c \"{ echo 'grant codeBase \\\"file:${middleware_home_dir}/patch_wls1036/patch_jars/-\\\" {'; echo '      permission java.security.AllPermission;'; echo '};'; } >> ${weblogic_home_dir}/server/lib/weblogic.policy\"",
       unless    => "grep 'file:${middleware_home_dir}/patch_wls1036/patch_jars/-' ${weblogic_home_dir}/server/lib/weblogic.policy",
       path      => $exec_path,

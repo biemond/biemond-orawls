@@ -80,6 +80,18 @@ print 'change WLS_REPORTS'
 cd('/')
 change_managed_server('WLS_REPORTS', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 9002, REPORTS_JAVA_ARGUMENTS, '<%= @admin_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
 
+print 'Change AdminServer'
+cd('/Servers/' + ADMIN_SERVER)
+set('Machine', '<%= @adminserver_machine_name %>')
+
+print 'change WLS_FORMS'
+cd('/')
+change_managed_server('WLS_FORMS', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 9001, FORMS_JAVA_ARGUMENTS, '<%= @admin_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+print 'change WLS_REPORTS'
+cd('/')
+change_managed_server('WLS_REPORTS', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 9002, REPORTS_JAVA_ARGUMENTS, '<%= @admin_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
 print 'Change datasources'
 change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
 change_datasource('opss-audit-DBDS', REPOS_DBUSER_PREFIX + '_IAU_APPEND', REPOS_DBPASSWORD, REPOS_DBURL)

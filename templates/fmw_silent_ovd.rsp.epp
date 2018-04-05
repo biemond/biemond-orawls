@@ -1,0 +1,50 @@
+<%- |  String $middleware_home_dir,
+       Optional[String] $oracleHome = undef,
+       Optional[String] $install_type = undef,
+       Optional[String] $weblogic_home_dir = undef | -%>
+[ENGINE]
+Response File Version=1.0.0.0.0
+[GENERIC]
+SPECIFY_DOWNLOAD_LOCATION=false
+SKIP_SOFTWARE_UPDATES=true
+SOFTWARE_UPDATES_DOWNLOAD_LOCATION=
+DECLINE_SECURITY_UPDATES=true
+INSTALL AND CONFIGURE TYPE=false
+INSTALL AND CONFIGURE LATER TYPE=true
+ORACLE_HOME=<%= $oracleHome %>
+AS_HOME_LOCATION=<%= $middleware_home_dir %>
+
+[SYSTEM]
+[APPLICATIONS]
+[RELATIONSHIPS]
+
+#Provide true to install Oracle Internet Directory.
+INSTALL_OID_COMPONENT=false
+
+#Provide true to install Oracle Directory Integration Platform.
+INSTALL_DIP_COMPONENT=false
+
+#Provide true to install Oracle Virtual Directory
+INSTALL_OVD_COMPONENT=true
+
+#Provide true to install Oracle Identity Federation.
+INSTALL_OIF_COMPONENT=false
+
+#Provide true to install Oracle Directory Service Manager.
+INSTALL_ODSM_COMPONENT=true
+
+#Provide true to install Oracle HTTP Server.
+INSTALL_OHS_COMPONENT=false
+
+#Provide true to install Enterprise Management.
+INSTALL_EM_COMPONENT=true
+
+#Provide true if selecting federation components for install.
+FEDERATION_COMPONENTS=false
+
+#Provide true if selecting management components for install.
+MANAGEMENT_COMPONENTS=true
+
+#Provide the list of components selected for install. Example OID:OVD:OIF:OHS:ODSM:EM:DIP
+SELECTED_COMPONENTS_FOR_INSTALL=OVD:ODSM:EM:
+

@@ -1,5 +1,9 @@
 # History
 
+## 2.0.6
+- forms 11g patch only runs once now
+- wls_server removed the default '' from log_rotationdir attribute
+
 ## 2.0.15
 - fix CdiContainer on wls_domain when used on a < 12.2 domain
 

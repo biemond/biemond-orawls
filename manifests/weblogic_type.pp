@@ -109,9 +109,9 @@ define orawls::weblogic_type (
   }
 
   $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
-  
+
   if $ora_inventory_dir == undef {
-    $ora_inventory = "${oracle_base_home_dir}/oraInventory" 
+    $ora_inventory = "${oracle_base_home_dir}/oraInventory"
   } else {
     $ora_inventory = "${ora_inventory_dir}/oraInventory"
   }

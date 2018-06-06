@@ -162,7 +162,7 @@ define orawls::weblogic_type (
   wls_directory_structure{"weblogic structure ${title}":
     ensure            => present,
     oracle_base_dir   => $oracle_base_home_dir,
-    ora_inventory_dir => $ora_inventory_dir,
+    ora_inventory_dir => $ora_inventory,
     download_dir      => $download_dir,
     wls_domains_dir   => $domains_dir,
     wls_apps_dir      => $apps_dir,

@@ -8,6 +8,7 @@
 #     version                   => 12212,
 #     filename                  => 'fmw_12.2.1.2.0_wls.jar',
 #     jdk_home_dir              => '/usr/java/latest',
+#     ora_inventory_dir         => '/opt/oracle',
 #     oracle_base_home_dir      => "/opt/oracle",
 #     middleware_home_dir       => "/opt/oracle/middleware12c",
 #     weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
@@ -19,6 +20,7 @@
 # 
 # @param version Weblogic version like 1036, 1111, 1213 or 12212
 # @param filename the weblogic jar file like wls1036_generic.jar or fmw_12.2.1.2.0_wls.jar
+# @param ora_inventory_dir full path to the Oracle Inventory location directory. If not specfied, it defaults to oracle_base_home_dir (for example /opt/oracle or /u01/app/oracle). If you use the biemond-oradb module, you must set it to oracle_base_home_dir/.. (for example /opt or /u01/app)
 # @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param weblogic_home_dir directory of the WebLogic software inside the middleware directory
@@ -41,6 +43,7 @@
 define orawls::weblogic_type (
   Integer $version                    = lookup('orawls::default_version'),
   String $filename                    = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
+  Optional[String] $ora_inventory_dir = undef, # /opt/oracle
   String $oracle_base_home_dir        = undef, # /opt/oracle
   String $middleware_home_dir         = undef, # /opt/oracle/middleware11gR1
   Optional[String] $weblogic_home_dir = undef, # /opt/oracle/middleware11gR1/wlserver
@@ -106,7 +109,12 @@ define orawls::weblogic_type (
   }
 
   $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
-  $ora_inventory_dir = "${oracle_base_home_dir}/oraInventory"
+  
+  if $ora_inventory_dir == undef {
+    $ora_inventory = "${oracle_base_home_dir}/oraInventory" 
+  } else {
+    $ora_inventory = "${ora_inventory_dir}/oraInventory"
+  }
 
   Exec {
     logoutput => $log_output,
@@ -146,7 +154,7 @@ define orawls::weblogic_type (
   }
 
   orawls::utils::orainst { "weblogic orainst ${title}":
-    ora_inventory_dir => $ora_inventory_dir,
+    ora_inventory_dir => $ora_inventory,
     os_group          => $os_group,
     orainstpath_dir   => $orainstpath_dir
   }

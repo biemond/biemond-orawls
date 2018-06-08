@@ -31,7 +31,7 @@ class orawls::urandomfix() {
             path    => $path,
           }
 
-          exec { 'systemctl-daemon-reload':
+          exec { 'urandomfix-systemctl-daemon-reload':
             command     => 'systemctl --system daemon-reload',
             path        => $path,
             subscribe   => Exec['set urandom /lib/systemd/system/rngd.service'],
@@ -42,7 +42,7 @@ class orawls::urandomfix() {
           service { 'rngd':
             ensure  => 'running',
             enable  => true,
-            require => Exec['systemctl-daemon-reload'],
+            require => Exec['urandomfix-systemctl-daemon-reload'],
           }
         }
         '6': {

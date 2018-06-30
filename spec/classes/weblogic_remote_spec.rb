@@ -233,4 +233,40 @@ describe 'orawls::weblogic', :type => :class do
 
   end
 
+  describe "weblogic local 12.1.2 install inventory" do
+    let(:params){{
+                  :version              => 1212,
+                  :download_dir         => '/install',
+                  :filename             => 'wls_121200.jar',
+                  :os_user              => 'oracle',
+                  :os_group             => 'dba',
+                  :middleware_home_dir  => '/opt/oracle/middleware12c',
+                  :weblogic_home_dir    => '/opt/oracle/middleware12c/wlserver',
+                  :oracle_base_home_dir => '/opt/oracle',
+                  :ora_inventory_dir    => '/opt',
+                  :jdk_home_dir         => '/usr/java/jdk1.7.0_45',
+                  :remote_file          => false,
+                  :puppet_download_mnt_point               => '/software',
+                  :log_output           => true,
+
+                }}
+    let(:facts) {{ :operatingsystem => 'CentOS' ,
+                   :kernel          => 'Linux',
+                   :osfamily => 'RedHat' }}
+    
+    describe "WebLogic structure" do
+      it do
+        should contain_wls_directory_structure("weblogic structure base").with({
+             'oracle_base_dir'      => '/opt/oracle',
+             'ora_inventory_dir'    => '/opt/oraInventory',
+             'os_group'             => 'dba',
+             'os_user'              => 'oracle',
+             'download_dir'         => '/install',
+             'wls_domains_dir'      => nil,
+             'wls_apps_dir'         => nil,
+           })
+      end
+    end
+  end
+
 end

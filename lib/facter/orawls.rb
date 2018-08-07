@@ -87,7 +87,32 @@ def get_orainst_products(path)
       software =  ''
       doc.elements.each('/INVENTORY/HOME_LIST/HOME') do |element|
         str = element.attributes['LOC']
-        software += str + ';' unless str.nil?
+        unless str.nil?
+          software += str + ';'
+          if str.include? 'plugins'
+            # skip EM agent
+          elsif str.include? 'agent'
+            # skip EM agent
+          elsif str.include? 'OraPlaceHolderDummyHome'
+            # skip EM agent
+          else
+            home = str.gsub('/', '_').gsub("\\", '_').gsub('c:', '_c').gsub('d:', '_d').gsub('e:', '_e')
+            opatchver = get_opatch_version(str)
+            Facter.add("oradb_inst_opatch#{home}") do
+              setcode do
+                opatchver
+              end
+            end
+
+            patches = get_opatch_patches(str)
+            # Puppet.info "-patches hash- #{patches}"
+            patches_fact[str] = patches unless patches.nil?
+          end
+        end
+      end
+      Facter.add('ora_mdw_opatch_patches') do
+        # Puppet.info "-all patches hash- #{patches_fact}"
+        setcode { patches_fact }
       end
       return software
     else
@@ -799,6 +824,18 @@ def get_wls_domains_file
     return wls_domains_file
   end
   '/etc/wls_domains.yaml'
+end
+
+def get_opatch_version(name)
+  opatchOut = Facter::Util::Resolution.exec(name + '/OPatch/opatch version')
+
+  if opatchOut.nil?
+    opatchver = 'Error;'
+  else
+    opatchver = opatchOut.split(' ')[2]
+  end
+  Puppet.debug "oradb opatch #{opatchver}"
+  opatchver
 end
 
 # read the domains yaml and analyze domain

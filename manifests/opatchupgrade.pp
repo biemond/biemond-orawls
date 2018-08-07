@@ -88,7 +88,7 @@ define orawls::opatchupgrade(
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
-      require     => [File[$opatch_jar_file]],
+      onlyif      => "test -f ${opatch_jar_file}",
     }
   }
 }

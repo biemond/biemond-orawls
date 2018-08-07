@@ -85,6 +85,7 @@ def get_orainst_products(path)
       file = File.read(path + '/ContentsXML/inventory.xml')
       doc = REXML::Document.new file
       software =  ''
+      patches_fact = {}
       doc.elements.each('/INVENTORY/HOME_LIST/HOME') do |element|
         str = element.attributes['LOC']
         unless str.nil?

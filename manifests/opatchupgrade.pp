@@ -75,8 +75,7 @@ define orawls::opatchupgrade(
       user      => $os_user,
       group     => $os_group,
       logoutput => $log_output,
-      require   => [File[$patch_dir],
-                    File[$disk1_file]],
+      require   => [File[$disk1_file]],
     }
 
     $java_statement = "${lookup('orawls::java')} ${java_parameters}"

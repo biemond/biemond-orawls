@@ -32,7 +32,7 @@ define orawls::opatchupgrade(
   String $java_parameters             = '',    # '-Dspace.detection=false'
 )
 {
-  $exec_path = lookup('orawls::exec_path')
+  $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
   $patch_dir = "${oracle_product_home_dir}/OPatch"
 
   # check the opatch version
@@ -68,8 +68,6 @@ define orawls::opatchupgrade(
     # $disk1_file:      e.g. /u01/tmp/install/p28186730_139400_Generic.zip
     # $opatch_dir:      e.g. /u01/tmp/install/wls_opatch
     # $opatch_jar_file: e.g. /u01/tmp/install/wls_opatch/6880880/opatch_generic.jar
-
-    $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
 
     exec { "extract opatch upgrade ${title} ${patch_file}":
       command   => "unzip -o ${disk1_file} -d ${opatch_dir}",

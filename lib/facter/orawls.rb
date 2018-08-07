@@ -835,7 +835,7 @@ def get_opatch_version(name)
   else
     opatchver = opatchOut.split(' ')[2]
   end
-  Puppet.debug "oradb opatch #{opatchver}"
+  Puppet.debug "orawls opatch #{opatchver}"
   opatchver
 end
 

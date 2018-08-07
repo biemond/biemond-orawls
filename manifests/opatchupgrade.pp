@@ -36,7 +36,7 @@ define orawls::opatchupgrade(
   $patch_dir = "${oracle_product_home_dir}/OPatch"
 
   # check the opatch version
-  $installed_version = oradb::opatch_version($oracle_product_home_dir)
+  $installed_version = orawls::opatch_version($oracle_product_home_dir)
 
   if $installed_version == $opversion {
     $continue = false

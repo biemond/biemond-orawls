@@ -62,7 +62,7 @@ define orawls::opatchupgrade(
       $disk1_file = "${puppet_download_mnt_point}/${patch_file}"
     }
 
-    $opatch_dir = "${disk1_file}/wls_opatch"
+    $opatch_dir = "${download_dir}/wls_opatch"
     $opatch_jar_file = "${opatch_dir}/${patch_id}/opatch_generic.jar"
 
     # $disk1_file:      e.g. /u01/tmp/install/p28186730_139400_Generic.zip

@@ -99,7 +99,7 @@ def get_orainst_products(path)
           else
             home = str.gsub('/', '_').gsub("\\", '_').gsub('c:', '_c').gsub('d:', '_d').gsub('e:', '_e')
             opatchver = get_opatch_version(str)
-            Facter.add("oradb_inst_opatch#{home}") do
+            Facter.add("orawls_inst_opatch#{home}") do
               setcode do
                 opatchver
               end

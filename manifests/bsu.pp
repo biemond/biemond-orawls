@@ -89,7 +89,7 @@ define orawls::bsu (
 
     exec { "change memory params for ${patch_file}":
       command   => "sed -e's/MEM_ARGS=\"-Xms256m -Xmx512m\"/MEM_ARGS=\"-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\"/g' ${middleware_home_dir}/utils/bsu/bsu.sh > ${download_dir}/bsu.sh && mv ${download_dir}/bsu.sh ${middleware_home_dir}/utils/bsu/bsu.sh;chmod +x ${middleware_home_dir}/utils/bsu/bsu.sh",
-      unless    => "grep 'MEM_ARGS=\"-Xms256m -Xmx1024m -XX:-UseGCOverheadLimit\"' ${middleware_home_dir}/utils/bsu/bsu.sh",
+      onlyif    => "grep 'MEM_ARGS=\"-Xms256m -Xmx512m\"' ${middleware_home_dir}/utils/bsu/bsu.sh",
       before    => Bsu_patch["${middleware_home_dir}:${patch_id}"],
       path      => $exec_path,
       user      => $os_user,

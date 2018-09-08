@@ -29,7 +29,7 @@ define orawls::opatchupgrade(
   Boolean $remote_file              = $::orawls::weblogic::remote_file,
   Boolean $log_output               = $::orawls::weblogic::log_output,
   Optional[String] $orainstpath_dir = $::orawls::weblogic::orainstpath_dir,
-  String $java_parameters             = '',    # '-Dspace.detection=false'
+  String $java_parameters           = '',    # '-Dspace.detection=false'
 )
 {
   $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
@@ -69,13 +69,23 @@ define orawls::opatchupgrade(
     # $opatch_dir:      e.g. /u01/tmp/install/wls_opatch
     # $opatch_jar_file: e.g. /u01/tmp/install/wls_opatch/6880880/opatch_generic.jar
 
-    exec { "extract opatch upgrade ${title} ${patch_file}":
-      command   => "unzip -o ${disk1_file} -d ${opatch_dir}",
-      path      => $exec_path,
-      user      => $os_user,
-      group     => $os_group,
-      logoutput => $log_output,
-      require   => [File[$disk1_file]],
+    if $remote_file == true {
+      exec { "extract opatch upgrade ${title} ${patch_file}":
+        command   => "unzip -o ${disk1_file} -d ${opatch_dir}",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+        require   => [File[$disk1_file]],
+      }
+    } else {
+      exec { "extract opatch upgrade ${title} ${patch_file}":
+        command   => "unzip -o ${disk1_file} -d ${opatch_dir}",
+        path      => $exec_path,
+        user      => $os_user,
+        group     => $os_group,
+        logoutput => $log_output,
+      }
     }
 
     $java_statement = "${lookup('orawls::java')} ${java_parameters}"

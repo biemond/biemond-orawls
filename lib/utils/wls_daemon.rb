@@ -76,6 +76,12 @@ class WlsDaemon < EasyType::Daemon
     connect_to_wls
     execute_command "execfile('#{script}')"
     sync(timeout)
+    disconnect
+  end
+
+  def disconnect
+    Puppet.info "Disconnecting from wls on url #{@weblogicConnectUrl}"
+    execute_command "disconnect()"
   end
 
   def execute_script_simple(script)

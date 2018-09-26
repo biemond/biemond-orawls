@@ -3,4 +3,4 @@
 # PuppetLint.configuration.send("disable_140chars")
 --no-140chars-check
 --no-80chars-check
---no-variable_contains_uppercase-check
+--no-variable_is_lowercase-check

@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -97,6 +97,11 @@ module</p>
 href="https://github.com/biemond/biemond-orawls/tree/puppet4">puppet4
 branch</a></p>
 
+<p>Please check the manifests and vagrant examples because there are some
+breaking changes especially on the manifest part ( I don&#39;t do hiera
+lookups. Just use the weblogic class and I will use those parameters as
+reference for the other manifest parameters)</p>
+
 <h2 id="label-Author">Author</h2>
 
 <p>Edwin Biemond email biemond at gmail dot com</p>
@@ -163,6 +168,9 @@ href="https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa-puppet4
 Webtier 12.1.2 and 12.2.1 <a
 href="https://github.com/biemond/biemond-orawls-vagrant-ohs-puppet4">biemond-orawls-vagrant-ohs-puppet4</a></p>
 </li><li>
+<p>WebCenter Sites 12.2.1 Reference implementation, the vagrant test case <a
+href="https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-wcs-puppet4">biemond-orawls-vagrant-12.2.1-infra-wcs-puppet4</a></p>
+</li><li>
 <p>Reference OIM / OAM with WebTier, Webgate &amp; Oracle Unified Directory,
 the vagrant test case for Oracle Identity Manager &amp; Oracle Access
 Manager 11.1.2.3 example <a
@@ -179,38 +187,41 @@ href="https://github.com/biemond/biemond-orawls-vagrant-11g-forms-puppet4">biemo
 
 <h2 id="label-Orawls+WebLogic+Features">Orawls WebLogic Features</h2>
 <ul><li>
-<p><a href="#weblogic">Installs WebLogic</a>, version 10g, 11g, 12c ( 12.1.1,
-12.1.2, 12.1.3, 12.2.1, 12.2.1.1 + FMW infrastructure editions )</p>
+<p><a href="#label-Weblogic">Installs WebLogic</a>, version 10g, 11g, 12c ( 12.1.1,
+12.1.2, 12.1.3, 12.2.1, 12.2.1.X + FMW infrastructure editions )</p>
 </li><li>
-<p><a href="#bsu">Apply a BSU patch</a> on a Middleware home ( &lt; 12.1.2 )</p>
+<p><a href="#label-Bsu">Apply a BSU patch</a> on a Middleware home ( &lt; 12.1.2 )</p>
 </li><li>
-<p><a href="#opatch">Apply a OPatch</a> on a Middleware home ( &gt;= 12.1.2 )
+<p><a href="#label-Opatch">Apply a OPatch</a> on a Middleware home ( &gt;= 12.1.2 )
 or a Oracle product home</p>
 </li><li>
-<p><a href="#domain">Create a WebLogic domain</a></p>
+<p><a href="#label-Opatchupgrade">Opatch upgrade</a> on a Middleware home ( &gt;=
+12.1.2 )</p>
 </li><li>
-<p><a href="#packdomain">Pack a WebLogic domain</a></p>
+<p><a href="#label-Domain">Create a WebLogic domain</a></p>
 </li><li>
-<p><a href="#copydomain">Copy a WebLogic domain</a> to a other node with SSH,
+<p><a href="#label-Packdomain">Pack a WebLogic domain</a></p>
+</li><li>
+<p><a href="#label-Copydomain">Copy a WebLogic domain</a> to a other node with SSH,
 unpack and enroll to a nodemanager</p>
 </li><li>
-<p><a href="#jsse">JSSE</a> Java Secure Socket Extension support</p>
+<p><a href="#label-Jsse">JSSE</a> Java Secure Socket Extension support</p>
 </li><li>
-<p><a href="#default_override">Override the default file location, applicable
+<p><a href="#label-Default_override">Override the default file location, applicable
 for running as non-root user</a></p>
 </li><li>
-<p><a href="#identity">Custom Identity and Trust Store support</a></p>
+<p><a href="#label-Identity">Custom Identity and Trust Store support</a></p>
 </li><li>
-<p><a href="#urandom">Linux low on entropy or urandom fix</a></p>
+<p><a href="#label-Urandom">Linux low on entropy or urandom fix</a></p>
 </li><li>
-<p><a href="#nodemanager">Startup a nodemanager</a></p>
+<p><a href="#label-Nodemanager">Startup a nodemanager</a></p>
 </li><li>
-<p><a href="#control">start or stop AdminServer, Managed or a Cluster</a></p>
+<p><a href="#label-Control">start or stop AdminServer, Managed or a Cluster</a></p>
 </li><li>
-<p><a href="#storeuserconfig">StoreUserConfig</a> for storing WebLogic
+<p><a href="#label-Storeuserconfig">StoreUserConfig</a> for storing WebLogic
 Credentials and using in WLST</p>
 </li><li>
-<p><a href="#Dynamictargetting">Dynamic targetting</a> by using the notes
+<p><a href="#label-Dynamictargetting">Dynamic targetting</a> by using the notes
 field in WebLogic for resource targetting</p>
 </li><li>
 <p>12.2.1 Multi Tenancy features</p>
@@ -218,36 +229,36 @@ field in WebLogic for resource targetting</p>
 
 <h3 id="label-Fusion+Middleware+Features+11g+-26+12c">Fusion Middleware Features 11g &amp; 12c</h3>
 <ul><li>
-<p>installs <a href="#fmw">FMW</a> software(add-on) to a middleware home, like
+<p>installs <a href="#label-Fmw">FMW</a> software(add-on) to a middleware home, like
 OSB,SOA Suite, Oracle Identity &amp; Access Management, Oracle Unified
 Directory, WebCenter Portal + Content</p>
 </li><li>
-<p><a href="#webtier">WebTier</a> Oracle HTTP server Standalone and Collocated</p>
+<p><a href="#label-Webtier">WebTier</a> Oracle HTTP server Standalone and Collocated</p>
 </li><li>
-<p><a href="#configure-oracle-http-server">Configure Oracle HTTP Server</a></p>
+<p><a href="#label-Configure+oracle+http+server">Configure Oracle HTTP Server</a></p>
 </li><li>
-<p><a href="#fmwcluster">OSB, SOA Suite</a> with BPM and BAM Cluster
+<p><a href="#label-Fmwcluster">OSB, SOA Suite</a> with BPM and BAM Cluster
 configuration support ( convert single osb/soa/bam servers to clusters and
 migrate 11g OPSS to the database )</p>
 </li><li>
-<p><a href="#fmwclusterjrf">ADF/JRF support</a>, Assign JRF libraries to a
+<p><a href="#label-Fmwclusterjrf">ADF/JRF support</a>, Assign JRF libraries to a
 Server or Cluster target</p>
 </li><li>
-<p><a href="#oimconfig">OIM IDM</a> / OAM 11.1.2.3 configurations with Oracle
+<p><a href="#label-Oimconfig">OIM IDM</a> / OAM 11.1.2.3 configurations with Oracle
 OHS OAM WebGate, Also it has Cluster support for OIM OAM</p>
 </li><li>
-<p><a href="#instance">OUD</a> OUD Oracle Unified Directory install, WebLogic
-domain, instances creation &amp; <a href="#oud_control">OUD control</a></p>
+<p><a href="#label-Instance">OUD</a> OUD Oracle Unified Directory install, WebLogic
+domain, instances creation &amp; <a href="#label-Oud_control">OUD control</a></p>
 </li><li>
-<p><a href="#forms">Forms/Reports</a> Oracle Forms &amp; Reports 11.1.1.7,
+<p><a href="#label-Forms">Forms/Reports</a> Oracle Forms &amp; Reports 11.1.1.7,
 11.1.2 or 12.2.1</p>
 </li><li>
-<p><a href="#Webcenter">WC, WCC, WCS</a> Webcenter portal, content, sites 11g
+<p><a href="#label-Webcenter">WC, WCC, WCS</a> Webcenter portal, content, sites 11g
 or 12.2.1</p>
 </li><li>
-<p><a href="#fmwlogdir">Change FMW log</a> location of a managed server</p>
+<p><a href="#label-Fmwlogdir">Change FMW log</a> location of a managed server</p>
 </li><li>
-<p><a href="#resourceadapter">Resource Adapter</a> plan and entries for AQ,
+<p><a href="#label-Resourceadapter">Resource Adapter</a> plan and entries for AQ,
 DB, MQ, FTP, File and JMS</p>
 </li></ul>
 
@@ -258,124 +269,124 @@ WebLogic 12.2.1 we can also use the rest management api&#39;s, it&#39;s
 already working in this module but we will slowly support this for all wls
 types</p>
 <ul><li>
-<p><a href="#wls_setting">wls_setting</a>, set the default wls parameters for
+<p><a href="#label-Wls_setting">wls_setting</a>, set the default wls parameters for
 the other types and also used by puppet resource</p>
 </li><li>
-<p><a href="#wls_adminserver">wls_adminserver</a> control the adminserver or
+<p><a href="#label-Wls_adminserver">wls_adminserver</a> control the adminserver or
 subscribe to changes</p>
 </li><li>
-<p><a href="#wls_managedserver">wls_managedserver</a> control the managed
+<p><a href="#label-Wls_managedserver">wls_managedserver</a> control the managed
 server,cluster or subscribe to changes</p>
 </li><li>
-<p><a href="#wls_ohsserver">wls_ohsserver</a> control the ohs standalone
+<p><a href="#label-Wls_ohsserver">wls_ohsserver</a> control the ohs standalone
 server or subscribe to changes</p>
 </li><li>
-<p><a href="#wls_domain">wls_domain</a></p>
+<p><a href="#label-Wls_domain">wls_domain</a></p>
 </li><li>
-<p><a href="#wls_deployment">wls_deployment</a></p>
+<p><a href="#label-Wls_deployment">wls_deployment</a></p>
 </li><li>
-<p><a href="#wls_domain">wls_domain</a></p>
+<p><a href="#label-Wls_domain">wls_domain</a></p>
 </li><li>
-<p><a href="#wls_group">wls_group</a></p>
+<p><a href="#label-Wls_group">wls_group</a></p>
 </li><li>
-<p><a href="#wls_role">wls_role</a></p>
+<p><a href="#label-Wls_role">wls_role</a></p>
 </li><li>
-<p><a href="#wls_user">wls_user</a></p>
+<p><a href="#label-Wls_user">wls_user</a></p>
 </li><li>
-<p><a href="#wls_authentication_provider">wls_authentication_provider</a></p>
+<p><a href="#label-Wls_authentication_provider">wls_authentication_provider</a></p>
 </li><li>
-<p><a href="#wls_identity_asserter">wls_identity_asserter</a></p>
+<p><a href="#label-Wls_identity_asserter">wls_identity_asserter</a></p>
 </li><li>
-<p><a href="#wls_machine">wls_machine</a></p>
+<p><a href="#label-Wls_machine">wls_machine</a></p>
 </li><li>
-<p><a href="#wls_server">wls_server</a></p>
+<p><a href="#label-Wls_server">wls_server</a></p>
 </li><li>
-<p><a href="#wls_server_channel">wls_server_channel</a></p>
+<p><a href="#label-Wls_server_channel">wls_server_channel</a></p>
 </li><li>
-<p><a href="#wls_server_tlog">wls_server_tlog</a></p>
+<p><a href="#label-Wls_server_tlog">wls_server_tlog</a></p>
 </li><li>
-<p><a href="#wls_cluster">wls_cluster</a></p>
+<p><a href="#label-Wls_cluster">wls_cluster</a></p>
 </li><li>
-<p><a href="#wls_migratable_target">wls_migratable_target</a></p>
+<p><a href="#label-Wls_migratable_target">wls_migratable_target</a></p>
 </li><li>
-<p><a href="#wls_singleton_service">wls_singleton_service</a></p>
+<p><a href="#label-Wls_singleton_service">wls_singleton_service</a></p>
 </li><li>
-<p><a href="#wls_virtual_host">wls_virtual_host</a></p>
+<p><a href="#label-Wls_virtual_host">wls_virtual_host</a></p>
 </li><li>
-<p><a href="#wls_workmanager_constraint">wls_workmanager_constraint</a></p>
+<p><a href="#label-Wls_workmanager_constraint">wls_workmanager_constraint</a></p>
 </li><li>
-<p><a href="#wls_workmanager">wls_workmanager</a></p>
+<p><a href="#label-Wls_workmanager">wls_workmanager</a></p>
 </li><li>
-<p><a href="#wls_datasource">wls_datasource</a></p>
+<p><a href="#label-Wls_datasource">wls_datasource</a></p>
 </li><li>
-<p><a href="#wls_multi_datasource">wls_multi_datasource</a></p>
+<p><a href="#label-Wls_multi_datasource">wls_multi_datasource</a></p>
 </li><li>
-<p><a href="#wls_foreign_jndi_provider">wls_foreign_jndi_provider </a></p>
+<p><a href="#label-Wls_foreign_jndi_provider">wls_foreign_jndi_provider </a></p>
 </li><li>
 <p>[wls_foreign_jndi_provider _link](#wls_foreign_jndi_provider _link)</p>
 </li><li>
-<p><a href="#wls_file_persistence_store">wls_file_persistence_store</a></p>
+<p><a href="#label-Wls_file_persistence_store">wls_file_persistence_store</a></p>
 </li><li>
-<p><a href="#wls_jdbc_persistence_store">wls_jdbc_persistence_store</a></p>
+<p><a href="#label-Wls_jdbc_persistence_store">wls_jdbc_persistence_store</a></p>
 </li><li>
-<p><a href="#wls_jmsserver">wls_jmsserver</a></p>
+<p><a href="#label-Wls_jmsserver">wls_jmsserver</a></p>
 </li><li>
-<p><a href="#wls_safagent">wls_safagent</a></p>
+<p><a href="#label-Wls_safagent">wls_safagent</a></p>
 </li><li>
-<p><a href="#wls_jms_module">wls_jms_module</a></p>
+<p><a href="#label-Wls_jms_module">wls_jms_module</a></p>
 </li><li>
-<p><a href="#wls_jms_quota">wls_jms_quota</a></p>
+<p><a href="#label-Wls_jms_quota">wls_jms_quota</a></p>
 </li><li>
-<p><a href="#wls_jms_sort_destination_key">wls_jms_sort_destination_key</a></p>
+<p><a href="#label-Wls_jms_sort_destination_key">wls_jms_sort_destination_key</a></p>
 </li><li>
-<p><a href="#wls_jms_subdeployment">wls_jms_subdeployment</a></p>
+<p><a href="#label-Wls_jms_subdeployment">wls_jms_subdeployment</a></p>
 </li><li>
-<p><a href="#wls_jms_queue">wls_jms_queue</a></p>
+<p><a href="#label-Wls_jms_queue">wls_jms_queue</a></p>
 </li><li>
-<p><a href="#wls_jms_topic">wls_jms_topic</a></p>
+<p><a href="#label-Wls_jms_topic">wls_jms_topic</a></p>
 </li><li>
-<p><a href="#wls_jms_security_policy">wls_jms_security_policy</a></p>
+<p><a href="#label-Wls_jms_security_policy">wls_jms_security_policy</a></p>
 </li><li>
-<p><a href="#wls_jms_connection_factory">wls_jms_connection_factory</a></p>
+<p><a href="#label-Wls_jms_connection_factory">wls_jms_connection_factory</a></p>
 </li><li>
-<p><a href="#wls_jms_template">wls_jms_template</a></p>
+<p><a href="#label-Wls_jms_template">wls_jms_template</a></p>
 </li><li>
-<p><a href="#wls_jms_bridge_destination">wls_jms_bridge_destination</a></p>
+<p><a href="#label-Wls_jms_bridge_destination">wls_jms_bridge_destination</a></p>
 </li><li>
-<p><a href="#wls_messaging_bridge">wls_messaging_bridge</a></p>
+<p><a href="#label-Wls_messaging_bridge">wls_messaging_bridge</a></p>
 </li><li>
-<p><a href="#wls_saf_remote_context">wls_saf_remote_context</a></p>
+<p><a href="#label-Wls_saf_remote_context">wls_saf_remote_context</a></p>
 </li><li>
-<p><a href="#wls_saf_error_handler">wls_saf_error_handler</a></p>
+<p><a href="#label-Wls_saf_error_handler">wls_saf_error_handler</a></p>
 </li><li>
-<p><a href="#wls_saf_imported_destination">wls_saf_imported_destination</a></p>
+<p><a href="#label-Wls_saf_imported_destination">wls_saf_imported_destination</a></p>
 </li><li>
 <p><a
-href="#wls_saf_imported_destination_object">wls_saf_imported_destination_object</a></p>
+href="#label-Wls_saf_imported_destination_object">wls_saf_imported_destination_object</a></p>
 </li><li>
-<p><a href="#wls_foreign_server">wls_foreign_server</a></p>
+<p><a href="#label-Wls_foreign_server">wls_foreign_server</a></p>
 </li><li>
-<p><a href="#wls_foreign_server_object">wls_foreign_server_object</a></p>
+<p><a href="#label-Wls_foreign_server_object">wls_foreign_server_object</a></p>
 </li><li>
-<p><a href="#wls_mail_session">wls_mail_session</a></p>
+<p><a href="#label-Wls_mail_session">wls_mail_session</a></p>
 </li></ul>
 
 <p>12.1.3 Coherence &amp; Dynamic clusters - <a
-href="#wls_coherence_cluster">wls_coherence_cluster</a> - <a
-href="#wls_coherence_server">wls_coherence_server</a> - <a
-href="#wls_server_template">wls_server_template</a> - <a
-href="#wls_dynamic_cluster">wls_dynamic_cluster</a></p>
+href="#label-Wls_coherence_cluster">wls_coherence_cluster</a> - <a
+href="#label-Wls_coherence_server">wls_coherence_server</a> - <a
+href="#label-Wls_server_template">wls_server_template</a> - <a
+href="#label-Wls_dynamic_cluster">wls_dynamic_cluster</a></p>
 
 <p>12.2.1.1 Multitenancy MT - <a
-href="#wls_virtual_target">wls_virtual_target</a> - <a
-href="#wls_resource_group">wls_resource_group</a> - <a
-href="#wls_resource_group_template">wls_resource_group_template</a> - <a
-href="#wls_resource_group_template_deployment">wls_resource_group_template_deployment</a>
-- <a href="#wls_domain_partition">wls_domain_partition</a> - <a
-href="#wls_domain_partition_control">wls_domain_partition_control</a> - <a
-href="#wls_domain_partition_resource_group">wls_domain_partition_resource_group</a>
+href="#label-Wls_virtual_target">wls_virtual_target</a> - <a
+href="#label-Wls_resource_group">wls_resource_group</a> - <a
+href="#label-Wls_resource_group_template">wls_resource_group_template</a> - <a
+href="#label-Wls_resource_group_template_deployment">wls_resource_group_template_deployment</a>
+- <a href="#label-Wls_domain_partition">wls_domain_partition</a> - <a
+href="#label-Wls_domain_partition_control">wls_domain_partition_control</a> - <a
+href="#label-Wls_domain_partition_resource_group">wls_domain_partition_resource_group</a>
 - <a
-href="#wls_domain_partition_resource_group_deployment">wls_domain_partition_resource_group_deployment</a></p>
+href="#label-Wls_domain_partition_resource_group_deployment">wls_domain_partition_resource_group_deployment</a></p>
 
 <h2 id="label-Domain+creation+options+-28Dev+or+Prod+mode-29">Domain creation options (Dev or Prod mode)</h2>
 
@@ -404,7 +415,8 @@ BPM + JRF + EM + OWSM - domain &#39;wc&#39; -&gt; WC (webcenter) + JRF + EM
 Directory)</p>
 
 <p>12.2.1.1 - domain &#39;adf_restricted&#39; -&gt; only for 12.2.1 (no
-RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS</p>
+RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS - domain
+&#39;forms&#39;</p>
 
 <h2 id="label-Puppet+master+with+orawls+module+key+points">Puppet master with orawls module key points</h2>
 
@@ -770,6 +782,17 @@ weblogic_instances:
     wls_domains_dir:              *wls_domains_dir
     wls_apps_dir:                 *wls_apps_dir
     require:                      Jdk7::Install7[jdk-8u72-linux-x64]</code></pre>
+
+<h3 id="label-opatchupgrade">opatchupgrade</h3>
+
+<p><strong>orawls::opatchupgrade</strong> upgrade OPatch on a Middleware home</p>
+
+<pre class="code ruby"><code class="ruby">opatchupgrade_instances:
+  &#39;28186730&#39;:
+    oracle_product_home_dir:  *wls_middleware_home_dir
+    patch_id:                 6880880
+    patch_file:               &quot;p28186730_139400_Generic.zip&quot;
+    opversion:                13.9.4.0.0</code></pre>
 
 <h3 id="label-opatch">opatch</h3>
 
@@ -1795,9 +1818,12 @@ it has one)</p>
 
 <p>archive_path has /tmp/orawls-archive as default folder</p>
 
+<p>tmp_path has /tmp as default folder</p>
+
 <pre class="code ruby"><code class="ruby">wls_setting { &#39;default&#39;:
   debug_module              =&gt; &#39;true&#39;,
   archive_path              =&gt; &#39;/var/tmp/install/default_domain&#39;,
+  tmp_path                  =&gt; &#39;/var/tmp/install&#39;,
   connect_url               =&gt; &#39;t3s://10.10.10.10:7002&#39;,
   custom_trust              =&gt; &#39;true&#39;,
   trust_keystore_file       =&gt; &#39;/vagrant/truststore.jks&#39;,
@@ -1856,6 +1882,7 @@ wls_setting_instances:
     require:                   Orawls::Domain[Wls1213]
     debug_module:              true
     archive_path:              &#39;/var/tmp/install/default_domain&#39;
+    tmp_path:                  &#39;/var/tmp/install&#39;
   &#39;plain&#39;:
     user:                      *wls_os_user
     weblogic_home_dir:         *wls_weblogic_home_dir
@@ -4851,9 +4878,7 @@ wls_domain_partition_resource_group_deployment { &#39;CustomerB_Partition:Partit
 </div></div>
 
       <div id="footer">
-  Generated on Sun Mar  5 20:34:31 2017 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.3.1).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

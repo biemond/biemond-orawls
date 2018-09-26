@@ -6,7 +6,7 @@
 <title>
   Defined Type: orawls::weblogic_type
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -68,6 +68,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -78,6 +79,8 @@
 
   </div>
 </div>
+
+
 <div class="tags">
   
   <div class="examples">
@@ -92,6 +95,7 @@
   version                   =&gt; 12212,
   filename                  =&gt; &#39;fmw_12.2.1.2.0_wls.jar&#39;,
   jdk_home_dir              =&gt; &#39;/usr/java/latest&#39;,
+  ora_inventory_dir         =&gt; &#39;/opt/oracle&#39;,
   oracle_base_home_dir      =&gt; &quot;/opt/oracle&quot;,
   middleware_home_dir       =&gt; &quot;/opt/oracle/middleware12c&quot;,
   weblogic_home_dir         =&gt; &quot;/opt/oracle/middleware12c/wlserver&quot;,
@@ -137,6 +141,27 @@
         &mdash;
         <div class='inline'>
 <p>the weblogic jar file like wls1036_generic.jar or fmw_12.2.1.2.0_wls.jar</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ora_inventory_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>full path to the Oracle Inventory location directory. If not specfied, it
+defaults to oracle_base_home_dir (for example /opt/oracle or
+/u01/app/oracle). If you use the biemond-oradb module, you must set it to
+oracle_base_home_dir/.. (for example /opt or /u01/app)</p>
 </div>
       
     </li>
@@ -478,8 +503,6 @@ Linux or Solaris</p>
         <pre class="lines">
 
 
-41
-42
 43
 44
 45
@@ -689,14 +712,21 @@ Linux or Solaris</p>
 249
 250
 251
-252</pre>
+252
+253
+254
+255
+256
+257
+258</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/weblogic_type.pp', line 41</span>
+        <pre class="code"><span class="info file"># File 'manifests/weblogic_type.pp', line 43</span>
 
 define orawls::weblogic_type (
   Integer $version                    = lookup(&#39;orawls::default_version&#39;),
   String $filename                    = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
+  Optional[String] $ora_inventory_dir = undef, # /opt/oracle
   String $oracle_base_home_dir        = undef, # /opt/oracle
   String $middleware_home_dir         = undef, # /opt/oracle/middleware11gR1
   Optional[String] $weblogic_home_dir = undef, # /opt/oracle/middleware11gR1/wlserver
@@ -762,13 +792,17 @@ define orawls::weblogic_type (
   }
 
   $exec_path         = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
-  $ora_inventory_dir = &quot;${oracle_base_home_dir}/oraInventory&quot;
+
+  if $ora_inventory_dir == undef {
+    $ora_inventory = &quot;${oracle_base_home_dir}/oraInventory&quot;
+  } else {
+    $ora_inventory = &quot;${ora_inventory_dir}/oraInventory&quot;
+  }
 
   Exec {
     logoutput =&gt; $log_output,
   }
 
-  $oraInstPath = lookup(&#39;orawls::orainst_dir&#39;)
   $java_statement = &quot;${lookup(&#39;orawls::java&#39;)} ${java_parameters}&quot;
   $file_ext = regsubst($filename, &#39;.*(\.jar)$&#39;, &#39;\1&#39;)
 
@@ -803,14 +837,15 @@ define orawls::weblogic_type (
   }
 
   orawls::utils::orainst { &quot;weblogic orainst ${title}&quot;:
-    ora_inventory_dir =&gt; $ora_inventory_dir,
+    ora_inventory_dir =&gt; $ora_inventory,
     os_group          =&gt; $os_group,
+    orainstpath_dir   =&gt; $orainstpath_dir
   }
 
   wls_directory_structure{&quot;weblogic structure ${title}&quot;:
     ensure            =&gt; present,
     oracle_base_dir   =&gt; $oracle_base_home_dir,
-    ora_inventory_dir =&gt; $ora_inventory_dir,
+    ora_inventory_dir =&gt; $ora_inventory,
     download_dir      =&gt; $download_dir,
     wls_domains_dir   =&gt; $domains_dir,
     wls_apps_dir      =&gt; $apps_dir,
@@ -867,7 +902,7 @@ define orawls::weblogic_type (
 
     # notify { &quot;install weblogic ${version}: ${exec_path}&quot;: }
     exec { &quot;install weblogic ${title}&quot;:
-      command     =&gt; &quot;${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs&quot;,
+      command     =&gt; &quot;${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs&quot;,
       environment =&gt; [&#39;JAVA_VENDOR=Sun&#39;, &quot;JAVA_HOME=${jdk_home_dir}&quot;],
       timeout     =&gt; 0,
       creates     =&gt; $created_dir,
@@ -879,16 +914,14 @@ define orawls::weblogic_type (
                       File[&quot;${download_dir}/weblogic_silent_install_${title}.xml&quot;]],
     }
     # OPatch native lib fix for 64 solaris
-    case $facts[&#39;kernel&#39;] {
-      &#39;SunOS&#39;: {
-        exec { &quot;add -d64 oraparam.ini oracle_common ${title}&quot;:
-          command =&gt; &quot;sed -e&#39;s/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\&quot;-d64\&quot;/g&#39; ${middleware_home_dir}/oui/oraparam.ini &gt; ${temp_dir}/wls.tmp &amp;&amp; mv ${temp_dir}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini&quot;,
-          unless  =&gt; &quot;grep &#39;JRE_MEMORY_OPTIONS=\&quot;-d64\&quot;&#39; ${middleware_home_dir}/oui/oraparam.ini&quot;,
-          require =&gt; Exec[&quot;install weblogic ${title}&quot;],
-          path    =&gt; $exec_path,
-          user    =&gt; $os_user,
-          group   =&gt; $os_group,
-        }
+    if ( $facts[&#39;kernel&#39;] == &#39;SunOS&#39; ) {
+      exec { &quot;add -d64 oraparam.ini oracle_common ${title}&quot;:
+        command =&gt; &quot;sed -e&#39;s/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\&quot;-d64\&quot;/g&#39; ${middleware_home_dir}/oui/oraparam.ini &gt; ${temp_dir}/wls.tmp &amp;&amp; mv ${temp_dir}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini&quot;,
+        unless  =&gt; &quot;grep &#39;JRE_MEMORY_OPTIONS=\&quot;-d64\&quot;&#39; ${middleware_home_dir}/oui/oraparam.ini&quot;,
+        require =&gt; Exec[&quot;install weblogic ${title}&quot;],
+        path    =&gt; $exec_path,
+        user    =&gt; $os_user,
+        group   =&gt; $os_group,
       }
     }
 
@@ -913,9 +946,7 @@ define orawls::weblogic_type (
 </div>
 
       <div id="footer">
-  Generated on Sun Mar  5 20:34:33 2017 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.3.1).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

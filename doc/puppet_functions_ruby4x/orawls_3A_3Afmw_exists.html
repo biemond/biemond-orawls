@@ -6,7 +6,7 @@
 <title>
   Puppet Function: orawls::fmw_exists (Ruby 4.x API)
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -72,6 +72,7 @@
     <dd>Ruby 4.x API</dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="method_details first">
   
@@ -91,165 +92,14 @@ middleware home</p>
 
     </div>
   </div>
-  <div class="tags">
   
-  <div class="examples">
-    <p class="tag_title">Examples:</p>
-    
-      
-        <p class="example_title"><div class='inline'>
-<p>Finding an oracle product</p>
-</div></p>
-      
-      <pre class="example code"><code>orawls::fmw_exists(&#39;soa&#39;) =&gt; true</code></pre>
-    
-  </div>
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>oracle_home</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the oracle home directory name</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Return if it is found or not</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-</div><div class="method_details_list">
-  <table class="source_code">
-    <tr>
-      <td>
-        <pre class="lines">
-
-
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43</pre>
-      </td>
-      <td>
-        <pre class="code"><span class="info file"># File 'lib/puppet/functions/orawls/fmw_exists.rb', line 3</span>
-
-<span class='const'>Puppet</span><span class='op'>::</span><span class='const'>Functions</span><span class='period'>.</span><span class='id identifier rubyid_create_function'>create_function</span><span class='lparen'>(</span><span class='symbol'>:orawls::fmw_exists</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
-
-  <span class='comment'># Check if the oracle home directory is already installed inside the middleware home
-</span>  <span class='comment'># @param oracle_home the oracle home directory name
-</span>  <span class='comment'># @return [Boolean] Return if it is found or not
-</span>  <span class='comment'># @example Finding an oracle product
-</span>  <span class='comment'>#   orawls::fmw_exists(&#39;soa&#39;) =&gt; true
-</span>  <span class='id identifier rubyid_dispatch'>dispatch</span> <span class='symbol'>:exists</span> <span class='kw'>do</span>
-    <span class='id identifier rubyid_param'>param</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>String</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='symbol'>:oracle_home</span>
-    <span class='comment'># return_type &#39;Boolean&#39;
-</span>  <span class='kw'>end</span>
-
-  <span class='kw'>def</span> <span class='id identifier rubyid_exists'>exists</span><span class='lparen'>(</span><span class='id identifier rubyid_oracle_home'>oracle_home</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_scope'>scope</span> <span class='op'>=</span> <span class='id identifier rubyid_closure_scope'>closure_scope</span>
-    <span class='id identifier rubyid_ora'>ora</span> <span class='op'>=</span> <span class='id identifier rubyid_scope'>scope</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>facts</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ora_inst_products</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_oracle_home'>oracle_home</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ora'>ora</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_ora'>ora</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>NotFound</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>or</span> <span class='id identifier rubyid_ora'>ora</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-      <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return false because ora_inst_products fact is not found</span><span class='tstring_end'>&#39;</span></span>
-      <span class='kw'>return</span> <span class='kw'>false</span>
-    <span class='kw'>else</span>
-      <span class='id identifier rubyid_software'>software</span> <span class='op'>=</span> <span class='id identifier rubyid_oracle_home'>oracle_home</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span>
-      <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>compare </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ora'>ora</span><span class='embexpr_end'>}</span><span class='tstring_content'> with </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_software'>software</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-
-      <span class='kw'>if</span> <span class='id identifier rubyid_ora'>ora</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_software'>software</span>
-        <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return true because oracle_home is found</span><span class='tstring_end'>&#39;</span></span>
-        <span class='kw'>return</span> <span class='kw'>true</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-    <span class='id identifier rubyid_log'>log</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>return false because  oracle_home is not found</span><span class='tstring_end'>&#39;</span></span>
-    <span class='kw'>return</span> <span class='kw'>false</span>
-  <span class='kw'>end</span>
-
-  <span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='id identifier rubyid_msg'>msg</span><span class='rparen'>)</span>
-    <span class='const'>Puppet</span><span class='op'>::</span><span class='const'>Util</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span>
-      <span class='symbol'>:level</span>   <span class='op'>=&gt;</span> <span class='symbol'>:info</span><span class='comma'>,</span>
-      <span class='symbol'>:message</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_msg'>msg</span><span class='comma'>,</span>
-      <span class='symbol'>:source</span>  <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>orawls::fmw_exists</span><span class='tstring_end'>&#39;</span></span>
-    <span class='rparen'>)</span>
-  <span class='kw'>end</span>
-
-<span class='kw'>end</span></pre>
-      </td>
-    </tr>
-  </table>
 </div>
 
-</div>
+
 </div>
 
       <div id="footer">
-  Generated on Sun Mar  5 20:34:33 2017 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.3.1).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

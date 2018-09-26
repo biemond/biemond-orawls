@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "source": "https://github.com/biemond/biemond-orawls",
   "project_page": "https://github.com/biemond/biemond-orawls",
+  "issues_url": "https://github.com/biemond/biemond-orawls/issues",
   "dependencies": [
     {
       "name": "hajee/easy_type",

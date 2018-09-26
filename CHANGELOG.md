@@ -1,5 +1,8 @@
 # History
 
+## 2.0.18
+- pdk compliant
+
 ## 2.0.17
 - opatch upgrade which can be requirement by latest patch bundle
 - raise exception when opatch fails

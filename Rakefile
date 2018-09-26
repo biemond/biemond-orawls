@@ -27,12 +27,12 @@ def changelog_future_release
   returnVal
 end
 
-require 'metadata-json-lint'
-task :metadata_lint do
-  MetadataJsonLint.parse('metadata.json') do |options|
-      options.strict-dependencies = false
-  end
-end
+# require 'metadata-json-lint'
+# task :metadata_lint do
+#   MetadataJsonLint.parse('metadata.json') do |options|
+#       options.strict-dependencies = false
+#   end
+# end
 
 
 # PuppetLint.configuration.send('disable_relative')

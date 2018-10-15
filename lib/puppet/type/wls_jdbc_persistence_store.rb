@@ -46,6 +46,9 @@ module Puppet
     property :target
     property :targettype
 
+    property :distribution_policy
+    property :migration_policy
+
     add_title_attributes(:jdbc_persistence_name) do
       /^((.*?\/)?(.*)?)$/
     end

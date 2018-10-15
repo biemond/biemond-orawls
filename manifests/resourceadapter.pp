@@ -96,7 +96,7 @@ define orawls::resourceadapter(
     $credentials    =   " -userconfigfile ${userConfigFile} -userkeyfile ${userKeyFile}"
     $useStoreConfig = true
   } elsif $weblogic_user != undef {
-    $credentials =   " -user ${weblogic_user} -password ${weblogic_password}"
+    $credentials =   " -user ${weblogic_user} -password \'${weblogic_password}\'"
     $useStoreConfig = false
   } else {
     fail('userConfigFile or wlsUser parameter is empty')
@@ -217,7 +217,9 @@ define orawls::resourceadapter(
           require     => File["${adapter_plan_dir}/${adapter_plan}"],
           before      => Exec["exec create resource adapter entry ${title}"],
         }
-
+      }
+      default: {
+        fail('unsupported OS')
       }
     }
   }
@@ -277,7 +279,7 @@ define orawls::resourceadapter(
       'Linux','SunOS': {
         # deploy the plan and update the adapter
         exec { "exec create resource adapter entry ${title}":
-          command     => "${javaCommandPlan} ${download_dir}/${title}createResourceAdapterEntry.py ${weblogic_password}",
+          command     => "${javaCommandPlan} ${download_dir}/${title}createResourceAdapterEntry.py \'${weblogic_password}\'",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                           "JAVA_HOME=${jdk_home_dir}"],
           path        => $execPath,
@@ -289,7 +291,7 @@ define orawls::resourceadapter(
 
         # deploy the plan and update the adapter
         exec { "exec redeploy adapter plan ${title}":
-          command     => "${javaCommandPlan} ${download_dir}/${title}redeployResourceAdapter.py ${weblogic_password}",
+          command     => "${javaCommandPlan} ${download_dir}/${title}redeployResourceAdapter.py \'${weblogic_password}\'",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                           "JAVA_HOME=${jdk_home_dir}"],
           path        => $execPath,
@@ -298,7 +300,9 @@ define orawls::resourceadapter(
           logoutput   => $log_output,
           require     => [Exec["exec create resource adapter entry ${title}"],File["${adapter_plan_dir}/${adapter_plan}"],],
         }
-
+      }
+      default: {
+        fail('unsupported OS')
       }
     }
   }

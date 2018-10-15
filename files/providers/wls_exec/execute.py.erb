@@ -2,7 +2,7 @@
 real_domain='<%= domain %>'
 
 try:
-    puppet = open("/tmp/wlstScript.out", "w")
+    puppet = open(tmp_script, "w")
     print >>puppet, "output" # This is the header for the conversion
 
 <%= statement %>

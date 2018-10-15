@@ -1,6 +1,6 @@
 
 
-f = open_file("name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain")
+f = open_file("name;versionidentifier;deploymenttype;stagingmode;target;targettype;domain", tmp_script)
 
 domainConfig()
 
@@ -10,10 +10,10 @@ myapps = cmo.getAppDeployments()
 for appName in myapps:
     cd('/AppDeployments/' + appName.getName())
 
-    app               = get('ApplicationName')
-    deploymenttype    = get('Type')
-    versionidentifier = get('VersionIdentifier')
-    stagingmode       = get('StagingMode')
+    app               = get_attribute_value('ApplicationName')
+    deploymenttype    = get_attribute_value('Type')
+    versionidentifier = get_attribute_value('VersionIdentifier')
+    stagingmode       = get_attribute_value('StagingMode')
 
     target, targetType = retrieve_target_list('/AppDeployments/' + appName.getName())
 
@@ -25,10 +25,10 @@ mylibs = cmo.getLibraries()
 for libName in mylibs:
     cd('/Libraries/' + libName.getName())
 
-    lib               = get('ApplicationName')
-    deploymenttype    = get('Type')
-    versionidentifier = get('VersionIdentifier')
-    stagingmode       = get('StagingMode')
+    lib               = get_attribute_value('ApplicationName')
+    deploymenttype    = get_attribute_value('Type')
+    versionidentifier = get_attribute_value('VersionIdentifier')
+    stagingmode       = get_attribute_value('StagingMode')
 
     target, targetType = retrieve_target_list('/Libraries/' + libName.getName())
 

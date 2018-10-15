@@ -219,7 +219,7 @@ define orawls::copydomain (
     }
 
     exec { "unpack ${domain_name}":
-      command     => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=${weblogic_password}",
+      command     => "${bin_dir} ${unPackCommand} -user_name=${weblogic_user} -password=\'${weblogic_password}\'",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
       path        => $exec_path,
       user        => $os_user,
@@ -246,7 +246,8 @@ define orawls::copydomain (
                       'domains_dir'         => $domains_dir,
                       'domain_name'         => $domain_name,
                       'nodeMgrHome'         => $nodeMgrHome,
-                      'use_t3s'             => $use_t3s }),
+                      'use_t3s'             => $use_t3s,
+                      'weblogic_user'       => $weblogic_user }),
       replace => true,
       mode    => lookup('orawls::permissions'),
       owner   => $os_user,
@@ -272,7 +273,7 @@ define orawls::copydomain (
     }
 
     exec { "execwlst ${domain_name} ${title}":
-      command     => "${wlst_dir} ${download_dir}/enroll_domain_${domain_name}.py ${weblogic_password}",
+      command     => "${wlst_dir} ${download_dir}/enroll_domain_${domain_name}.py \'${weblogic_password}\'",
       environment => ["JAVA_HOME=${jdk_home_dir}", "CONFIG_JVM_ARGS=${config}"],
       path        => $exec_path,
       user        => $os_user,

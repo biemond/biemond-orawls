@@ -1,23 +1,29 @@
-language: ruby
+---
 sudo: false
-cache:
-  directories:
-  - vendor/bundle
-rvm:
-  - 2.2.5
-  - 2.3.1
-bundler_args: --without development
+dist: trusty
+language: ruby
+cache: bundler
 before_install:
-  -  gem update --system 2.1.11
+  - bundle -v
+  - rm -f Gemfile.lock
+  - gem update --system
+  - gem --version
+  - bundle -v
 script:
-  - bundle exec rake syntax
-  - bundle exec rake lint
-  - bundle exec rake ci:setup:rspec spec
-notifications:
-  email:
-    - biemond@gmail.com
+  - 'bundle exec rake $CHECK'
+bundler_args: --without system_tests
+rvm:
+  - 2.4.4
 env:
-  - PUPPET_VERSION=4.5.3
-  - PUPPET_VERSION=4.6.2
-  - PUPPET_VERSION=4.7.1
-  - PUPPET_VERSION=4.8.2
+  global:
+    - BEAKER_PUPPET_COLLECTION=puppet5 PUPPET_GEM_VERSION="~> 5.0"
+matrix:
+  fast_finish: true
+  include:
+    -
+      env: CHECK="syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file"
+    -
+      env: CHECK=parallel_spec
+    -
+      env: PUPPET_GEM_VERSION="~> 4.0" CHECK=parallel_spec
+      rvm: 2.1.9

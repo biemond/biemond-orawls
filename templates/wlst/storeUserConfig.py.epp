@@ -1,6 +1,7 @@
 <%- |  String $weblogic_user = 'weblogic',
        String $adminserver_address = 'localhost',
        Integer $adminserver_port = 7001,
+       Boolean $adminserver_secure_listener = false,
        String $domain_name,
        String $os_user,       
        String $user_config_dir | -%>
@@ -8,11 +9,16 @@ wlsUser       = '<%= $weblogic_user %>'
 password      = sys.argv[1] 
 machine       = '<%= $adminserver_address %>'
 portNumber    = '<%= $adminserver_port %>'
+isSsl         = '<%= $adminserver_secure_listener %>'
 domain        = '<%= $domain_name %>'
 user          = '<%= $os_user %>'
 userConfigDir = '<%= $user_config_dir %>'
 
 prefix        = userConfigDir+'/'+user+'-'+domain
 
-connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+if isSsl == "true":
+   connect(wlsUser,password,'t3s://'+machine+':'+portNumber)
+else:
+   connect(wlsUser,password,'t3://'+machine+':'+portNumber)
+
 storeUserConfig(prefix+'-WebLogicConfig.properties',prefix+'-WebLogicKey.properties')

@@ -1,16 +1,16 @@
 
 provider_list = ls('/ForeignJNDIProviders',returnMap='true')
 
-f = open_file("name;target;targettype;initial_context_factory;provider_properties;provider_url;user;links;local_jndi_names;remote_jndi_names")
+f = open_file("name;target;targettype;initial_context_factory;provider_properties;provider_url;user;links;local_jndi_names;remote_jndi_names", tmp_script)
 
 for provider in provider_list:
     print '___'+provider+'___'
     cd('/ForeignJNDIProviders/'+provider)
 
-    InitialContextFactory = cmo.getInitialContextFactory()
-    Properties            = cmo.getProperties()
-    ProviderURL           = cmo.getProviderURL()
-    User                  = cmo.getUser()
+    InitialContextFactory = get_attribute_value('InitialContextFactory')
+    Properties            = get_attribute_value('Properties')
+    ProviderURL           = get_attribute_value('ProviderURL')
+    User                  = get_attribute_value('User')
 
     links_folder      = ls('/ForeignJNDIProviders/'+provider+'/ForeignJNDILinks',returnMap='true')
     links             = []
@@ -25,14 +25,10 @@ for provider in provider_list:
         # When it is None, we need to set it to an empt string. Else we will confuse
         # the order of the link property.
         #
-        local_jndi_name = cmo.getLocalJNDIName()
-        if local_jndi_name == None:
-            local_jndi_name = ''
+        local_jndi_name = get_attribute_value('LocalJNDIName')
         local_jndi_names.append(local_jndi_name)
 
-        remote_jndi_name = cmo.getRemoteJNDIName()
-        if remote_jndi_name == None:
-            remote_jndi_name = ''
+        remote_jndi_name = get_attribute_value('RemoteJNDIName')
         remote_jndi_names.append(remote_jndi_name)
 
     target, targetType = retrieve_target_list('/ForeignJNDIProviders/'+provider)

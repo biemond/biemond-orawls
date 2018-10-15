@@ -123,7 +123,7 @@ define orawls::nodemanager (
       } else {
         $checkCommand = '/bin/ps -eo pid,cmd | grep -v grep | /bin/grep \'weblogic.NodeManager\''
       }
-      $suCommand         = "su -l ${os_user}"
+      $suCommand         = "su -s /bin/bash -l ${os_user}"
       $netstat_statement = "/bin/netstat -lnt | /bin/grep ':${nodemanager_port}'"
     }
     'SunOS': {
@@ -174,6 +174,8 @@ define orawls::nodemanager (
     $nodemanager_property_version = '12.2.1.1.0'
   } elsif $version == 12212 {
     $nodemanager_property_version = '12.2.1.2.0'
+  } elsif $version == 12213 {
+    $nodemanager_property_version = '12.2.1.3.0'
   }
 
   $property_defaults = {
@@ -271,7 +273,7 @@ define orawls::nodemanager (
     $env = "JAVA_OPTIONS=-Dweblogic.ssl.JSSEEnabled=false -Dweblogic.security.SSL.enableJSSE=false ${trust_env} ${extra_arguments}"
   }
 
-  $startCommand      = "nohup ${startHome}/startNodeManager.sh &"
+  $startCommand      = "nohup ${startHome}/startNodeManager.sh  > ${nodeMgrHome}/nodemanager_nohup.log 2>&1 &"
   $restartCommand    = "kill $(${checkCommand} | awk '{print \$1}'); sleep 1; ${startCommand}"
 
   exec { "startNodemanager ${title}":

@@ -1,0 +1,74 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED = <%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
+WEBLOGIC_VERSION = <%= @version %>
+
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
+
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
+
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+REPOS_DBURL = '<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
+REPOS_DBPASSWORD = '<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+print 'Adding Template: Oracle HTTP Server (Collocated)'
+selectTemplate('Oracle HTTP Server (Collocated)')
+
+print 'Adding Template: Oracle Forms'
+selectTemplate('Oracle Forms')
+
+print 'Adding Template: Oracle Reports Application'
+selectTemplate('Oracle Reports Application')
+
+print 'Adding Template: Oracle Reports Server'
+selectTemplate('Oracle Reports Server')
+
+print('Loading all required templates')
+loadTemplates()
+
+dumpStack()
+
+setOption('AppDir', APP_PATH)
+
+print 'Change datasources'
+change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('opss-audit-DBDS', REPOS_DBUSER_PREFIX + '_IAU_APPEND', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('opss-audit-viewDS', REPOS_DBUSER_PREFIX + '_IAU_VIEWER', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('opss-data-source', REPOS_DBUSER_PREFIX + '_OPSS', REPOS_DBPASSWORD, REPOS_DBURL)
+
+change_datasource_to_xa('LocalSvcTblDataSource')
+change_datasource_to_xa('opss-audit-DBDS')
+change_datasource_to_xa('opss-audit-viewDS')
+change_datasource_to_xa('opss-data-source')
+
+print 'Finished datasources'
+
+print 'Call getDatabaseDefaults which reads the service table'
+getDatabaseDefaults()
+
+updateDomain()
+closeDomain()
+
+print 'Exiting...'
+exit()

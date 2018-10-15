@@ -8,6 +8,7 @@
 #     version                   => 12212,
 #     filename                  => 'fmw_12.2.1.2.0_wls.jar',
 #     jdk_home_dir              => '/usr/java/latest',
+#     ora_inventory_dir         => '/opt/oracle',
 #     oracle_base_home_dir      => "/opt/oracle",
 #     middleware_home_dir       => "/opt/oracle/middleware12c",
 #     weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
@@ -21,6 +22,7 @@
 # 
 # @param version Weblogic version like 1036, 1111, 1213 or 12212
 # @param filename the weblogic jar file like wls1036_generic.jar or fmw_12.2.1.2.0_wls.jar
+# @param ora_inventory_dir full path to the Oracle Inventory location directory. If not specfied, it defaults to oracle_base_home_dir (for example /opt/oracle or /u01/app/oracle). If you use the biemond-oradb module, you must set it to oracle_base_home_dir/.. (for example /opt or /u01/app)
 # @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param weblogic_home_dir directory of the WebLogic software inside the middleware directory
@@ -43,6 +45,7 @@
 class orawls::weblogic (
   Integer $version                    = lookup('orawls::default_version'),
   String $filename                    = undef,
+  Optional[String] $ora_inventory_dir = undef, # /opt/oracle
   String $oracle_base_home_dir        = undef, # /opt/oracle
   String $middleware_home_dir         = undef, # /opt/oracle/middleware11gR1
   Optional[String] $weblogic_home_dir = undef, # /opt/oracle/middleware11gR1/wlserver
@@ -67,6 +70,7 @@ class orawls::weblogic (
   orawls::weblogic_type{'base':
     version                   => $version,
     filename                  => $filename,
+    ora_inventory_dir         => $ora_inventory_dir,
     oracle_base_home_dir      => $oracle_base_home_dir,
     middleware_home_dir       => $middleware_home_dir,
     weblogic_home_dir         => $weblogic_home_dir,

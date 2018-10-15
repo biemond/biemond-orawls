@@ -45,6 +45,7 @@ module Puppet
     property :target
     property :targettype
     property :bytes_maximum
+    property :messages_maximum
     property :store_enabled
     property :allows_persistent_downgrade
     property :insertionpaused

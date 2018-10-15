@@ -6,7 +6,7 @@
 <title>
   Defined Type: orawls::storeuserconfig
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -68,6 +68,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -79,6 +80,8 @@ operations without providing the credentials</p>
 
   </div>
 </div>
+
+
 <div class="tags">
   
   <div class="examples">
@@ -315,6 +318,32 @@ operations without providing the credentials</p>
       
     </li>
   
+    <li>
+      
+        <span class='name'>adminserver_secure_listener</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>extra_arguments</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
 </ul>
 
 
@@ -372,24 +401,34 @@ operations without providing the credentials</p>
 70
 71
 72
-73</pre>
+73
+74
+75
+76
+77
+78
+79
+80
+81</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/storeuserconfig.pp', line 26</span>
 
 define orawls::storeuserconfig (
-  String $domain_name         = undef,
-  String $weblogic_home_dir   = $::orawls::weblogic::weblogic_home_dir,
-  String $jdk_home_dir        = $::orawls::weblogic::jdk_home_dir,
-  String $adminserver_address = &#39;localhost&#39;,
-  Integer $adminserver_port   = 7001,
-  String $user_config_dir     = undef,
-  String $weblogic_user       = &#39;weblogic&#39;,
-  String $weblogic_password   = undef,
-  String $os_user             = $::orawls::weblogic::os_user,
-  String $os_group            = $::orawls::weblogic::os_group,
-  String $download_dir        = $::orawls::weblogic::download_dir,
-  Boolean $log_output         = $::orawls::weblogic::log_output,
+  String $domain_name                  = undef,
+  String $weblogic_home_dir            = $::orawls::weblogic::weblogic_home_dir,
+  String $jdk_home_dir                 = $::orawls::weblogic::jdk_home_dir,
+  String $adminserver_address          = &#39;localhost&#39;,
+  Integer $adminserver_port            = 7001,
+  Boolean $adminserver_secure_listener = false,
+  String $user_config_dir              = undef,
+  String $weblogic_user                = &#39;weblogic&#39;,
+  String $weblogic_password            = undef,
+  String $os_user                      = $::orawls::weblogic::os_user,
+  String $os_group                     = $::orawls::weblogic::os_group,
+  String $download_dir                 = $::orawls::weblogic::download_dir,
+  Boolean $log_output                  = $::orawls::weblogic::log_output,
+  Optional[String] $extra_arguments    = undef,
 )
 {
   # the py script used by the wlst*-
@@ -397,12 +436,13 @@ define orawls::storeuserconfig (
     ensure  =&gt; present,
     path    =&gt; &quot;${download_dir}/${title}storeUserConfig.py&quot;,
     content =&gt; epp(&#39;orawls/wlst/storeUserConfig.py.epp&#39;, {
-                    &#39;weblogic_user&#39;       =&gt; $weblogic_user,
-                    &#39;adminserver_address&#39; =&gt; $adminserver_address,
-                    &#39;adminserver_port&#39;    =&gt; $adminserver_port,
-                    &#39;domain_name&#39;         =&gt; $domain_name,
-                    &#39;os_user&#39;             =&gt; $os_user,
-                    &#39;user_config_dir&#39;     =&gt; $user_config_dir }),
+                    &#39;weblogic_user&#39;               =&gt; $weblogic_user,
+                    &#39;adminserver_address&#39;         =&gt; $adminserver_address,
+                    &#39;adminserver_port&#39;            =&gt; $adminserver_port,
+                    &#39;adminserver_secure_listener&#39; =&gt; $adminserver_secure_listener,
+                    &#39;domain_name&#39;                 =&gt; $domain_name,
+                    &#39;os_user&#39;                     =&gt; $os_user,
+                    &#39;user_config_dir&#39;             =&gt; $user_config_dir }),
     backup  =&gt; false,
     replace =&gt; true,
     mode    =&gt; &#39;0555&#39;,
@@ -410,11 +450,16 @@ define orawls::storeuserconfig (
     group   =&gt; $os_group,
   }
 
-  $javaCommand = &#39;java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning &#39;
+  if $extra_arguments{
+    $javaCommand = &quot;java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true ${extra_arguments} weblogic.WLST -skipWLSModuleScanning &quot;
+  } else {
+    $javaCommand = &#39;java -Dweblogic.management.confirmKeyfileCreation=true -Dweblogic.security.SSL.ignoreHostnameVerification=true weblogic.WLST -skipWLSModuleScanning &#39;
+  }
+
   $exec_path = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
 
   exec { &quot;execwlst ${title}storeUserConfig.py&quot;:
-    command     =&gt; &quot;${javaCommand} ${download_dir}/${title}storeUserConfig.py ${weblogic_password}&quot;,
+    command     =&gt; &quot;${javaCommand} ${download_dir}/${title}storeUserConfig.py \&#39;${weblogic_password}\&#39;&quot;,
     environment =&gt; [&quot;CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar&quot;, &quot;JAVA_HOME=${jdk_home_dir}&quot;],
     unless      =&gt; &quot;ls -l ${user_config_dir}/${os_user}-${domain_name}-WebLogicConfig.properties&quot;,
     path        =&gt; $exec_path,
@@ -432,9 +477,7 @@ define orawls::storeuserconfig (
 </div>
 
       <div id="footer">
-  Generated on Sun Mar  5 20:34:33 2017 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.3.1).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

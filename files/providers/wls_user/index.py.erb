@@ -6,7 +6,7 @@ from weblogic.management.security.authentication import UserReaderMBean
 realmName    = cmo.getSecurityConfiguration().getDefaultRealm()
 authProvider = realmName.getAuthenticationProviders()
 
-f = open_file("name;realm;authenticationprovider;description;domain")
+f = open_file("name;realm;authenticationprovider;description;domain", tmp_script)
 for i in authProvider:
   if isinstance(i,UserReaderMBean) and "ldap" not in i.getProviderClassName().lower():
     userName = i

@@ -45,7 +45,7 @@ Puppet::Type.type(:wls_adminserver).provide(:wls_adminserver) do
       nm_protocol = 'plain'
     end
 
-    command = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-EOF
+    command = "#{base_path}/common/bin/wlst.sh -skipWLSModuleScanning <<-\"EOF\"
 nmConnect(\"#{weblogic_user}\",\"#{weblogic_password}\",\"#{nodemanager_address}\",#{nodemanager_port},\"#{domain_name}\",\"#{domain_path}\",\"#{nm_protocol}\")
 #{wls_action}
 nmDisconnect()
@@ -84,16 +84,23 @@ EOF"
     Puppet.debug "adminserver_status #{command}"
     output = `#{command}`
 
-    output.each_line do |li|
-      unless li.nil?
-        Puppet.debug "line #{li}"
-        if li.include? name
-          Puppet.debug 'found server'
-          return 'Found'
-        end
-      end
+    command  = "#{ps_bin} #{ps_arg} | /bin/grep -v grep | /bin/grep 'weblogic.Name=#{name}' | /bin/grep #{domain_name}"
+
+    output = `#{command}`
+    exitCode = $?.exitstatus
+    Puppet.debug "adminserver_status #{command}"
+
+    #if output.nil? || output.empty?
+    if exitCode != 0
+      Puppet.debug 'server not found'
+      Puppet.debug "value of output is '#{output}'"
+      return 'NotFound'
+    else
+      Puppet.debug 'found server'
+      Puppet.debug "value of output is '#{output}'"
+      return 'Found'
     end
-    'NotFound'
+
   end
 
   def start

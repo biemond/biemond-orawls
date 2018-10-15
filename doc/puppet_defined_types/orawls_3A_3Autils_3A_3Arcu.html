@@ -6,7 +6,7 @@
 <title>
   Defined Type: orawls::utils::rcu
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -68,6 +68,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -78,6 +79,8 @@
 
   </div>
 </div>
+
+
 <div class="tags">
   <p class="tag_title">Parameters:</p>
 <ul class="param">
@@ -195,7 +198,7 @@
         <span class='name'>fmw_product</span>
       
       
-        <span class='type'>(<tt>Enum['adf','soa','mft']</tt>)</span>
+        <span class='type'>(<tt>Enum['adf','soa','mft', 'wcs', 'forms']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&#39;adf&#39;</tt>)</em>
@@ -352,6 +355,32 @@
       
     </li>
   
+    <li>
+      
+        <span class='name'>rcu_temp_tablespace</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rcu_tablespace</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
 </ul>
 
 
@@ -456,28 +485,60 @@
 113
 114
 115
-116</pre>
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/utils/rcu.pp', line 22</span>
 
 define orawls::utils::rcu(
-  Integer $version                       = $::orawls::weblogic::version,
-  Enum[&#39;adf&#39;,&#39;soa&#39;,&#39;mft&#39;] $fmw_product   = &#39;adf&#39;,
-  String $oracle_fmw_product_home_dir    = undef,
-  String $jdk_home_dir                   = $::orawls::weblogic::jdk_home_dir,
-  String $os_user                        = $::orawls::weblogic::os_user,
-  String $os_group                       = $::orawls::weblogic::os_group,
-  String $download_dir                   = $::orawls::weblogic::download_dir,
-  Boolean $log_output                    = $::orawls::weblogic::log_output,
-  Enum[&#39;create&#39;,&#39;delete&#39;] $rcu_action    = &#39;create&#39;,
-  String $rcu_jdbc_url                   = undef,   #jdbc...
-  String $rcu_database_url               = undef,   #192.168.50.5:1521:XE
-  String $rcu_prefix                     = undef,
-  String $rcu_password                   = undef,
-  String $rcu_sys_user                   = &#39;sys&#39;,
-  String $rcu_sys_password               = undef,
+  Integer $version                                     = $::orawls::weblogic::version,
+  Enum[&#39;adf&#39;,&#39;soa&#39;,&#39;mft&#39;, &#39;wcs&#39;, &#39;forms&#39;] $fmw_product = &#39;adf&#39;,
+  String $oracle_fmw_product_home_dir                  = undef,
+  String $jdk_home_dir                                 = $::orawls::weblogic::jdk_home_dir,
+  String $os_user                                      = $::orawls::weblogic::os_user,
+  String $os_group                                     = $::orawls::weblogic::os_group,
+  String $download_dir                                 = $::orawls::weblogic::download_dir,
+  Boolean $log_output                                  = $::orawls::weblogic::log_output,
+  Enum[&#39;create&#39;,&#39;delete&#39;] $rcu_action                  = &#39;create&#39;,
+  String $rcu_jdbc_url                                 = undef,   #jdbc...
+  String $rcu_database_url                             = undef,   #192.168.50.5:1521:XE
+  String $rcu_prefix                                   = undef,
+  String $rcu_password                                 = undef,
+  String $rcu_sys_user                                 = &#39;sys&#39;,
+  String $rcu_sys_password                             = undef,
+  Optional[String] $rcu_temp_tablespace                = undef, #temp
+  Optional[String] $rcu_tablespace                     = undef, #soa_infra
 ){
+
+  # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
+  $convert_spaces_to_underscores = regsubst($title,&#39;\s&#39;,&#39;_&#39;,&#39;G&#39;)
+  $sanitised_title = regsubst($convert_spaces_to_underscores,&#39;[^a-zA-Z0-9_-]&#39;,&#39;&#39;,&#39;G&#39;)
 
   case $facts[&#39;kernel&#39;] {
     &#39;Linux&#39;,&#39;SunOS&#39;: {
@@ -488,41 +549,61 @@ define orawls::utils::rcu(
     }
   }
 
+  if $rcu_temp_tablespace == undef {
+    $rcu_temp_tablespace_cmd  = &#39;&#39;
+  } else {
+    $rcu_temp_tablespace_cmd  = &quot;-tempTablespace ${rcu_temp_tablespace}&quot;
+  }
+  if $rcu_tablespace == undef {
+    $rcu_tablespace_cmd  = &#39;&#39;
+  } else {
+    $rcu_tablespace_cmd  = &quot;-tablespace ${rcu_tablespace}&quot;
+  }
+
   if $fmw_product == &#39;adf&#39; {
     if $version &gt;= 1221 {
-      $components = &#39;-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB &#39;
+      $components = &quot;-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component STB ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
     else {
-      $components = &#39;-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC &#39;
+      $components = &quot;-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSCC ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
   }
   elsif $fmw_product == &#39;soa&#39; {
     if $version &gt;= 1221 {
-      $components = &#39;-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB -component UCSUMS -component ESS -component SOAINFRA &#39;
+      $components = &quot;-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component STB ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSUMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component ESS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component SOAINFRA ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
     else {
-      $components = &#39;-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component UCSUMS -component UMS -component ESS -component SOAINFRA -component MFT &#39;
+      $components = &quot;-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSCC ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSUMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component ESS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component SOAINFRA ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component MFT ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
   }
   elsif $fmw_product == &#39;mft&#39; {
-    $components = &#39;-component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component UCSCC -component MFT -component UCSUMS -component ESS&#39;
+    $components = &quot;-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSCC ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component MFT ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSUMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component ESS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
     $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
-  } else {
+  }
+  elsif $fmw_product == &#39;wcs&#39; {
+    $components = &quot;-component STB ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WCSITES ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WCSITESVS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+  }
+  elsif $fmw_product == &#39;forms&#39; {
+    $components = &quot;-component STB ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}-component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}&quot;
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+  }
+  else {
     fail(&#39;Unrecognized FMW fmw_product&#39;)
   }
 
-  file { &quot;${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt&quot;:
+  file { &quot;${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt&quot;:
     ensure  =&gt; present,
     content =&gt; template(&#39;orawls/utils/rcu_passwords.txt.erb&#39;),
     mode    =&gt; lookup(&#39;orawls::permissions_secret&#39;),
     owner   =&gt; $os_user,
     group   =&gt; $os_group,
     backup  =&gt; false,
-    before  =&gt; Wls_rcu[$rcu_prefix],
+    before  =&gt; Wls_rcu[&quot;${rcu_prefix}_${sanitised_title}&quot;],
   }
 
   if !defined(File[&quot;${download_dir}/checkrcu.py&quot;]) {
@@ -533,7 +614,7 @@ define orawls::utils::rcu(
       owner  =&gt; $os_user,
       group  =&gt; $os_group,
       backup =&gt; false,
-      before =&gt; Wls_rcu[$rcu_prefix],
+      before =&gt; Wls_rcu[&quot;${rcu_prefix}_${sanitised_title}&quot;],
     }
   }
 
@@ -544,9 +625,9 @@ define orawls::utils::rcu(
     $action = &#39;-dropRepository&#39;
   }
 
-  wls_rcu{ $rcu_prefix:
+  wls_rcu{ &quot;${rcu_prefix}_${sanitised_title}&quot;:
     ensure       =&gt; $rcu_action,
-    statement    =&gt; &quot;${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f &lt; ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}.txt&quot;,
+    statement    =&gt; &quot;${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f &lt; ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt&quot;,
     os_user      =&gt; $os_user,
     oracle_home  =&gt; $oracle_fmw_product_home_dir,
     sys_user     =&gt; $rcu_sys_user,
@@ -563,9 +644,7 @@ define orawls::utils::rcu(
 </div>
 
       <div id="footer">
-  Generated on Sun Mar  5 20:34:32 2017 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.3.1).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

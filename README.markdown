@@ -18,6 +18,9 @@ For Puppet 3, 4 you have to use the latest 1.x version of this orawls module
 source code is located at [puppet4 branch](https://github.com/biemond/biemond-orawls/tree/puppet4)
 
 
+Please check the manifests and vagrant examples because there are some breaking changes especially on the manifest part ( I don't do hiera lookups. Just use the weblogic class and I will use those parameters as reference for the other manifest parameters)
+
+
 ## Author
 
 Edwin Biemond email biemond at gmail dot com
@@ -54,6 +57,7 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 - WebLogic 12.2.1.2 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra cluster example with WebTier (Oracle HTTP Server) [biemond-orawls-vagrant-12.2.1-infra-puppet4](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-puppet4)
 - WebLogic 12.2.1.2 infra (JRF + JRF restricted), the vagrant test case for full working WebLogic 12.2.1 infra SOA Suite/BAM/OSB cluster example [biemond-orawls-vagrant-12.2.1-infra-soa-puppet](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-soa-puppet4)
 - WebLogic OHS webtier standalone, the vagrant test case for full working Webtier 12.1.2 and 12.2.1 [biemond-orawls-vagrant-ohs-puppet4](https://github.com/biemond/biemond-orawls-vagrant-ohs-puppet4)
+- WebCenter Sites 12.2.1 Reference implementation, the vagrant test case [biemond-orawls-vagrant-12.2.1-infra-wcs-puppet4](https://github.com/biemond/biemond-orawls-vagrant-12.2.1-infra-wcs-puppet4)
 - Reference OIM / OAM with WebTier, Webgate & Oracle Unified Directory, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.3 example [biemond-orawls-vagrant-oim_oam-puppet](https://github.com/biemond/biemond-orawls-vagrant-oim_oam-puppet4)
 - Reference OIM / OAM Cluster, the vagrant test case for Oracle Identity Manager & Oracle Access Manager 11.1.2.3 cluster example [biemond-orawls-vagrant-oim_oam_cluster](https://github.com/biemond/biemond-orawls-vagrant-oim_oam_cluster)
 - Oracle Forms, Reports 11.1.1.7 & 11.1.2 Reference implementation, the vagrant test case [biemond-orawls-vagrant-11g-forms-puppet4](https://github.com/biemond/biemond-orawls-vagrant-11g-forms-puppet4)
@@ -61,9 +65,10 @@ If you need support, checkout the [wls_install](https://www.enterprisemodules.co
 
 ## Orawls WebLogic Features
 
-- [Installs WebLogic](#weblogic), version 10g, 11g, 12c ( 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.1 + FMW infrastructure editions )
+- [Installs WebLogic](#weblogic), version 10g, 11g, 12c ( 12.1.1, 12.1.2, 12.1.3, 12.2.1, 12.2.1.X + FMW infrastructure editions )
 - [Apply a BSU patch](#bsu) on a Middleware home ( < 12.1.2 )
 - [Apply a OPatch](#opatch) on a Middleware home ( >= 12.1.2 ) or a Oracle product home
+- [Opatch upgrade](#opatchupgrade) on a Middleware home ( >= 12.1.2 )
 - [Create a WebLogic domain](#domain)
 - [Pack a WebLogic domain](#packdomain)
 - [Copy a WebLogic domain](#copydomain) to a other node with SSH, unpack and enroll to a nodemanager
@@ -175,6 +180,7 @@ For all WebLogic or FMW versions
 - domain 'bam'            -> BAM ( only with soa suite installation)
 - domain 'ohs_standalone' -> Standalone webtier (HTTP Server) 12.1.2, 12.1.3 and 12.1.4
 
+
 11g
 - domain 'wc_wcc_bpm'     -> WC (webcenter) + WCC ( Content ) + BPM + JRF + EM + OWSM
 - domain 'wc'             -> WC (webcenter) + JRF + EM + OWSM
@@ -185,6 +191,7 @@ For all WebLogic or FMW versions
 
 12.2.1.1
 - domain 'adf_restricted' -> only for 12.2.1 (no RCU/DB) JRF + EM + Coherence + JAX-WS Advanced + Soap over JMS
+- domain 'forms'
 
 
 ## Puppet master with orawls module key points
@@ -544,6 +551,18 @@ __orawls::weblogic_type__ same as weblogic manifest/class but now as define whic
         wls_domains_dir:              *wls_domains_dir
         wls_apps_dir:                 *wls_apps_dir
         require:                      Jdk7::Install7[jdk-8u72-linux-x64]
+
+
+### opatchupgrade
+__orawls::opatchupgrade__ upgrade OPatch on a Middleware home
+
+
+    opatchupgrade_instances:
+      '28186730':
+        oracle_product_home_dir:  *wls_middleware_home_dir
+        patch_id:                 6880880
+        patch_file:               "p28186730_139400_Generic.zip"
+        opversion:                13.9.4.0.0
 
 
 ### opatch
@@ -1540,9 +1559,12 @@ saving the WLST scripts of all the wls types to a temporary folder
 
 archive_path has /tmp/orawls-archive as default folder
 
+tmp_path has /tmp as default folder
+
     wls_setting { 'default':
       debug_module              => 'true',
       archive_path              => '/var/tmp/install/default_domain',
+      tmp_path                  => '/var/tmp/install',
       connect_url               => 't3s://10.10.10.10:7002',
       custom_trust              => 'true',
       trust_keystore_file       => '/vagrant/truststore.jks',
@@ -1601,6 +1623,7 @@ or in hiera
         require:                   Orawls::Domain[Wls1213]
         debug_module:              true
         archive_path:              '/var/tmp/install/default_domain'
+        tmp_path:                  '/var/tmp/install'
       'plain':
         user:                      *wls_os_user
         weblogic_home_dir:         *wls_weblogic_home_dir

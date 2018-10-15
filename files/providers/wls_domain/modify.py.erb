@@ -28,6 +28,8 @@ setconfigbackupenabled                             = '<%= setconfigbackupenabled
 setconfigurationaudittype                          = '<%= setconfigurationaudittype %>'
 exalogicoptimizationsenabled                       = '<%= exalogicoptimizationsenabled %>'
 
+cdi_implicit_bean_discovery_enabled                = '<%= cdi_implicit_bean_discovery_enabled %>'
+
 edit()
 startEdit()
 
@@ -67,6 +69,13 @@ try:
     print "change web app container"
     cd('/WebAppContainer/' + name)
     set_attribute_value('ShowArchivedRealPathEnabled', web_app_container_show_archived_real_path_enabled, use_default_value_when_empty)
+
+    print "change cdi container"
+    try:
+        cd('/CdiContainer/' + name)
+        set_attribute_value('ImplicitBeanDiscoveryEnabled', cdi_implicit_bean_discovery_enabled, use_default_value_when_empty)
+    except:
+        print "skip probably not 12.2 version"
 
     cd('/')
 

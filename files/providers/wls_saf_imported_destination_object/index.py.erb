@@ -5,12 +5,12 @@
 def object(token,token2,token3,location,type):
     cd(location)
 
-    remotejndiname    = cmo.getRemoteJNDIName()
-    nonpersistentqos  = cmo.getNonPersistentQos()
-    localjndiname     = cmo.getLocalJNDIName()
-    unitoforder       = cmo.getUnitOfOrderRouting()
+    remotejndiname    = get_attribute_value('RemoteJNDIName')
+    nonpersistentqos  = get_attribute_value('NonPersistentQos')
+    localjndiname     = get_attribute_value('LocalJNDIName')
+    unitoforder       = get_attribute_value('UnitOfOrderRouting')
 
-    timeToLiveDefault = str(cmo.getTimeToLiveDefault())
+    timeToLiveDefault = get_attribute_value('TimeToLiveDefault')
     if not (timeToLiveDefault):
       useSAFTimeToLiveDefault = '0'
     else:
@@ -21,7 +21,7 @@ def object(token,token2,token3,location,type):
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain")
+f = open_file("name;jmsmodule;imported_destination;object_type;timetolivedefault;usetimetolivedefault;unitoforderrouting;nonpersistentqos;remotejndiname;localjndiname;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

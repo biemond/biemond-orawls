@@ -1,7 +1,7 @@
 
 m = ls('/CoherenceClusterSystemResources',returnMap='true')
 
-f = open_file("name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain")
+f = open_file("name;target;targettype;clusteringmode;unicastaddress;unicastport;multicastaddress;multicastport;domain", tmp_script)
 for token in m:
   print '___'+token+'___'
   cd('/CoherenceClusterSystemResources/'+token)
@@ -13,11 +13,11 @@ for token in m:
   unicastListenPort = ''
 
   try:
-    unicastListenAddress = get('UnicastListenAddress')
-    unicastListenPort = get('UnicastListenPort')
+    unicastListenAddress = get_attribute_value('UnicastListenAddress')
+    unicastListenPort = get_attribute_value('UnicastListenPort')
   except:
     print "unicast parameters does not exists, continue"
 
-  add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),get('ClusteringMode'),unicastListenAddress,unicastListenPort,get('MulticastListenAddress'),get('MulticastListenPort'),domain])
+  add_index_entry(f, [domain+'/'+token,','.join(target),','.join(targetType),get_attribute_value('ClusteringMode'),unicastListenAddress,unicastListenPort,get_attribute_value('MulticastListenAddress'),get_attribute_value('MulticastListenPort'),domain])
 f.close()
 report_back_success()

@@ -50,7 +50,7 @@ describe 'orawls::nodemanager', :type => :define do
       describe "start nodemanager 1" do
         it {
              should contain_exec("startNodemanager nodemanager11g").with({
-               'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
+               'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh  > /opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager_nohup.log 2>&1 &',
                'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
                'user'        => 'oracle',
                'group'       => 'dba',
@@ -131,7 +131,7 @@ describe 'orawls::nodemanager', :type => :define do
       describe "start nodemanager 2" do
         it {
              should contain_exec("startNodemanager nodemanager11g").with({
-               'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh &',
+               'command'     => 'nohup /opt/oracle/middleware11gR1/wlserver_103/server/bin/startNodeManager.sh  > /opt/oracle/middleware11gR1/wlserver_103/common/nodemanager/nodemanager_nohup.log 2>&1 &',
                'cwd'         => '/opt/oracle/middleware11gR1/wlserver_103/common/nodemanager',
                'user'        => 'oracle',
                'group'       => 'dba',
@@ -167,7 +167,7 @@ describe 'orawls::nodemanager', :type => :define do
     describe "start nodemanager 3" do
       it {
            should contain_exec("startNodemanager nodemanager12c").with({
-             'command'     => 'nohup /opt/oracle/wlsdomains/domains/wls1212/bin/startNodeManager.sh &',
+             'command'     => 'nohup /opt/oracle/wlsdomains/domains/wls1212/bin/startNodeManager.sh  > /opt/oracle/wlsdomains/domains/wls1212/nodemanager/nodemanager_nohup.log 2>&1 &',
              'cwd'         => '/opt/oracle/wlsdomains/domains/wls1212/nodemanager',
              'user'        => 'oracle',
              'group'       => 'dba',

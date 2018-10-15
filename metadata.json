@@ -1,6 +1,12 @@
 {
+  "name": "biemond-orawls",
+  "version": "2.0.19",
   "author": "Edwin Biemond",
-  "data_provider": "hiera",
+  "summary": "Oracle WebLogic puppet module v2 for Linux & Solaris with wls puppet types & providers",
+  "license": "Apache-2.0",
+  "source": "https://github.com/biemond/biemond-orawls",
+  "project_page": "https://github.com/biemond/biemond-orawls",
+  "issues_url": "https://github.com/biemond/biemond-orawls/issues",
   "dependencies": [
     {
       "name": "hajee/easy_type",
@@ -23,32 +29,7 @@
       "version_requirement": ">=4.9.0"
     }
   ],
-  "description": "Only for Linux & Solaris \nOracle WebLogic module\nwls native types & providers like wls_machine, wls_server, wls_cluster and many more\n",
-  "license": "Apache-2.0",
-  "name": "biemond-orawls",
-  "project_page": "https://github.com/biemond/biemond-orawls",
-  "source": "https://github.com/biemond/biemond-orawls",
-  "summary": "Oracle WebLogic puppet module v2 for Linux & Solaris with wls puppet types & providers",
-  "version": "2.0.6",
-  "tags": [
-    "weblogic",
-    "11g",
-    "12c",
-    "10.3",
-    "12.1.3",
-    "12.2.1",
-    "java",
-    "oracle",
-    "fmw",
-    "middleware",
-    "fusion",
-    "osb",
-    "soa",
-    "service bus",
-    "soa suite",
-    "oam",
-    "oim"
-  ],
+  "data_provider": "hiera",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -119,5 +100,28 @@
       "name": "puppet",
       "version_requirement": ">=4.3.0"
     }
-  ]
+  ],
+  "description": "Only for Linux & Solaris \nOracle WebLogic module\nwls native types & providers like wls_machine, wls_server, wls_cluster and many more\n",
+  "tags": [
+    "weblogic",
+    "11g",
+    "12c",
+    "10.3",
+    "12.1.3",
+    "12.2.1",
+    "java",
+    "oracle",
+    "fmw",
+    "middleware",
+    "fusion",
+    "osb",
+    "soa",
+    "service bus",
+    "soa suite",
+    "oam",
+    "oim"
+  ],
+  "pdk-version": "1.7.0",
+  "template-url": "file:///opt/puppetlabs/pdk/share/cache/pdk-templates.git",
+  "template-ref": "1.7.0-0-g57412ed"
 }

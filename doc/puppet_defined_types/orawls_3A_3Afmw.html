@@ -6,7 +6,7 @@
 <title>
   Defined Type: orawls::fmw
   
-    &mdash; Documentation by YARD 0.9.8
+    &mdash; Documentation by YARD 0.9.16
   
 </title>
 
@@ -68,6 +68,7 @@
     </dd>
   </dl>
 </div>
+
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -79,6 +80,8 @@ MFT</p>
 
   </div>
 </div>
+
+
 <div class="tags">
   
   <div class="examples">
@@ -558,6 +561,19 @@ Linux or Solaris</p>
         <div class='inline'>
 <p>to control if the filename is already accessiable on the VM</p>
 </div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cleanup_install_files</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
       
     </li>
   
@@ -1323,7 +1339,62 @@ Linux or Solaris</p>
 815
 816
 817
-818</pre>
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/fmw.pp', line 66</span>
@@ -1353,6 +1424,7 @@ define orawls::fmw(
   Optional[String] $oracle_inventory_dir                  = undef,
   Boolean $remote_file                                    = $::orawls::weblogic::remote_file,
   Optional[String] $orainstpath_dir                       = lookup(&#39;orawls::orainst_dir&#39;),
+  Boolean $cleanup_install_files                          = true,
 )
 {
 
@@ -1366,11 +1438,6 @@ define orawls::fmw(
 
   case $facts[&#39;kernel&#39;] {
     &#39;Linux&#39;: {
-      if ( $orainstpath_dir == undef or $orainstpath_dir == &#39;&#39; ){
-        $oraInstPath = &#39;/etc&#39;
-      } else {
-        $oraInstPath = $orainstpath_dir
-      }
       case $facts[&#39;architecture&#39;] {
         &#39;i386&#39;: {
           $installDir = &#39;linux&#39;
@@ -1381,7 +1448,6 @@ define orawls::fmw(
       }
     }
     &#39;SunOS&#39;: {
-      $oraInstPath = &#39;/var/opt/oracle&#39;
       case $facts[&#39;architecture&#39;] {
         &#39;i86pc&#39;: {
           $installDir = &#39;intelsolaris&#39;
@@ -1420,8 +1486,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_fr_linux64.bin&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_fr_linux64.bin&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_fr_linux64.bin&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_fr_linux64.bin&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $type                     = &#39;bin&#39;
@@ -1464,8 +1532,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_soa.jar&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_soa.jar&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_soa.jar&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_soa.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $oracleHome               = &quot;${middleware_home_dir}/soa/bin&quot;
@@ -1514,9 +1584,12 @@ define orawls::fmw(
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_soa_quickstart.jar&#39;
         $binFile2                 = &#39;fmw_12.2.1.1.0_soa_quickstart2.jar&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_soa_quickstart.jar&#39;
         $binFile2                 = &#39;fmw_12.2.1.2.0_soa_quickstart2.jar&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_soa_quickstart.jar&#39;
+        $binFile2                 = &#39;fmw_12.2.1.3.0_soa_quickstart2.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $createFile2              = &quot;${download_dir}/${sanitised_title}/${binFile2}&quot;
@@ -1554,8 +1627,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_osb.jar&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_osb.jar&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_osb.jar&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_osb.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $oracleHome               = &quot;${middleware_home_dir}/osb/bin&quot;
@@ -1604,8 +1679,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_b2bhealthcare.jar&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_b2bhealthcare.jar&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_b2bhealthcare.jar&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_b2bhealthcare.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $oracleHome               = &quot;${middleware_home_dir}/soa/soa/modules/oracle.soa.b2b_11.1.1/b2b.jar&quot;
@@ -1653,8 +1730,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_wcportal_generic.jar&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_wcportal_generic.jar&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_wcportal_generic.jar&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_wcportal_generic.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $type                     = &#39;java&#39;
@@ -1683,8 +1762,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_wccontent_generic.jar&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_wccontent_generic.jar&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_wccontent_generic.jar&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_wccontent_generic.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $type                     = &#39;java&#39;
@@ -1727,7 +1808,7 @@ define orawls::fmw(
       } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_wcsites.jar&#39;
       } else {
-        $binFile1                 = &#39;fmw_12.2.1.2.0_wcsites.jar&#39;
+        $binFile1                 = &#39;fmw_12.2.1.3.0_wcsites.jar&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $type                     = &#39;java&#39;
@@ -1767,8 +1848,10 @@ define orawls::fmw(
         $binFile1                 = &#39;fmw_12.2.1.0.0_ohs_linux64.bin&#39;
       } elsif $version == 12211 {
         $binFile1                 = &#39;fmw_12.2.1.1.0_ohs_linux64.bin&#39;
-      } else {
+      } elsif $version == 12212 {
         $binFile1                 = &#39;fmw_12.2.1.2.0_ohs_linux64.bin&#39;
+      } else {
+        $binFile1                 = &#39;fmw_12.2.1.3.0_ohs_linux64.bin&#39;
       }
       $createFile1              = &quot;${download_dir}/${sanitised_title}/${binFile1}&quot;
       $type                     = &#39;bin&#39;
@@ -1846,6 +1929,7 @@ define orawls::fmw(
     orawls::utils::orainst { &quot;create oraInst for ${name}&quot;:
       ora_inventory_dir =&gt; $oraInventory,
       os_group          =&gt; $os_group,
+      orainstpath_dir   =&gt; $orainstpath_dir
     }
 
     file { &quot;${download_dir}/${sanitised_title}_silent.rsp&quot;:
@@ -2041,7 +2125,7 @@ define orawls::fmw(
       }
 
       exec { &quot;install ${sanitised_title}&quot;:
-        command     =&gt; &quot;${install}${download_dir}/${sanitised_title}/${binFile1} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}&quot;,
+        command     =&gt; &quot;${install}${download_dir}/${sanitised_title}/${binFile1} ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir}&quot;,
         environment =&gt; &quot;TEMP=${temp_dir}&quot;,
         timeout     =&gt; 0,
         creates     =&gt; $oracleHome,
@@ -2065,7 +2149,7 @@ define orawls::fmw(
       }
 
       exec { &quot;install ${sanitised_title}&quot;:
-        command     =&gt; &quot;/bin/sh -c &#39;unset DISPLAY;${download_dir}/${sanitised_title}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}&#39;&quot;,
+        command     =&gt; &quot;/bin/sh -c &#39;unset DISPLAY;${download_dir}/${sanitised_title}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}&#39;&quot;,
         environment =&gt; &quot;TEMP=${temp_dir}&quot;,
         timeout     =&gt; 0,
         creates     =&gt; &quot;${oracleHome}/OPatch&quot;,
@@ -2079,6 +2163,48 @@ define orawls::fmw(
                         Exec[&quot;extract ${fmw_file1} for ${name}&quot;],],
       }
     }
+
+    # cleanup
+    if ( $cleanup_install_files ) {
+      exec { &quot;remove extract folder ${title}&quot;:
+        command =&gt; &quot;rm -rf ${download_dir}/${sanitised_title}&quot;,
+        user    =&gt; &#39;root&#39;,
+        group   =&gt; &#39;root&#39;,
+        path    =&gt; $exec_path,
+        cwd     =&gt; $temp_dir,
+        require =&gt; Exec[&quot;install ${sanitised_title}&quot;],
+        }
+      if ( $remote_file == true ){
+        exec { &quot;remove ${fmw_file1} ${title}&quot;:
+          command =&gt; &quot;rm -rf ${download_dir}/${fmw_file1}&quot;,
+          user    =&gt; &#39;root&#39;,
+          group   =&gt; &#39;root&#39;,
+          path    =&gt; $exec_path,
+          cwd     =&gt; $temp_dir,
+          require =&gt; Exec[&quot;install ${sanitised_title}&quot;],
+        }
+        if ( $total_files &gt; 1 ) {
+          exec { &quot;remove ${fmw_file2} ${title}&quot;:
+            command =&gt; &quot;rm -rf ${download_dir}/${fmw_file2}&quot;,
+            user    =&gt; &#39;root&#39;,
+            group   =&gt; &#39;root&#39;,
+            path    =&gt; $exec_path,
+            cwd     =&gt; $temp_dir,
+            require =&gt; Exec[&quot;install ${sanitised_title}&quot;],
+          }
+        }
+        if ( $total_files &gt; 2 ) {
+          exec { &quot;remove ${fmw_file3} ${title}&quot;:
+            command =&gt; &quot;rm -rf ${download_dir}/${fmw_file3}&quot;,
+            user    =&gt; &#39;root&#39;,
+            group   =&gt; &#39;root&#39;,
+            path    =&gt; $exec_path,
+            cwd     =&gt; $temp_dir,
+            require =&gt; Exec[&quot;install ${sanitised_title}&quot;],
+          }
+        }
+      }
+    }
   }
 }</pre>
       </td>
@@ -2088,9 +2214,7 @@ define orawls::fmw(
 </div>
 
       <div id="footer">
-  Generated on Sun Mar  5 20:34:31 2017 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.8 (ruby-2.3.1).
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
 </div>
 
     </div>

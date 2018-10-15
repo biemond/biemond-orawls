@@ -8,6 +8,7 @@
 #     version                   => 12212,
 #     filename                  => 'fmw_12.2.1.2.0_wls.jar',
 #     jdk_home_dir              => '/usr/java/latest',
+#     ora_inventory_dir         => '/opt/oracle',
 #     oracle_base_home_dir      => "/opt/oracle",
 #     middleware_home_dir       => "/opt/oracle/middleware12c",
 #     weblogic_home_dir         => "/opt/oracle/middleware12c/wlserver",
@@ -19,6 +20,7 @@
 # 
 # @param version Weblogic version like 1036, 1111, 1213 or 12212
 # @param filename the weblogic jar file like wls1036_generic.jar or fmw_12.2.1.2.0_wls.jar
+# @param ora_inventory_dir full path to the Oracle Inventory location directory. If not specfied, it defaults to oracle_base_home_dir (for example /opt/oracle or /u01/app/oracle). If you use the biemond-oradb module, you must set it to oracle_base_home_dir/.. (for example /opt or /u01/app)
 # @param oracle_base_home_dir base directory of the oracle installation, it will contain the default Oracle inventory and the middleware home
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
 # @param weblogic_home_dir directory of the WebLogic software inside the middleware directory
@@ -41,6 +43,7 @@
 define orawls::weblogic_type (
   Integer $version                    = lookup('orawls::default_version'),
   String $filename                    = undef, # wls1036_generic.jar|wls1211_generic.jar|wls_121200.jar|wls_121300.jar|oepe-wls-indigo-installer-11.1.1.8.0.201110211138-10.3.6-linux32.bin
+  Optional[String] $ora_inventory_dir = undef, # /opt/oracle
   String $oracle_base_home_dir        = undef, # /opt/oracle
   String $middleware_home_dir         = undef, # /opt/oracle/middleware11gR1
   Optional[String] $weblogic_home_dir = undef, # /opt/oracle/middleware11gR1/wlserver
@@ -106,13 +109,17 @@ define orawls::weblogic_type (
   }
 
   $exec_path         = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
-  $ora_inventory_dir = "${oracle_base_home_dir}/oraInventory"
+
+  if $ora_inventory_dir == undef {
+    $ora_inventory = "${oracle_base_home_dir}/oraInventory"
+  } else {
+    $ora_inventory = "${ora_inventory_dir}/oraInventory"
+  }
 
   Exec {
     logoutput => $log_output,
   }
 
-  $oraInstPath = lookup('orawls::orainst_dir')
   $java_statement = "${lookup('orawls::java')} ${java_parameters}"
   $file_ext = regsubst($filename, '.*(\.jar)$', '\1')
 
@@ -147,14 +154,15 @@ define orawls::weblogic_type (
   }
 
   orawls::utils::orainst { "weblogic orainst ${title}":
-    ora_inventory_dir => $ora_inventory_dir,
+    ora_inventory_dir => $ora_inventory,
     os_group          => $os_group,
+    orainstpath_dir   => $orainstpath_dir
   }
 
   wls_directory_structure{"weblogic structure ${title}":
     ensure            => present,
     oracle_base_dir   => $oracle_base_home_dir,
-    ora_inventory_dir => $ora_inventory_dir,
+    ora_inventory_dir => $ora_inventory,
     download_dir      => $download_dir,
     wls_domains_dir   => $domains_dir,
     wls_apps_dir      => $apps_dir,
@@ -211,7 +219,7 @@ define orawls::weblogic_type (
 
     # notify { "install weblogic ${version}: ${exec_path}": }
     exec { "install weblogic ${title}":
-      command     => "${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs",
+      command     => "${cmd_prefix}${weblogic_jar_location} ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs",
       environment => ['JAVA_VENDOR=Sun', "JAVA_HOME=${jdk_home_dir}"],
       timeout     => 0,
       creates     => $created_dir,
@@ -223,16 +231,14 @@ define orawls::weblogic_type (
                       File["${download_dir}/weblogic_silent_install_${title}.xml"]],
     }
     # OPatch native lib fix for 64 solaris
-    case $facts['kernel'] {
-      'SunOS': {
-        exec { "add -d64 oraparam.ini oracle_common ${title}":
-          command => "sed -e's/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\"-d64\"/g' ${middleware_home_dir}/oui/oraparam.ini > ${temp_dir}/wls.tmp && mv ${temp_dir}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini",
-          unless  => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${middleware_home_dir}/oui/oraparam.ini",
-          require => Exec["install weblogic ${title}"],
-          path    => $exec_path,
-          user    => $os_user,
-          group   => $os_group,
-        }
+    if ( $facts['kernel'] == 'SunOS' ) {
+      exec { "add -d64 oraparam.ini oracle_common ${title}":
+        command => "sed -e's/JRE_MEMORY_OPTIONS=/JRE_MEMORY_OPTIONS=\"-d64\"/g' ${middleware_home_dir}/oui/oraparam.ini > ${temp_dir}/wls.tmp && mv ${temp_dir}/wls.tmp ${middleware_home_dir}/oui/oraparam.ini",
+        unless  => "grep 'JRE_MEMORY_OPTIONS=\"-d64\"' ${middleware_home_dir}/oui/oraparam.ini",
+        require => Exec["install weblogic ${title}"],
+        path    => $exec_path,
+        user    => $os_user,
+        group   => $os_group,
       }
     }
 

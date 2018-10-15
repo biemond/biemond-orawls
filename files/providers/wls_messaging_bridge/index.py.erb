@@ -1,31 +1,31 @@
 
 m = ls('/MessagingBridges',returnMap='true')
 
-f = open_file("name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination")
+f = open_file("name;target;targettype;asyncenabled;batchinterval;batchsize;durabilityenabled;idletimemax;preservemsgproperty;qosdegradationallowed;qos;reconnectdelayincrease;reconnectdelaymax;reconnectdelaymin;selector;started;transactiontimeout;sourcedestination;targetdestination", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/MessagingBridges/'+token)
 
-    asyncenabled = get('AsyncEnabled')
-    batchinterval = get('BatchInterval')
-    batchsize = get('BatchSize')
-    durabilityenabled = get('DurabilityEnabled')
-    idletimemax = get('IdleTimeMaximum')
-    preservemsgproperty = get('PreserveMsgProperty')
-    qosdegradationallowed = get('QOSDegradationAllowed')
-    qos = get('QualityOfService')
-    reconnectdelayincrease = get('ReconnectDelayIncrease')
-    reconnectdelaymax = get('ReconnectDelayMaximum')
-    reconnectdelaymin = get('ReconnectDelayMinimum')
-    selector = get('Selector')
-    started = get('Started')
-    transactiontimeout = get('TransactionTimeout')
+    asyncenabled            = get_attribute_value('AsyncEnabled')
+    batchinterval           = get_attribute_value('BatchInterval')
+    batchsize               = get_attribute_value('BatchSize')
+    durabilityenabled       = get_attribute_value('DurabilityEnabled')
+    idletimemax             = get_attribute_value('IdleTimeMaximum')
+    preservemsgproperty     = get_attribute_value('PreserveMsgProperty')
+    qosdegradationallowed   = get_attribute_value('QOSDegradationAllowed')
+    qos                     = get_attribute_value('QualityOfService')
+    reconnectdelayincrease  = get_attribute_value('ReconnectDelayIncrease')
+    reconnectdelaymax       = get_attribute_value('ReconnectDelayMaximum')
+    reconnectdelaymin       = get_attribute_value('ReconnectDelayMinimum')
+    selector                = get_attribute_value('Selector')
+    started                 = get_attribute_value('Started')
+    transactiontimeout      = get_attribute_value('TransactionTimeout')
 
     sourcedestinationMbean = cmo.getSourceDestination()
     if sourcedestinationMbean:
        path = getPath(sourcedestinationMbean)
        cd("/"+path)
-       sourcedestination  = get('Name')
+       sourcedestination  = get_attribute_value('Name')
        cd('/MessagingBridges/'+token)
     else:
        sourcedestination = ''
@@ -34,7 +34,7 @@ for token in m:
     if targetdestinationMbean:
        path = getPath(targetdestinationMbean)
        cd("/"+path)
-       targetdestination  = get('Name')
+       targetdestination  = get_attribute_value('Name')
        cd('/MessagingBridges/'+token)
     else:
        targetdestination = ''

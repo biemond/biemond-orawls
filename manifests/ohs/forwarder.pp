@@ -59,7 +59,7 @@ define orawls::ohs::forwarder (
                     'servers'        => $servers,
                     'servers_string' => $servers_string}),
     owner   => $os_user,
-    group   => $os_user,
+    group   => $os_group,
     mode    => '0640',
   }
 }

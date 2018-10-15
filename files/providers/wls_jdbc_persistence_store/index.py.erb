@@ -2,7 +2,7 @@
 
 m = ls('/JDBCStores',returnMap='true')
 
-f = open_file("name;datasource;prefix_name;target;targettype;domain")
+f = open_file("name;datasource;prefix_name;migration_policy;distribution_policy;target;targettype;domain", tmp_script)
 for token in m:
     print '___'+token+'___'
     cd('/JDBCStores/'+token)
@@ -10,10 +10,12 @@ for token in m:
     datasourceObject = get('DataSource')
     datasource = datasourceObject.getKeyProperty('Name')
 
-    prefix_name = get('PrefixName')
+    prefix_name = get_attribute_value('PrefixName')
+    migration_policy = get('MigrationPolicy')
+    distribution_policy = get('DistributionPolicy')
 
     target, targetType = retrieve_target_list('/JDBCStores/'+token)
 
-    add_index_entry(f, [domain+'/'+token,datasource,prefix_name,','.join(target),','.join(targetType),domain])
+    add_index_entry(f, [domain+'/'+token,datasource,prefix_name,migration_policy,distribution_policy,','.join(target),','.join(targetType),domain])
 f.close()
 report_back_success()

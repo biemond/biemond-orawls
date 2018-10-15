@@ -1,5 +1,5 @@
 
-f = open_file("name;realm;expression;domain")
+f = open_file("name;realm;expression;domain", tmp_script)
 
 realmName = cmo.getSecurityConfiguration().getDefaultRealm()
 mapper    = realmName.lookupRoleMapper('XACMLRoleMapper');

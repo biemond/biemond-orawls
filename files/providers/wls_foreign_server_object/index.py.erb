@@ -2,11 +2,11 @@
 
 def object(token,token2,token3,location,type):
     cd(location)
-    add_index_entry(f, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,cmo.getLocalJNDIName(),cmo.getRemoteJNDIName(),domain])
+    add_index_entry(f, [domain+'/'+token+":"+token2+":"+token3,token,token2,type,get_attribute_value('LocalJNDIName'),get_attribute_value('RemoteJNDIName'),domain])
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;foreign_server;object_type;localjndiname;remotejndiname;domain")
+f = open_file("name;jmsmodule;foreign_server;object_type;localjndiname;remotejndiname;domain", tmp_script)
 for token in m:
     print '_jmsmodule_'+token+'___'
     cd('/JMSSystemResources/'+token+'/JMSResource/'+token)

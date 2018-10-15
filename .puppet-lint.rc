@@ -1,0 +1,6 @@
+# PuppetLint.configuration.send('disable_relative')
+# PuppetLint.configuration.send("disable_80chars")
+# PuppetLint.configuration.send("disable_140chars")
+--no-140chars-check
+--no-80chars-check
+--no-variable_is_lowercase-check

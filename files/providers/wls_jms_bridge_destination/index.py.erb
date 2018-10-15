@@ -2,20 +2,20 @@
 
 m = ls('/JMSBridgeDestinations',returnMap='true')
 
-f = open_file("name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password")
+f = open_file("name;adapter;classpath;connectionfactoryjndi;connectionurl;destinationjndi;destinationtype;initialcontextfactory;user_name;password", tmp_script)
 for token in m:
     print '___'+token+'___'
 
     cd('/JMSBridgeDestinations/' + token )
 
-    adapter = get('AdapterJNDIName')
-    classpath = get('Classpath')
-    connectionfactoryjndi = get('ConnectionFactoryJNDIName')
-    connectionurl = get('ConnectionURL')
-    destinationjndi = get('DestinationJNDIName')
-    destinationtype = get('DestinationType')
-    initialcontextfactory = get('InitialContextFactory')
-    user_name = get('UserName')
+    adapter = get_attribute_value('AdapterJNDIName')
+    classpath = get_attribute_value('Classpath')
+    connectionfactoryjndi = get_attribute_value('ConnectionFactoryJNDIName')
+    connectionurl = get_attribute_value('ConnectionURL')
+    destinationjndi = get_attribute_value('DestinationJNDIName')
+    destinationtype = get_attribute_value('DestinationType')
+    initialcontextfactory = get_attribute_value('InitialContextFactory')
+    user_name = get_attribute_value('UserName')
     password = ''
 
     add_index_entry(f, [domain+'/'+token,adapter,classpath,connectionfactoryjndi,connectionurl,destinationjndi,destinationtype,initialcontextfactory,user_name,password])

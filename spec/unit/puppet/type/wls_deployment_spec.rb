@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'puppet'
 require 'puppet/type/wls_deployment'
 

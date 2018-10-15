@@ -33,13 +33,13 @@
 #     custom_trust                          => true,
 #     trust_keystore_file                   => '/vagrant/trust.jks',
 #     trust_keystore_passphrase             => 'welcome',
-#     custom_identity                       => true, 
+#     custom_identity                       => true,
 #     custom_identity_keystore_filename     => '/vagrant/identity_admin.jks',
 #     custom_identity_keystore_passphrase   => 'welcome',
 #     custom_identity_alias                 => 'admin',
 #     custom_identity_privatekey_passphrase => 'welcome',
 #   }
-#  
+#
 # @param version used weblogic software like 1036
 # @param wls_domains_dir root directory for all the WebLogic domains
 # @param middleware_home_dir directory of the Oracle software inside the oracle base directory
@@ -79,12 +79,14 @@
 # @param adminserver_ssl_port the ssl port of the adminserver
 # @param adminserver_listen_on_all_interfaces adminserver listen on all VM interfaces
 # @param java_arguments override the server argument of the managed servers created by the domain creation
-# @param nodemanager_secure_listener use nodemanager in secure mode 
+# @param nodemanager_secure_listener use nodemanager in secure mode
 # @param nodemanager_username the username of the nodemanager
 # @param nodemanager_password the password of the nodemanager
 # @param domain_password the domain password
 # @param webtier_enabled webtier template extension add to the domain
 # @param rcu_database_url the rcu database url
+# @param rcu_tablespace the tablespace used for the rco
+# @param rcu_temp_tablespace the tablespace used for the rco
 # @param repository_sys_user the rcu sys username
 # @param repository_sys_password the rcu sys passoword
 # @param log_dir the full path to the log directory
@@ -95,6 +97,7 @@
 # @param wls_domains_file the localtion where local domains are stored
 # @param puppet_os_user the username under puppet should be executed
 # @param create_default_coherence_cluster option to skip the coherence cluster template be added to the domain
+# @param wcs_satellite if true it loads just Oracle WebCenter Sites - Satellite Server template
 #
 define orawls::domain (
   Integer $version                                        = $::orawls::weblogic::version,
@@ -103,7 +106,7 @@ define orawls::domain (
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
   Optional[String] $wls_apps_dir                          = $::orawls::weblogic::wls_apps_dir,
-  String $domain_template                                 = 'standard', # adf|adf_restricted|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wc_wcc_bpm|oud|ohs_standalone
+  String $domain_template                                 = 'standard', # adf|adf_restricted|forms|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wcs|wc_wcc_bpm|oud|ohs_standalone
   Boolean $bam_enabled                                    = true,  #only for SOA Suite
   Boolean $b2b_enabled                                    = false, #only for SOA Suite 12.1.3 with b2b
   Boolean $ess_enabled                                    = false, #only for SOA Suite 12.1.3
@@ -133,6 +136,8 @@ define orawls::domain (
   Boolean $log_output                                     = $::orawls::weblogic::log_output,
   Optional[String] $repository_database_url               = undef, #jdbc:oracle:thin:@192.168.50.5:1521:XE
   Optional[String] $rcu_database_url                      = undef, #localhost:1521:XE"
+  Optional[String] $rcu_temp_tablespace                   = undef, #TEMP
+  Optional[String] $rcu_tablespace                        = undef, #SOA_INFRA
   Optional[String] $repository_prefix                     = 'DEV',
   Optional[String] $repository_password                   = undef,
   Optional[String] $repository_sys_user                   = 'sys',
@@ -152,6 +157,7 @@ define orawls::domain (
   String $wls_domains_file                                = '/etc/wls_domains.yaml',
   String $puppet_os_user                                  = 'root',
   Boolean $create_default_coherence_cluster               = true,
+  Boolean $wcs_satellite                                  = false,
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -276,11 +282,20 @@ define orawls::domain (
       $templateHEALTH       = "${middleware_home_dir}/soa/common/templates/wls/oracle.soa.healthcare_template_12.1.3.jar"
 
     } elsif $version >= 1221 {
-      $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
-      $templateWS        = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template.jar"
-      $templateJaxWS     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template.jar"
-      $templateSoapJms   = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template.jar"
-      $templateCoherence = "${weblogic_home_dir}/common/templates/wls/wls_coherence_template.jar"
+
+      if $domain_template == 'wcs'{
+        $template          = 'Basic WebLogic Server Domain'
+        $templateCoherence = 'WebLogic Coherence Cluster Extension'
+        $templateWS        = 'WebLogic Advanced Web Services for JAX-RPC Extension'
+        $templateJaxWS     = 'WebLogic Advanced Web Services for JAX-WS Extension'
+        $templateSoapJms   = 'WebLogic JAX-WS SOAP/JMS Extension'
+      } else {
+        $template          = "${weblogic_home_dir}/common/templates/wls/wls.jar"
+        $templateCoherence = "${weblogic_home_dir}/common/templates/wls/wls_coherence_template.jar"
+        $templateWS        = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-template.jar"
+        $templateJaxWS     = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-jaxws-template.jar"
+        $templateSoapJms   = "${middleware_home_dir}/oracle_common/common/templates/wls/oracle.wls-webservice-soapjms-template.jar"
+      }
 
       if $domain_template == 'adf_restricted' {
         $templateEM        = "${middleware_home_dir}/em/common/templates/wls/oracle.em_wls_restricted_template.jar"
@@ -338,7 +353,7 @@ define orawls::domain (
 
     $templateUCM          = "${middleware_home_dir}/Oracle_WCC1/common/templates/applications/oracle.ucm.cs_template_11.1.1.jar"
 
-    if $domain_template != 'ohs_standalone' {
+    if $domain_template != 'ohs_standalone' and $domain_template != 'wcs'{
       $templateFile = 'orawls/domains/domain.py.epp'
     }
 
@@ -356,7 +371,27 @@ define orawls::domain (
       $extensionsTemplateFile = undef
       $wlstPath       = "${weblogic_home_dir}/common/bin"
 
-    } elsif $domain_template == 'osb' {
+    }
+    elsif $domain_template == 'forms' {
+      if ($version >= 1221) {
+        $extensionsTemplateFile = 'orawls/domains/extensions/forms_template.py.erb'
+        $wlstPath               = "${middleware_home_dir}/oracle_common/common/bin"
+      }
+      else {
+        fail("Oracle Forms and Reports domain configuration currently works only with versions 12.2.1.#. Version ${version} not supported.")
+      }
+    }
+    elsif $domain_template == 'wcs' {
+      if ($version >= 1221) {
+        $extensionsTemplateFile = 'orawls/domains/extensions/wcs_template.py.erb'
+        $wlstPath               = "${middleware_home_dir}/oracle_common/common/bin"
+        $templateFile           = 'orawls/domains/domain_1221.py.epp'
+      }
+      else {
+        fail("WebCenter Sites domain configuration currently works only with versions 12.2.1.#. Version ${version} not supported.")
+      }
+    }
+    elsif $domain_template == 'osb' {
       $extensionsTemplateFile = 'orawls/domains/extensions/osb_template.py.erb'
 
       if ( $version >= 1221 ) {
@@ -655,7 +690,10 @@ define orawls::domain (
 
       } elsif ( $domain_template in ['soa', 'osb', 'osb_soa_bpm', 'osb_soa', 'soa_bpm', 'bam'] ){
         $rcu_domain_template = 'soa'
-
+      } elsif ( $domain_template == 'wcs' ){
+        $rcu_domain_template = 'wcs'
+      } elsif ( $domain_template == 'forms' ){
+        $rcu_domain_template = 'forms'
       } elsif ($create_rcu == undef or $create_rcu == true) {
         fail('unkown domain_template for rcu with version 1212 or 1213')
       }
@@ -680,6 +718,8 @@ define orawls::domain (
           rcu_action                  => 'create',
           rcu_jdbc_url                => $repository_database_url,
           rcu_database_url            => $rcu_database_url,
+          rcu_temp_tablespace         => $rcu_temp_tablespace,
+          rcu_tablespace              => $rcu_tablespace,
           rcu_sys_user                => $repository_sys_user,
           rcu_sys_password            => $repository_sys_password,
           rcu_prefix                  => $repository_prefix,

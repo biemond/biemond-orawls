@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain")
+f = open_file("name;jmsmodule;subdeployment;defaulttargeting;extraproperties;connectionurl;initialcontextfactory;domain", tmp_script)
 
 for token in m:
     print '_jmsmodule_'+token+'___'
@@ -19,13 +19,13 @@ for token in m:
               properties.append(token3+"="+str(get('Value')))
 
             cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ForeignServers/'+token2)
-            defaultTargetingEnabled = str(get('DefaultTargetingEnabled'))
+            defaultTargetingEnabled = get_attribute_value('DefaultTargetingEnabled')
             if defaultTargetingEnabled == '1':
               subDeploymentName = ''
             else:
-              subDeploymentName = cmo.getSubDeploymentName()
+              subDeploymentName = get_attribute_value('SubDeploymentName')
 
-            add_index_entry(f, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),cmo.getConnectionURL(),cmo.getInitialContextFactory(),domain])
+            add_index_entry(f, [domain+'/'+token+":"+token2,token,subDeploymentName,defaultTargetingEnabled,','.join(properties),get_attribute_value('ConnectionURL'),get_attribute_value('InitialContextFactory'),domain])
 
 f.close()
 report_back_success()

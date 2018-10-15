@@ -1,7 +1,7 @@
 real_domain='<%= resource.domain %>'
 
 try:
-    puppet = open("/tmp/wlstScript.out", "w")
+    puppet = open(tmp_script, "w")
     print >>puppet, 'value'
 
 <%= function_content %>

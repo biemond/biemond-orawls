@@ -22,6 +22,7 @@ log_file_min_size           = '<%= log_file_min_size %>'
 log_filecount               = '<%= log_filecount %>'
 log_rotate_logon_startup    = '<%= log_rotate_logon_startup %>'
 log_rotationtype            = '<%= log_rotationtype %>'
+log_rotationdir             = '<%= log_rotationdir %>'
 log_number_of_files_limited = '<%= log_number_of_files_limited %>'
 log_redirect_stderr_to_server = '<%= log_redirect_stderr_to_server %>'
 log_redirect_stdout_to_server = '<%= log_redirect_stdout_to_server %>'
@@ -153,6 +154,7 @@ try:
     cd('/Servers/'+name+'/Log/'+name)
     set_attribute_value('FileName', logFilename, use_default_value_when_empty)
     set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('LogFileRotationDir', log_rotationdir, use_default_value_when_empty)
     set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
     set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
     set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
@@ -169,6 +171,7 @@ try:
     set_attribute_value('FileCount', log_http_file_count, use_default_value_when_empty)
     set_attribute_value('FileName', log_http_Filename, use_default_value_when_empty)
     set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('LogFileRotationDir', log_rotationdir, use_default_value_when_empty)
     set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
     set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
     set_attribute_value('LogFileFormat', log_http_format_type, use_default_value_when_empty)
@@ -179,6 +182,7 @@ try:
     cd('/Servers/'+name+'/DataSource/'+name+'/DataSourceLogFile/'+name)
     set_attribute_value('FileName', log_datasource_Filename, use_default_value_when_empty)
     set_attribute_value('RotationType', log_rotationtype, use_default_value_when_empty)
+    set_attribute_value('LogFileRotationDir', log_rotationdir, use_default_value_when_empty)
     set_attribute_value('RotateLogOnStartup', log_rotate_logon_startup, use_default_value_when_empty)
     set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
     set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)

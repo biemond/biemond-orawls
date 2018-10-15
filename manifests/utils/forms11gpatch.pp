@@ -33,6 +33,7 @@ define orawls::utils::forms11gpatch (
   String $os_group                                        = $::orawls::weblogic::os_group,
   String $download_dir                                    = $::orawls::weblogic::download_dir,
   Boolean $log_output                                     = $::orawls::weblogic::log_output,
+  Optional[String] $orainstpath_dir                       = lookup('orawls::orainst_dir'),
 )
 {
   $fmw_product  = 'forms_patch'
@@ -41,7 +42,6 @@ define orawls::utils::forms11gpatch (
 
   case $facts['kernel'] {
     'Linux': {
-      $oraInstPath = '/etc'
       case $facts['architecture'] {
         'i386': {
           $installDir = 'linux'
@@ -52,7 +52,6 @@ define orawls::utils::forms11gpatch (
       }
     }
     'SunOS': {
-      $oraInstPath = '/var/opt/oracle'
       case $facts['architecture'] {
         'i86pc': {
           $installDir = 'intelsolaris'
@@ -68,7 +67,7 @@ define orawls::utils::forms11gpatch (
 
   }
 
-  $fmw_silent_response_file = 'orawls/fmw_silent_forms_patch.rsp.erb'
+  $fmw_silent_response_file = 'orawls/fmw_silent_forms_patch.rsp.epp'
   if ($oracle_home_dir == undef) {
     $oracleHome = "${middleware_home_dir}/Oracle_FRM1"
   }
@@ -84,7 +83,9 @@ define orawls::utils::forms11gpatch (
 
     file { "${download_dir}/${title}_silent_${fmw_product}.rsp":
       ensure  => present,
-      content => template($fmw_silent_response_file),
+      content => epp($fmw_silent_response_file, {
+                      'middleware_home_dir' => $middleware_home_dir,
+                      'oracleHome'          => $oracleHome }),
       mode    => '0775',
       owner   => $os_user,
       group   => $os_group,
@@ -114,19 +115,20 @@ define orawls::utils::forms11gpatch (
       user      => $os_user,
       group     => $os_group,
       logoutput => false,
+      notify    => Exec["install ${fmw_product} ${title}"],
     }
 
     $command = "-silent -response ${download_dir}/${title}_silent_${fmw_product}.rsp -waitforcompletion"
 
     exec { "install ${fmw_product} ${title}":
-      command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${oraInstPath}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
+      command     => "/bin/sh -c 'unset DISPLAY;${download_dir}/${fmw_product}/Disk1/install/${installDir}/runInstaller ${command} -invPtrLoc ${orainstpath_dir}/oraInst.loc -ignoreSysPrereqs -jreLoc ${jdk_home_dir} -Djava.io.tmpdir=${temp_dir}'",
       environment => "TEMP=${temp_dir}",
       timeout     => 0,
-      # creates     => "${oracleHome}/OPatch",
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
       logoutput   => $log_output,
+      refreshonly => true,
       require     => [File["${download_dir}/${title}_silent_${fmw_product}.rsp"],
                       Exec["extract ${fmw_file1}"],],
     }

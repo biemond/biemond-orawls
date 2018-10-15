@@ -257,7 +257,7 @@ define orawls::utils::fmwcluster (
           group   => $os_group,
         }
         exec { "execwlst create OPSS store ${domain_name} ${title}":
-          command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py ${weblogic_password}",
+          command     => "${middleware_home_dir}/oracle_common/common/bin/wlst.sh ${download_dir}/migrateSecurityStore_${domain_name}.py \'${weblogic_password}\'",
           environment => ["JAVA_HOME=${jdk_home_dir}"],
           require     => File["migrateSecurityStore.py ${domain_name} ${title}"],
           timeout     => 0,
@@ -476,7 +476,7 @@ define orawls::utils::fmwcluster (
 
       # execute WLST script
       exec { "execwlst changeWorkmanagers.py ${title}":
-        command     => "${javaCommand} ${download_dir}/changeWorkmanagers${title}.py ${weblogic_password}",
+        command     => "${javaCommand} ${download_dir}/changeWorkmanagers${title}.py \'${weblogic_password}\'",
         environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                         "JAVA_HOME=${jdk_home_dir}"],
         path        => $exec_path,
@@ -501,7 +501,7 @@ define orawls::utils::fmwcluster (
 
         # execute WLST script
         exec { "execwlst changeWorkmanagersOim.py ${title}":
-          command     => "${javaCommand} ${download_dir}/changeWorkmanagersOim${title}.py ${weblogic_password}",
+          command     => "${javaCommand} ${download_dir}/changeWorkmanagersOim${title}.py \'${weblogic_password}\'",
           environment => ["CLASSPATH=${weblogic_home_dir}/server/lib/weblogic.jar",
                           "JAVA_HOME=${jdk_home_dir}"],
           path        => $exec_path,

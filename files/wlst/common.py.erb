@@ -32,8 +32,8 @@ def quote(text):
         return ""
 
 
-def open_file(fields):
-    f = open("/tmp/wlstScript.out", "w")
+def open_file(fields, tmp_script):
+    f = open(tmp_script, "w")
     print >>f, fields
     return f
 
@@ -192,6 +192,69 @@ def auto_typed_set(key, value):
     else:
         print 'Setting generic property ' + key + ' to ' + value
         set(key, value)
+
+
+def get_attribute_value(mbean_attribute):
+    print "get att " + mbean_attribute
+    attribute_fields = ['interfaceclassname', 'defaultValue', 'com.bea.defaultValueNull']
+    try:
+        fields = getMBI().getAttribute(mbean_attribute).getDescriptor().getFieldValues(attribute_fields)
+    except:
+        print "error retrieving fields do ls()"
+        ls()
+        print "Unexpected error:", sys.exc_info()[0]
+        raise
+    print fields
+    key_type = fields[0]
+    # have default value
+    default_value = fields[1]
+    # defaulvalue is null
+    null_value = fields[2]
+    #
+    if key_type == 'int':
+        print 'getting integer property ' + mbean_attribute
+        real_value = get(mbean_attribute)
+        if real_value is not None:
+            return str(int(real_value))
+        elif default_value is not None:
+            return str(int(default_value))
+        elif null_value == 1:
+            return ''
+        else:
+            return
+    elif key_type == 'boolean':
+        print 'Getting boolean property ' + mbean_attribute
+        real_value = get(mbean_attribute)
+        if real_value is not None:
+            return str(real_value)
+        elif default_value is not None:
+            return str(default_value)
+        elif null_value == 1:
+            return '0'
+        else:
+            return
+    elif key_type == 'float':
+        print 'Getting float property ' + mbean_attribute
+        get(mbean_attribute)
+        print 'Getting boolean property ' + mbean_attribute
+        real_value = get(mbean_attribute)
+        if real_value is not None:
+            return str(float(real_value))
+        elif default_value is not None:
+            return str(float(default_value))
+        elif null_value == 1:
+            return ''
+        else:
+            return
+    else:
+        print 'Getting generic property ' + mbean_attribute
+        real_value = get(mbean_attribute)
+        if real_value is not None:
+            return real_value
+        elif default_value is not None:
+            return default_value
+        else:
+            return ''
 
 
 def set_attribute_value(mbean_attribute, value=None, set_default=True):

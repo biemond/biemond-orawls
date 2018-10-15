@@ -1,6 +1,6 @@
 
 
-f = open_file("name;domain_partition_name;resource_group_name;versionidentifier;deploymenttype;stagingmode;domain")
+f = open_file("name;domain_partition_name;resource_group_name;versionidentifier;deploymenttype;stagingmode;domain", tmp_script)
 
 domainConfig()
 
@@ -21,11 +21,11 @@ for domain_partition_name in m:
         for appName in myapps:
             cd(wlst_name + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/AppDeployments/' + appName.getName())
 
-            app = get('ApplicationName')
-            print get('Type')
-            deploymenttype = get('Type')
-            versionidentifier = get('VersionIdentifier')
-            stagingmode = get('StagingMode')
+            app = get_attribute_value('ApplicationName')
+            print get_attribute_value('Type')
+            deploymenttype = get_attribute_value('Type')
+            versionidentifier = get_attribute_value('VersionIdentifier')
+            stagingmode = get_attribute_value('StagingMode')
 
             add_index_entry(f, [domain + '/' + domain_partition_name + ':' + resource_group_name + ':' + app, domain_partition_name, resource_group_name, versionidentifier, deploymenttype, stagingmode, domain])
 
@@ -35,11 +35,11 @@ for domain_partition_name in m:
         for libName in mylibs:
             cd(wlst_name + domain_partition_name + '/ResourceGroups/' + resource_group_name + '/Libraries/' + libName.getName())
 
-            lib = get('ApplicationName')
-            print get('Type')
-            deploymenttype = get('Type')
-            versionidentifier = get('VersionIdentifier')
-            stagingmode = get('StagingMode')
+            lib = get_attribute_value('ApplicationName')
+            print get_attribute_value('Type')
+            deploymenttype = get_attribute_value('Type')
+            versionidentifier = get_attribute_value('VersionIdentifier')
+            stagingmode = get_attribute_value('StagingMode')
 
             add_index_entry(f, [domain + '/' + domain_partition_name + ':' + resource_group_name + ':' + lib, domain_partition_name, resource_group_name, versionidentifier, deploymenttype, stagingmode, domain])
 

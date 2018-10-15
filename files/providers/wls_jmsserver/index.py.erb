@@ -1,23 +1,24 @@
 
 m = ls('/JMSServers',returnMap='true')
 
-f = open_file("name;target;targettype;persistentstore;persistentstoretype;bytes_maximum;allows_persistent_downgrade;store_enabled;domain;insertionpaused;consumptionpaused;productionpaused")
+f = open_file("name;target;targettype;persistentstore;persistentstoretype;bytes_maximum;messages_maximum;allows_persistent_downgrade;store_enabled;domain;insertionpaused;consumptionpaused;productionpaused", tmp_script)
 for token in m:
   print '___'+token+'___'
   cd('/JMSServers/'+token)
 
-  bytesMaximum = get('BytesMaximum')
-  insertion_paused   = translate(get('InsertionPausedAtStartup'))
-  consumption_paused = translate(get('ConsumptionPausedAtStartup'))
-  production_paused  = translate(get('ProductionPausedAtStartup'))
+  bytesMaximum       = get_attribute_value('BytesMaximum')
+  messagesMaximum    = get_attribute_value('MessagesMaximum')
+  insertion_paused   = get_attribute_value('InsertionPausedAtStartup')
+  consumption_paused = get_attribute_value('ConsumptionPausedAtStartup')
+  production_paused  = get_attribute_value('ProductionPausedAtStartup')
 
   try:
-    storeEnabled = str(get('StoreEnabled'))
+    storeEnabled = get_attribute_value('StoreEnabled')
   except:
     print "probably not supported"
     storeEnabled = ''
 
-  allowsPersistentDowngrade  = str(get('AllowsPersistentDowngrade'))
+  allowsPersistentDowngrade  = get_attribute_value('AllowsPersistentDowngrade')
 
   n = ls('/JMSServers/'+token+'/Targets',returnMap='true')
   target = ''
@@ -25,7 +26,7 @@ for token in m:
   for token2 in n:
      target = token2
      cd('/JMSServers/'+token+'/Targets/'+token2)
-     targetType = get('Type')
+     targetType = get_attribute_value('Type')
 
   l = ls('/JMSServers/'+token+'/PersistentStore',returnMap='true')
 
@@ -35,9 +36,9 @@ for token in m:
   for token3 in l:
      persistentStore = token3
      cd('/JMSServers/'+token+'/PersistentStore/'+token3)
-     persistentStoreType = get('Type')
+     persistentStoreType = get_attribute_value('Type')
 
-  add_index_entry(f, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,bytesMaximum,allowsPersistentDowngrade,storeEnabled,domain,insertion_paused, consumption_paused, production_paused])
+  add_index_entry(f, [domain+'/'+token,target,targetType,persistentStore,persistentStoreType,bytesMaximum,messagesMaximum,allowsPersistentDowngrade,storeEnabled,domain,insertion_paused, consumption_paused, production_paused])
 f.close()
 report_back_success()
 

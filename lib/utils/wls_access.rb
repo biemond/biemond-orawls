@@ -319,6 +319,7 @@ module Utils
       debug_module                 = domainValues['debug_module']
       archive_path                 = domainValues['archive_path']
       use_default_value_when_empty = domainValues['use_default_value_when_empty']
+      tmp_path                     = domainValues['tmp_path']
       return_output                = options.fetch(:return_output) { false }
 
       fail('weblogic_home_dir cannot be nil, check the wls_setting resource type') if weblogicHomeDir.nil?
@@ -343,7 +344,7 @@ module Utils
         puts '^^^===================================================================='
       end
 
-      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, extraArguments, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty)
+      wls_daemon = WlsDaemon.run(eval_operatingSystemUser, domain, weblogicHomeDir, weblogicUser, weblogicPassword, weblogicConnectUrl, postClasspath, extraArguments, custom_trust, trust_keystore_file, trust_keystore_passphrase, use_default_value_when_empty, tmp_path)
 
       if debug_module.to_s == 'true'
         if !File.directory?(archive_path)
@@ -357,7 +358,7 @@ module Utils
       else
         wls_daemon.execute_script(tmpFile.path)
       end
-      File.read('/tmp/' + script + '.out') if return_output
+      File.read(tmp_path + '/' + script + domain + '.out') if return_output
     end
 
     def timeout_specified

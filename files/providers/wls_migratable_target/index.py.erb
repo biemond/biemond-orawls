@@ -1,23 +1,23 @@
 
 migratableTargets = ls('/MigratableTargets',returnMap='true')
 
-f = open_file("name;domain;migratable_target_name;cluster;user_preferred_server;constrained_candidate_servers;number_of_restart_attempts;seconds_between_restarts;migration_policy")
+f = open_file("name;domain;migratable_target_name;cluster;user_preferred_server;constrained_candidate_servers;number_of_restart_attempts;seconds_between_restarts;migration_policy", tmp_script)
 
 print 'migrate2'
 for migratableTarget in migratableTargets:
     print '___migratableTarget_'+migratableTarget+'___'
     cd('/MigratableTargets/'+migratableTarget)
-    print cmo.getName()
+    print get_attribute_value('Name')
     constrainedCandidateServers = ','.join(map(lambda server: server.getName(), cmo.getConstrainedCandidateServers()))
-    add_index_entry(f, [domain + '/' + cmo.getName(),
+    add_index_entry(f, [domain + '/' + get_attribute_value('Name'),
             domain,
-            cmo.getName(),
+            get_attribute_value('Name'),
             cmo.getCluster().getName(),
             cmo.getUserPreferredServer().getName(),
             constrainedCandidateServers,
-            cmo.getNumberOfRestartAttempts(),
-            cmo.getSecondsBetweenRestarts(),
-            cmo.getMigrationPolicy()
+            get_attribute_value('NumberOfRestartAttempts'),
+            get_attribute_value('SecondsBetweenRestarts'),
+            get_attribute_value('MigrationPolicy')
         ])
 f.close()
 report_back_success()

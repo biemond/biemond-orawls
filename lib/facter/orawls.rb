@@ -78,6 +78,40 @@ def get_orainst_loc
   end
 end
 
+def get_su_command
+  os = Facter.value(:kernel)
+  if 'Linux' == os
+    return 'su -l '
+  elsif 'SunOS' == os
+    return 'su - '
+  end
+  'su -l '
+end
+
+def get_opatch_version(name)
+  Puppet.debug "orawls check opatch version #{name}"
+  opatchOut = Facter::Util::Resolution.exec(name + '/OPatch/opatch version')
+  if opatchOut.nil?
+    opatchver = 'Error;'
+  else
+    opatchver = opatchOut.split(' ')[2]
+  end
+  Puppet.debug "orawls opatch #{opatchver}"
+  return opatchver  
+end
+
+def get_opatch_patches(name)
+  opatch_out = Facter::Util::Resolution.exec(get_su_command + get_weblogic_user + ' -c "' + name + '/OPatch/opatch lspatches"')
+  return nil if opatch_out.nil?
+
+  opatch_out.each_line.collect do |line|
+    next unless line =~ /^\d+;/
+    # Puppet.info "-patches- #{line}"
+    split_line = line.split(';')
+    { 'patch_id' => split_line[0], 'patch_desc' => (split_line[1] && split_line[1].chomp) }
+  end.compact
+end
+
 def get_orainst_products(path)
   # puts "get_orainst_products with path: "+path
   unless path.nil?
@@ -85,9 +119,37 @@ def get_orainst_products(path)
       file = File.read(path + '/ContentsXML/inventory.xml')
       doc = REXML::Document.new file
       software =  ''
+      patches_fact = {}
       doc.elements.each('/INVENTORY/HOME_LIST/HOME') do |element|
         str = element.attributes['LOC']
-        software += str + ';' unless str.nil?
+        unless str.nil?
+          software += str + ';'
+          if str.include? 'plugins'
+            # skip EM agent
+          elsif str.include? 'agent'
+            # skip EM agent
+          elsif str.include? 'OraPlaceHolderDummyHome'
+            # skip EM agent
+          else
+            home = str.gsub('/', '_').gsub("\\", '_').gsub('c:', '_c').gsub('d:', '_d').gsub('e:', '_e')
+            Puppet.debug "get opatch #{home}"
+            opatchver = get_opatch_version(str)
+            Puppet.debug "found opatch #{opatchver}"
+            Facter.add("orawls_inst_opatch#{home}") do
+              setcode do
+                opatchver
+              end
+            end
+
+            patches = get_opatch_patches(str)
+            # Puppet.info "-patches hash- #{patches}"
+            patches_fact[str] = patches unless patches.nil?
+          end
+        end
+      end
+      Facter.add('ora_mdw_opatch_patches') do
+        # Puppet.info "-all patches hash- #{patches_fact}"
+        setcode { patches_fact }
       end
       return software
     else
@@ -800,6 +862,7 @@ def get_wls_domains_file
   end
   '/etc/wls_domains.yaml'
 end
+
 
 # read the domains yaml and analyze domain
 begin

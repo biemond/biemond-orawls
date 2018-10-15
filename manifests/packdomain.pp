@@ -23,6 +23,7 @@ define orawls::packdomain (
   String $os_group            = $::orawls::weblogic::os_group,
   String $download_dir        = $::orawls::weblogic::download_dir,
   Boolean $log_output         = $::orawls::weblogic::log_output,
+  Boolean $managed            = false,
 )
 {
 
@@ -39,7 +40,7 @@ define orawls::packdomain (
   }
 
   $exec_path = "${jdk_home_dir}/bin:${lookup('orawls::exec_path')}"
-  $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
+  $packCommand = "${bin_dir} -domain=${domains_dir}/${domain_name} -template=${download_dir}/domain_${domain_name}.jar -template_name=domain_${domain_name} -managed=${managed} -log=${download_dir}/domain_${domain_name}.log -log_priority=INFO"
 
   exec { "pack domain ${domain_name} ${title}":
     command     => $packCommand,

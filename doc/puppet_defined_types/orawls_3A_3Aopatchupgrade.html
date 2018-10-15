@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: orawls::opatchupgrade
+  
+    &mdash; Documentation by YARD 0.9.16
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::orawls::opatchupgrade";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (o)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">orawls::opatchupgrade</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: orawls::opatchupgrade</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/opatchupgrade.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>opatch define</p>
+
+<p>installs oracle patches for Oracle products</p>
+
+  </div>
+</div>
+
+
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>should exist or not</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jdk_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::jdk_home_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>full path to the java home directory like /usr/java/default</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_user</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the user name with oracle as default</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>os_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::os_group</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the group name with dba as default</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log_output</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::log_output</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>show all the output of the the exec actions</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::download_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the directory for temporary created files by this class</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oracle_product_home_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>on what Oracle home to patch should be applied</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>patch_id</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>id of the patch</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>patch_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>only the full name of the patch</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>puppet_download_mnt_point</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::puppet_download_mnt_point</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the source of the installation files</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>orainstpath_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::orainstpath_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the location of orainst.loc, default it will the default directory for
+Linux or Solaris</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>remote_file</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$::orawls::weblogic::remote_file</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>to control if the filename is already accessiable on the VM</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>opversion</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_parameters</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;&#39;</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/opatchupgrade.pp', line 19</span>
+
+define orawls::opatchupgrade(
+  String $oracle_product_home_dir   = undef, # /opt/oracle/middleware11gR1
+  String $jdk_home_dir              = $::orawls::weblogic::jdk_home_dir,
+  Integer $patch_id                 = undef,
+  String $patch_file                = undef,
+  String $opversion                 = undef,
+  String $os_user                   = $::orawls::weblogic::os_user,
+  String $os_group                  = $::orawls::weblogic::os_group,
+  String $download_dir              = $::orawls::weblogic::download_dir,
+  String $puppet_download_mnt_point = $::orawls::weblogic::puppet_download_mnt_point,
+  Boolean $remote_file              = $::orawls::weblogic::remote_file,
+  Boolean $log_output               = $::orawls::weblogic::log_output,
+  Optional[String] $orainstpath_dir = $::orawls::weblogic::orainstpath_dir,
+  String $java_parameters           = &#39;&#39;,    # &#39;-Dspace.detection=false&#39;
+)
+{
+  $exec_path = &quot;${jdk_home_dir}/bin:${lookup(&#39;orawls::exec_path&#39;)}&quot;
+  $patch_dir = &quot;${oracle_product_home_dir}/OPatch&quot;
+
+  # check the opatch version
+  $installed_version = orawls::opatch_version($oracle_product_home_dir)
+
+  if $installed_version == $opversion {
+    $continue = false
+  } else {
+    notify {&quot;orawls::opatchupgrade ${title} ${installed_version} installed - performing upgrade&quot;:}
+    $continue = true
+  }
+
+  if ( $continue ) {
+    if $remote_file == true {
+      if ! defined(File[&quot;${download_dir}/${patch_file}&quot;]) {
+        file { &quot;${download_dir}/${patch_file}&quot;:
+          ensure =&gt; file,
+          source =&gt; &quot;${puppet_download_mnt_point}/${patch_file}&quot;,
+          backup =&gt; false,
+          mode   =&gt; &#39;0775&#39;,
+          owner  =&gt; $os_user,
+          group  =&gt; $os_group,
+        }
+      }
+      $disk1_file = &quot;${download_dir}/${patch_file}&quot;
+    } else {
+      $disk1_file = &quot;${puppet_download_mnt_point}/${patch_file}&quot;
+    }
+
+    $opatch_dir = &quot;${download_dir}/wls_opatch&quot;
+    $opatch_jar_file = &quot;${opatch_dir}/${patch_id}/opatch_generic.jar&quot;
+
+    # $disk1_file:      e.g. /u01/tmp/install/p28186730_139400_Generic.zip
+    # $opatch_dir:      e.g. /u01/tmp/install/wls_opatch
+    # $opatch_jar_file: e.g. /u01/tmp/install/wls_opatch/6880880/opatch_generic.jar
+
+    if $remote_file == true {
+      exec { &quot;extract opatch upgrade ${title} ${patch_file}&quot;:
+        command   =&gt; &quot;unzip -o ${disk1_file} -d ${opatch_dir}&quot;,
+        path      =&gt; $exec_path,
+        user      =&gt; $os_user,
+        group     =&gt; $os_group,
+        logoutput =&gt; $log_output,
+        require   =&gt; [File[$disk1_file]],
+      }
+    } else {
+      exec { &quot;extract opatch upgrade ${title} ${patch_file}&quot;:
+        command   =&gt; &quot;unzip -o ${disk1_file} -d ${opatch_dir}&quot;,
+        path      =&gt; $exec_path,
+        user      =&gt; $os_user,
+        group     =&gt; $os_group,
+        logoutput =&gt; $log_output,
+      }
+    }
+
+    $java_statement = &quot;${lookup(&#39;orawls::java&#39;)} ${java_parameters}&quot;
+    $command        = &quot;${java_statement} -jar ${opatch_jar_file} -silent oracle_home=${oracle_product_home_dir}&quot;
+
+    exec { &quot;install opatch upgrade ${title}&quot;:
+      command     =&gt; $command,
+      environment =&gt; [&#39;JAVA_VENDOR=Sun&#39;, &quot;JAVA_HOME=${jdk_home_dir}&quot;],
+      timeout     =&gt; 0,
+      path        =&gt; $exec_path,
+      user        =&gt; $os_user,
+      group       =&gt; $os_group,
+      onlyif      =&gt; &quot;test -f ${opatch_jar_file}&quot;,
+    }
+  }
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>

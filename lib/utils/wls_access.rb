@@ -358,7 +358,10 @@ module Utils
       else
         wls_daemon.execute_script(tmpFile.path)
       end
-      File.read(tmp_path + '/' + script + domain + '.out') if return_output
+      if return_output
+        csv_string=File.read(tmp_path + '/' + script + domain + '.out')
+        csv_string.gsub(/\000/, '')
+      end
     end
 
     def timeout_specified

@@ -1,5 +1,8 @@
 # History
 
+## 2.0.19
+- wls types fix with new lines in the wls output 
+
 ## 2.0.18
 - pdk compliant
 

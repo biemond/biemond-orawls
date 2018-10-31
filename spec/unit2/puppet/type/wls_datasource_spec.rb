@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'puppet'
+require 'puppet/type/wls_datasource'
 
 describe Puppet::Type.type(:wls_datasource) do
   describe 'when validating attributes' do

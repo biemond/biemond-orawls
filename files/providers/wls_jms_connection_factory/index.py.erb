@@ -2,7 +2,7 @@
 
 m = ls('/JMSSystemResources',returnMap='true')
 
-f = open_file("name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientid;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay", tmp_script)
+f = open_file("name;jmsmodule;jndiname;localjndiname;subdeployment;defaulttargeting;xaenabled;transactiontimeout;domain;clientid;clientidpolicy;subscriptionsharingpolicy;messagesmaximum;reconnectpolicy;loadbalancingenabled;serveraffinityenabled;attachjmsxuserid;defaultdeliverymode;defaultredeliverydelay;defaultunitoforder", tmp_script)
 
 for token in m:
   n = ls('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories',returnMap='true')
@@ -37,8 +37,9 @@ for token in m:
          cd('/JMSSystemResources/'+token+'/JMSResource/'+token+'/ConnectionFactories/'+token2+'/DefaultDeliveryParams/'+token2)
          defaultDeliveryMode = get_attribute_value('DefaultDeliveryMode')
          defaultRedeliveryDelay = get_attribute_value('DefaultRedeliveryDelay')
+         defaultUnitOfOrder = get_attribute_value('DefaultUnitOfOrder')
 
-         add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientId,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay])
+         add_index_entry(f, [domain+'/'+token+":"+token2,token,jndiname,localjndiname,subdeployment,defaultTargeting,xaEnabled,transactionTimeout,domain,clientId,clientIdPolicy,subscriptionSharingPolicy,messagesMaximum,reconnectPolicy,loadBalancingEnabled,serverAffinityEnabled,attachJmsXUserId,defaultDeliveryMode,defaultRedeliveryDelay,defaultUnitOfOrder])
 
 f.close()
 report_back_success()

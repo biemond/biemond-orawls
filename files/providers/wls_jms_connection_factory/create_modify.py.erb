@@ -21,6 +21,7 @@ serveraffinityenabled      = '<%= serveraffinityenabled %>'
 attachjmsxuserid           = '<%= attachjmsxuserid %>'
 defaultdeliverymode        = '<%= defaultdeliverymode %>'
 defaultredeliverydelay     = '<%= defaultredeliverydelay %>'
+defaultunitoforder         = '<%= defaultunitoforder %>'
 
 def formatBoolean(value):
   if value == '1':
@@ -73,6 +74,7 @@ try:
     cd('/JMSSystemResources/'+jmsmodule+'/JMSResource/'+jmsmodule+'/ConnectionFactories/'+name+'/DefaultDeliveryParams/'+name)
     set_attribute_value('DefaultDeliveryMode'   , defaultdeliverymode, use_default_value_when_empty)
     set_attribute_value('DefaultRedeliveryDelay', defaultredeliverydelay, use_default_value_when_empty)
+    set_attribute_value('DefaultUnitOfOrder', defaultunitoforder, use_default_value_when_empty)
 
     save()
     activate()

@@ -22,7 +22,7 @@ module Puppet
       if is_zipfile?(fetched_source)
         extracted_source = unzip(fetched_source)
       else
-        extracted_source = "#{source}/#{patch_id}"
+        extracted_source = "#{source}"
       end
       "apply #{extracted_source} -silent "
     end

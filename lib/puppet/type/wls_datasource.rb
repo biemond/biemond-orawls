@@ -77,6 +77,8 @@ module Puppet
     property :statementtimeout
     property :logindelayseconds
 
+    property :harvest_trigger_count
+
     add_title_attributes(:datasource_name) do
       /^((.*?\/)?(.*)?)$/
     end

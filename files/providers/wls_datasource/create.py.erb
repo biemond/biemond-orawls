@@ -37,6 +37,7 @@ inactiveconnectiontimeoutseconds        = '<%= inactiveconnectiontimeoutseconds 
 connectionreservetimeoutseconds         = '<%= connectionreservetimeoutseconds %>'
 statementtimeout                        = '<%= statementtimeout %>'
 logindelayseconds                       = '<%= logindelayseconds %>'
+harvest_trigger_count                   = '<%= harvest_trigger_count %>'
 
 
 edit()
@@ -92,6 +93,8 @@ try:
 
     set_attribute_value('StatementTimeout', statementtimeout, use_default_value_when_empty)
     set_attribute_value('LoginDelaySeconds', logindelayseconds, use_default_value_when_empty)
+
+    set_attribute_value('ConnectionHarvestTriggerCount', harvest_trigger_count, use_default_value_when_empty)
 
 <% unless removeinfectedconnections.nil? -%>
     set('RemoveInfectedConnections', <% if removeinfectedconnections == :true -%>True<% else %>False<% end %>)

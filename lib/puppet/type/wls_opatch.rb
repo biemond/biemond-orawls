@@ -27,6 +27,7 @@ module Puppet
         else
           extracted_source = "#{source}"
         end
+      end
       "apply #{extracted_source} -silent "
     end
 

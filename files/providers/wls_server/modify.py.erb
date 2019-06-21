@@ -89,6 +89,8 @@ frontend_host                  = '<%= frontendhost %>'
 frontend_http_port             = '<%= frontendhttpport %>'
 frontend_https_port            = '<%= frontendhttpsport %>'
 
+failure_action = '<%= failure_action %>'
+
 edit()
 startEdit()
 
@@ -216,6 +218,10 @@ try:
     set_attribute_value('FileCount', log_filecount, use_default_value_when_empty)
     set_attribute_value('NumberOfFilesLimited', log_number_of_files_limited, use_default_value_when_empty)
     set_attribute_value('FileMinSize', log_file_min_size, use_default_value_when_empty)
+
+    if failure_action:
+        cd('/Servers/'+name+'/OverloadProtection/'+name)
+        set_attribute_value('FailureAction', failure_action, use_default_value_when_empty)
 
     if default_file_store:
         cd('/Servers/' + name + '/DefaultFileStore/' + name)

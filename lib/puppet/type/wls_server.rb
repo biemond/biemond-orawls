@@ -104,6 +104,8 @@ module Puppet
 
     property :server_parameters
 
+    property :failure_action
+
     add_title_attributes(:server_name) do
       /^((.*?\/)?(.*)?)$/
     end

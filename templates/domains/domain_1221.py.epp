@@ -34,7 +34,8 @@
        Optional[String] $trust_keystore_file = undef, 
        Optional[String] $trust_keystore_passphrase = undef,
        Optional[String] $custom_identity_alias = undef,
-       Optional[String] $custom_identity_privatekey_passphrase = undef | -%>
+       Optional[String] $custom_identity_privatekey_passphrase = undef,
+       Optional[Boolean] $wls_apps_inside_domain = false | -%>
 
 
 # load common defs
@@ -45,6 +46,8 @@ DOMAIN_PATH = '<%= $domain_dir %>'
 DOMAIN = '<%= $domain_name %>'
 <% if $apps_dir { %>
 APP_PATH = '<%= $apps_dir %>/<%= $domain_name %>'
+<% } elsif $wls_apps_inside_domain { %>
+APP_PATH = '<%= $domain_dir %>/<%= $domain_name %>/applications'
 <% } %>
 
 # security

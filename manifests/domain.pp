@@ -169,6 +169,8 @@ define orawls::domain (
 
   if ( $wls_apps_inside_domain == false ) and ( ($wls_apps_dir == undef) or ($wls_apps_dir == '') ) {
     $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } elsif ( $wls_apps_inside_domain == true ) and ( ($wls_apps_dir == undef) or ($wls_apps_dir == '') ) {
+    $apps_dir =  undef
   } else {
     $apps_dir =  $wls_apps_dir
   }

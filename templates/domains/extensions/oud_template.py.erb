@@ -4,10 +4,10 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @apps_dir %>
-APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
-<% elsif @wls_apps_inside_domain %>
+<% if @wls_apps_inside_domain %>
 APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
+<% elsif @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
 # security

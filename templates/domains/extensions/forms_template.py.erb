@@ -4,11 +4,6 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @wls_apps_inside_domain %>
-APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
-<% elsif @apps_dir %>
-APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
-<% end %>
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -50,8 +45,6 @@ print('Loading all required templates')
 loadTemplates()
 
 dumpStack()
-
-setOption('AppDir', APP_PATH)
 
 print 'Change datasources'
 change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)

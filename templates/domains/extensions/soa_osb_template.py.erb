@@ -4,11 +4,6 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @wls_apps_inside_domain %>
-APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
-<% elsif @apps_dir %>
-APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
-<% end %>
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -61,10 +56,6 @@ readDomain(DOMAIN_PATH)
 change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
-
-<% if @apps_dir %>
-setOption('AppDir', APP_PATH )
-<% end %>
 
 print 'Extend...osb domain with template <%= @templateOSB %>'
 addTemplate('<%= @templateWS %>')
@@ -122,11 +113,6 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
 print 'Change AdminServer'
 cd('/Servers/' + ADMIN_SERVER)
 set('Machine', 'LocalMachine')
-
-
-<% if @apps_dir %>
-setOption('AppDir', APP_PATH)
-<% end %>
 
 print 'change soa_server1'
 cd('/')

@@ -4,12 +4,6 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @wls_apps_inside_domain %>
-APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
-<% elsif @apps_dir %>
-APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
-<% end %>
-
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -46,10 +40,6 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
-<% if @apps_dir %>
-setOption('AppDir', APP_PATH )
-<% end %>
-
 print 'Adding standard Template'
 addTemplate('<%= @templateApplCore %>')
 addTemplate('<%= @templateJRF %>')
@@ -62,10 +52,6 @@ if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
     addTemplate('<%= @templateEM %>')
 
 dumpStack()
-
-<% if @apps_dir %>
-setOption('AppDir', APP_PATH )
-<% end %>
 
 if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
     cd('/')

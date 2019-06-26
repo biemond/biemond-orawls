@@ -4,11 +4,6 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @wls_apps_inside_domain %>
-APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
-<% elsif @apps_dir %>
-APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
-<% end %>
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -57,8 +52,6 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
-setOption('AppDir', APP_PATH)
-
 print 'Adding WC Template'
 addTemplate('<%= @templateJRF %>')
 print 'Adding EM Template'
@@ -75,8 +68,6 @@ print 'Adding Discussion'
 addTemplate('<%= @templateDiscussion %>')
 
 dumpStack()
-
-setOption('AppDir', APP_PATH)
 
 print('change the default machine LocalMachine with type Machine')
 cd('/')

@@ -131,6 +131,9 @@ else:
 
 setOption('JavaHome', JAVA_HOME)
 
+if APP_PATH =~ String[1]:
+  setOption('AppDir', APP_PATH )
+
 print('write domain...')
 # write path + domain name
 writeDomain(DOMAIN_PATH)

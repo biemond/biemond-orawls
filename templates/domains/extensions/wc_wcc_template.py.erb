@@ -4,6 +4,11 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
+<% if @wls_apps_inside_domain %>
+APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
+<% elsif @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -57,6 +62,10 @@ readDomain(DOMAIN_PATH)
 change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
+
+if APP_PATH:
+  print('Set AppDir to ' + APP_PATH )
+  setOption('AppDir', APP_PATH )
 
 print 'Adding WC Template'
 addTemplate('<%= @templateJRF %>')

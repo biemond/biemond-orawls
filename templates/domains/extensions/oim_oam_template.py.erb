@@ -4,6 +4,11 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
+<% if @wls_apps_inside_domain %>
+APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
+<% elsif @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -57,6 +62,10 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
+<% if @apps_dir %>
+setOption('AppDir', APP_PATH )
+<% end %>
+
 print 'Adding SOA Template'
 addTemplate('<%= @templateApplCore %>')
 addTemplate('<%= @templateJRF %>')
@@ -73,6 +82,8 @@ print 'Adding OAM Template'
 addTemplate('<%= @templateOAM %>')
 
 dumpStack()
+
+setOption('AppDir', APP_PATH)
 
 cd('/')
 # destroy the normal one

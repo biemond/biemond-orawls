@@ -121,6 +121,7 @@ else:
 setOption('JavaHome', JAVA_HOME)
 
 if APP_PATH:
+  print('Set AppDir to ' + APP_PATH )
   setOption('AppDir', APP_PATH )
 
 print('write domain...')

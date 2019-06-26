@@ -44,11 +44,6 @@ execfile('<%= $download_dir %>/utils.py')
 WLHOME = '<%= $weblogic_home_dir %>'
 DOMAIN_PATH = '<%= $domain_dir %>'
 DOMAIN = '<%= $domain_name %>'
-<% if $wls_apps_inside_domain { %>
-APP_PATH = '<%= $domain_dir %>/<%= $domain_name %>/applications'
-<% } elsif $apps_dir { %>
-APP_PATH = '<%= $apps_dir %>/<%= $domain_name %>'
-<% } %>
 
 # security
 JSSE_ENABLED = <%= $jsse_enabled %>
@@ -130,9 +125,6 @@ else:
     setOption('ServerStartMode', 'prod')
 
 setOption('JavaHome', JAVA_HOME)
-
-if APP_PATH:
-  setOption('AppDir', APP_PATH )
 
 print('write domain...')
 # write path + domain name

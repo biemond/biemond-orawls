@@ -5,7 +5,7 @@ WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
 <% if @wls_apps_inside_domain %>
-APP_PATH = '<%= @domain_dir %>/<%= @domain_name %>/applications'
+APP_PATH = '<%= @domain_dir %>/applications'
 <% elsif @apps_dir %>
 APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>

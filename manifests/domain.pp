@@ -158,7 +158,8 @@ define orawls::domain (
   String $puppet_os_user                                  = 'root',
   Boolean $create_default_coherence_cluster               = true,
   Boolean $wcs_satellite                                  = false,
-  Boolean $wls_apps_inside_domain                         = false,
+  Optional[Boolean] $wls_apps_inside_domain               = false,
+  Optional[Boolean] $crossdomain_enabled                  = true,
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -635,7 +636,8 @@ define orawls::domain (
                     'trust_keystore_passphrase'             => $trust_keystore_passphrase,
                     'custom_identity_alias'                 => $custom_identity_alias,
                     'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase,
-                    'wls_apps_inside_domain'                => $wls_apps_inside_domain }),
+                    'wls_apps_inside_domain'                => $wls_apps_inside_domain,
+                    'crossdomain_enabled'                   => $crossdomain_enabled }),
       replace => true,
       backup  => false,
       mode    => lookup('orawls::permissions'),

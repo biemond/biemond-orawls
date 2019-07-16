@@ -219,9 +219,9 @@ def set_weblogic_password(username, password):
     cmo.setPassword(password)
 
 
-def set_cross_domain():
+def set_cross_domain(crossdomain_enabled):
     print 'set crossdomain'
     cd('/')
     create('base_domain', 'SecurityConfiguration')
     cd('/SecurityConfiguration/base_domain')
-    set('CrossDomainSecurityEnabled', 'True')
+    set('CrossDomainSecurityEnabled', crossdomain_enabled)

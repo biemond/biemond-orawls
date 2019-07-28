@@ -30,7 +30,7 @@ rake module:clean
 bundle exec puppet strings generate ./\*\*/*.pp ./lib/puppet/functions/**/*.rb
 bundle exec rake syntax
 bundle exec rake lint
-bundle exec rake ci:setup:rspec spec
+bundle exec rake spec
 bundle exec rubocop
 #bundle exec rake spec
 

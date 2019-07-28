@@ -1,5 +1,13 @@
 # History
 
+## 2.0.20
+- Added jms connection factory property "DefaultUnitOfOrder"
+- add harvest trigger count property to datasource
+- fix opatch error
+- wls_server add failure action property
+- add the ability to create the application folder inside the domain
+- add the ability to set cross domain security
+
 ## 2.0.19
 - wls types fix with new lines in the wls output 
 

@@ -4,7 +4,9 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @apps_dir %>
+<% if @wls_apps_inside_domain %>
+APP_PATH = '<%= @domain_dir %>/applications'
+<% elsif @apps_dir %>
 APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
@@ -61,7 +63,9 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
-setOption('AppDir', APP_PATH)
+if APP_PATH:
+  print('Set AppDir to ' + APP_PATH )
+  setOption('AppDir', APP_PATH )
 
 print 'Adding WC Template'
 addTemplate('<%= @templateJRF %>')
@@ -81,8 +85,6 @@ print 'Adding WCC Template'
 addTemplate('<%= @templateUCM %>')
 
 dumpStack()
-
-setOption('AppDir', APP_PATH)
 
 print 'Adding BPM Space Template'
 addTemplate('<%= @templateBPMSpaces %>')

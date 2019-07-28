@@ -158,6 +158,8 @@ define orawls::domain (
   String $puppet_os_user                                  = 'root',
   Boolean $create_default_coherence_cluster               = true,
   Boolean $wcs_satellite                                  = false,
+  Optional[Boolean] $wls_apps_inside_domain               = false,
+  Optional[Boolean] $crossdomain_enabled                  = true,
 )
 {
   if ( $wls_domains_dir == undef or $wls_domains_dir == '' ) {
@@ -166,8 +168,11 @@ define orawls::domain (
     $domains_dir =  $wls_domains_dir
   }
 
-  if ( $wls_apps_dir == undef or $wls_apps_dir == '') {
+  if ( $wls_apps_inside_domain == false ) and ( ($wls_apps_dir == undef) or ($wls_apps_dir == '') ) {
     $apps_dir = "${middleware_home_dir}/user_projects/applications"
+  } elsif ( $wls_apps_inside_domain == true ) {
+    $apps_dir =  undef
+    notify { "orawls::domain ${title} wls_apps_inside_domain is set to true so applications will be located at $wls_domains_dir/$domain_name/applications": }
   } else {
     $apps_dir =  $wls_apps_dir
   }
@@ -630,7 +635,9 @@ define orawls::domain (
                     'trust_keystore_file'                   => $trust_keystore_file,
                     'trust_keystore_passphrase'             => $trust_keystore_passphrase,
                     'custom_identity_alias'                 => $custom_identity_alias,
-                    'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase }),
+                    'custom_identity_privatekey_passphrase' => $custom_identity_privatekey_passphrase,
+                    'wls_apps_inside_domain'                => $wls_apps_inside_domain,
+                    'crossdomain_enabled'                   => $crossdomain_enabled }),
       replace => true,
       backup  => false,
       mode    => lookup('orawls::permissions'),
@@ -665,21 +672,6 @@ define orawls::domain (
         owner   => $os_user,
         group   => $os_group,
       }
-    }
-
-    if $apps_dir != undef {
-      if !defined(File[$apps_dir]) {
-        # check oracle install folder
-        file { $apps_dir:
-          ensure  => directory,
-          recurse => true,
-          replace => false,
-          mode    => lookup('orawls::permissions'),
-          owner   => $os_user,
-          group   => $os_group,
-        }
-      }
-      # File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
     # FMW RCU only for wls 12.1.2 or higher and when template is not standard
@@ -744,6 +736,33 @@ define orawls::domain (
       path        => $exec_path,
       user        => $os_user,
       group       => $os_group,
+    }
+
+    if $wls_apps_inside_domain {
+      if !defined(File["${domain_dir}/applications"]) {
+        file { "${domain_dir}/applications":
+          ensure  => directory,
+          recurse => true,
+          replace => false,
+          mode    => lookup('orawls::permissions'),
+          owner   => $os_user,
+          group   => $os_group,
+          require => Exec["execwlst ${domain_name} ${title}"],
+        }
+      }
+    } elsif $apps_dir != undef {
+        if !defined(File[$apps_dir]) {
+          # check oracle install folder
+          file { $apps_dir:
+            ensure  => directory,
+            recurse => true,
+            replace => false,
+            mode    => lookup('orawls::permissions'),
+            owner   => $os_user,
+            group   => $os_group,
+          }
+        }
+      # File[$apps_dir] -> Exec["execwlst ${domain_name} ${title}"]
     }
 
     if ($domain_template == 'ohs_standalone') {

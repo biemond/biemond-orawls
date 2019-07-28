@@ -34,7 +34,9 @@
        Optional[String] $trust_keystore_file = undef, 
        Optional[String] $trust_keystore_passphrase = undef,
        Optional[String] $custom_identity_alias = undef,
-       Optional[String] $custom_identity_privatekey_passphrase = undef | -%>
+       Optional[String] $custom_identity_privatekey_passphrase = undef,
+       Optional[Boolean] $wls_apps_inside_domain = false,
+       Optional[Boolean] $crossdomain_enabled = true | -%>
 
 
 # load common defs
@@ -43,9 +45,6 @@ execfile('<%= $download_dir %>/utils.py')
 WLHOME = '<%= $weblogic_home_dir %>'
 DOMAIN_PATH = '<%= $domain_dir %>'
 DOMAIN = '<%= $domain_name %>'
-<% if $apps_dir { %>
-APP_PATH = '<%= $apps_dir %>/<%= $domain_name %>'
-<% } %>
 
 # security
 JSSE_ENABLED = <%= $jsse_enabled %>
@@ -79,8 +78,7 @@ ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m
 print('Start normal domain... with template <%= $template %>')
 readTemplate('<%= $template %>')
 
-print('Set crossdomain')
-set_cross_domain()
+set_cross_domain('<%= crossdomain_enabled %>')
 
 cd('/')
 print('Set domain log')

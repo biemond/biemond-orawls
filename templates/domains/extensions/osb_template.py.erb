@@ -4,7 +4,9 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
-<% if @apps_dir %>
+<% if @wls_apps_inside_domain %>
+APP_PATH = '<%= @domain_dir %>/applications'
+<% elsif @apps_dir %>
 APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
 <% end %>
 
@@ -52,9 +54,9 @@ change_server_arguments(ADMIN_SERVER, ADM_JAVA_ARGUMENTS)
 
 cd('/')
 
-<% if @apps_dir %>
-setOption('AppDir', APP_PATH)
-<% end %>
+if APP_PATH:
+  print('Set AppDir to ' + APP_PATH )
+  setOption('AppDir', APP_PATH )
 
 print 'Adding EM Template'
 addTemplate('<%= @templateEM %>')
@@ -84,10 +86,6 @@ if WEBLOGIC_VERSION in [1036, 1111] and OWSM_ENABLED == True:
     change_datasource_driver('wlsbjmsrpDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
 
 print 'weblogic version' + str(WEBLOGIC_VERSION)
-
-<% if @apps_dir %>
-setOption('AppDir', APP_PATH)
-<% end %>
 
 print 'change osb_server1'
 cd('/')

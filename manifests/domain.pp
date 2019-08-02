@@ -172,7 +172,7 @@ define orawls::domain (
     $apps_dir = "${middleware_home_dir}/user_projects/applications"
   } elsif ( $wls_apps_inside_domain == true ) {
     $apps_dir =  undef
-    notify { "orawls::domain ${title} wls_apps_inside_domain is set to true so applications will be located at $wls_domains_dir/$domain_name/applications": }
+    notify { "orawls::domain ${title} wls_apps_inside_domain is set to true so applications will be located at ${wls_domains_dir}/${domain_name}/applications": }
   } else {
     $apps_dir =  $wls_apps_dir
   }

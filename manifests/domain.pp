@@ -105,7 +105,7 @@ define orawls::domain (
   String $middleware_home_dir                             = $::orawls::weblogic::middleware_home_dir,
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   Optional[String] $wls_domains_dir                       = $::orawls::weblogic::wls_domains_dir,
-  Optional[String] $wls_apps_dir                          = $::orawls::weblogic::wls_apps_dir,
+  Optional[String] $wls_apps_dir                          = undef,
   String $domain_template                                 = 'standard', # adf|adf_restricted|forms|osb|osb_soa_bpm|osb_soa|soa|soa_bpm|bam|wc|wcs|wc_wcc_bpm|oud|ohs_standalone
   Boolean $bam_enabled                                    = true,  #only for SOA Suite
   Boolean $b2b_enabled                                    = false, #only for SOA Suite 12.1.3 with b2b

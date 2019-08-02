@@ -29,7 +29,6 @@
       "version_requirement": ">=4.9.0"
     }
   ],
-  "data_provider": "hiera",
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",

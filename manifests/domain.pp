@@ -638,10 +638,10 @@ define orawls::domain (
     $domain_template_variables = $domain_template ? {
       'ohs_standalone' => $default_domain_template_variables,
 
-       default         => merge($default_domain_template_variables, {
-         'wls_apps_inside_domain' => $wls_apps_inside_domain,
-         'crossdomain_enabled' => $crossdomain_enabled
-       }),
+      default         => merge($default_domain_template_variables, {
+        'wls_apps_inside_domain' => $wls_apps_inside_domain,
+        'crossdomain_enabled' => $crossdomain_enabled
+      }),
     }
 
     # the domain.py used by the wlst

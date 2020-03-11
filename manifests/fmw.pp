@@ -743,7 +743,7 @@ define orawls::fmw(
     }
 
     if $facts['kernel'] == 'SunOS' {
-      if $version != 1213 {
+      if $version < 1213 {
         if $fmw_product == 'soa' {
           exec { "add -d64 oraparam.ini ${sanitised_title}":
             command   => "sed -e's/JRE_MEMORY_OPTIONS=\" -Xverify:none\"/JRE_MEMORY_OPTIONS=\"-d64 -Xverify:none\"/g' ${download_dir}/${sanitised_title}/Disk1/install/${installDir}/oraparam.ini > ${temp_dir}/soa.tmp && mv ${temp_dir}/soa.tmp ${download_dir}/${sanitised_title}/Disk1/install/${installDir}/oraparam.ini",

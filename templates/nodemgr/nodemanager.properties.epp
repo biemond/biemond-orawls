@@ -1,7 +1,7 @@
 <%- |  String $weblogic_home_dir,
        String $jdk_home_dir,
        String $nodemanager_address,
-       Integer $nodemanager_port = 5556,
+       Integer $nodemanager_port,
        Boolean $nodemanager_secure_listener =true,
        Hash $properties_merged,
        String $nodeMgrLogDir,

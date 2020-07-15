@@ -18,7 +18,11 @@ try:
 
     cd('/FileStores/' + name)
     set_attribute_value('Directory', directory, use_default_value_when_empty)
-    set('Targets', jarray.array([ObjectName('com.bea:Name=' + target + ',Type=' + targettype)], ObjectName))
+    if not targettype:
+        print('target type is not passed, So not changeing the Target')
+    else:
+        set('Targets', jarray.array([ObjectName('com.bea:Name=' + target + ',Type=' + targettype)], ObjectName))    
+
 
     save()
     activate()

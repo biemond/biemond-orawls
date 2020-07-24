@@ -429,7 +429,12 @@ define orawls::fmw(
       } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_wccontent_generic.jar'
       } else {
-        $binFile1                 = 'fmw_12.2.1.3.0_wccontent_generic.jar'
+        if $facts['kernel'] == 'SunOS' {
+          $binFile1                 = 'fmw_12.2.1.3.0_wccontent.jar'
+        } else {
+          $binFile1                 = 'fmw_12.2.1.3.0_wccontent_generic.jar'
+        }
+        
       }
       $createFile1              = "${download_dir}/${sanitised_title}/${binFile1}"
       $type                     = 'java'

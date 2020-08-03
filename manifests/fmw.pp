@@ -570,7 +570,6 @@ define orawls::fmw(
 
     $fmw_silent_response_file = 'orawls/fmw_silent_odi.rsp.epp'
     $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
-    $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
     $install_type             = 'Enterprise Installation'
 
     if ($oracle_home_dir == undef) {
@@ -584,9 +583,7 @@ define orawls::fmw(
       $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
     } else {
       $total_files = 1
-    }    
-
-
+    }
   } else {
     fail('unknown fmw_product value choose adf|soa|soaqs|osb|oim|oam|wc|wcc|web|webgate|oud')
   }

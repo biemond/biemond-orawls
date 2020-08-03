@@ -618,9 +618,7 @@ define orawls::fmw(
       ensure  => present,
       content => epp($fmw_silent_response_file, {
                       'middleware_home_dir' => $middleware_home_dir,
-                      'oracleHome'          => $oracleHome,
-                      'install_type'        => $install_type,
-                      'weblogic_home_dir'   => $weblogic_home_dir }),
+                      'install_type'        => $install_type}),
       mode    => lookup('orawls::permissions'),
       owner   => $os_user,
       group   => $os_group,

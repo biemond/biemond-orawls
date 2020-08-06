@@ -70,7 +70,7 @@ define orawls::fmw(
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   String $oracle_base_home_dir                            = undef, # /opt/oracle
   Optional[String] $oracle_home_dir                       = undef, # /opt/oracle/middleware/Oracle_SOA
-  Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms'] $fmw_product = undef,
+  Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms', 'odi'] $fmw_product = undef,
   String $fmw_file1                                       = undef,
   Optional[String] $fmw_file2                             = undef,
   Optional[String] $fmw_file3                             = undef,
@@ -570,6 +570,24 @@ define orawls::fmw(
     }
     $total_files = 1
 
+  } elsif ( $fmw_product == 'odi' ) {
+
+    $fmw_silent_response_file = 'orawls/fmw_silent_odi.rsp.epp'
+    $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
+    $install_type             = 'Enterprise Installation'
+
+    if ($oracle_home_dir == undef) {
+      $oracleHome = "${middleware_home_dir}/Oracle_ODI1"
+    }
+    else {
+      $oracleHome = $oracle_home_dir
+    }
+    if $version == 12213  {
+      $total_files = 2
+      $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
+    } else {
+      $total_files = 1
+    }
   } else {
     fail('unknown fmw_product value choose adf|soa|soaqs|osb|oim|oam|wc|wcc|web|webgate|oud')
   }
@@ -604,9 +622,7 @@ define orawls::fmw(
       ensure  => present,
       content => epp($fmw_silent_response_file, {
                       'middleware_home_dir' => $middleware_home_dir,
-                      'oracleHome'          => $oracleHome,
-                      'install_type'        => $install_type,
-                      'weblogic_home_dir'   => $weblogic_home_dir }),
+                      'install_type'        => $install_type}),
       mode    => lookup('orawls::permissions'),
       owner   => $os_user,
       group   => $os_group,

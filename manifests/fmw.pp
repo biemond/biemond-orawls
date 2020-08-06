@@ -575,6 +575,7 @@ define orawls::fmw(
     $fmw_silent_response_file = 'orawls/fmw_silent_odi.rsp.epp'
     $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
     $install_type             = 'Enterprise Installation'
+    $binFile1    = 'fmw_12.2.1.3.0_odi.jar'
 
     if ($oracle_home_dir == undef) {
       $oracleHome = "${middleware_home_dir}/Oracle_ODI1"

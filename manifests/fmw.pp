@@ -576,6 +576,7 @@ define orawls::fmw(
     $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
     $install_type             = 'Enterprise Installation'
     $binFile1    = 'fmw_12.2.1.3.0_odi.jar'
+    $type = 'java'
 
     if ($oracle_home_dir == undef) {
       $oracleHome = "${middleware_home_dir}/Oracle_ODI1"

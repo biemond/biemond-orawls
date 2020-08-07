@@ -1,0 +1,14 @@
+<%- |  Optional[String] $oracleHome = undef,
+       Optional[String] $install_type = undef| -%>
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#The oracle home location. This can be an existing Oracle Home or a new Oracle Home
+ORACLE_HOME=<%= $oracleHome %>
+
+#Set this variable value to the Installation Type selected. e.g. Standalone Installation, Enterprise Installation.
+INSTALL_TYPE=<%= $install_type%>

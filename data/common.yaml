@@ -11,7 +11,7 @@ orawls::permissions_group_restricted: '0640'
 orawls::permissions_secret:           '0600'
       
 
-orawls::tmp_dir:           '/tmp'
+orawls::tmp_dir:           '/var/tmp'
 orawls::download_dir:      '/var/tmp/install'
 orawls::module_mountpoint: 'puppet:///modules/orawls/'
 

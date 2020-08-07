@@ -1,0 +1,109 @@
+<%- |  Optional[String] $domainName = undef,
+       Optional[String] $domainDir = undef,
+       Optional[String] $adminUsernmme = undef,
+       Optional[String] $adminPassword = undef,
+       Optional[String] $dbConnectString = undef,
+       Optional[String] $newDbPassword = undef,
+       Optional[String] $newDbPrefix = undef,
+       Optional[String] $newDbSchemaPassword = undef,| -%>
+[ENGINE]
+
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#If false, omit the startup action at the end of the config assistant.
+PERFORM_BI_STARTUP=true
+
+#Set limit on number of BI Service Instances. Only used if SERVICE_INSTANCE_MODE = MULTI
+SERVICE_INSTANCE_LIMIT=2
+
+#Select to include Essbase.   Values are true or false.
+CONFIGURE_ESSBASE=true
+
+#Select to include BIEE.   Values are true or false.
+CONFIGURE_BIEE=true
+
+#Select to include BIP (BI Publisher).   Values are true or false.
+CONFIGURE_BIP=true
+
+#Install Exalytics In-Memory Software. If this is set to true and Exalytics hardware is NOT present an error will occur.
+INSTALL_EXALYTICS_IN_MEMORY_SOFTWARE=false
+
+#Set Single Service Instance vs Multi Service Instance Mode.
+SERVICE_INSTANCE_MODE=SINGLE
+
+#The domain to be created
+DOMAIN_NAME=###DOMAIN_NAME###
+
+#The directory in which the domain home directory will be created
+DOMAINS_DIR=###DOMAINS_DIR###s
+
+#Specify the administrator username.
+ADMIN_USER_NAME=weblogic
+
+#Specify the administrator password.
+ADMIN_PASSWORD=###ADMIN_PASSWORD###
+
+#Specify the administrator confirmation password
+ADMIN_CONFIRM_PASSWORD=###ADMIN_PASSWORD###
+
+#Select the schema type. Supported types are SCHEMA_TYPE_NEW, SCHEMA_TYPE_EXISTING.  
+SCHEMA_TYPE=SCHEMA_TYPE_EXISTING
+
+#Select the new database type to connect to. Supported database types are ORACLE, SQLSERVER and IBMDB2.
+DATABASE_TYPE=ORACLE
+
+#Select the existing database type to connect to. Supported database types are ORACLE and SQLSERVER.
+EXISTING_DATABASE_TYPE=ORACLE
+
+#Format: hostname:port:servicename. For Application Cluster Database: host1:port1^host2:port2@servicename
+CONNECT_STRING=###CONNECT_STRING###
+
+#Format: host1:port1^host2:port2
+FAN_CONNECT_STRING=
+
+#Username for account with privileges to create new schemas
+NEW_DB_ADMIN_USERNAME=
+
+#Password for account with privileges to create new schemas.
+NEW_DB_PASSWORD=
+
+#Prefix for newly created schemas
+NEW_DB_SCHEMA_PREFIX=
+
+#Password to be used for all new schemas.
+NEW_DB_SCHEMA_PASSWORD=
+
+#Password to be used for all new schemas.
+NEW_DB_CONFIRM_SCHEMA_PASSWORD=
+
+#Enter the prefix used in RCU when the schemas were created.
+EXISTING_DB_PREFIX=###NEW_DB_SCHEMA_PREFIX###
+
+#Enter the password for the STB schema.
+EXISTING_DB_PASSWORD=###NEW_DB_SCHEMA_PASSWORD###
+
+#The start port for the port range
+PORT_RANGE_START=9500
+
+#The end port for the port range
+PORT_RANGE_END=9999
+
+#Select type of initial application.  Supported types are APPLICATION_TYPE_SAMPLE_APP_LITE and APPLICATION_TYPE_BI_BUNDLE.
+APPLICATION_TYPE=APPLICATION_TYPE_SAMPLE_APP_LITE
+
+#Location of BI Bundle file to use as the initial application.  Only used if APPLICATION_TYPE is BI_BUNDLE. 
+BI_BUNDLE_FILE=
+
+#Password which secures existing BI archive file
+BI_BUNDLE_PASSWORD=
+
+#New password which will secure AppLite as it is modified with customer data
+BI_APP_LITE_PASSWORD=
+
+#Identifier of initial default service instance if pluggable modules is enabled
+BI_DEFAULT_SERVICE_INSTANCE_KEY=ssi

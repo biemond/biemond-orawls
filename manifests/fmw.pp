@@ -70,7 +70,7 @@ define orawls::fmw(
   String $jdk_home_dir                                    = $::orawls::weblogic::jdk_home_dir,
   String $oracle_base_home_dir                            = undef, # /opt/oracle
   Optional[String] $oracle_home_dir                       = undef, # /opt/oracle/middleware/Oracle_SOA
-  Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms', 'odi'] $fmw_product = undef,
+  Enum['adf','soa','soaqs','osb','wcc','wc','wcs','oim','oam','web','webgate','oud','mft','b2b','forms', 'odi', 'obiee'] $fmw_product = undef,
   String $fmw_file1                                       = undef,
   Optional[String] $fmw_file2                             = undef,
   Optional[String] $fmw_file3                             = undef,
@@ -590,6 +590,24 @@ define orawls::fmw(
     } else {
       $total_files = 1
     }
+  } elsif ( $fmw_product == 'obiee' ) {
+
+    $fmw_silent_response_file = 'orawls/fmw_silent_obiee.rsp.epp'
+    $createFile1 = "${download_dir}/${sanitised_title}/Disk1"
+    $createFile2 = "${download_dir}/${sanitised_title}/Disk2"
+    $total_files = 2
+
+    $install_type             = 'BI Platform Distribution with Samples'
+    $binFile1    = 'bi_platform-12.2.1.3.0_intelsolaris.bin'
+    $type = 'bin'
+
+    if ($oracle_home_dir == undef) {
+      $oracleHome = "${middleware_home_dir}/Oracle_OBIEE1"
+    }
+    else {
+      $oracleHome = $oracle_home_dir
+    }
+
   } else {
     fail('unknown fmw_product value choose adf|soa|soaqs|osb|oim|oam|wc|wcc|web|webgate|oud')
   }

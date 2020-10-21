@@ -471,6 +471,8 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.1.0_wcsites.jar'
       } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_wcsites.jar'
+      } elsif $version == 12214 {
+        $binFile1                 = 'fmw_12.2.1.4.0_wcsites.jar'
       } else {
         $binFile1                 = 'fmw_12.2.1.3.0_wcsites.jar'
       }
@@ -514,6 +516,8 @@ define orawls::fmw(
         $binFile1                 = 'fmw_12.2.1.1.0_ohs_linux64.bin'
       } elsif $version == 12212 {
         $binFile1                 = 'fmw_12.2.1.2.0_ohs_linux64.bin'
+      } elsif $version == 12214 {
+        $binFile1                 = 'fmw_12.2.1.4.0_ohs_linux64.bin'
       } else {
         $binFile1                 = 'fmw_12.2.1.3.0_ohs_linux64.bin'
       }

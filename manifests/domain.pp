@@ -480,7 +480,7 @@ define orawls::domain (
 
       $wlstPath      = "${middleware_home_dir}/Oracle_IDM1/common/bin"
 
-   } elsif $domain_template == 'oaam' {
+    } elsif $domain_template == 'oaam' {
       $extensionsTemplateFile = 'orawls/domains/extensions/oaam_template.py.erb'
 
       $wlstPath      = "${middleware_home_dir}/Oracle_IDM1/common/bin"
@@ -545,7 +545,7 @@ define orawls::domain (
             $wlstPath      = "${middleware_home_dir}/oracle_common/common/bin"
           }
           else {
-            $wlstPath      = "${weblogic_home_dir}/common/bin" 
+            $wlstPath      = "${weblogic_home_dir}/common/bin"
           }
         } else {
           $wlstPath = $custom_wlst_path
@@ -961,7 +961,7 @@ define orawls::domain (
 
         if ($domain_template == 'oim' or $domain_template == 'oim_soa') {
           exec { "offlineConfigManager ${domain_name} ${title}":
-            command     => "sh offlineConfigManager.sh",
+            command     => 'sh offlineConfigManager.sh',
             cwd         => "${middleware_home_dir}/idm/server/bin",
             creates     => "${domain_dir}/config/fmwconfig/owsm/store/owsm/policies/oracle/multi_token_noauth_over_ssl_rest_service_policy",
             environment => ["JAVA_HOME=${jdk_home_dir}", "DOMAIN_HOME=${domain_dir}"],

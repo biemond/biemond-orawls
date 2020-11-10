@@ -39,9 +39,9 @@ PROXY_URL_FOR_OIM=http://<%= @oimserver_hostname %>:<%= @oimserver_port %>
 #Provide the External Front End URL. Format: http(s)://hostname:port
 EXTERNAL_FRONTEND_URL_FOR_OIM=
 #Provide the KeyStore Password. Valid passwords are 6 to 30 characters long, must begin with an alphabetic character, use only alphanumeric, underscore (_), dollar ($) or pound (#) characters and include at least one number.
-KEYSTORE_PASSWORD=
+KEYSTORE_PASSWORD=<%= @keystore_password %>
 #Confirm the KeyStore Password.
-KEYSTORE_CONFIRM_PASSWORD=
+KEYSTORE_CONFIRM_PASSWORD=<%= @keystore_password %>
 #Provide true to enable LDAP sync. LDAP sync synchronizes Oracle Identity Manager users, roles, role membership and role hierarchy to a LDAP directory. Any direct changes in the directory will be reconciled back to Oracle Identity Manager.
 SELECTION_OPTIONS_PAGE_SYNC_LDAP=false
 

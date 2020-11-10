@@ -4,6 +4,9 @@ execfile('<%= @download_dir %>/utils.py')
 WLHOME = '<%= @weblogic_home_dir %>'
 DOMAIN_PATH = '<%= @domain_dir %>'
 DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
 
 JSSE_ENABLED = <%= @jsse_enabled %>
 CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
@@ -29,26 +32,16 @@ REPOS_DBPASSWORD = '<%= @repository_password %>'
 
 readDomain(DOMAIN_PATH)
 
-<% if @wcs_satellite %>
-print 'Adding Template: Oracle WebCenter Sites - Satellite Server' 
-selectTemplate('Oracle WebCenter Sites - Satellite Server')
-<% else %>
-print 'Adding Template: Oracle WebCenter Sites' 
-selectTemplate('Oracle WebCenter Sites')
+print 'Adding Template: Oracle Unified Directory' 
+selectTemplate('Oracle Unified Directory')
 
-print 'Adding Template: Oracle WebCenter Sites  - Visitor Services' 
-selectTemplate('Oracle WebCenter Sites - Visitor Services')
-
-print 'Adding Template: Oracle WebCenter Sites - SiteCapture' 
-selectTemplate('Oracle WebCenter Sites - SiteCapture')
-<% end %>
+print 'Adding Template: Oracle Unified Directory Services Manager' 
+selectTemplate('Oracle Unified Directory Services Manager')
 
 print('Loading all required templates')
 loadTemplates()
 
 dumpStack()
-
-setOption('AppDir', APP_PATH)
 
 print 'Change datasources'
 
@@ -57,11 +50,6 @@ change_datasource('opss-audit-DBDS', REPOS_DBUSER_PREFIX + '_IAU_APPEND', REPOS_
 change_datasource('opss-audit-viewDS', REPOS_DBUSER_PREFIX + '_IAU_VIEWER', REPOS_DBPASSWORD, REPOS_DBURL)
 change_datasource('opss-data-source', REPOS_DBUSER_PREFIX + '_OPSS', REPOS_DBPASSWORD, REPOS_DBURL)
 
-<% if !@wcs_satellite %>
-change_datasource('wcsitesDS', REPOS_DBUSER_PREFIX + '_WCSITES', REPOS_DBPASSWORD, REPOS_DBURL)
-change_datasource('wcsitesVisitorsDS', REPOS_DBUSER_PREFIX + '_WCSITES_VS', REPOS_DBPASSWORD, REPOS_DBURL)
-<% end %>
-
 print 'Finished datasources'
 
 print 'Call getDatabaseDefaults which reads the service table'
@@ -69,12 +57,6 @@ getDatabaseDefaults()
 
 updateDomain()
 closeDomain()
-
-<% if !@wcs_satellite %>
-create_boot_properties_file(DOMAIN_PATH + '/servers/wcsites_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
-create_boot_properties_file(DOMAIN_PATH + '/servers/sitecapture_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
-create_boot_properties_file(DOMAIN_PATH + '/servers/visitorservices_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
-<% end %>
 
 print 'Exiting...'
 exit()

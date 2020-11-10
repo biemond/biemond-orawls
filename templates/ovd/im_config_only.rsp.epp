@@ -1,0 +1,130 @@
+<%- |  String $middleware_home_dir,
+       String $weblogic_home_dir,
+       String $weblogic_user,
+       String $weblogic_password,
+       String $adminserver_address,
+       Integer $adminserver_port,
+       String $domain_name,
+       String $ovd_instance_name,
+       String $ovd_ldap_namespace,
+       String $ovd_admin | -%>
+[ENGINE]
+
+#DO NOT CHANGE THIS.
+Response File Version=1.0.0.0.0
+
+[GENERIC]
+
+#Provide true to create a new weblogic domain. WebLogic Server must already be installed.
+CREATE_NEW_DOMAIN=false
+
+#Provide true to extend domain. WebLogic Server must already be installed and the domain must be up and running.
+USE_EXISTING_DOMAIN=true
+
+#Domain name may only contain alphanumeric characters or the underscore (_) or hyphen (-) characters.
+DOMAIN_NAME=<%= $domain_name %>
+
+#Provide the complete path of domain home.
+DOMAIN_HOME=/opt/was/oracle/config/domains/<%= $domain_name %>
+
+#Provide the User Name for WebLogic Domain. The value may only contain alphanumeric characters, or the underscore (_) or hyphen (-) characters.
+DOMAIN_ADMINISTRATOR_USERNAME=<%= $weblogic_user %>
+
+#Provide the password for WebLogic Domain. Valid passwords are 8 to 30 characters long, must begin with an alphabetic character, use only alphanumeric, underscore (_), dollar ($) or pound (#) characters and include at least one number.
+DOMAIN_ADMINISTRATION_PASSWORD=<%= $weblogic_password %>
+
+#Confirm the WebLogic Domain password.
+ADMINISTRATOR_PASSWORD_CONFIRM=<%= $weblogic_password %>
+
+#Provide the localhost name for Create Domain and machine name on which domain is up and running for Extend Domain and Expand Cluster.
+DOMAIN_HOST_NAME=<%= $adminserver_address %>
+
+#Provide the port in which domain is up and running. Required for Extend Domain and Expand Cluster.
+DOMAIN_PORT_NO=<%= $adminserver_port %>
+
+#Write the complete path to a valid Middleware Home.
+AS_HOME_LOCATION=<%= $middleware_home_dir %>
+
+#Give the complete path to a valid WebLogic Server Home.
+WL_HOME=<%= $weblogic_home_dir %>
+
+#Give the name of the Oracle Home directory. The Oracle Home directory name may only contain alphanumeric , hyphen (-) , dot (.) and underscore (_) characters, and it must begin with an alphanumeric character.
+ORACLE_HOME=<%= $middleware_home_dir %>/Oracle_IDM1
+
+#Give the complete path for an Oracle Instance directory to be created. This is the location where the software configuration files and runtime processes will reside.
+INSTANCE_HOME=<%= $middleware_home_dir %>/<%= $ovd_instance_name %>
+
+#Give a name for Oracle Instance corresponding to the Instance Home. The Oracle Instance name may only contain alphanumeric and underscore (_) characters, it must begin with an alphabetic (a-z or A-Z) character, and must be from 4 to 30 characters in length.
+INSTANCE_NAME=<%= $ovd_instance_name %>
+
+#Set this to true if you wish to decline the security updates. Setting this to true and providing empty string for My Oracle Support username will ignore the Oracle Configuration Manager configuration
+DECLINE_SECURITY_UPDATES=true
+
+#Set this to true if you want the configuration wizard to assign the ports automatically.
+AUTOMATIC_PORT_DETECT=true
+
+#Provide a password for a new account to connect to the Oracle Virtual Directory administrative service, cn=orcladmin. Use 5-30 characters. Use only alphanumerics, underscore (_), dollar ($), or pound (#). At least one number is required.
+OVD_ADMIN_PASSWORD=<%= $weblogic_password %>
+
+#Confirm the password of Oracle Virtual Directory administrative service.
+CONFIRM_OVD_ADMIN_PASSWORD=<%= $weblogic_password %>
+
+#Provide the base, or the leftmost entry, of the virtual directory namespace that Oracle Virtual Directory will use to set its initial Access Control Lists (ACLs). For example, for the namespace dc=mycompany,dc=com, you would enter dc=com.
+OVD_LDAPv3_NAME_SPACE=<%= $ovd_ldap_namespace %>
+
+#Provide true to enable the HTTP Web Gateway to be protected by SSL. Oracle highly recommends that you use SSL/TLS for Oracle Virtual Directory's administrative gateway service. Disabling SSL/TLS  could result in your server administration traffic being monitored and even compromised.
+IS_ADMIN_SERVER_OF_OVD_IN_SECURE_MODE=true
+
+#provide true for securing HTTP client connection information. Give true if HTTP Web Gateway is set to true.
+IS_HTTP_WEB_GATEWAY_OF_OVD_SECURE=false
+
+#Provide true for Oracle Virtual Directory to be configured.
+IS_LDAP_CLIENT_LISTENER_FOR_OVD_SELECTED=false
+
+#Oracle Virtual Directory includes an HTML-based gateway that provides DSML and XSLT-rendered directory reporting. Provide true to enable HTML-based gateway.
+IS_HTTP_WEB_GATEWAY_OF_OVD_SELECTED=false
+
+#Specify a new Administrator User Name to connect to the Oracle Virtual Directory administrative service, For example, for the Administrator User Name you would enter cn=orcladmin.
+OVD_ADMIN=<%= $ovd_admin %>
+
+[SYSTEM]
+
+
+[APPLICATIONS]
+
+#Provide true if configuring in a clustered environment.
+IS_CLUSTER_CONFIGURATION=false
+
+
+[RELATIONSHIPS]
+
+#Provide true to configure Oracle Internet Directory.
+CONFIGURE_OID_COMPONENT=false
+
+#Provide true to configure Oracle Directory Integration Platform.
+CONFIGURE_DIP_COMPONENT=false
+
+#Provide true to configure Oracle Virtual Directory.
+CONFIGURE_OVD_COMPONENT=true
+
+#Provide true to configure Oracle Identity Fedration.
+CONFIGURE_OIF_COMPONENT=false
+
+#Provide true to configure Oracle Http Server.
+CONFIGURE_OHS_COMPONENT=false
+
+#Provide true to configure Oracle Directory Service Manager.
+CONFIGURE_ODSM_COMPONENT=true
+
+#Provide true to configure Enterprise Management.
+CONFIGURE_EM_COMPONENT=true
+
+#Provide true to configure federation components.
+FEDERATION_COMPONENTS_FOR_CONFIGURE=false
+
+#Provide true to configure management components.
+MANAGEMENT_COMPONENTS_FOR_CONFIGURE=true
+
+#Provide the list of components selected for configuration separated by colon. Example OID:OVD:DIP:ODSM
+SELECTED_COMPONENTS_FOR_CONFIGURATION=OVD:ODSM:EM:
+

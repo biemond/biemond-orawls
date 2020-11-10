@@ -18,10 +18,11 @@
 # @param rcu_password rcu schema password
 # @param rcu_sys_user rcu sys schema username
 # @param rcu_sys_password rcu sys username password
+# @param use_same_password_for_all_schemas true or false to use the same password for various components. -useSamePasswordForAllSchemaUsers
 #
 define orawls::utils::rcu(
   Integer $version                                     = $::orawls::weblogic::version,
-  Enum['adf','soa','mft', 'wcs', 'forms'] $fmw_product = 'adf',
+  Enum['adf','soa','mft', 'wcs', 'forms', 'oud', 'oim', 'oam'] $fmw_product = 'adf',
   String $oracle_fmw_product_home_dir                  = undef,
   String $jdk_home_dir                                 = $::orawls::weblogic::jdk_home_dir,
   String $os_user                                      = $::orawls::weblogic::os_user,
@@ -37,6 +38,7 @@ define orawls::utils::rcu(
   String $rcu_sys_password                             = undef,
   Optional[String] $rcu_temp_tablespace                = undef, #temp
   Optional[String] $rcu_tablespace                     = undef, #soa_infra
+  Boolean $use_same_password_for_all_schemas           = false,
 ){
 
   # TODO: create and use function sanitize_string (fmw.pp, duplicated code)
@@ -64,7 +66,7 @@ define orawls::utils::rcu(
   }
 
   if $fmw_product == 'adf' {
-    if $version >= 1221 {
+    if $version >= 1213 {
       $components = "-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component STB ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}"
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
@@ -82,6 +84,18 @@ define orawls::utils::rcu(
       $components = "-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSCC ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSUMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component ESS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component SOAINFRA ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component MFT ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}"
       $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
     }
+  }
+  elsif $fmw_product == 'oud' {
+    $components = '-component STB -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS'
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password] # 2 passwords required for WLS
+  }
+  elsif $fmw_product == 'oim' {
+    $components = '-component OIM -component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB -component UCSUMS -component ESS -component SOAINFRA '
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
+  }
+  elsif $fmw_product == 'oam' {
+    $components = '-component OAM -component MDS -component IAU -component IAU_APPEND -component IAU_VIEWER -component OPSS -component WLS -component STB -component UCSUMS '
+    $componentsPasswords = [$rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password, $rcu_password]
   }
   elsif $fmw_product == 'mft' {
     $components = "-component MDS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_APPEND ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component IAU_VIEWER ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component OPSS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component WLS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSCC ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component MFT ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component UCSUMS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd} -component ESS ${rcu_temp_tablespace_cmd} ${rcu_tablespace_cmd}"
@@ -128,9 +142,15 @@ define orawls::utils::rcu(
     $action = '-dropRepository'
   }
 
+  if $use_same_password_for_all_schemas {
+    $rcu_cmd = "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -useSamePasswordForAllSchemaUsers true -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt"
+  } else {
+    $rcu_cmd = "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt"
+  }
+
   wls_rcu{ "${rcu_prefix}_${sanitised_title}":
     ensure       => $rcu_action,
-    statement    => "${oracle_fmw_product_home_dir}/bin/rcu -silent ${action} -databaseType ORACLE -connectString ${rcu_database_url} -dbUser ${rcu_sys_user} -dbRole SYSDBA -schemaPrefix ${rcu_prefix} ${components} -f < ${download_dir}/rcu_passwords_${fmw_product}_${rcu_action}_${rcu_prefix}_${sanitised_title}.txt",
+    statement    => $rcu_cmd,
     os_user      => $os_user,
     oracle_home  => $oracle_fmw_product_home_dir,
     sys_user     => $rcu_sys_user,

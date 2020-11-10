@@ -1,0 +1,142 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED = <%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
+WEBLOGIC_VERSION = <%= @version %>
+
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
+
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
+
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments['SOA'] %>
+SOA_JAVA_ARGUMENTS = '<%= @java_arguments['SOA'] %>'
+<% else %>
+SOA_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
+<% end %>
+
+<% if @java_arguments['OAM'] %>
+OAM_JAVA_ARGUMENTS = '<%= @java_arguments['OAM'] %>'
+<% else %>
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
+    OAM_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dwlspatch=wls_patch1036 -Dweblogic.Stdout=<%= @oam_nodemanager_log_dir %>/oam_server1.out -Dweblogic.Stderr=<%= @oam_nodemanager_log_dir %>/oam_server1_err.out'
+else:
+    OAM_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oam_nodemanager_log_dir %>/oam_server1.out -Dweblogic.Stderr=<%= @oam_nodemanager_log_dir %>/oam_server1_err.out'
+<% end %>
+
+<% if @java_arguments['OAM_POLICY'] %>
+OAM_POLICY_JAVA_ARGUMENTS = '<%= @java_arguments['OAM_POLICY'] %>'
+<% else %>
+OAM_POLICY_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oam_nodemanager_log_dir %>/oam_policy_mgr1.out -Dweblogic.Stderr=<%= @oam_nodemanager_log_dir %>/oam_policy_mgr1_err.out'
+<% end %>
+
+
+<% if @java_arguments['OIM'] %>
+OIM_JAVA_ARGUMENTS = '<%= @java_arguments['OIM'] %>'
+<% else %>
+OIM_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oim_nodemanager_log_dir %>/oim_server1.out -Dweblogic.Stderr=<%= @oim_nodemanager_log_dir %>/oim_server1_err.out'
+<% end %>
+
+<% if @java_arguments['BI'] %>
+BI_JAVA_ARGUMENTS = '<%= @java_arguments['BI'] %>'
+<% else %>
+BI_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @bi_nodemanager_log_dir %>/bi_server1.out -Dweblogic.Stderr=<%= @bi_nodemanager_log_dir %>/bi_server1_err.out'
+<% end %>
+
+REPOS_DBURL = '<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
+REPOS_DBPASSWORD = '<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
+    print 'Adding EM Template'
+    addTemplate('<%= @templateEM %>')
+
+    print 'Adding OAM Template'
+    addTemplate('<%= @templateOAM %>')
+    dumpStack()
+
+    cd('/')
+    # destroy the normal one
+    delete('LocalMachine', 'Machine')
+    print('change the default machine LocalMachine with type Machine')
+    create_machine('UnixMachine', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', NODEMANAGER_SECURE_LISTENER)
+
+    print 'Change AdminServer'
+    cd('/Servers/' + ADMIN_SERVER)
+    set('Machine', '<%= @adminserver_machine_name %>')
+
+else:
+    print 'Adding Template: Oracle Access Management Suite' 
+    selectTemplate('Oracle Access Management Suite')
+
+    print('Loading all required templates')
+    loadTemplates() 
+    dumpStack()
+
+setOption('AppDir', APP_PATH)
+
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
+    print 'Change oam_server1'
+    cd('/')
+    change_managed_server('oam_server1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', None, OAM_JAVA_ARGUMENTS, '<%= @oam_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+    print 'Change datasources'
+
+    change_datasource('oamDS'               , REPOS_DBUSER_PREFIX + '_OAM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('opss-DBDS'           , REPOS_DBUSER_PREFIX + '_OPSS'    , REPOS_DBPASSWORD, REPOS_DBURL)
+else:
+    print 'Change oam_server1'
+    cd('/')
+    change_managed_server('oam_server1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', None, OAM_JAVA_ARGUMENTS, '<%= @oam_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+    print 'Change oam_policy_mgr1'
+    cd('/')
+    change_managed_server('oam_policy_mgr1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', None, OAM_POLICY_JAVA_ARGUMENTS, '<%= @oam_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+    print 'Change datasources'
+
+    change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+
+    print 'Call getDatabaseDefaults which reads the service table'
+
+    getDatabaseDefaults()
+    change_datasource('oamDS'               , REPOS_DBUSER_PREFIX + '_OAM'     , REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('WLSSchemaDataSource' , REPOS_DBUSER_PREFIX + '_WLS_RUNTIME', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('opss-data-source'    , REPOS_DBUSER_PREFIX + '_OPSS', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('opss-audit-DBDS'     , REPOS_DBUSER_PREFIX + '_IAU_APPEND', REPOS_DBPASSWORD, REPOS_DBURL)
+    change_datasource('opss-audit-viewDS'   , REPOS_DBUSER_PREFIX + '_IAU_VIEWER', REPOS_DBPASSWORD, REPOS_DBURL)
+
+print 'Finished datasources'
+
+updateDomain()
+closeDomain()
+
+# end check
+
+if WEBLOGIC_VERSION not in [1213, 1221, 12211, 12212, 12213]:
+    create_boot_properties_file(DOMAIN_PATH + '/servers/oam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+else:
+    create_boot_properties_file(DOMAIN_PATH + '/servers/oam_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+    create_boot_properties_file(DOMAIN_PATH + '/servers/oam_policy_mgr1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+
+print('Exiting...')
+exit()

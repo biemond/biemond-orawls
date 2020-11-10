@@ -1,0 +1,144 @@
+# load common defs
+execfile('<%= @download_dir %>/utils.py')
+
+WLHOME = '<%= @weblogic_home_dir %>'
+DOMAIN_PATH = '<%= @domain_dir %>'
+DOMAIN = '<%= @domain_name %>'
+<% if @apps_dir %>
+APP_PATH = '<%= @apps_dir %>/<%= @domain_name %>'
+<% end %>
+
+JSSE_ENABLED = <%= @jsse_enabled %>
+CUSTOM_IDENTITY_ENABLED = <%= @custom_identity %>
+DEVELOPMENT_MODE = <%= @development_mode %>
+WEBLOGIC_VERSION = <%= @version %>
+
+ADMIN_SERVER = '<%= @adminserver_name %>'
+ADMIN_USER = '<%= @weblogic_user %>'
+ADMIN_PASSWORD = '<%= @weblogic_password %>'
+
+JAVA_HOME = '<%= @jdk_home_dir %>'
+NODEMANAGER_SECURE_LISTENER = <%= @nodemanager_secure_listener %>
+
+<% if @java_arguments['ADM'] %>
+ADM_JAVA_ARGUMENTS = '<%= @java_arguments['ADM'] %>'
+<% else %>
+ADM_JAVA_ARGUMENTS = '-XX:PermSize=256m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>.out -Dweblogic.Stderr=<%= @admin_nodemanager_log_dir %>/<%= @adminserver_name %>_err.out'
+<% end %>
+
+<% if @java_arguments['SOA'] %>
+SOA_JAVA_ARGUMENTS = '<%= @java_arguments['SOA'] %>'
+<% else %>
+SOA_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @soa_nodemanager_log_dir %>/soa_server1.out -Dweblogic.Stderr=<%= @soa_nodemanager_log_dir %>/soa_server1_err.out'
+<% end %>
+
+<% if @java_arguments['OIM'] %>
+OIM_JAVA_ARGUMENTS = '<%= @java_arguments['OIM'] %>'
+<% else %>
+OIM_JAVA_ARGUMENTS = '-XX:PermSize=512m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dweblogic.Stdout=<%= @oim_nodemanager_log_dir %>/oim_server1.out -Dweblogic.Stderr=<%= @oim_nodemanager_log_dir %>/oim_server1_err.out'
+<% end %>
+
+REPOS_DBURL = '<%= @repository_database_url %>'
+REPOS_DBUSER_PREFIX = '<%= @repository_prefix %>'
+REPOS_DBPASSWORD = '<%= @repository_password %>'
+
+readDomain(DOMAIN_PATH)
+
+print 'Adding Template: Oracle Identity Manager' 
+selectTemplate('Oracle Identity Manager')
+
+#print 'Adding Template: Oracle SOA Suite' 
+#selectTemplate('Oracle SOA Suite')
+
+print('Loading all required templates')
+loadTemplates()
+
+dumpStack()
+
+setOption('AppDir', APP_PATH)
+
+print 'Change oim_server1'
+cd('/')
+change_managed_server('oim_server1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', None, OIM_JAVA_ARGUMENTS, '<%= @oim_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+print 'Change soa_server1'
+cd('/')
+change_managed_server('soa_server1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', None, SOA_JAVA_ARGUMENTS, '<%= @soa_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+print 'Change datasources'
+
+change_datasource('LocalSvcTblDataSource', REPOS_DBUSER_PREFIX + '_STB', REPOS_DBPASSWORD, REPOS_DBURL)
+
+print 'Call getDatabaseDefaults which reads the service table'
+
+getDatabaseDefaults()
+change_datasource('WLSSchemaDataSource', REPOS_DBUSER_PREFIX + '_WLS_RUNTIME', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('opss-data-source', REPOS_DBUSER_PREFIX + '_OPSS', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('opss-audit-DBDS', REPOS_DBUSER_PREFIX + '_IAU_APPEND', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('opss-audit-viewDS', REPOS_DBUSER_PREFIX + '_IAU_VIEWER', REPOS_DBPASSWORD, REPOS_DBURL)
+
+change_datasource('mds-owsm', REPOS_DBUSER_PREFIX + '_MDS', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('SOALocalTxDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+change_datasource('EDNLocalTxDataSource', REPOS_DBUSER_PREFIX + '_SOAINFRA', REPOS_DBPASSWORD, REPOS_DBURL)
+
+change_datasource_to_xa('EDNDataSource')
+change_datasource_to_xa('OraSDPMDataSource')
+change_datasource_to_xa('SOADataSource')
+
+print 'Finished datasources'
+
+print 'Creating Credentials for Keystore'
+cd('/')
+cd('Credential/TargetStore/oim')
+cd('TargetKey/keystore')
+create('c','Credential')
+cd('Credential')
+set('Username','keystore')
+set('Password', ADMIN_PASSWORD)
+
+print 'Creating Credentials for OIMSchema'
+cd('/')
+cd('Credential/TargetStore/oim')
+cd('TargetKey/OIMSchemaPassword')
+create('c','Credential')
+cd('Credential')
+set('Username', REPOS_DBUSER_PREFIX + '_OIM')
+set('Password', REPOS_DBPASSWORD)
+
+print 'Creating Credentials for sysadmin'
+cd('/')
+cd('Credential/TargetStore/oim')
+cd('TargetKey/sysadmin')
+create('c','Credential')
+cd('Credential')
+set('Username','xelsysadm')
+set('Password', ADMIN_PASSWORD)
+
+print 'Creating Credentials for WeblogicAdmin'
+cd('/')
+cd('Credential/TargetStore/oim')
+cd('TargetKey/WeblogicAdminKey')
+create('c','Credential')
+cd('Credential')
+set('Username', ADMIN_USER)
+set('Password', ADMIN_PASSWORD)
+
+print 'Finished creating credentials'
+
+print 'change soa_server1'
+cd('/')
+change_managed_server('soa_server1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 7003, SOA_JAVA_ARGUMENTS, '<%= @soa_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+print 'change oim_server1'
+cd('/')
+change_managed_server('oim_server1', '<%= @adminserver_machine_name %>', '<%= @adminserver_address %>', 14000, OIM_JAVA_ARGUMENTS, '<%= @oim_nodemanager_log_dir %>', JAVA_HOME, JSSE_ENABLED)
+
+create_boot_properties_file(DOMAIN_PATH + '/servers/oim_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+create_boot_properties_file(DOMAIN_PATH + '/servers/soa_server1/security', 'boot.properties', ADMIN_USER, ADMIN_PASSWORD)
+
+updateDomain()
+dumpStack()
+closeDomain()
+
+print 'Exiting...'
+exit()

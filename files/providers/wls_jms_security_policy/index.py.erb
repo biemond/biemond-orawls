@@ -23,7 +23,7 @@ try:
     while authorizer.haveCurrent(cursor):
       print authorizer.getCurrentProperties(cursor)
       authorizer.advance(cursor)
-    authorizer.close
+    authorizer.close(cursor)
 except:
     print "Unexpected error:", sys.exc_info()[0]
 

@@ -244,6 +244,17 @@ def get_attribute_value(mbean_attribute):
             return ''
         else:
             return
+    elif key_type == 'long':
+        print 'Getting long property ' + mbean_attribute
+        real_value = get(mbean_attribute)
+        if real_value is not None:
+            return str(long(real_value))
+        elif default_value is not None:
+            return str(long(default_value))
+        elif null_value == 1:
+            return ''
+        else:
+            return
     else:
         print 'Getting generic property ' + mbean_attribute
         real_value = get(mbean_attribute)

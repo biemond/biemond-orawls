@@ -806,8 +806,8 @@ define orawls::domain (
     exec { "execwlst ${domain_name} ${title}":
       command     => "${wlstPath}/wlst.sh domain_${domain_name}.py",
       environment => ["JAVA_HOME=${jdk_home_dir}"],
-      unless      => "/usr/bin/test -e ${domain_dir}",
-      creates     => $domain_dir,
+      #unless      => "/usr/bin/test -e ${domain_dir}",
+      creates     => "${domain_dir}/config/config.xml",
       cwd         => $download_dir,
       require     => [File["domain.py ${domain_name} ${title}"],
                       File["${download_dir}/utils.py"],

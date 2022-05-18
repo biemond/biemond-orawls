@@ -7,9 +7,9 @@ newproperty(:removeinfectedconnections, :boolean => true) do
 
   munge do |value|
     case value
-    when true, "true", :true, '1'
+    when true, "true", :true, '1', "True", True
       :true
-    when false, "false", :false, '0'
+    when false, "false", :false, '0', "False", False
       :false
     else
       fail("#{value} must be a boolean")
@@ -19,6 +19,8 @@ newproperty(:removeinfectedconnections, :boolean => true) do
   to_translate_to_resource do |raw_resource|
     return :true  if raw_resource['removeinfectedconnections'] == '1'
     return :false if raw_resource['removeinfectedconnections'] == '0'
+    return :true  if raw_resource['removeinfectedconnections'] == 'True'
+    return :false if raw_resource['removeinfectedconnections'] == 'False'
     fail('BUG! removeinfectedconnections should have been \'0\' or \'1\'')
   end
 

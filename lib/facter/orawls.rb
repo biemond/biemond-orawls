@@ -89,27 +89,37 @@ def get_su_command
 end
 
 def get_opatch_version(name)
-  Puppet.debug "orawls check opatch version #{name}"
-  opatchOut = Facter::Util::Resolution.exec(name + '/OPatch/opatch version')
-  if opatchOut.nil?
-    opatchver = 'Error;'
+  os = Facter.value(:kernel)
+  if 'Linux' == os
+    Puppet.debug "orawls check opatch version #{name}"
+    opatchOut = Facter::Util::Resolution.exec(name + '/OPatch/opatch version')
+    if opatchOut.nil?
+      opatchver = 'Error;'
+    else
+      opatchver = opatchOut.split(' ')[2]
+    end
+    Puppet.debug "orawls opatch #{opatchver}"
+    return opatchver
   else
-    opatchver = opatchOut.split(' ')[2]
+    return nil
   end
-  Puppet.debug "orawls opatch #{opatchver}"
-  return opatchver  
 end
 
 def get_opatch_patches(name)
-  opatch_out = Facter::Util::Resolution.exec(get_su_command + get_weblogic_user + ' -c "' + name + '/OPatch/opatch lspatches"')
-  return nil if opatch_out.nil?
+  os = Facter.value(:kernel)
+  if 'Linux' == os
+    opatch_out = Facter::Util::Resolution.exec(get_su_command + get_weblogic_user + ' -c "' + name + '/OPatch/opatch lspatches"')
+    return nil if opatch_out.nil?
 
-  opatch_out.each_line.collect do |line|
-    next unless line =~ /^\d+;/
-    # Puppet.info "-patches- #{line}"
-    split_line = line.split(';')
-    { 'patch_id' => split_line[0], 'patch_desc' => (split_line[1] && split_line[1].chomp) }
-  end.compact
+    opatch_out.each_line.collect do |line|
+      next unless line =~ /^\d+;/
+      # Puppet.info "-patches- #{line}"
+      split_line = line.split(';')
+      { 'patch_id' => split_line[0], 'patch_desc' => (split_line[1] && split_line[1].chomp) }
+    end.compact
+  else
+    return nil
+  end
 end
 
 def get_orainst_products(path)
